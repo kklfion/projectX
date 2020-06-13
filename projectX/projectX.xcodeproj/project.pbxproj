@@ -13,6 +13,7 @@
 		804E618E24957D0C00825150 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 804E618C24957D0C00825150 /* Main.storyboard */; };
 		804E619024957D1000825150 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 804E618F24957D1000825150 /* Assets.xcassets */; };
 		804E619324957D1000825150 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 804E619124957D1000825150 /* LaunchScreen.storyboard */; };
+		804E619B24957E3200825150 /* MainTabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E619A24957E3200825150 /* MainTabBarVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		804E618F24957D1000825150 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		804E619224957D1000825150 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		804E619424957D1000825150 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		804E619A24957E3200825150 /* MainTabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				804E618624957D0C00825150 /* AppDelegate.swift */,
 				804E618824957D0C00825150 /* SceneDelegate.swift */,
 				804E618A24957D0C00825150 /* ViewController.swift */,
+				804E619A24957E3200825150 /* MainTabBarVC.swift */,
 				804E618C24957D0C00825150 /* Main.storyboard */,
 				804E618F24957D1000825150 /* Assets.xcassets */,
 				804E619124957D1000825150 /* LaunchScreen.storyboard */,
@@ -141,6 +144,7 @@
 				804E618B24957D0C00825150 /* ViewController.swift in Sources */,
 				804E618724957D0C00825150 /* AppDelegate.swift in Sources */,
 				804E618924957D0C00825150 /* SceneDelegate.swift in Sources */,
+				804E619B24957E3200825150 /* MainTabBarVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
