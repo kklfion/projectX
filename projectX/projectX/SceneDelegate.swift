@@ -20,37 +20,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let windowScene = (scene as? UIWindowScene){
             let window = UIWindow(windowScene: windowScene)
             
-            let sidebarItem = UITabBarItem()
-            sidebarItem.title = "Side Bar"
-            sidebarItem.image = UIImage(named: "home_icon")
-            let newPostItem = UITabBarItem()
-            newPostItem.title = "New Post"
-            newPostItem.image = UIImage(named: "home_icon")
-            let homeItem = UITabBarItem()
-            homeItem.title = "Home"
-            homeItem.image = UIImage(named: "home_icon")
-            let notificationsItem = UITabBarItem()
-            notificationsItem.title = "Notifications"
-            notificationsItem.image = UIImage(named: "home_icon")
-            let profileItem = UITabBarItem()
-            profileItem.title = "Profile"
-            profileItem.image = UIImage(named: "home_icon")
             
-            
-            let sidebar = ViewController()
-            sidebar.tabBarItem = sidebarItem
-            let newPost = ViewController()
-            newPost.tabBarItem = newPostItem
-            let home = ViewController()
-            home.tabBarItem = homeItem
-            let notifications = ViewController()
-            notifications.tabBarItem = notificationsItem
-            let profile = ViewController()
-            profile.tabBarItem = profileItem
             
             let tabbar = MainTabBarVC()
-            tabbar.viewControllers = [sidebar,newPost,home,notifications,profile]
-            tabbar.selectedIndex = 2
             window.rootViewController = tabbar
             self.window = window
             window.makeKeyAndVisible()
@@ -84,7 +56,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
+    
+
 
 
 }
+
 

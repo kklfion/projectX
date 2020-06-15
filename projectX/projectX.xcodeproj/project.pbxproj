@@ -14,6 +14,11 @@
 		804E619024957D1000825150 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 804E618F24957D1000825150 /* Assets.xcassets */; };
 		804E619324957D1000825150 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 804E619124957D1000825150 /* LaunchScreen.storyboard */; };
 		804E619B24957E3200825150 /* MainTabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E619A24957E3200825150 /* MainTabBarVC.swift */; };
+		804E619D24980C9400825150 /* NotificationsTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E619C24980C9400825150 /* NotificationsTableVC.swift */; };
+		804E61A124980DB000825150 /* SidebarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A024980DB000825150 /* SidebarVC.swift */; };
+		804E61A324980DD500825150 /* NewPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A224980DD500825150 /* NewPostVC.swift */; };
+		804E61A524980DFD00825150 /* HomeTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A424980DFD00825150 /* HomeTableVC.swift */; };
+		804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A624980E4B00825150 /* ProfileTableVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +31,11 @@
 		804E619224957D1000825150 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		804E619424957D1000825150 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		804E619A24957E3200825150 /* MainTabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarVC.swift; sourceTree = "<group>"; };
+		804E619C24980C9400825150 /* NotificationsTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsTableVC.swift; sourceTree = "<group>"; };
+		804E61A024980DB000825150 /* SidebarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarVC.swift; sourceTree = "<group>"; };
+		804E61A224980DD500825150 /* NewPostVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostVC.swift; sourceTree = "<group>"; };
+		804E61A424980DFD00825150 /* HomeTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableVC.swift; sourceTree = "<group>"; };
+		804E61A624980E4B00825150 /* ProfileTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,16 +68,77 @@
 		804E618524957D0C00825150 /* projectX */ = {
 			isa = PBXGroup;
 			children = (
-				804E618624957D0C00825150 /* AppDelegate.swift */,
+				80FDD6A3249829CD00304007 /* New Group */,
 				804E618824957D0C00825150 /* SceneDelegate.swift */,
-				804E618A24957D0C00825150 /* ViewController.swift */,
 				804E619A24957E3200825150 /* MainTabBarVC.swift */,
-				804E618C24957D0C00825150 /* Main.storyboard */,
+				804E61AA24980E7D00825150 /* HomeTableVC */,
+				804E61A824980E6A00825150 /* SidebarVC */,
+				804E61AB24980E8400825150 /* ProfileTableVC */,
+				804E61A924980E7500825150 /* NewPostVC */,
+				804E619E24980D2A00825150 /* NotificationsTableVC */,
+				804E619F24980D7000825150 /* etc */,
 				804E618F24957D1000825150 /* Assets.xcassets */,
-				804E619124957D1000825150 /* LaunchScreen.storyboard */,
 				804E619424957D1000825150 /* Info.plist */,
 			);
 			path = projectX;
+			sourceTree = "<group>";
+		};
+		804E619E24980D2A00825150 /* NotificationsTableVC */ = {
+			isa = PBXGroup;
+			children = (
+				804E619C24980C9400825150 /* NotificationsTableVC.swift */,
+			);
+			path = NotificationsTableVC;
+			sourceTree = "<group>";
+		};
+		804E619F24980D7000825150 /* etc */ = {
+			isa = PBXGroup;
+			children = (
+				804E618A24957D0C00825150 /* ViewController.swift */,
+				804E618624957D0C00825150 /* AppDelegate.swift */,
+				804E618C24957D0C00825150 /* Main.storyboard */,
+				804E619124957D1000825150 /* LaunchScreen.storyboard */,
+			);
+			path = etc;
+			sourceTree = "<group>";
+		};
+		804E61A824980E6A00825150 /* SidebarVC */ = {
+			isa = PBXGroup;
+			children = (
+				804E61A024980DB000825150 /* SidebarVC.swift */,
+			);
+			path = SidebarVC;
+			sourceTree = "<group>";
+		};
+		804E61A924980E7500825150 /* NewPostVC */ = {
+			isa = PBXGroup;
+			children = (
+				804E61A224980DD500825150 /* NewPostVC.swift */,
+			);
+			path = NewPostVC;
+			sourceTree = "<group>";
+		};
+		804E61AA24980E7D00825150 /* HomeTableVC */ = {
+			isa = PBXGroup;
+			children = (
+				804E61A424980DFD00825150 /* HomeTableVC.swift */,
+			);
+			path = HomeTableVC;
+			sourceTree = "<group>";
+		};
+		804E61AB24980E8400825150 /* ProfileTableVC */ = {
+			isa = PBXGroup;
+			children = (
+				804E61A624980E4B00825150 /* ProfileTableVC.swift */,
+			);
+			path = ProfileTableVC;
+			sourceTree = "<group>";
+		};
+		80FDD6A3249829CD00304007 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "New Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -142,8 +213,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				804E618B24957D0C00825150 /* ViewController.swift in Sources */,
+				804E619D24980C9400825150 /* NotificationsTableVC.swift in Sources */,
 				804E618724957D0C00825150 /* AppDelegate.swift in Sources */,
+				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,
+				804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */,
+				804E61A124980DB000825150 /* SidebarVC.swift in Sources */,
 				804E618924957D0C00825150 /* SceneDelegate.swift in Sources */,
+				804E61A524980DFD00825150 /* HomeTableVC.swift in Sources */,
 				804E619B24957E3200825150 /* MainTabBarVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
