@@ -19,11 +19,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         if let windowScene = (scene as? UIWindowScene){
             let window = UIWindow(windowScene: windowScene)
-            
-            
-            
-            let tabbar = MainTabBarVC()
-            window.rootViewController = tabbar
+            let main = MainContainerVC()
+            //let tabbar = MainTabBarVC()
+            window.rootViewController = main
             self.window = window
             window.makeKeyAndVisible()
         }

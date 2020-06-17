@@ -8,34 +8,35 @@
 
 import UIKit
 
+protocol TabBarSideBarDelegate {
+    func handleMenuToggle()
+}
+
 class MainTabBarVC: UITabBarController, UITabBarControllerDelegate {
+    
+    var tabBarDelegate: TabBarSideBarDelegate?
     
     var sidebar: SidebarVC!
     var newPost: NewPostVC!
     var home: HomeTableVC!
     var notifications: NotificationsTableVC!
     var profile: ProfileTableVC!
-    
+    let imageSize = 25 //used to size image for tabbar items
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.delegate = self
         //create items&images
         let sidebarItem = UITabBarItem()
-        sidebarItem.title = "Side Bar"
-        sidebarItem.image = createSizedImage(named: "menu_icon", size: 25)
+        sidebarItem.image = createSizedImage(named: "menu_icon", size: imageSize)
         let newPostItem = UITabBarItem()
-        newPostItem.title = "New Post"
-        newPostItem.image = createSizedImage(named: "newpost_icon", size: 25)
+        newPostItem.image = createSizedImage(named: "newpost_icon", size: imageSize)
         let homeItem = UITabBarItem()
-        homeItem.title = "Home"
-        homeItem.image = createSizedImage(named: "home_icon", size: 25)
+        homeItem.image = createSizedImage(named: "home_icon", size: imageSize)
         let notificationsItem = UITabBarItem()
-        notificationsItem.title = "Notifications"
-        notificationsItem.image = createSizedImage(named: "notifications_icon", size: 25)
+        notificationsItem.image = createSizedImage(named: "notifications_icon", size: imageSize)
         let profileItem = UITabBarItem()
-        profileItem.title = "Profile"
-        profileItem.image = createSizedImage(named: "profile_icon", size: 25)
-        
+        profileItem.image = createSizedImage(named: "profile_icon", size: imageSize)
         
         sidebar = SidebarVC()
         sidebar.tabBarItem = sidebarItem
@@ -48,27 +49,26 @@ class MainTabBarVC: UITabBarController, UITabBarControllerDelegate {
         profile = ProfileTableVC() // maybe need a container VC that has two other VCs
         profile.tabBarItem = profileItem
         
-        self.viewControllers = [sidebar,newPost,home,notifications,profile]
+        self.viewControllers = [sidebar,home,newPost,notifications,profile]
         self.selectedIndex = 2
 
         
     }
-    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        if item.tag == 1{
-            
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        if viewController.isKind(of: NewPostVC.self){
+            let newPost = NewPostVC()
+            self.present(newPost, animated: true)
+            return false
         }
-    }
-    
+        else if viewController.isKind(of: SidebarVC.self){
+            tabBarDelegate?.handleMenuToggle()
+            print("selected menu")
+            //performAnimation(tabBarController)
+            return false
+        }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        return true
     }
-    */
     func createSizedImage(named: String, size: Int)  -> UIImage {
         let image = UIImage(named: named)!
         //resizing image
@@ -81,3 +81,5 @@ class MainTabBarVC: UITabBarController, UITabBarControllerDelegate {
         return newImage
     }
 }
+
+
