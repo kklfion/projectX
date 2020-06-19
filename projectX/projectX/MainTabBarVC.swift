@@ -62,11 +62,8 @@ class MainTabBarVC: UITabBarController, UITabBarControllerDelegate {
         }
         else if viewController.isKind(of: SidebarVC.self){
             tabBarDelegate?.handleMenuToggle()
-            print("selected menu")
-            //performAnimation(tabBarController)
             return false
         }
-
         return true
     }
     func createSizedImage(named: String, size: Int)  -> UIImage {
