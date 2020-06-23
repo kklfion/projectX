@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -72,7 +72,6 @@
 				4A216F81A4DD94A6239F9BAE /* Pods-projectX.debug.xcconfig */,
 				CE774F905F70DF49766D0585 /* Pods-projectX.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -105,8 +104,8 @@
 				804E61AB24980E8400825150 /* ProfileTableVC */,
 				804E61A924980E7500825150 /* NewPostVC */,
 				804E619E24980D2A00825150 /* NotificationsTableVC */,
-				804E619F24980D7000825150 /* etc */,
 				804E618F24957D1000825150 /* Assets.xcassets */,
+				804E619F24980D7000825150 /* etc */,
 				80FDD6A6249C543400304007 /* GoogleService-Info.plist */,
 				804E619424957D1000825150 /* Info.plist */,
 			);
