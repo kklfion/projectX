@@ -20,7 +20,7 @@
 		804E61A524980DFD00825150 /* HomeTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A424980DFD00825150 /* HomeTableVC.swift */; };
 		804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A624980E4B00825150 /* ProfileTableVC.swift */; };
 		80FDD6A5249968FF00304007 /* MainContainerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80FDD6A4249968FF00304007 /* MainContainerVC.swift */; };
-		80FDD6A7249C543400304007 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 80FDD6A6249C543400304007 /* GoogleService-Info.plist */; };
+		80FDD6A924A188BF00304007 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 80FDD6A824A188BF00304007 /* GoogleService-Info.plist */; };
 		D376F7B778D7EC42DE2A05F2 /* Pods_projectX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +42,7 @@
 		804E61A424980DFD00825150 /* HomeTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableVC.swift; sourceTree = "<group>"; };
 		804E61A624980E4B00825150 /* ProfileTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableVC.swift; sourceTree = "<group>"; };
 		80FDD6A4249968FF00304007 /* MainContainerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainContainerVC.swift; sourceTree = "<group>"; };
-		80FDD6A6249C543400304007 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		80FDD6A824A188BF00304007 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CE774F905F70DF49766D0585 /* Pods-projectX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-projectX.release.xcconfig"; path = "Target Support Files/Pods-projectX/Pods-projectX.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -106,8 +106,8 @@
 				804E619E24980D2A00825150 /* NotificationsTableVC */,
 				804E618F24957D1000825150 /* Assets.xcassets */,
 				804E619F24980D7000825150 /* etc */,
-				80FDD6A6249C543400304007 /* GoogleService-Info.plist */,
 				804E619424957D1000825150 /* Info.plist */,
+				80FDD6A824A188BF00304007 /* GoogleService-Info.plist */,
 			);
 			path = projectX;
 			sourceTree = "<group>";
@@ -224,7 +224,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				804E619324957D1000825150 /* LaunchScreen.storyboard in Resources */,
-				80FDD6A7249C543400304007 /* GoogleService-Info.plist in Resources */,
+				80FDD6A924A188BF00304007 /* GoogleService-Info.plist in Resources */,
 				804E619024957D1000825150 /* Assets.xcassets in Resources */,
 				804E618E24957D0C00825150 /* Main.storyboard in Resources */,
 			);
