@@ -86,7 +86,7 @@ class HomeView: UIView {
         rightRecAnchor?.isActive = false
         recommendingTableView.widthAnchor.constraint(equalTo: viewForTableViews.widthAnchor).isActive = true
     
-        stackView.addArrangedSubview(searchBar)
+        //stackView.addArrangedSubview(searchBar)
         stackView.addArrangedSubview(segmentController)
         stackView.addArrangedSubview(viewForTableViews)
         

@@ -31,12 +31,30 @@ class HomeTableVC: UIViewController{
         super.viewDidLoad()
         homeView.searchBar.delegate = self
         view.backgroundColor = .white
+        setupSearchController()
     }
+    func setupSearchController(){
+        let somevc = NewPostVC() //as a dummy
+        somevc.view.backgroundColor = .lightGray
+        let searchController = UISearchController(searchResultsController: somevc)
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = true
+        searchController.searchBar.placeholder = "Search"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+    }
+}
+extension HomeTableVC: UISearchResultsUpdating,UISearchBarDelegate {
+    func updateSearchResults(for searchController: UISearchController) {
+        
+    }
+    
+    
 }
 
 
 
-extension HomeTableVC: UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate{
+extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         1
     }
