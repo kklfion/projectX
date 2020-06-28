@@ -29,7 +29,6 @@ class HomeTableVC: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        homeView.searchBar.delegate = self
         view.backgroundColor = .white
         setupSearchController()
     }
@@ -44,15 +43,11 @@ class HomeTableVC: UIViewController{
         definesPresentationContext = true
     }
 }
-extension HomeTableVC: UISearchResultsUpdating,UISearchBarDelegate {
+extension HomeTableVC: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         
     }
-    
-    
 }
-
-
 
 extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

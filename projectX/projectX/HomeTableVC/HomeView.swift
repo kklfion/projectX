@@ -24,16 +24,6 @@ class HomeView: UIView {
         stack.axis = .vertical
         return stack
     }()
-    //THIS must be a UISearchBar
-    //https://www.raywenderlich.com/4363809-uisearchcontroller-tutorial-getting-started
-    let searchBar: UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.placeholder = "Search"
-        searchBar.backgroundColor = .white
-        searchBar.showsCancelButton = true
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        return searchBar
-    }()
     let segmentController: UISegmentedControl = {
         let sc = UISegmentedControl(items: ["Home", "Recommending"])
         sc.translatesAutoresizingMaskIntoConstraints = false
@@ -85,8 +75,6 @@ class HomeView: UIView {
         rightRecAnchor = recommendingTableView.trailingAnchor.constraint(equalTo: viewForTableViews.safeAreaLayoutGuide.trailingAnchor)
         rightRecAnchor?.isActive = false
         recommendingTableView.widthAnchor.constraint(equalTo: viewForTableViews.widthAnchor).isActive = true
-    
-        //stackView.addArrangedSubview(searchBar)
         stackView.addArrangedSubview(segmentController)
         stackView.addArrangedSubview(viewForTableViews)
         
@@ -97,11 +85,11 @@ class HomeView: UIView {
         stackView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor).isActive = true
         stackView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor).isActive = true
         
-        searchBar.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        
         segmentController.heightAnchor.constraint(equalToConstant: 45).isActive = true
     }
     
+    
+    /// Animation for switching between two tableViewControllers
     @objc func performAnimation(){
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseOut,
             animations:
