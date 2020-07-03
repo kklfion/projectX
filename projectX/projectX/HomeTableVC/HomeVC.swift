@@ -21,8 +21,10 @@ import UIKit
 
 class HomeTableVC: UIViewController{
     
-    let homeView = HomeView()
+    let postCellID = "postCell"
     
+    let homeView = HomeView()
+
     override func loadView() {
         view = homeView
     }
@@ -31,16 +33,20 @@ class HomeTableVC: UIViewController{
         super.viewDidLoad()
         view.backgroundColor = .white
         setupSearchController()
+        
     }
     func setupSearchController(){
         let somevc = NewPostVC() //as a dummy
         somevc.view.backgroundColor = .lightGray
+        
         let searchController = UISearchController(searchResultsController: somevc)
-        searchController.searchResultsUpdater = self
+        searchController.searchResultsUpdater = self // should be somevc
         searchController.obscuresBackgroundDuringPresentation = true
         searchController.searchBar.placeholder = "Search"
         navigationItem.searchController = searchController
+        navigationItem.title = "ehhh"
         definesPresentationContext = true
+        
     }
 }
 extension HomeTableVC: UISearchResultsUpdating {
@@ -50,12 +56,17 @@ extension HomeTableVC: UISearchResultsUpdating {
 }
 
 extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
+    
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: postCellID, for: indexPath)
+        
+        
+        return cell
     }
 }
  
