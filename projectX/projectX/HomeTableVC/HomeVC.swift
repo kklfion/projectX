@@ -32,6 +32,19 @@ class HomeTableVC: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
+        homeView.homeTableView.delegate = self
+        homeView.recommendingTableView.delegate = self
+        homeView.homeTableView.dataSource = self
+        homeView.recommendingTableView.dataSource = self
+        homeView.homeTableView.register(PostCell.self, forCellReuseIdentifier: postCellID)
+        homeView.recommendingTableView.register(PostCell.self, forCellReuseIdentifier: postCellID)
+        
+        homeView.homeTableView.rowHeight = UITableView.automaticDimension
+        homeView.homeTableView.estimatedRowHeight = 400
+        homeView.recommendingTableView.rowHeight = UITableView.automaticDimension
+        homeView.recommendingTableView.estimatedRowHeight = 600
+        
         setupSearchController()
         
     }
@@ -49,6 +62,7 @@ class HomeTableVC: UIViewController{
         
     }
 }
+
 extension HomeTableVC: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         
@@ -57,15 +71,18 @@ extension HomeTableVC: UISearchResultsUpdating {
 
 extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        1
+        3
     }
+    
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: postCellID, for: indexPath)
-        
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: postCellID, for: indexPath) as! PostCell
+        if tableView == homeView.homeTableView{
+            //cell.backgroundColor = .lightGray
+        }else if  tableView == homeView.recommendingTableView{
+            //cell.backgroundColor = .white
+        }
         return cell
     }
 }
