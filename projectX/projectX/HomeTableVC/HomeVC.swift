@@ -22,8 +22,8 @@ import UIKit
 class HomeTableVC: UIViewController{
     
     let postCellID = "postCell"
-    
     let homeView = HomeView()
+    var postData = [PostModel]() //short description of the post
 
     override func loadView() {
         view = homeView
@@ -32,34 +32,38 @@ class HomeTableVC: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
         homeView.homeTableView.delegate = self
         homeView.recommendingTableView.delegate = self
         homeView.homeTableView.dataSource = self
         homeView.recommendingTableView.dataSource = self
+        
         homeView.homeTableView.register(PostCell.self, forCellReuseIdentifier: postCellID)
         homeView.recommendingTableView.register(PostCell.self, forCellReuseIdentifier: postCellID)
         
-        homeView.homeTableView.rowHeight = UITableView.automaticDimension
-        homeView.homeTableView.estimatedRowHeight = 400
-        homeView.recommendingTableView.rowHeight = UITableView.automaticDimension
-        homeView.recommendingTableView.estimatedRowHeight = 600
-        
         setupSearchController()
+        
+        createFakeData()
         
     }
     func setupSearchController(){
         let somevc = NewPostVC() //as a dummy
         somevc.view.backgroundColor = .lightGray
-        
         let searchController = UISearchController(searchResultsController: somevc)
         searchController.searchResultsUpdater = self // should be somevc
         searchController.obscuresBackgroundDuringPresentation = true
         searchController.searchBar.placeholder = "Search"
         navigationItem.searchController = searchController
-        navigationItem.title = "ehhh"
         definesPresentationContext = true
-        
+    }
+    
+    func createFakeData(){
+        postData.append(PostModel(image: nil, title: "CSE12", preview: "I didnt cheat but was flagged ...", author: "Sammy", likesCount: 17, commentsCount: 13, postID: "1"))
+        postData.append(PostModel(image: nil, title: "Lost my airpods", preview: "Last time I've seen them at Oakes ...", author: "Sammy", likesCount: 12, commentsCount: 5, postID: "2"))
+        postData.append(PostModel(image: nil, title: "Protesters attacked Tantalo", preview: "How dare they touch the god himself ...", author: "Sammy", likesCount: 6, commentsCount: 2, postID: "3"))
+        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text ...", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "4"))
+        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text ...", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "5"))
+        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text ...", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "6"))
+
     }
 }
 
@@ -72,18 +76,30 @@ extension HomeTableVC: UISearchResultsUpdating {
 extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        3
+        postData.count
     }
-    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let heightOfTheDevice = self.view.frame.height
+        return 0.165 * heightOfTheDevice
+    }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: postCellID, for: indexPath) as! PostCell
-        if tableView == homeView.homeTableView{
-            //cell.backgroundColor = .lightGray
-        }else if  tableView == homeView.recommendingTableView{
-            //cell.backgroundColor = .white
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: postCellID, for: indexPath) as? PostCell else {
+            fatalError("Wrong cell at cellForRowAt? ")
         }
+        if tableView == homeView.homeTableView{
+            
+        }else if  tableView == homeView.recommendingTableView{
+        }
+        
+        cell.titleUILabel.text =  postData[indexPath.row].title
+        cell.previewUILabel.text =  postData[indexPath.row].preview
+        cell.authorUILabel.text =  postData[indexPath.row].author
+        cell.likesUILabel.text =  String(postData[indexPath.row].likesCount)
+        cell.commentsUILabel.text =  String(postData[indexPath.row].commentsCount)
+        cell.UID =  postData[indexPath.row].postID
+        
         return cell
     }
 }
- 
+  
