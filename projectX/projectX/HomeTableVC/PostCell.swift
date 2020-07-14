@@ -41,6 +41,7 @@ class PostCell: UITableViewCell {
         let button = UIButton(type: .custom)
         button.setTitle("Food", for: .normal)
         button.setTitleColor(.black, for: .normal)
+        button.layer.cornerRadius = 4
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.black.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -49,7 +50,7 @@ class PostCell: UITableViewCell {
     let titleUILabel: UILabel = {
         let label = UILabel()
         label.text = "Title"
-        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.font = UIFont.boldSystemFont(ofSize: 18   )
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -115,7 +116,7 @@ class PostCell: UITableViewCell {
     }()
     let postUIImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "post_image_icon")
+        //imageView.image = UIImage(named: "post_image_icon")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
