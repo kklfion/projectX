@@ -8,10 +8,19 @@
 
 import UIKit
 
-class NewPostVC: UIViewController, UITextFieldDelegate {
+class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
+    
+    
 
     //let texFiel = UITextField()
    
+    @IBOutlet weak var titlepost: UITextField!  //
+    @IBOutlet weak var titlepost1: UITextField!  //
+    
+    @IBOutlet weak var pickerview: UIPickerView!
+    //@IBOutlet weak var label1:UILabel!
+    //@IBOutlet weak var textField: UITextField!
+    
     
     
     override func viewDidLoad() {
@@ -51,6 +60,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate {
         titlepost1.tintColor = UIColor.black
         titlepost1.textAlignment = .left
         titlepost1.contentVerticalAlignment = .top
+         
         
         //---------------------------------------------------------------------------------------------------------
         
@@ -70,6 +80,13 @@ class NewPostVC: UIViewController, UITextFieldDelegate {
         label.font = UIFont.systemFont(ofSize: 30)
         label.font = UIFont (name: "ChalkboardSE-Regular" , size: 30) // Delete if custom font
         self.view.addSubview(label)
+        
+        //                                       Channel display
+        // let label1 = UILabel(frame: CGRect(x: 10, y: 100, width:UIScreen.main.bounds.size.width - 20.0, height: 35))
+       // label1.textAlignment = .center
+        
+     //   label1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
+      //  self.view.addSubview(label1)
         
         //---------------------------------------------------------------------------------------------------------
         
@@ -91,6 +108,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate {
         chooseChannel.layer.borderWidth = 0.4
         chooseChannel.layer.borderColor = (UIColor( red: 0, green: 0, blue:0, alpha: 1.0 )).cgColor
         chooseChannel.titleLabel?.font =  UIFont(name: "ChalkboardSE-Regular", size: 15) // Delete if custom font
+        chooseChannel.addTarget(self, action: #selector(channelAction), for: .touchUpInside)
         self.view.addSubview(chooseChannel)
         
         //                                       X(CANCEL)BUTTON
@@ -102,6 +120,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate {
         Xbutton.backgroundColor = UIColor.white
         Xbutton.titleLabel?.font = .systemFont(ofSize: 18)
         Xbutton.titleLabel?.font =  UIFont(name: "ChalkboardSE-Regular", size: 18) // Delete if custom font
+        Xbutton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         self.view.addSubview(Xbutton)
         
         //                                       POST BUTTON
@@ -113,7 +132,21 @@ class NewPostVC: UIViewController, UITextFieldDelegate {
         postButton.backgroundColor = UIColor.white
         postButton.titleLabel?.font = .systemFont(ofSize: 18)
         postButton.titleLabel?.font =  UIFont(name: "ChalkboardSE-Regular", size: 18) // Delete if custom font
+        postButton.addTarget(self, action: #selector(postAction), for: .touchUpInside)
         self.view.addSubview(postButton)
+        
+        
+        
+        
+        
+        
+       
+         
+        
+        
+        
+        
+        
         
         //---------------------------------------------------------------------------------------------------------
         
@@ -124,11 +157,70 @@ class NewPostVC: UIViewController, UITextFieldDelegate {
         //  Fonts here http://iosfonts.com/
         //  Touching outside textfield
         //https://stackoverflow.com/questions/32281651/how-to-dismiss-keyboard-when-touching-anywhere-outside-uitextfield-in-swift
-        
-        
+        //Ui button: https://www.appsdeveloperblog.com/create-uibutton-in-swift-programmatically/
+        //picker https://stackoverflow.com/questions/53774232/show-a-uipickerview-when-a-button-is-tapped
         
     }
     
+    
+      
+         
+    // CHANNEL PICKER VIEW
+    let channels1 = ["Games", "Social", "Hello", "Gurpreet", "Test"]
+    var selectedchannel = String()
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return channels1[row]
+    }
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return channels1.count
+    }
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        selectedchannel = channels1[row]
+    }
+    var toolBar = UIToolbar()
+    var picker  = UIPickerView()
+    var label1 = UILabel()
+    var counter = 1
+    @IBAction func channelAction(sender: UIButton!) {
+     picker = UIPickerView.init()
+     picker.delegate = self
+     picker.backgroundColor = UIColor.white
+     picker.setValue(UIColor.black, forKey: "textColor")
+     picker.autoresizingMask = .flexibleWidth
+     picker.contentMode = .center
+     picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
+     self.view.addSubview(picker)
+     toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 35))
+     toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(doneButton))]
+     self.view.addSubview(toolBar)
+    }
+    @objc func doneButton() {
+     toolBar.removeFromSuperview()
+     picker.removeFromSuperview()
+     if counter == 1{
+      label1 = UILabel(frame: CGRect(x: 10, y: 155, width:UIScreen.main.bounds.size.width - 20.0, height: 40))
+      label1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
+      label1.textAlignment = .center
+      label1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
+      label1.text = selectedchannel
+      self.view.addSubview(label1)
+      counter += 1
+        }
+     else {
+      label1.text = selectedchannel
+        }
+    }
+    // END OF CHANNEL PICKER VIEW
+    
+    
+    
+    
+    
+    
+    // How to exit textfield, clicking away
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
@@ -138,21 +230,30 @@ class NewPostVC: UIViewController, UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-}
-//extension ViewController : UITextFieldDelegate {
- //   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
- //       textField.resignFirstResponder()
-  //      return true
-//    }
     
-//}
+    // cancel button
+    @objc func buttonAction(_ sender:UIButton!) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
+    
+    
+    
+    
+    // post button
+     @IBAction func postAction(sender: UIButton!) {
+        
+        // let nextVC = HomeTableVC()
+         //nextVC.stringHolder = titlepost1.text! + titlepost.text!
+        
+        //let nextVC = HomeTableVC()
+        //nextVC.stringHolder = channels1[row]
+        //navigationController?.pushViewController(nextVC, animated: true)
+        
+                      //self.present(HomeTableVC, animated: true, completion: nil)
+        //navigationController?.pushViewController(HomeTableVC, animated: true)
+    }
+    
+}
+
