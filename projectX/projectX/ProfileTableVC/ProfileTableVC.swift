@@ -8,83 +8,140 @@
 
 import UIKit
 
-class ProfileTableVC: UITableViewController {
+class ProfileTableVC: UIViewController {
+        // MARK: - Properties
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView.backgroundColor = .blue
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+       lazy var containerView: UIView = {
+            let view = UIView()
+            view.backgroundColor = .mainBlue
+            
+            view.addSubview(profileImageView)
+            profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            profileImageView.anchor(top: view.topAnchor, paddingTop: 100,
+                                    width: 200, height: 200)
+            profileImageView.layer.cornerRadius = 200 / 2
+            
+            view.addSubview(nameLabel)
+            nameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            nameLabel.anchor(top: profileImageView.bottomAnchor, paddingTop: 10)
+            
+            view.addSubview(uniLabel)
+            uniLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            uniLabel.anchor(top: nameLabel.bottomAnchor, paddingTop: 4)
+        
+            view.addSubview(prePostLabel)
+            prePostLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            prePostLabel.anchor(top: uniLabel.bottomAnchor, paddingTop: 60)
+            return view
+        }()
+        
+        let profileImageView: UIImageView = {
+            let iv = UIImageView()
+            iv.image = #imageLiteral(resourceName: "profile_icon")
+            iv.contentMode = .scaleAspectFill
+            iv.clipsToBounds = true
+            iv.layer.borderWidth = 3
+            iv.layer.borderColor = UIColor.white.cgColor
+            return iv
+        }()
+        
+        let nameLabel: UILabel = {
+            let label = UILabel()
+            label.textAlignment = .center
+            label.text = "Jake Nations"
+            label.font = UIFont.boldSystemFont(ofSize: 26)
+            label.textColor = .white
+            return label
+        }()
+        
+        let uniLabel: UILabel = {
+            let label = UILabel()
+            label.textAlignment = .center
+            label.text = "Universtiy of California, Santa Cruz"
+            label.font = UIFont.systemFont(ofSize: 18)
+            label.textColor = .white
+            return label
+        }()
+    
+        let prePostLabel: UILabel = {
+            let label = UILabel()
+            label.textAlignment = .left
+            label.text = "Previous Posts"
+            label.font = UIFont.systemFont(ofSize: 26)
+            label.textColor = .white
+            return label
+        }()
+        
+        // MARK: - Lifecycle
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            
+            view.backgroundColor = .blue
+            
+            view.addSubview(containerView)
+            containerView.anchor(top: view.topAnchor, left: view.leftAnchor,
+                                 right: view.rightAnchor)
+            
+            
+        }
+        
+        override var preferredStatusBarStyle: UIStatusBarStyle {
+            return .lightContent
+        }
+        
+        // MARK: - Selectors
+        
+        @objc func handleMessageUser() {
+            print("Message user here..")
+        }
+        
+        @objc func handleFollowUser() {
+            print("Follow user here..")
+        }
     }
 
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+    extension UIColor {
+        static func rgb(red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor {
+            return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
+        }
+        
+        static let mainBlue = UIColor.rgb(red: 0, green: 150, blue: 255)
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+    extension UIView {
+        
+        func anchor(top: NSLayoutYAxisAnchor? = nil, left: NSLayoutXAxisAnchor? = nil, bottom: NSLayoutYAxisAnchor? = nil, right: NSLayoutXAxisAnchor? = nil, paddingTop: CGFloat? = 0,
+                    paddingLeft: CGFloat? = 0, paddingBottom: CGFloat? = 0, paddingRight: CGFloat? = 0, width: CGFloat? = nil, height: CGFloat? = nil) {
+            
+            translatesAutoresizingMaskIntoConstraints = false
+            
+            if let top = top {
+                topAnchor.constraint(equalTo: top, constant: paddingTop!).isActive = true
+            }
+            
+            if let left = left {
+                leftAnchor.constraint(equalTo: left, constant: paddingLeft!).isActive = true
+            }
+            
+            if let bottom = bottom {
+                if let paddingBottom = paddingBottom {
+                    bottomAnchor.constraint(equalTo: bottom, constant: -paddingBottom).isActive = true
+                }
+            }
+            
+            if let right = right {
+                if let paddingRight = paddingRight {
+                    rightAnchor.constraint(equalTo: right, constant: -paddingRight).isActive = true
+                }
+            }
+            
+            if let width = width {
+                widthAnchor.constraint(equalToConstant: width).isActive = true
+            }
+            
+            if let height = height {
+                heightAnchor.constraint(equalToConstant: height).isActive = true
+            }
+        }
     }
-
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
-        return cell
-    }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-}
