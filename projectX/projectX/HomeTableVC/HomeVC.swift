@@ -22,6 +22,7 @@ import UIKit
 class HomeTableVC: UIViewController{
     
     let postCellID = "postCell"
+    var cellHeight: CGFloat? //0.165 * view.frame.height
     let homeView = HomeView()
     var postData = [PostModel]() //short description of the post
 
@@ -57,8 +58,10 @@ class HomeTableVC: UIViewController{
     }
     
     func createFakeData(){
-        postData.append(PostModel(image: nil, title: "CSE12", preview: "I didnt cheat but was flagged ...", author: "Sammy", likesCount: 17, commentsCount: 13, postID: "1"))
-        postData.append(PostModel(image: nil, title: "Lost my airpods", preview: "Last time I've seen them at Oakes ...", author: "Sammy", likesCount: 12, commentsCount: 5, postID: "2"))
+        var image = UIImage(named: "ucsc")
+        postData.append(PostModel(image: image, title: "CSE12", preview: "I didnt cheat but was flagged ...", author: "Sammy", likesCount: 17, commentsCount: 13, postID: "1"))
+        image = UIImage(named: "airpods")
+        postData.append(PostModel(image: image, title: "Lost my airpods", preview: "Last time I've seen them at Oakes ...", author: "Sammy", likesCount: 12, commentsCount: 5, postID: "2"))
         postData.append(PostModel(image: nil, title: "Protesters attacked Tantalo", preview: "How dare they touch the god himself ...", author: "Sammy", likesCount: 6, commentsCount: 2, postID: "3"))
         postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text ...", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "4"))
         postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text ...", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "5"))
@@ -79,8 +82,8 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         postData.count
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let heightOfTheDevice = self.view.frame.height
-        return 0.165 * heightOfTheDevice
+        cellHeight = 0.165 * view.frame.height
+        return cellHeight ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -98,7 +101,15 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         cell.likesUILabel.text =  String(postData[indexPath.row].likesCount)
         cell.commentsUILabel.text =  String(postData[indexPath.row].commentsCount)
         cell.UID =  postData[indexPath.row].postID
-        
+        cell.dateUILabel.text = "\(indexPath.row)h"
+        if postData[indexPath.row].image != nil{
+            //add an image
+            cell.withImageViewConstraints()
+            cell.postUIImageView.image = postData[indexPath.row].image
+        }else{
+            //no image to display
+            cell.noImageViewConstraints()
+        }
         return cell
     }
 }
