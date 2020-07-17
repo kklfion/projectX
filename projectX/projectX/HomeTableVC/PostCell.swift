@@ -16,16 +16,17 @@
 */
 import UIKit
 
-struct ConstraintsConstants {
-    let spacing: CGFloat = 10.0
-}
-
 class PostCell: UITableViewCell {
-    let Constraints = ConstraintsConstants()
+    
+    let padding:CGFloat = 5
+    let rowHeight:CGFloat = 18
+    let titleFontSize = 18
+    
     var UID: String?// ????
     /// is set to rightUIViewLeading anchor if there is an image otherwise it is set to the end of the screen
-    var noImageAnchor: NSLayoutConstraint?
-    var withImageAnchor: NSLayoutConstraint?
+    var previewTrailingAnchor: NSLayoutConstraint!
+    var withImageAnchor: NSLayoutConstraint!
+    var rightViewWidthAnchor: NSLayoutConstraint!
     let imageIconName = "image_icon"
     /// Creates a view left side of the post
     let leftUIView: UIView = {
@@ -37,76 +38,91 @@ class PostCell: UITableViewCell {
     let dateUILabel: UILabel = {
         let label = UILabel()
         label.text = "1h"
+        label.font = UIFont.systemFont(ofSize: 12)
         label.textAlignment = .right
-        label.textColor = .black
+        label.textColor = .lightGray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     let channelUIButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("Food", for: .normal)
-        button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        button.setTitleColor(.lightGray, for: .normal)
         button.layer.cornerRadius = 4
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.borderWidth = 0.5
+        button.layer.borderColor = UIColor.lightGray.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     let titleUILabel: UILabel = {
         let label = UILabel()
         label.text = "Title"
-        label.font = UIFont.boldSystemFont(ofSize: 18   )
+        label.font = UIFont.boldSystemFont(ofSize: 17 )
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     let previewUILabel: UILabel = {
         let text = UILabel()
-        text.numberOfLines = 0
+        text.font = UIFont.systemFont(ofSize: 14 )
+        text.numberOfLines = 2
+        text.adjustsFontSizeToFitWidth = false
+        text.lineBreakMode = .byTruncatingTail
         text.text = "Preview"
         text.textColor = .black
         text.translatesAutoresizingMaskIntoConstraints = false
         return text
     }()
-    let bottomUIView: UIView = {
-        let stack = UIView()
+    let bottomUIView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
     let authorUILabel: UILabel = {
         let label = UILabel()
         label.text = "u/Sammy"
-        label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = .lightGray
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     let heartUIButton: UIButton = {
         let button = UIButton(type: .custom)
+        //button.backgroundColor = .red
         button.setImage(UIImage(named: "post_heart_icon"), for: .normal)
-        button.imageView?.clipsToBounds = true
+        button.imageView?.contentMode = .scaleAspectFit
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     let likesUILabel: UILabel = {
         let label = UILabel()
+        //label.backgroundColor = .orange
         label.text = "13"
         label.textColor = .black
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 12)
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     let commentsUIButton: UIButton = {
         let button = UIButton(type: .custom)
+        //button.backgroundColor = .blue
         button.setImage(UIImage(named: "post_comment_icon"), for: .normal)
-        button.imageView?.clipsToBounds = true
+        button.imageView?.contentMode = .scaleAspectFit
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     let commentsUILabel: UILabel = {
         let label = UILabel()
+        //label.backgroundColor = .yellow
         label.text = "3"
-        label.textAlignment = .right
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = .black
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -122,6 +138,7 @@ class PostCell: UITableViewCell {
     let postUIImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
+        
         //imageView.image = UIImage(named: "post_image_icon")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -144,125 +161,117 @@ class PostCell: UITableViewCell {
         setupContentView()
     }
     func setupContentView(){
+        [dateUILabel,channelUIButton, titleUILabel, previewUILabel, bottomUIView, postUIImageView, authorUILabel].forEach {leftUIView.addSubview($0)}
+        [heartUIButton, likesUILabel, commentsUIButton, commentsUILabel].forEach ({bottomUIView.addArrangedSubview($0)})
+        dateUILabel.anchor(top: leftUIView.topAnchor,
+                           leading: nil,
+                           bottom: nil,
+                           trailing: channelUIButton.leadingAnchor,
+                           padding: .init(top: padding, left: 0, bottom: 0, right: padding),
+                           size: .init(width: 30, height: rowHeight))
+        channelUIButton.anchor(top: leftUIView.topAnchor,
+                               leading: nil,
+                               bottom: nil,
+                               trailing: postUIImageView.leadingAnchor,
+                               padding: .init(top: padding, left: 0, bottom: 0, right: 0),
+                               size: .init(width: 60, height: rowHeight))
+        postUIImageView.anchor(top: nil,
+                               leading: nil,
+                               bottom: nil,
+                               trailing: leftUIView.trailingAnchor,
+                               padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+                               size: .init(width: contentView.frame.height * 2.5 , height: contentView.frame.height * 2.5))
+        postUIImageView.centerYAnchor.constraint(equalTo: leftUIView.centerYAnchor).isActive = true
+        titleUILabel.anchor(top: dateUILabel.bottomAnchor,
+                            leading: leftUIView.leadingAnchor,
+                            bottom: nil,
+                            trailing: postUIImageView.leadingAnchor,
+                            padding: .init(top: padding, left: padding, bottom: 0, right: 0),
+                            size: .init(width: 0, height: rowHeight))
+        previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
+        previewUILabel.anchor(top: titleUILabel.bottomAnchor,
+                              leading: leftUIView.leadingAnchor,
+                              bottom: bottomUIView.topAnchor,
+                              trailing: nil,
+                              padding: .init(top: 0, left: padding, bottom: 0, right: 0),
+                              size: .init(width: 0, height: 0))
+        previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
+        previewTrailingAnchor.isActive = true
         
-        if( postUIImageView.image != nil){
-            print("image was given!")
-        }
-        /// setting up left side of the post
-        leftUIView.addSubview(dateUILabel)
-        leftUIView.addSubview(channelUIButton)
-        leftUIView.addSubview(titleUILabel)
-        leftUIView.addSubview(previewUILabel)
-        leftUIView.addSubview(bottomUIView)
-                
-        dateUILabel.topAnchor.constraint(equalTo: leftUIView.topAnchor, constant: Constraints.spacing).isActive = true
-        dateUILabel.trailingAnchor.constraint(equalTo: channelUIButton.leadingAnchor, constant: -Constraints.spacing).isActive = true
-        dateUILabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        dateUILabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        
-        channelUIButton.topAnchor.constraint(equalTo: leftUIView.topAnchor, constant: Constraints.spacing).isActive = true
-        channelUIButton.trailingAnchor.constraint(equalTo: leftUIView.trailingAnchor, constant: -Constraints.spacing).isActive = true
-        channelUIButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        channelUIButton.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        
-        titleUILabel.topAnchor.constraint(equalTo: dateUILabel.bottomAnchor).isActive = true
-        titleUILabel.leadingAnchor.constraint(equalTo: leftUIView.leadingAnchor, constant: Constraints.spacing).isActive = true
-        titleUILabel.trailingAnchor.constraint(equalTo: leftUIView.trailingAnchor, constant: -Constraints.spacing).isActive = true
-        titleUILabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        
-        previewUILabel.topAnchor.constraint(equalTo: titleUILabel.bottomAnchor).isActive = true
-        previewUILabel.leadingAnchor.constraint(equalTo: leftUIView.leadingAnchor, constant: Constraints.spacing).isActive = true
-        previewUILabel.trailingAnchor.constraint(equalTo: leftUIView.trailingAnchor, constant: -Constraints.spacing).isActive = true
-        //previewUILabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        previewUILabel.bottomAnchor.constraint(equalTo: bottomUIView.topAnchor).isActive = true
-        
-        //bottomUIStackView.topAnchor.constraint(equalTo: previewUILabel.bottomAnchor).isActive = true
-        bottomUIView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        bottomUIView.leadingAnchor.constraint(equalTo: leftUIView.leadingAnchor, constant: Constraints.spacing).isActive = true
-        bottomUIView.trailingAnchor.constraint(equalTo: leftUIView.trailingAnchor, constant: -Constraints.spacing).isActive = true
-        bottomUIView.bottomAnchor.constraint(equalTo: leftUIView.bottomAnchor).isActive = true
-        
-        /// set bottom stack view of theq left side
-        bottomUIView.addSubview(authorUILabel)
-        bottomUIView.addSubview(heartUIButton)
-        bottomUIView.addSubview(likesUILabel)
-        bottomUIView.addSubview(commentsUIButton)
-        bottomUIView.addSubview(commentsUILabel)
-        
-        authorUILabel.topAnchor.constraint(equalTo: bottomUIView.topAnchor).isActive = true
-        authorUILabel.bottomAnchor.constraint(equalTo: bottomUIView.bottomAnchor).isActive = true
-        authorUILabel.leadingAnchor.constraint(equalTo: bottomUIView.leadingAnchor).isActive = true
-        authorUILabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        
-        //heartUIButton.topAnchor.constraint(equalTo: bottomUIView.topAnchor).isActive = true
-        heartUIButton.bottomAnchor.constraint(equalTo: bottomUIView.bottomAnchor,constant:  -5).isActive = true
-        heartUIButton.trailingAnchor.constraint(equalTo: likesUILabel.leadingAnchor, constant: -Constraints.spacing).isActive = true
-        heartUIButton.widthAnchor.constraint(equalToConstant: 20).isActive = true
-        heartUIButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        
-        likesUILabel.topAnchor.constraint(equalTo: bottomUIView.topAnchor).isActive = true
-        likesUILabel.bottomAnchor.constraint(equalTo: bottomUIView.bottomAnchor).isActive = true
-        likesUILabel.trailingAnchor.constraint(equalTo: commentsUIButton.leadingAnchor, constant: -Constraints.spacing).isActive = true
-        likesUILabel.widthAnchor.constraint(equalToConstant: 20).isActive = true
-        
-        //commentsUIButton.topAnchor.constraint(equalTo: bottomUIView.topAnchor).isActive = true
-        commentsUIButton.bottomAnchor.constraint(equalTo: bottomUIView.bottomAnchor, constant: -5).isActive = true
-        commentsUIButton.trailingAnchor.constraint(equalTo: commentsUILabel.leadingAnchor, constant: -Constraints.spacing).isActive = true
-        commentsUIButton.widthAnchor.constraint(equalToConstant: 20).isActive = true
-        commentsUIButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        
-        commentsUILabel.topAnchor.constraint(equalTo: bottomUIView.topAnchor).isActive = true
-        commentsUILabel.bottomAnchor.constraint(equalTo: bottomUIView.bottomAnchor).isActive = true
-        commentsUILabel.trailingAnchor.constraint(equalTo: bottomUIView.trailingAnchor).isActive = true
-        commentsUILabel.widthAnchor.constraint(equalToConstant: 20).isActive = true
-        
-        /// setting up right side of the post
-        rightUIView.addSubview(postUIImageView)
-        
-        postUIImageView.topAnchor.constraint(equalTo: rightUIView.topAnchor, constant: Constraints.spacing).isActive = true
-        postUIImageView.bottomAnchor.constraint(equalTo: rightUIView.bottomAnchor, constant: -Constraints.spacing).isActive = true
-        postUIImageView.trailingAnchor.constraint(equalTo: rightUIView.trailingAnchor, constant: -Constraints.spacing).isActive = true
-        postUIImageView.leadingAnchor.constraint(equalTo:  rightUIView.leadingAnchor).isActive = true
-        
-        
+        authorUILabel.anchor(top: nil,
+                             leading: leftUIView.leadingAnchor,
+                             bottom: leftUIView.bottomAnchor,
+                             trailing: nil,
+                             padding: .init(top: 0, left: padding, bottom: padding, right: 0),
+                             size: .init(width: 0, height: 0))
+        bottomUIView.anchor(top: nil,
+                            leading: nil,
+                            bottom: leftUIView.bottomAnchor,
+                            trailing: postUIImageView.leadingAnchor,
+                            padding: .init(top: 0, left: 0, bottom: padding, right: 0),
+                            size: .init(width: contentView.frame.width / 2 , height: rowHeight))
+    
         ///finish up by adding views to the content view
-        contentView.addSubview(leftUIView)
-        contentView.addSubview(rightUIView)
-        contentView.addSubview(separatorLine)
-        
-        noImageAnchor = leftUIView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constraints.spacing)
-        withImageAnchor = leftUIView.trailingAnchor.constraint(equalTo: rightUIView.leadingAnchor)
-        
-        withImageAnchor?.isActive = true
-        
-        leftUIView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-        leftUIView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-        leftUIView.bottomAnchor.constraint(equalTo: separatorLine.topAnchor).isActive = true
-        
-        rightUIView.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        rightUIView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-        rightUIView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-        rightUIView.bottomAnchor.constraint(equalTo: separatorLine.topAnchor).isActive = true
-        
-        separatorLine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-        separatorLine.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-        separatorLine.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
-        separatorLine.heightAnchor.constraint(equalToConstant: 5).isActive = true
-        
-        
+        [leftUIView,separatorLine].forEach({contentView.addSubview($0)})
+        leftUIView.anchor(top: contentView.safeAreaLayoutGuide.topAnchor,
+                          leading: contentView.safeAreaLayoutGuide.leadingAnchor,
+                          bottom: separatorLine.topAnchor,
+                          trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
+                          padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+                          size: .init(width: 0, height: 0))
+        separatorLine.anchor(top: nil,
+                          leading: contentView.safeAreaLayoutGuide.leadingAnchor,
+                          bottom: contentView.safeAreaLayoutGuide.bottomAnchor,
+                          trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
+                          padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+                          size: .init(width: 0, height: 1))
+    
     }
     /// changes constraints so that main view takes extra space
     func noImageViewConstraints(){
-        noImageAnchor?.isActive = true
-        withImageAnchor?.isActive = false
-        rightUIView.isHidden = true
-        self.layoutIfNeeded()
+        previewTrailingAnchor.isActive = false
+        previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: leftUIView.trailingAnchor)
+        previewTrailingAnchor.isActive = true
+        postUIImageView.isHidden = true
+//        contentView.layoutIfNeeded()
     }
     /// changes constraints so that there is room for the image
     func withImageViewConstraints(){
-        noImageAnchor?.isActive = false
-        withImageAnchor?.isActive = true
-        rightUIView.isHidden = false
-        self.layoutIfNeeded()
+        previewTrailingAnchor.isActive = false
+        previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
+        previewTrailingAnchor.isActive = true
+        postUIImageView.isHidden = false
+//        contentView.layoutIfNeeded()
+    }
+}
+extension UIView {
+    
+    func anchor(top: NSLayoutYAxisAnchor?,
+                leading:NSLayoutXAxisAnchor?,
+                bottom: NSLayoutYAxisAnchor?,
+                trailing: NSLayoutXAxisAnchor?,
+                padding: UIEdgeInsets = .zero,
+                size: CGSize = .zero) {
+        
+        translatesAutoresizingMaskIntoConstraints = false
+        
+        if let top = top {
+            topAnchor.constraint(equalTo: top, constant: padding.top).isActive = true
+        }
+        if let bottom = bottom {
+            bottomAnchor.constraint(equalTo: bottom, constant: -padding.bottom).isActive = true
+        }
+        if let leading = leading {
+            leadingAnchor.constraint(equalTo: leading, constant: padding.left).isActive = true
+        }
+        if let trailing = trailing {
+            trailingAnchor.constraint(equalTo: trailing, constant: -padding.right).isActive = true
+        }
+        if size.width != 0 {
+            widthAnchor.constraint(equalToConstant: size.width).isActive = true
+        }
+        if size.height != 0 {
+            heightAnchor.constraint(equalToConstant: size.height).isActive = true
+        }
     }
 }

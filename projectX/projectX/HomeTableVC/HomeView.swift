@@ -28,6 +28,9 @@ class HomeView: UIView {
         let sc = UISegmentedControl(items: ["Home", "Recommending"])
         sc.translatesAutoresizingMaskIntoConstraints = false
         sc.selectedSegmentIndex = 0
+        sc.selectedSegmentTintColor = .white
+        sc.layer.backgroundColor = UIColor.white.cgColor
+        sc.tintColor = .white
         sc.addTarget(self, action: #selector(performAnimation), for: .valueChanged)
         return sc
     }()
@@ -86,7 +89,7 @@ class HomeView: UIView {
         stackView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor).isActive = true
         stackView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor).isActive = true
         
-        segmentController.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        segmentController.heightAnchor.constraint(equalToConstant: 35).isActive = true
     }
     
     

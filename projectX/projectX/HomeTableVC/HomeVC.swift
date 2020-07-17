@@ -59,13 +59,15 @@ class HomeTableVC: UIViewController{
     
     func createFakeData(){
         var image = UIImage(named: "ucsc")
-        postData.append(PostModel(image: image, title: "CSE12", preview: "I didnt cheat but was flagged ...", author: "Sammy", likesCount: 17, commentsCount: 13, postID: "1"))
+        postData.append(PostModel(image: image, title: "Will we be having online classes for the whole school year?", preview: "I decided to stay home for the fall quarter bc everything will be online but will classes start to move to in person for winter and spring quarter? Because then a lot of people would need to find housing in the middle of the year so it's unlikely right? I have a job at home so I'm trying to figure out what to tell my employer.", author: "Sammy", likesCount: 17, commentsCount: 13, postID: "1"))
         image = UIImage(named: "airpods")
-        postData.append(PostModel(image: image, title: "Lost my airpods", preview: "Last time I've seen them at Oakes ...", author: "Sammy", likesCount: 12, commentsCount: 5, postID: "2"))
-        postData.append(PostModel(image: nil, title: "Protesters attacked Tantalo", preview: "How dare they touch the god himself ...", author: "Sammy", likesCount: 6, commentsCount: 2, postID: "3"))
-        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text ...", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "4"))
-        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text ...", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "5"))
-        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text ...", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "6"))
+        postData.append(PostModel(image: image, title: "Community college improves graduation rate", preview: "Study: Students Who Take Some Courses At Community Colleges Increase Their Chances Of Earning A Bachelor’s Degree", author: "Sammy", likesCount: 12, commentsCount: 511, postID: "2"))
+        postData.append(PostModel(image: nil, title: "Zoom Settings", preview: "", author: "Sammy", likesCount: 6, commentsCount: 2, postID: "3"))
+        postData.append(PostModel(image: nil, title: "UCSC 2020-21 Freshman Acceptance Rate is 65.25%", preview: "some preview text I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas ", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "4"))
+        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "5"))
+        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "6"))
+        postData.append(PostModel(image: nil, title: "I ran out of ideas ", preview: "some preview text I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "7"))
+        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "8"))
 
     }
 }
@@ -94,23 +96,26 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
             
         }else if  tableView == homeView.recommendingTableView{
         }
-        
-        cell.titleUILabel.text =  postData[indexPath.row].title
-        cell.previewUILabel.text =  postData[indexPath.row].preview
-        cell.authorUILabel.text =  postData[indexPath.row].author
-        cell.likesUILabel.text =  String(postData[indexPath.row].likesCount)
-        cell.commentsUILabel.text =  String(postData[indexPath.row].commentsCount)
-        cell.UID =  postData[indexPath.row].postID
-        cell.dateUILabel.text = "\(indexPath.row)h"
-        if postData[indexPath.row].image != nil{
-            //add an image
+        addData(toCell: cell, withIndex: indexPath.row)
+        return cell
+    }
+    func addData(toCell cell: PostCell, withIndex index: Int ){
+        cell.titleUILabel.text =  postData[index].title
+        cell.previewUILabel.text =  postData[index].preview
+        cell.authorUILabel.text =  postData[index].author
+        cell.likesUILabel.text =  String(postData[index].likesCount)
+        cell.commentsUILabel.text =  String(postData[index].commentsCount)
+        cell.UID =  postData[index].postID
+        cell.dateUILabel.text = "\(index)h"
+        if postData[index].image != nil{
+            //this cell will have an image
+            cell.postUIImageView.image = postData[index].image
             cell.withImageViewConstraints()
-            cell.postUIImageView.image = postData[indexPath.row].image
         }else{
-            //no image to display
+            //change cell constraints so that text takes the extra space
+            cell.postUIImageView.image = nil
             cell.noImageViewConstraints()
         }
-        return cell
     }
 }
   
