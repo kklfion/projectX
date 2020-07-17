@@ -52,7 +52,7 @@ class MainTabBarVC: UITabBarController, UITabBarControllerDelegate {
         profile.tabBarItem = profileItem
         
         self.viewControllers = [sidebar,homeNav,newPost,notifications,profile]
-        self.selectedIndex = 2
+        self.selectedIndex = 1
 
         
     }

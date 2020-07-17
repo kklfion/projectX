@@ -13,7 +13,7 @@ class ProfileTableVC: UIViewController {
 
        lazy var containerView: UIView = {
             let view = UIView()
-            view.backgroundColor = .mainBlue
+        view.backgroundColor = .white
             
             view.addSubview(profileImageView)
             profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -77,7 +77,7 @@ class ProfileTableVC: UIViewController {
         override func viewDidLoad() {
             super.viewDidLoad()
             
-            view.backgroundColor = .blue
+            view.backgroundColor = .white
             
             view.addSubview(containerView)
             containerView.anchor(top: view.topAnchor, left: view.leftAnchor,
