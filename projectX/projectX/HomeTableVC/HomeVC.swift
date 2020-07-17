@@ -84,7 +84,7 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         postData.count
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        cellHeight = 0.165 * view.frame.height
+        cellHeight = 0.185 * view.frame.height
         return cellHeight ?? 0
     }
 

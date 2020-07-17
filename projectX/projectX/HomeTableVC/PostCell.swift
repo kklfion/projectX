@@ -58,7 +58,10 @@ class PostCell: UITableViewCell {
     let titleUILabel: UILabel = {
         let label = UILabel()
         label.text = "Title"
-        label.font = UIFont.boldSystemFont(ofSize: 17 )
+        label.font = UIFont.boldSystemFont(ofSize: 16 )
+        label.numberOfLines = 2
+        label.adjustsFontSizeToFitWidth = false
+        label.lineBreakMode = .byTruncatingTail
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -187,7 +190,7 @@ class PostCell: UITableViewCell {
                             bottom: nil,
                             trailing: postUIImageView.leadingAnchor,
                             padding: .init(top: padding, left: padding, bottom: 0, right: 0),
-                            size: .init(width: 0, height: rowHeight))
+                            size: .init(width: 0, height: rowHeight * 2.5))
         previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
         previewUILabel.anchor(top: titleUILabel.bottomAnchor,
                               leading: leftUIView.leadingAnchor,
@@ -245,16 +248,13 @@ class PostCell: UITableViewCell {
     }
 }
 extension UIView {
-    
     func anchor(top: NSLayoutYAxisAnchor?,
                 leading:NSLayoutXAxisAnchor?,
                 bottom: NSLayoutYAxisAnchor?,
                 trailing: NSLayoutXAxisAnchor?,
                 padding: UIEdgeInsets = .zero,
                 size: CGSize = .zero) {
-        
         translatesAutoresizingMaskIntoConstraints = false
-        
         if let top = top {
             topAnchor.constraint(equalTo: top, constant: padding.top).isActive = true
         }
