@@ -19,6 +19,7 @@ class MainTabBarVC: UITabBarController, UITabBarControllerDelegate {
     var sidebar: SidebarVC!
     var newPost: NewPostVC!
     var home: HomeTableVC!
+    var homeNav: UINavigationController!
     var notifications: NotificationsTableVC!
     var profile: ProfileTableVC!
     let imageSize = 25 //used to size image for tabbar items
@@ -44,12 +45,13 @@ class MainTabBarVC: UITabBarController, UITabBarControllerDelegate {
         newPost.tabBarItem = newPostItem
         home = HomeTableVC()
         home.tabBarItem = homeItem
+        homeNav = UINavigationController(rootViewController: home)
         notifications = NotificationsTableVC()
         notifications.tabBarItem = notificationsItem
         profile = ProfileTableVC() // maybe need a container VC that has two other VCs
         profile.tabBarItem = profileItem
         
-        self.viewControllers = [sidebar,home,newPost,notifications,profile]
+        self.viewControllers = [sidebar,homeNav,newPost,notifications,profile]
         self.selectedIndex = 2
 
         
