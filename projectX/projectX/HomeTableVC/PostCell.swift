@@ -166,33 +166,33 @@ class PostCell: UITableViewCell {
     func setupContentView(){
         [dateUILabel,channelUIButton, titleUILabel, previewUILabel, bottomUIView, postUIImageView, authorUILabel].forEach {leftUIView.addSubview($0)}
         [heartUIButton, likesUILabel, commentsUIButton, commentsUILabel].forEach ({bottomUIView.addArrangedSubview($0)})
-        dateUILabel.anchor(top: leftUIView.topAnchor,
+        dateUILabel.addAnchors(top: leftUIView.topAnchor,
                            leading: nil,
                            bottom: nil,
                            trailing: channelUIButton.leadingAnchor,
                            padding: .init(top: padding, left: 0, bottom: 0, right: padding),
                            size: .init(width: 30, height: rowHeight))
-        channelUIButton.anchor(top: leftUIView.topAnchor,
+        channelUIButton.addAnchors(top: leftUIView.topAnchor,
                                leading: nil,
                                bottom: nil,
                                trailing: postUIImageView.leadingAnchor,
                                padding: .init(top: padding, left: 0, bottom: 0, right: 0),
                                size: .init(width: 60, height: rowHeight))
-        postUIImageView.anchor(top: nil,
+        postUIImageView.addAnchors(top: nil,
                                leading: nil,
                                bottom: nil,
                                trailing: leftUIView.trailingAnchor,
                                padding: .init(top: 0, left: 0, bottom: 0, right: 0),
                                size: .init(width: contentView.frame.height * 2.5 , height: contentView.frame.height * 2.5))
         postUIImageView.centerYAnchor.constraint(equalTo: leftUIView.centerYAnchor).isActive = true
-        titleUILabel.anchor(top: dateUILabel.bottomAnchor,
+        titleUILabel.addAnchors(top: dateUILabel.bottomAnchor,
                             leading: leftUIView.leadingAnchor,
                             bottom: nil,
                             trailing: postUIImageView.leadingAnchor,
                             padding: .init(top: padding, left: padding, bottom: 0, right: 0),
                             size: .init(width: 0, height: rowHeight * 2.5))
         previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
-        previewUILabel.anchor(top: titleUILabel.bottomAnchor,
+        previewUILabel.addAnchors(top: titleUILabel.bottomAnchor,
                               leading: leftUIView.leadingAnchor,
                               bottom: bottomUIView.topAnchor,
                               trailing: nil,
@@ -201,13 +201,13 @@ class PostCell: UITableViewCell {
         previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
         previewTrailingAnchor.isActive = true
         
-        authorUILabel.anchor(top: nil,
+        authorUILabel.addAnchors(top: nil,
                              leading: leftUIView.leadingAnchor,
                              bottom: leftUIView.bottomAnchor,
                              trailing: nil,
                              padding: .init(top: 0, left: padding, bottom: padding, right: 0),
                              size: .init(width: 0, height: 0))
-        bottomUIView.anchor(top: nil,
+        bottomUIView.addAnchors(top: nil,
                             leading: nil,
                             bottom: leftUIView.bottomAnchor,
                             trailing: postUIImageView.leadingAnchor,
@@ -216,13 +216,13 @@ class PostCell: UITableViewCell {
     
         ///finish up by adding views to the content view
         [leftUIView,separatorLine].forEach({contentView.addSubview($0)})
-        leftUIView.anchor(top: contentView.safeAreaLayoutGuide.topAnchor,
+        leftUIView.addAnchors(top: contentView.safeAreaLayoutGuide.topAnchor,
                           leading: contentView.safeAreaLayoutGuide.leadingAnchor,
                           bottom: separatorLine.topAnchor,
                           trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
                           padding: .init(top: 0, left: 0, bottom: 0, right: 0),
                           size: .init(width: 0, height: 0))
-        separatorLine.anchor(top: nil,
+        separatorLine.addAnchors(top: nil,
                           leading: contentView.safeAreaLayoutGuide.leadingAnchor,
                           bottom: contentView.safeAreaLayoutGuide.bottomAnchor,
                           trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
@@ -248,7 +248,7 @@ class PostCell: UITableViewCell {
     }
 }
 extension UIView {
-    func anchor(top: NSLayoutYAxisAnchor?,
+    func addAnchors(top: NSLayoutYAxisAnchor?,
                 leading:NSLayoutXAxisAnchor?,
                 bottom: NSLayoutYAxisAnchor?,
                 trailing: NSLayoutXAxisAnchor?,
