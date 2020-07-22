@@ -10,7 +10,9 @@ import UIKit
 import Firebase
 
 class LoginViewController: UIViewController {
+    
     let loginView = LoginView()
+    
     override func loadView() {
         loginView.registerButton.addTarget(self, action: #selector(signMeUp), for: .touchUpInside)
         loginView.loginButton.addTarget(self, action: #selector(logMeIn), for: .touchUpInside)
@@ -20,7 +22,22 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-
+    }
+    override func viewDidLayoutSubviews() {
+        addBottomLine()
+    }
+    func addBottomLine(){
+        var bottomLine = CALayer()
+        bottomLine.frame = CGRect(x: 0.0, y: loginView.emailTextField.frame.height - 1, width: loginView.emailTextField.frame.width, height: 1.0)
+        bottomLine.backgroundColor = UIColor.systemGreen.cgColor
+        loginView.emailTextField.borderStyle = .none
+        loginView.emailTextField.layer.addSublayer(bottomLine)
+        
+        bottomLine = CALayer()
+        bottomLine.frame = CGRect(x: 0.0, y: loginView.passwordTextField.frame.height - 1, width: loginView.passwordTextField.frame.width, height: 1.0)
+        bottomLine.backgroundColor = UIColor.systemGreen.cgColor
+        loginView.passwordTextField.borderStyle = .none
+        loginView.passwordTextField.layer.addSublayer(bottomLine)
     }
     @objc func signMeUp(){
         let signUpController = SignUpViewController()
@@ -33,7 +50,7 @@ class LoginViewController: UIViewController {
           guard let strongSelf = self else { return }
           // ...
             if  error != nil {
-                print(error?.localizedDescription)
+                print(error?.localizedDescription ?? "error")
                 return
             }else{
                 
