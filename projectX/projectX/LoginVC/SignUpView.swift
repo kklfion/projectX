@@ -59,6 +59,10 @@ class SignUpView: UIView {
         field.borderStyle = .roundedRect
         return field
     }()
+    let spacingButton: UIButton = {
+        let button = UIButton()
+        return button
+    }()
     let signUpButton: UIButton = {
         let button = UIButton()
         button.setTitle("Sign Up", for: .normal)
@@ -80,7 +84,7 @@ class SignUpView: UIView {
     }()
     
     func setupViews(){
-        [nameTextField, lastTextField, emailTextField, passwordTextField, signUpButton, errorButton].forEach({stackView.addArrangedSubview($0)})
+        [nameTextField, lastTextField, emailTextField, passwordTextField, spacingButton,signUpButton, errorButton].forEach({stackView.addArrangedSubview($0)})
         [stackView].forEach({self.addSubview($0)})
         
         stackView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true

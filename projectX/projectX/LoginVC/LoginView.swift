@@ -24,7 +24,7 @@ class LoginView: UIView {
     let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "yoda")
+        //imageView.image = UIImage(named: "yoda")
         imageView.clipsToBounds = true
         //imageView.backgroundColor = .red
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -44,23 +44,36 @@ class LoginView: UIView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.distribution = .fillEqually
         stack.axis = .vertical
-        stack.spacing = 5
         return stack
     }()
     let emailTextField: UITextField = {
         let field = UITextField()
         field.placeholder = "Email  "
         field.font = UIFont.systemFont(ofSize: 15)
+        let imageView = UIImageView(image: UIImage(systemName: "envelope"))
+        field.leftView = imageView
+        field.leftViewMode = .always
+        field.leftView?.tintColor = .systemGreen
+        //field.backgroundColor = .blue
         field.textColor = .black
-        field.borderStyle = .roundedRect
+        field.borderStyle = .none
         return field
+    }()
+    let topSpacingButton: UIButton = {
+        let button = UIButton()
+        return button
     }()
     let passwordTextField: UITextField = {
         let field = UITextField()
         field.placeholder = "Password"
         field.font = UIFont.systemFont(ofSize: 15)
+        let imageView = UIImageView(image: UIImage(systemName: "lock"))
+        field.leftView = imageView
+        field.leftView?.tintColor = .systemGreen
+        field.leftViewMode = .always
+        //field.backgroundColor = .yellow
         field.textColor = .black
-        field.borderStyle = .roundedRect
+        field.borderStyle = .none
         return field
     }()
     let errorButton: UIButton = {
@@ -101,6 +114,7 @@ class LoginView: UIView {
     let spacingButton: UIButton = {
         let button = UIButton()
         button.setTitle("or", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
         button.titleLabel?.textAlignment = .center
         button.setTitleColor(.black, for: .normal)
         return button
@@ -119,6 +133,7 @@ class LoginView: UIView {
     let skipButton: UIButton = {
         let button = UIButton()
         button.setTitle("skip", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
         button.titleLabel?.textAlignment = .center
         button.setTitleColor(.lightGray, for: .normal)
         return button
@@ -126,7 +141,8 @@ class LoginView: UIView {
     
 
     func setupViews(){
-        [emailTextField, passwordTextField, errorButton].forEach({emailPasswordStackView.addArrangedSubview($0)})
+        
+        [emailTextField,topSpacingButton, passwordTextField].forEach({emailPasswordStackView.addArrangedSubview($0)})
         [loginButton,spacingButton, registerButton].forEach({loginSignUpStackView.addArrangedSubview($0)})
         [logoImageView,nameLabel,emailPasswordStackView,forgotLoginButton,loginSignUpStackView, skipButton].forEach({self.addSubview($0)})
         
@@ -137,7 +153,7 @@ class LoginView: UIView {
                              bottom: nil,
                              trailing: self.trailingAnchor,
                              padding: .init(top: 0, left: 70, bottom: 0, right: 70),
-                             size: .init(width: 0, height: 0))
+                             size: .init(width: 0, height: view.frame.height/2))
         
         logoImageView.addAnchors(top: nil,
                                  leading: emailPasswordStackView.leadingAnchor,
@@ -168,11 +184,12 @@ class LoginView: UIView {
                               bottom: self.safeAreaLayoutGuide.bottomAnchor,
                               trailing: emailPasswordStackView.trailingAnchor,
                               padding: .init(top: 0, left: 0, bottom: 0, right: 0))
+        
     }
     
     @objc func signMeUp(){
-        let signUpController = SignUpViewController()
-        let nv = UINavigationController(rootViewController: signUpController)
+//        let signUpController = SignUpViewController()
+//        let nv = UINavigationController(rootViewController: signUpController)
         //present
     }
 }
