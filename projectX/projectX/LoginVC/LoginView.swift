@@ -17,10 +17,6 @@ class LoginView: UIView {
         super.init(coder: coder)
         setupViews()
     }
-    let view: UIView = {
-        let view = UIView()
-        return view
-    }()
     let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -32,9 +28,9 @@ class LoginView: UIView {
     }()
     let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Necto"
+        label.text = "project name"
         label.textColor = .black
-        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.font = UIFont.boldSystemFont(ofSize: Constants.Login.logoFontSize)
         label.textAlignment = .center
         return label
     }()
@@ -48,8 +44,8 @@ class LoginView: UIView {
     }()
     let emailTextField: UITextField = {
         let field = UITextField()
-        field.placeholder = "Email  "
-        field.font = UIFont.systemFont(ofSize: 15)
+        field.placeholder = "Email .edu"
+        field.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize)
         let imageView = UIImageView(image: UIImage(systemName: "envelope"))
         field.leftView = imageView
         field.leftViewMode = .always
@@ -66,11 +62,12 @@ class LoginView: UIView {
     let passwordTextField: UITextField = {
         let field = UITextField()
         field.placeholder = "Password"
-        field.font = UIFont.systemFont(ofSize: 15)
+        field.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize)
         let imageView = UIImageView(image: UIImage(systemName: "lock"))
         field.leftView = imageView
         field.leftView?.tintColor = .systemGreen
         field.leftViewMode = .always
+        field.isSecureTextEntry = true
         //field.backgroundColor = .yellow
         field.textColor = .black
         field.borderStyle = .none
@@ -86,11 +83,21 @@ class LoginView: UIView {
     }()
     let forgotLoginButton: UIButton = {
         let button = UIButton()
-        button.setTitle(" Forgot password ?", for: .normal)
+        button.setTitle("Forgot password ?", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.contentHorizontalAlignment = .left
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.otherTextFontSize)
         return button
+    }()
+    let errorLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: Constants.Login.otherTextFontSize)
+        //label.text = "error"
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        
+        label.textColor = .systemRed
+        return label
     }()
     let loginSignUpStackView: UIStackView = {
         let stack = UIStackView()
@@ -108,13 +115,13 @@ class LoginView: UIView {
         button.layer.borderWidth = 0.5
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.layer.cornerRadius = 15
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: Constants.Login.mainTextFontSize)
         return button
     }()
     let spacingButton: UIButton = {
         let button = UIButton()
         button.setTitle("or", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.otherTextFontSize)
         button.titleLabel?.textAlignment = .center
         button.setTitleColor(.black, for: .normal)
         return button
@@ -123,7 +130,7 @@ class LoginView: UIView {
         let button = UIButton()
         button.setTitle("Sign Up", for: .normal)
         button.setTitleColor(.systemGreen, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize)
         button.addTarget(self, action: #selector(signMeUp), for: .touchUpInside)
         button.layer.borderWidth = 0.5
         button.layer.borderColor = UIColor.systemGreen.cgColor
@@ -133,7 +140,7 @@ class LoginView: UIView {
     let skipButton: UIButton = {
         let button = UIButton()
         button.setTitle("skip", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.otherTextFontSize)
         button.titleLabel?.textAlignment = .center
         button.setTitleColor(.lightGray, for: .normal)
         return button
@@ -141,10 +148,13 @@ class LoginView: UIView {
     
 
     func setupViews(){
+    
+        print(Constants.Screen.screenSize)
+        print(self.frame.size.height)
         
         [emailTextField,topSpacingButton, passwordTextField].forEach({emailPasswordStackView.addArrangedSubview($0)})
         [loginButton,spacingButton, registerButton].forEach({loginSignUpStackView.addArrangedSubview($0)})
-        [logoImageView,nameLabel,emailPasswordStackView,forgotLoginButton,loginSignUpStackView, skipButton].forEach({self.addSubview($0)})
+        [logoImageView,nameLabel,emailPasswordStackView,forgotLoginButton,errorLabel,loginSignUpStackView, skipButton].forEach({self.addSubview($0)})
         
         emailPasswordStackView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         emailPasswordStackView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
@@ -152,39 +162,38 @@ class LoginView: UIView {
                              leading: self.leadingAnchor,
                              bottom: nil,
                              trailing: self.trailingAnchor,
-                             padding: .init(top: 0, left: 70, bottom: 0, right: 70),
-                             size: .init(width: 0, height: view.frame.height/2))
+                             padding: .init(top: 0, left: Constants.Login.stackViewLeftRightPadding, bottom: 0, right: Constants.Login.stackViewLeftRightPadding))
         
         logoImageView.addAnchors(top: nil,
                                  leading: emailPasswordStackView.leadingAnchor,
                                  bottom: nameLabel.topAnchor,
-                                 trailing: emailPasswordStackView.trailingAnchor,
-                                 padding: .init(top: 0, left: 0, bottom: 0, right: 0))
+                                 trailing: emailPasswordStackView.trailingAnchor)
         logoImageView.heightAnchor.constraint(equalTo: logoImageView.widthAnchor).isActive = true
         nameLabel.addAnchors(top: nil,
                              leading: emailPasswordStackView.leadingAnchor,
                              bottom: emailPasswordStackView.topAnchor,
                              trailing: emailPasswordStackView.trailingAnchor,
-                             padding: .init(top: 0, left: 0, bottom: 10, right: 0),
+                             padding: .init(top: 0, left: 0, bottom: Constants.Login.padding, right: 0),
                              size: .init(width: 0, height: 0))
         forgotLoginButton.addAnchors(top: emailPasswordStackView.bottomAnchor,
                                      leading: emailPasswordStackView.leadingAnchor,
                                      bottom: nil,
-                                     trailing: emailPasswordStackView.trailingAnchor,
-                                     size: .init(width: 0, height: 0))
-        
+                                     trailing: emailPasswordStackView.trailingAnchor)
+        errorLabel.addAnchors(top: forgotLoginButton.bottomAnchor,
+                              leading:  nil,
+                              bottom: nil,
+                              trailing: nil)
+        errorLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         loginSignUpStackView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         loginSignUpStackView.addAnchors(top: forgotLoginButton.bottomAnchor,
                              leading: emailPasswordStackView.leadingAnchor,
                              bottom: nil,
                              trailing: emailPasswordStackView.trailingAnchor,
-                             padding: .init(top: 100, left: 0, bottom: 0, right: 0))
+                             padding: .init(top: Constants.Login.bottomStackViewTopPadding, left: 0, bottom: 0, right: 0))
         skipButton.addAnchors(top: nil,
                               leading: nil,
                               bottom: self.safeAreaLayoutGuide.bottomAnchor,
-                              trailing: emailPasswordStackView.trailingAnchor,
-                              padding: .init(top: 0, left: 0, bottom: 0, right: 0))
-        
+                              trailing: emailPasswordStackView.trailingAnchor)
     }
     
     @objc func signMeUp(){
