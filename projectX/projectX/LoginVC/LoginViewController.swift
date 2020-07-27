@@ -10,33 +10,27 @@ import UIKit
 import Firebase
 
 class LoginViewController: UIViewController {
-    
-    let loginView: LoginView = {
-        let view = LoginView()
-        //view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    override func loadView() {
-        view = loginView
-        addActionsToButtons()
-
-        
-    }
+    lazy var loginView = createLoginView()
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
-       
+        self.navigationController?.navigationBar.isHidden = true
+        setupView()
     }
     override func viewDidLayoutSubviews() {
         addBottomLine()
     }
-    /// adds actions to the buttons in the loginView
-    func addActionsToButtons(){
-        loginView.registerButton.addTarget(self, action: #selector(signMeUp), for: .touchUpInside)
-        loginView.loginButton.addTarget(self, action: #selector(logMeIn), for: .touchUpInside)
-        loginView.skipButton.addTarget(self, action: #selector(skipToMain), for: .touchUpInside)
+    func createLoginView()-> LoginView{
+        let view = LoginView(frame: self.view.frame)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.registerButton.addTarget(self, action: #selector(signMeUp), for: .touchUpInside)
+        view.loginButton.addTarget(self, action: #selector(logMeIn), for: .touchUpInside)
+        view.skipButton.addTarget(self, action: #selector(skipToMain), for: .touchUpInside)
+        return view
+    }
+    func setupView(){
+        view.addSubview(loginView)
+        loginView.addAnchors(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
     /// draws a line belowe the email and password fields, has to be here because frame is not defined before subviews did layout
     func addBottomLine(){
@@ -62,12 +56,12 @@ class LoginViewController: UIViewController {
         guard let email = loginView.emailTextField.text else{return}
         guard let password = loginView.passwordTextField.text else{return}
         
-        let loginError = isEmailPasswordValid(email: email, password: password)
-        if let loginError = loginError {
-            displayLoginErrorMessage(message: loginError)
-            print(loginError)
-            return
-        }
+//        let loginError = isEmailPasswordValid(email: email, password: password)
+//        if let loginError = loginError {
+//            displayLoginErrorMessage(message: loginError)
+//            print(loginError)
+//            return
+//        }
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
           guard let strongSelf = self else { return }
           // ...

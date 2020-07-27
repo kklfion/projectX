@@ -32,7 +32,6 @@ class SignUpView: UIView {
         field.placeholder = "First Name"
         field.font = UIFont.systemFont(ofSize: 15)
         field.textColor = .black
-        field.borderStyle = .roundedRect
         return field
     }()
     let lastTextField: UITextField = {
@@ -40,7 +39,6 @@ class SignUpView: UIView {
         field.placeholder = "Last Name"
         field.font = UIFont.systemFont(ofSize: 15)
         field.textColor = .black
-        field.borderStyle = .roundedRect
         return field
     }()
     let emailTextField: UITextField = {
@@ -48,7 +46,6 @@ class SignUpView: UIView {
         field.placeholder = "Email"
         field.font = UIFont.systemFont(ofSize: 15)
         field.textColor = .black
-        field.borderStyle = .roundedRect
         return field
     }()
     let passwordTextField: UITextField = {
@@ -56,7 +53,7 @@ class SignUpView: UIView {
         field.placeholder = "Password"
         field.font = UIFont.systemFont(ofSize: 15)
         field.textColor = .black
-        field.borderStyle = .roundedRect
+        field.isSecureTextEntry = true
         return field
     }()
     let spacingButton: UIButton = {
@@ -74,18 +71,18 @@ class SignUpView: UIView {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         return button
     }()
-    let errorButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Error", for: .normal)
-        button.isEnabled = false
-        button.titleLabel?.textAlignment = .center
-        button.setTitleColor(.red, for: .normal)
-        return button
+    let errorLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.textColor = .systemRed
+        label.font = UIFont.systemFont(ofSize: Constants.Login.otherTextFontSize)
+        label.numberOfLines = 0
+        return label
     }()
     
     func setupViews(){
-        [nameTextField, lastTextField, emailTextField, passwordTextField, spacingButton,signUpButton, errorButton].forEach({stackView.addArrangedSubview($0)})
-        [stackView].forEach({self.addSubview($0)})
+        [nameTextField, lastTextField, emailTextField, passwordTextField, spacingButton,signUpButton].forEach({stackView.addArrangedSubview($0)})
+        [stackView, errorLabel].forEach({self.addSubview($0)})
         
         stackView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         stackView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
@@ -95,5 +92,10 @@ class SignUpView: UIView {
                              trailing: self.trailingAnchor,
                              padding: .init(top: 0, left: 70, bottom: 0, right: 70),
                              size: .init(width: 0, height: 0))
+        errorLabel.addAnchors(top: stackView.bottomAnchor,
+                              leading: stackView.leadingAnchor,
+                              bottom: nil,
+                              trailing: stackView.trailingAnchor,
+                              padding: .init(top: Constants.Login.padding, left: 0, bottom: 0, right: 0))
     }
 }

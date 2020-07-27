@@ -28,7 +28,7 @@ class LoginView: UIView {
     }()
     let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "project name"
+        label.text = "Necto"
         label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: Constants.Login.logoFontSize)
         label.textAlignment = .center
@@ -44,7 +44,7 @@ class LoginView: UIView {
     }()
     let emailTextField: UITextField = {
         let field = UITextField()
-        field.placeholder = "Email .edu"
+        field.placeholder = "Email"
         field.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize)
         let imageView = UIImageView(image: UIImage(systemName: "envelope"))
         field.leftView = imageView
@@ -148,10 +148,6 @@ class LoginView: UIView {
     
 
     func setupViews(){
-    
-        print(Constants.Screen.screenSize)
-        print(self.frame.size.height)
-        
         [emailTextField,topSpacingButton, passwordTextField].forEach({emailPasswordStackView.addArrangedSubview($0)})
         [loginButton,spacingButton, registerButton].forEach({loginSignUpStackView.addArrangedSubview($0)})
         [logoImageView,nameLabel,emailPasswordStackView,forgotLoginButton,errorLabel,loginSignUpStackView, skipButton].forEach({self.addSubview($0)})
