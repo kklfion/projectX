@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class ProfileTableVC: UIViewController {
         // MARK: - Properties
@@ -34,6 +35,8 @@ class ProfileTableVC: UIViewController {
             prePostLabel.anchor(top: uniLabel.bottomAnchor, paddingTop: 60)
             return view
         }()
+        
+
         
         let profileImageView: UIImageView = {
             let iv = UIImageView()
@@ -71,6 +74,15 @@ class ProfileTableVC: UIViewController {
             label.textColor = .white
             return label
         }()
+    
+    let logoutButton: UIButton = {
+        let button  = UIButton()
+        button.setTitle("Logout", for: .normal)
+        button.addTarget(self, action: #selector(logoutCurrentUser), for: .touchUpInside)
+        button.setTitleColor(.black, for: .normal)
+
+        return button
+    }()
         
         // MARK: - Lifecycle
         
@@ -80,6 +92,12 @@ class ProfileTableVC: UIViewController {
             view.backgroundColor = .white
             
             view.addSubview(containerView)
+            view.addSubview(logoutButton)
+            logoutButton.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
+                                    leading: nil,
+                                    bottom: nil,
+                                    trailing: view.safeAreaLayoutGuide.trailingAnchor,
+                                    padding: .init(top: 0, left: 0, bottom: 0, right: Constants.Login.padding) )
             containerView.anchor(top: view.topAnchor, left: view.leftAnchor,
                                  right: view.rightAnchor)
             
@@ -99,15 +117,21 @@ class ProfileTableVC: UIViewController {
         @objc func handleFollowUser() {
             print("Follow user here..")
         }
-    }
-
-    extension UIColor {
-        static func rgb(red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor {
-            return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
+    
+    @objc func logoutCurrentUser(){
+        if Auth.auth().currentUser != nil {
+            do{
+                print("signing out")
+                try Auth.auth().signOut()
+            } catch let error{
+                print(error)
+            }
         }
-        
-        static let mainBlue = UIColor.rgb(red: 0, green: 150, blue: 255)
     }
+    
+}
+
+    
 
     extension UIView {
         
