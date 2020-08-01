@@ -7,13 +7,6 @@
 //
 //
 /*
- 1.  Search bar at the top
- 2. double tableview controller
- 3. bar at the bottom
- 
- stackview - searchview,segmented controller, tableView for two tableViewControllers
- 
- tableViews dissapear when one or the other is seleted, they go off screen but dont dissapear
 
  */
 
@@ -33,19 +26,27 @@ class HomeTableVC: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
+        setupTableViewsDelegates()
+        setupSearchController()
+        createFakeData()
+        
+    }
+    func setupTableViewsDelegates(){
         homeView.homeTableView.delegate = self
         homeView.recommendingTableView.delegate = self
         homeView.homeTableView.dataSource = self
         homeView.recommendingTableView.dataSource = self
         
+        homeView.homeTableView.rowHeight = UITableView.automaticDimension
+        homeView.recommendingTableView.estimatedRowHeight = view.frame.size.height / 4
+        homeView.homeTableView.rowHeight = UITableView.automaticDimension
+        homeView.recommendingTableView.estimatedRowHeight = view.frame.size.height / 4
+        
         homeView.homeTableView.register(PostCell.self, forCellReuseIdentifier: postCellID)
         homeView.recommendingTableView.register(PostCell.self, forCellReuseIdentifier: postCellID)
-        
-        setupSearchController()
-        
-        createFakeData()
-        
     }
+    /// setup top seatchBar to seatch for particular posts
     func setupSearchController(){
         let somevc = NewPostVC() //as a dummy
         somevc.view.backgroundColor = .lightGray
@@ -56,10 +57,10 @@ class HomeTableVC: UIViewController{
         navigationItem.searchController = searchController
         definesPresentationContext = true
     }
-    
+    /// fill in tableView with fake data
     func createFakeData(){
         var image = UIImage(named: "ucsc")
-        postData.append(PostModel(image: image, title: "Will we be having online classes for the whole school year?", preview: "I decided to stay home for the fall quarter bc everything will be online but will classes start to move to in person for winter and spring quarter? Because then a lot of people would need to find housing in the middle of the year so it's unlikely right? I have a job at home so I'm trying to figure out what to tell my employer.", author: "Sammy", likesCount: 17, commentsCount: 13, postID: "1"))
+        postData.append(PostModel(image: image, title: "Will we be having online classes for the whole school year?", preview: "I decided to stay home for the fall quarter bc everything will be online but will... ", author: "Sammy", likesCount: 17, commentsCount: 13, postID: "1"))
         image = UIImage(named: "airpods")
         postData.append(PostModel(image: image, title: "Community college improves graduation rate", preview: "Study: Students Who Take Some Courses At Community Colleges Increase Their Chances Of Earning A Bachelor’s Degree", author: "Sammy", likesCount: 12, commentsCount: 511, postID: "2"))
         postData.append(PostModel(image: nil, title: "Zoom Settings", preview: "", author: "Sammy", likesCount: 6, commentsCount: 2, postID: "3"))
@@ -82,10 +83,6 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         postData.count
-    }
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        cellHeight = 0.185 * view.frame.height
-        return cellHeight ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
