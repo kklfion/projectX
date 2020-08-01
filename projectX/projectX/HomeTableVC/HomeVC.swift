@@ -39,9 +39,9 @@ class HomeTableVC: UIViewController{
         homeView.recommendingTableView.dataSource = self
         
         homeView.homeTableView.rowHeight = UITableView.automaticDimension
-        homeView.recommendingTableView.estimatedRowHeight = view.frame.size.height / 4
-        homeView.homeTableView.rowHeight = UITableView.automaticDimension
-        homeView.recommendingTableView.estimatedRowHeight = view.frame.size.height / 4
+        homeView.homeTableView.estimatedRowHeight = 300
+        homeView.recommendingTableView.rowHeight = UITableView.automaticDimension
+        homeView.recommendingTableView.estimatedRowHeight = 300
         
         homeView.homeTableView.register(PostCell.self, forCellReuseIdentifier: postCellID)
         homeView.recommendingTableView.register(PostCell.self, forCellReuseIdentifier: postCellID)
@@ -68,7 +68,7 @@ class HomeTableVC: UIViewController{
         postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "5"))
         postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "6"))
         postData.append(PostModel(image: nil, title: "I ran out of ideas ", preview: "some preview text I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "7"))
-        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "8"))
+         postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "8"))
 
     }
 }

@@ -175,10 +175,9 @@ class PostCell: UITableViewCell {
         channelUIButton.addAnchors(top: containerView.topAnchor,
                                leading: nil,
                                bottom: nil,
-                               trailing: nil,
+                               trailing: bottomStackView.trailingAnchor,
                                padding: .init(top: padding, left: 0, bottom: 0, right: 0),
                                size: .init(width: 60, height: rowHeight))
-        channelUIButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
         postUIImageView.addAnchors(top: nil,
                                leading: nil,
                                bottom: nil,
@@ -188,17 +187,14 @@ class PostCell: UITableViewCell {
         postUIImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
         titleUILabel.addAnchors(top: dateUILabel.bottomAnchor,
                             leading: containerView.leadingAnchor,
-                            bottom: nil,
-                            trailing: postUIImageView.leadingAnchor,
-                            padding: .init(top: padding, left: padding, bottom: 0, right: 0),
-                            size: .init(width: 0, height: rowHeight * 2.5))
-        previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
+                            bottom: previewUILabel.topAnchor,
+                            trailing: previewUILabel.trailingAnchor,
+                            padding: .init(top: padding, left: padding, bottom: 0, right: 0))
         previewUILabel.addAnchors(top: titleUILabel.bottomAnchor,
                               leading: containerView.leadingAnchor,
                               bottom: bottomStackView.topAnchor,
                               trailing: nil,
-                              padding: .init(top: 0, left: padding, bottom: 0, right: 0),
-                              size: .init(width: 0, height: 0))
+                              padding: .init(top: 0, left: padding, bottom: padding, right: 0))
         previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
         previewTrailingAnchor.isActive = true
         
