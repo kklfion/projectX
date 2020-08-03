@@ -22,13 +22,14 @@ class StationsVC: UITableViewController {
     }()
     let imageView: UIImageView = {
         let iv = UIImageView()
-        iv.image = UIImage(named: <#T##String#>)
+        iv.image = UIImage(named: "yoda")
+        return iv
     }()
     
     override func viewDidLoad() {
         view.backgroundColor = .white
         navigationItem.titleView = seachView
-        tableView.tableHeaderView =
+        tableView.tableHeaderView = imageView
     }
 
 }
