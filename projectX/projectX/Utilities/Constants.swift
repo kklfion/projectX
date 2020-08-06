@@ -9,6 +9,8 @@
 import UIKit
 struct Constants{
     
+    static let PostCellID = "regularPostCell"
+    
     static let mainTextFontSize: CGFloat = 14
     static let smallTextFontSize: CGFloat = 12
    

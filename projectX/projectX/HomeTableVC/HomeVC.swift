@@ -14,10 +14,9 @@ import UIKit
 
 class HomeTableVC: UIViewController{
     
-    let postCellID = "postCell"
     var cellHeight: CGFloat? //0.165 * view.frame.height
     let homeView = HomeView()
-    var postData = [PostModel]() //short description of the post
+    var postData = FakePostData().giveMeSomeData()
 
     override func loadView() {
         view = homeView
@@ -26,11 +25,8 @@ class HomeTableVC: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
         setupTableViewsDelegates()
         setupSearchController()
-        createFakeData()
-        
     }
     func setupTableViewsDelegates(){
         homeView.homeTableView.delegate = self
@@ -43,8 +39,8 @@ class HomeTableVC: UIViewController{
         homeView.recommendingTableView.rowHeight = UITableView.automaticDimension
         homeView.recommendingTableView.estimatedRowHeight = 300
         
-        homeView.homeTableView.register(PostCell.self, forCellReuseIdentifier: postCellID)
-        homeView.recommendingTableView.register(PostCell.self, forCellReuseIdentifier: postCellID)
+        homeView.homeTableView.register(PostCell.self, forCellReuseIdentifier: Constants.PostCellID)
+        homeView.recommendingTableView.register(PostCell.self, forCellReuseIdentifier: Constants.PostCellID)
     }
     /// setup top seatchBar to seatch for particular posts
     func setupSearchController(){
@@ -57,20 +53,7 @@ class HomeTableVC: UIViewController{
         navigationItem.searchController = searchController
         definesPresentationContext = true
     }
-    /// fill in tableView with fake data
-    func createFakeData(){
-        var image = UIImage(named: "ucsc")
-        postData.append(PostModel(image: image, title: "Will we be having online classes for the whole school year?", preview: "I decided to stay home for the fall quarter bc everything will be online but will... ", author: "Sammy", likesCount: 17, commentsCount: 13, postID: "1"))
-        image = UIImage(named: "airpods")
-        postData.append(PostModel(image: image, title: "Community college improves graduation rate", preview: "Study: Students Who Take Some Courses At Community Colleges Increase Their Chances Of Earning A Bachelor’s Degree", author: "Sammy", likesCount: 12, commentsCount: 511, postID: "2"))
-        postData.append(PostModel(image: nil, title: "Zoom Settings", preview: "", author: "Sammy", likesCount: 6, commentsCount: 2, postID: "3"))
-        postData.append(PostModel(image: nil, title: "UCSC 2020-21 Freshman Acceptance Rate is 65.25%", preview: "some preview text I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas ", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "4"))
-        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "5"))
-        postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "6"))
-        postData.append(PostModel(image: nil, title: "I ran out of ideas ", preview: "some preview text I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "7"))
-         postData.append(PostModel(image: nil, title: "I ran out of ideas", preview: "some preview text", author: "Sammy", likesCount: 12, commentsCount: 13, postID: "8"))
 
-    }
 }
 
 extension HomeTableVC: UISearchResultsUpdating {
@@ -86,7 +69,7 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: postCellID, for: indexPath) as? PostCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.PostCellID, for: indexPath) as? PostCell else {
             fatalError("Wrong cell at cellForRowAt? ")
         }
         if tableView == homeView.homeTableView{
