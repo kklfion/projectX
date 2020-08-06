@@ -13,23 +13,24 @@ class StationsVC: UITableViewController {
     let seachView: UISearchBar = {
         let sb = UISearchBar()
         sb.showsCancelButton = true
-        return sb
-    }()
-    let headerView: UIView = {
-        let view = UIView()
         
-        return view
-    }()
-    let imageView: UIImageView = {
-        let iv = UIImageView()
-        iv.image = UIImage(named: "yoda")
-        return iv
+        return sb
     }()
     
     override func viewDidLoad() {
         view.backgroundColor = .white
+        setupHeaderView()
         navigationItem.titleView = seachView
-        tableView.tableHeaderView = imageView
+    
+    }
+    func setupHeaderView(){
+        let headerView = createHeaderView()
+        tableView.tableHeaderView = headerView
+        
+    }
+    func createHeaderView()-> UIView{
+        let view = StationsView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height * 1/3))
+        return view
     }
 
 }
