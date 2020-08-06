@@ -62,7 +62,7 @@ class ProfileTableVC: UIViewController {
             label.textAlignment = .center
             label.text = "Universtiy of California, Santa Cruz"
             label.font = UIFont.systemFont(ofSize: 18)
-            label.textColor = .white
+            label.textColor = .black
             return label
         }()
     
@@ -71,7 +71,7 @@ class ProfileTableVC: UIViewController {
             label.textAlignment = .left
             label.text = "Previous Posts"
             label.font = UIFont.systemFont(ofSize: 26)
-            label.textColor = .white
+            label.textColor = .black
             return label
         }()
     
@@ -119,10 +119,12 @@ class ProfileTableVC: UIViewController {
         }
     
     @objc func logoutCurrentUser(){
+        // TO DO: Send to loginviewcontroller
         if Auth.auth().currentUser != nil {
             do{
                 print("signing out")
                 try Auth.auth().signOut()
+                
             } catch let error{
                 print(error)
             }

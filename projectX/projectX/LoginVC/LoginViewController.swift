@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import FirebaseAuth
 
 class LoginViewController: UIViewController {
     lazy var loginView = createLoginView()
@@ -46,7 +47,7 @@ class LoginViewController: UIViewController {
         loginView.passwordTextField.borderStyle = .none
         loginView.passwordTextField.layer.addSublayer(bottomLine)
     }
-    /// instantiates a signUp view where user cna create a new account
+    /// instantiates a signUp view where user can create a new account
     @objc func signMeUp(){
         let signUpController = SignUpViewController()
         navigationController?.pushViewController(signUpController, animated: true)
@@ -63,19 +64,20 @@ class LoginViewController: UIViewController {
             return
         }
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
-          guard let strongSelf = self else { return }
-          // ...
-            if  error != nil {
+            if !Auth.auth().currentUser!.isEmailVerified{
+                self?.displayLoginErrorMessage(message: "Email not verified")
+                return
+            }
+           else if  error != nil {
                 print(error?.localizedDescription ?? "error")
                 self?.displayLoginErrorMessage(message: "User was not found. Please, try again.")
                 return
             }else{
-                
+                //transition to a new screen
+                let vc = MainContainerVC()
+                vc.modalPresentationStyle = .fullScreen
+                self?.present(vc, animated: true)
             }
-            //transition to a new screen
-            let vc = MainContainerVC()
-            vc.modalPresentationStyle = .fullScreen
-            self?.present(vc, animated: true)
         }
     }
     /// Checks if email & password are valid

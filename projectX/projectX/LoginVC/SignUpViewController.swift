@@ -8,6 +8,8 @@
 
 import UIKit
 import Firebase
+import FirebaseAuth
+import FirebaseFirestore
 
 class SignUpViewController: UIViewController {
     lazy var signUpView = createSignUpView()
@@ -75,6 +77,7 @@ class SignUpViewController: UIViewController {
             print(loginError)
             return
         }
+                
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
           // ...
             if let error = error{
@@ -87,12 +90,22 @@ class SignUpViewController: UIViewController {
                     
                 }
             }
+            //sending authentication email
+            Auth.auth().currentUser!.sendEmailVerification {(error) in
+                 if let error = error{
+                    print(error)
+                    self.displayLoginErrorMessage(message: "Failed in sending email")
+                }
+                 else{
+                    self.displayLoginErrorMessage(message: "Email Verification sent!")
+                }
+            }
         }
-        //transition to a new screen
-        let vc = MainContainerVC()
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
     }
+    
+    
+    
+    
     /// Checks if email & password are valid
     /// - Parameters:
     ///   - email: email to test
