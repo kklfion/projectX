@@ -56,7 +56,7 @@ class StationsVC: UITableViewController {
         cell.authorUILabel.text =  CellData[index].author
         cell.likesUILabel.text =  String(CellData[index].likesCount)
         cell.commentsUILabel.text =  String(CellData[index].commentsCount)
-        cell.UID =  CellData[index].postID
+        //cell.UID =  CellData[index].postID
         cell.dateUILabel.text = "\(index)h"
         if CellData[index].image != nil{
             //this cell will have an image

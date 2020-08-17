@@ -29,7 +29,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             if Auth.auth().currentUser != nil {
                 print("User is signed in! \(Auth.auth().currentUser?.email)")
-                window.rootViewController = tempnv //main
+                window.rootViewController = main//tempnv //main
             } else {
                 print("Need to login")
                 window.rootViewController = nv

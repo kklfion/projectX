@@ -85,7 +85,7 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         cell.authorUILabel.text =  postData[index].author
         cell.likesUILabel.text =  String(postData[index].likesCount)
         cell.commentsUILabel.text =  String(postData[index].commentsCount)
-        cell.UID =  postData[index].postID
+        //cell.UID =  postData[index].postID
         cell.dateUILabel.text = "\(index)h"
         if postData[index].image != nil{
             //this cell will have an image
