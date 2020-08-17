@@ -20,12 +20,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let windowScene = (scene as? UIWindowScene){
             let window = UIWindow(windowScene: windowScene)
             let main = MainContainerVC()
+            
+            let temp = StationsVC()
+            let tempnv = UINavigationController(rootViewController: temp)
+            
             let vc = LoginViewController()
             let nv = UINavigationController(rootViewController: vc)
             
             if Auth.auth().currentUser != nil {
                 print("User is signed in! \(Auth.auth().currentUser?.email)")
-                window.rootViewController = main
+                window.rootViewController = main//tempnv //main
             } else {
                 print("Need to login")
                 window.rootViewController = nv

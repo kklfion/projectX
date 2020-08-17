@@ -8,6 +8,12 @@
 
 import UIKit
 struct Constants{
+    
+    static let PostCellID = "regularPostCell"
+    
+    static let mainTextFontSize: CGFloat = 14
+    static let smallTextFontSize: CGFloat = 12
+   
     struct Screen {
         static let screenSize = UIScreen.main.bounds
         static let width = screenSize.width
@@ -18,12 +24,17 @@ struct Constants{
     }
     struct Login {
         //fonts
-        static let mainTextFontSize: CGFloat = 16
-        static let otherTextFontSize: CGFloat = 13
+        static let mainTextFontSize: CGFloat = 14
+        static let otherTextFontSize: CGFloat = 12
         static let logoFontSize: CGFloat = 20
         //paddings
         static let stackViewLeftRightPadding: CGFloat = 60
         static let padding: CGFloat = 10
         static let bottomStackViewTopPadding: CGFloat = 100
+    }
+    struct Home {
+        static let layerBorderWidth: CGFloat = 0.5
+        static let cornerRadius: CGFloat = 4
+
     }
 }

@@ -9,21 +9,34 @@
 import UIKit
 
 struct PostModel{
+    
     var image: UIImage?
     var title: String
     var preview: String
     var author: String
     var likesCount: Int
     var commentsCount: Int
-    var postID: String
+    var station: String
+    var timestamp: Date
     
-    init(image: UIImage?, title: String, preview: String, author: String, likesCount: Int, commentsCount: Int, postID: String) {
+    init(image: UIImage?,
+         title: String,
+         body: String,
+         author: String,
+         station: String,
+         timestamp: Date = Date(), //current date as default
+         likesCount: Int = 0,
+         commentsCount: Int = 0) {
+        
         self.image = image
         self.title = title
-        self.preview = preview
+        self.preview = body
         self.author = author
         self.likesCount = likesCount
         self.commentsCount = commentsCount
-        self.postID = postID
+        self.station = station
+        self.timestamp = timestamp
+
     }
+    
 }

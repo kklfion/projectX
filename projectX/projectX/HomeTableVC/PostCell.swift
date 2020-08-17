@@ -29,7 +29,7 @@ class PostCell: UITableViewCell {
     var rightViewWidthAnchor: NSLayoutConstraint!
     let imageIconName = "image_icon"
     /// Creates a view left side of the post
-    let leftUIView: UIView = {
+    let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -59,7 +59,7 @@ class PostCell: UITableViewCell {
         let label = UILabel()
         label.text = "Title"
         label.font = UIFont.boldSystemFont(ofSize: 16 )
-        label.numberOfLines = 2
+        label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = false
         label.lineBreakMode = .byTruncatingTail
         label.textColor = .black
@@ -69,7 +69,7 @@ class PostCell: UITableViewCell {
     let previewUILabel: UILabel = {
         let text = UILabel()
         text.font = UIFont.systemFont(ofSize: 14 )
-        text.numberOfLines = 2
+        text.numberOfLines = 0
         text.adjustsFontSizeToFitWidth = false
         text.lineBreakMode = .byTruncatingTail
         text.text = "Preview"
@@ -77,7 +77,7 @@ class PostCell: UITableViewCell {
         text.translatesAutoresizingMaskIntoConstraints = false
         return text
     }()
-    let bottomUIView: UIStackView = {
+    let bottomStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fillEqually
@@ -164,59 +164,56 @@ class PostCell: UITableViewCell {
         setupContentView()
     }
     func setupContentView(){
-        [dateUILabel,channelUIButton, titleUILabel, previewUILabel, bottomUIView, postUIImageView, authorUILabel].forEach {leftUIView.addSubview($0)}
-        [heartUIButton, likesUILabel, commentsUIButton, commentsUILabel].forEach ({bottomUIView.addArrangedSubview($0)})
-        dateUILabel.addAnchors(top: leftUIView.topAnchor,
+        [dateUILabel,channelUIButton, titleUILabel, previewUILabel, bottomStackView, postUIImageView, authorUILabel].forEach {containerView.addSubview($0)}
+        [heartUIButton, likesUILabel, commentsUIButton, commentsUILabel].forEach ({bottomStackView.addArrangedSubview($0)})
+        dateUILabel.addAnchors(top: containerView.topAnchor,
                            leading: nil,
                            bottom: nil,
                            trailing: channelUIButton.leadingAnchor,
                            padding: .init(top: padding, left: 0, bottom: 0, right: padding),
                            size: .init(width: 30, height: rowHeight))
-        channelUIButton.addAnchors(top: leftUIView.topAnchor,
+        channelUIButton.addAnchors(top: containerView.topAnchor,
                                leading: nil,
                                bottom: nil,
-                               trailing: postUIImageView.leadingAnchor,
+                               trailing: bottomStackView.trailingAnchor,
                                padding: .init(top: padding, left: 0, bottom: 0, right: 0),
                                size: .init(width: 60, height: rowHeight))
         postUIImageView.addAnchors(top: nil,
                                leading: nil,
                                bottom: nil,
-                               trailing: leftUIView.trailingAnchor,
+                               trailing: containerView.trailingAnchor,
                                padding: .init(top: 0, left: 0, bottom: 0, right: 0),
                                size: .init(width: contentView.frame.height * 2.5 , height: contentView.frame.height * 2.5))
-        postUIImageView.centerYAnchor.constraint(equalTo: leftUIView.centerYAnchor).isActive = true
+        postUIImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
         titleUILabel.addAnchors(top: dateUILabel.bottomAnchor,
-                            leading: leftUIView.leadingAnchor,
-                            bottom: nil,
-                            trailing: postUIImageView.leadingAnchor,
-                            padding: .init(top: padding, left: padding, bottom: 0, right: 0),
-                            size: .init(width: 0, height: rowHeight * 2.5))
-        previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
+                            leading: containerView.leadingAnchor,
+                            bottom: previewUILabel.topAnchor,
+                            trailing: previewUILabel.trailingAnchor,
+                            padding: .init(top: padding, left: padding, bottom: 0, right: 0))
         previewUILabel.addAnchors(top: titleUILabel.bottomAnchor,
-                              leading: leftUIView.leadingAnchor,
-                              bottom: bottomUIView.topAnchor,
+                              leading: containerView.leadingAnchor,
+                              bottom: bottomStackView.topAnchor,
                               trailing: nil,
-                              padding: .init(top: 0, left: padding, bottom: 0, right: 0),
-                              size: .init(width: 0, height: 0))
+                              padding: .init(top: 0, left: padding, bottom: padding, right: 0))
         previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
         previewTrailingAnchor.isActive = true
         
         authorUILabel.addAnchors(top: nil,
-                             leading: leftUIView.leadingAnchor,
-                             bottom: leftUIView.bottomAnchor,
+                             leading: containerView.leadingAnchor,
+                             bottom: containerView.bottomAnchor,
                              trailing: nil,
                              padding: .init(top: 0, left: padding, bottom: padding, right: 0),
                              size: .init(width: 0, height: 0))
-        bottomUIView.addAnchors(top: nil,
+        bottomStackView.addAnchors(top: nil,
                             leading: nil,
-                            bottom: leftUIView.bottomAnchor,
-                            trailing: postUIImageView.leadingAnchor,
+                            bottom: containerView.bottomAnchor,
+                            trailing: nil,
                             padding: .init(top: 0, left: 0, bottom: padding, right: 0),
                             size: .init(width: contentView.frame.width / 2 , height: rowHeight))
-    
+        bottomStackView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
         ///finish up by adding views to the content view
-        [leftUIView,separatorLine].forEach({contentView.addSubview($0)})
-        leftUIView.addAnchors(top: contentView.safeAreaLayoutGuide.topAnchor,
+        [containerView,separatorLine].forEach({contentView.addSubview($0)})
+        containerView.addAnchors(top: contentView.safeAreaLayoutGuide.topAnchor,
                           leading: contentView.safeAreaLayoutGuide.leadingAnchor,
                           bottom: separatorLine.topAnchor,
                           trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
@@ -233,10 +230,10 @@ class PostCell: UITableViewCell {
     /// changes constraints so that main view takes extra space
     func noImageViewConstraints(){
         previewTrailingAnchor.isActive = false
-        previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: leftUIView.trailingAnchor)
+        previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
         previewTrailingAnchor.isActive = true
         postUIImageView.isHidden = true
-//        contentView.layoutIfNeeded()
+
     }
     /// changes constraints so that there is room for the image
     func withImageViewConstraints(){
@@ -244,7 +241,6 @@ class PostCell: UITableViewCell {
         previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
         previewTrailingAnchor.isActive = true
         postUIImageView.isHidden = false
-//        contentView.layoutIfNeeded()
     }
 }
 
