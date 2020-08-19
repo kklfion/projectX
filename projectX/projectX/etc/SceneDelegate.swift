@@ -28,11 +28,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let nv = UINavigationController(rootViewController: vc)
             
             if Auth.auth().currentUser != nil {
-                print("User is signed in! \(Auth.auth().currentUser?.email)")
+                print("User is signed in! \(String(describing: Auth.auth().currentUser?.email))")
                 window.rootViewController = main//tempnv //main
             } else {
                 print("Need to login")
-                window.rootViewController = nv
+                window.rootViewController = temp//nv
             }
             self.window = window
             window.makeKeyAndVisible()

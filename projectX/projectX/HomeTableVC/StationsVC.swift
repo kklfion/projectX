@@ -8,7 +8,7 @@
 
 import UIKit
 
-class StationsVC: UITableViewController {
+class StationsVC: UIViewController {
     
     let CellData = FakePostData().giveMeSomeData()
     
@@ -18,35 +18,52 @@ class StationsVC: UITableViewController {
         
         return sb
     }()
-    override func viewDidLoad() {
-        
-        view.backgroundColor = .white
-        tableView.register(PostCell.self, forCellReuseIdentifier: Constants.PostCellID)
-        setupHeaderView()
-        navigationItem.titleView = seachView
+    let tableView: UITableView = {
+        let tableView = UITableView()
+        return tableView
+    }()
     
+    override func viewDidLoad() {
+        view.backgroundColor = .white
+        let newView = createView()
+        setupTableView(tableView: newView.stationsTableView)
+        navigationItem.titleView = seachView
+        view = newView
     }
-    func setupHeaderView(){
-        let headerView = createHeaderView()
-        tableView.tableHeaderView = headerView
+    func setupTableView(tableView: UITableView){
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(PostCell.self, forCellReuseIdentifier: Constants.PostCellID)
     }
-    func createHeaderView()-> UIView{
-        let view = StationsView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height * 1/3))
+
+    func createView()-> StationsView{
+        let view = StationsView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
         return view
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    
+
+
+}
+extension StationsVC: UISearchResultsUpdating{
+    func updateSearchResults(for searchController: UISearchController) {
+        
+    }
+}
+extension StationsVC: UITableViewDelegate, UITableViewDataSource{
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         CellData.count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.PostCellID, for: indexPath) as? PostCell else {
             fatalError("Wrong cell at cellForRowAt? ")
         }
-//        if tableView == homeView.homeTableView{
-//
-//        }else if  tableView == homeView.recommendingTableView{
-//        }
+        //        if tableView == homeView.homeTableView{
+        //
+        //        }else if  tableView == homeView.recommendingTableView{
+        //        }
         addData(toCell: cell, withIndex: indexPath.row)
         return cell
     }
@@ -68,12 +85,4 @@ class StationsVC: UITableViewController {
             cell.noImageViewConstraints()
         }
     }
-
-}
-extension StationsVC: UISearchResultsUpdating{
-    func updateSearchResults(for searchController: UISearchController) {
-        
-    }
-    
-    
 }
