@@ -8,46 +8,87 @@
 
 import UIKit
 
-class StationsVC: UIViewController {
+class StationsVC: UIViewController, UIScrollViewDelegate {
+    
+    var headerMaxHeight: CGFloat!
+    var statusBarHeight: CGFloat!
     
     let CellData = FakePostData().giveMeSomeData()
-    
+    lazy var newView: StationsView = {
+        let view = StationsView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
+        return view
+    }()
     let seachView: UISearchBar = {
         let sb = UISearchBar()
         sb.showsCancelButton = true
-        
         return sb
-    }()
-    let tableView: UITableView = {
-        let tableView = UITableView()
-        return tableView
     }()
     
     override func viewDidLoad() {
         view.backgroundColor = .white
-        let newView = createView()
+        setupView()
+        setupHeights()
         setupTableView(tableView: newView.stationsTableView)
-        navigationItem.titleView = seachView
-        view = newView
+        
+       
     }
     func setupTableView(tableView: UITableView){
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 300
         tableView.register(PostCell.self, forCellReuseIdentifier: Constants.PostCellID)
+        tableView.refreshControl = UIRefreshControl()
+        tableView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
+    }
+    func setupView(){
+        navigationItem.titleView = seachView
+        view.addSubview(newView)
+        newView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
+                           leading: view.safeAreaLayoutGuide.leadingAnchor,
+                           bottom: view.bottomAnchor,
+                           trailing: view.safeAreaLayoutGuide.trailingAnchor)
+    }
+    func setupHeights(){
+        if #available(iOS 13.0, *) {
+            let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+            statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        } else {
+            statusBarHeight = UIApplication.shared.statusBarFrame.height
+        }
+        headerMaxHeight = view.frame.height * 0.3 //MUST equal to the height of the view's header that is set up in the stationView
     }
 
-    func createView()-> StationsView{
-        let view = StationsView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
-        return view
-    }
-    
-    
-
-
-}
-extension StationsVC: UISearchResultsUpdating{
-    func updateSearchResults(for searchController: UISearchController) {
+    @objc func handleTableViewRefresh(_ refreshControl: UIRefreshControl){
+        //load data
+        //add it to the tableview
+        //self.tableView.reloadData()
+        // for now fake loading
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            refreshControl.endRefreshing()
+        }
         
+    }
+    
+    // scrollViewDidScroll handles the change in layout when user scrolls
+    // offset starts at 0.0
+    // goes negative if scroll up(tableview goes down), goes positive if scrolls down(tableView goes up)
+    // offet can either be too high(keep maximum offset), to little(keep minimum offstet) or inbetween(can be adjusted)
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let y_offset: CGFloat = scrollView.contentOffset.y
+        if let headerViewTopConstraint = newView.topViewContainerTopConstraint {
+            let newConstant = headerViewTopConstraint.constant - y_offset
+            //when scrolling up
+            if newConstant <= -headerMaxHeight {
+                headerViewTopConstraint.constant = -headerMaxHeight
+            //when scrolling down
+            }else if newConstant >= 0{
+                headerViewTopConstraint.constant = 0
+            }else{//inbetween we want to adjust the position of the header
+                headerViewTopConstraint.constant = newConstant
+                scrollView.contentOffset.y = 0 //to smooth out scrolling
+            }
+        }
     }
 }
 extension StationsVC: UITableViewDelegate, UITableViewDataSource{
@@ -84,5 +125,9 @@ extension StationsVC: UITableViewDelegate, UITableViewDataSource{
             cell.postUIImageView.image = nil
             cell.noImageViewConstraints()
         }
+    }
+}
+extension StationsVC: UISearchResultsUpdating{
+    func updateSearchResults(for searchController: UISearchController) {
     }
 }

@@ -84,18 +84,23 @@ class StationsView: UIView {
     }()
     let stationsTableView: UITableView = {
         let tableview = UITableView()
-        tableview.backgroundColor = .white
+        tableview.backgroundColor = UIColor.init(red: 223/255.0, green: 230/255.0, blue: 233/255.0, alpha: 1.0)
+        tableview.separatorStyle = .none
         return tableview
     }()
-   
+    
+    var topViewContainerTopConstraint: NSLayoutConstraint?
+    
     func setupViews(){
         self.backgroundColor = .white 
         [topViewContainer, stationsTableView].forEach {self.addSubview($0)}
-        topViewContainer.addAnchors(top: self.topAnchor,
+        topViewContainer.addAnchors(top: nil,
                                     leading: self.leadingAnchor,
                                     bottom: nil,
                                     trailing: self.trailingAnchor,
-                                    size: .init(width: self.frame.width, height: self.frame.height/3))
+                                    size: .init(width: self.frame.width, height: self.frame.height*0.3))
+        topViewContainerTopConstraint = topViewContainer.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 0)
+        topViewContainerTopConstraint?.isActive = true
         layoutIfNeeded()//foces to setup proper frame?!?!??!  super important ahahah
         stationsTableView.addAnchors(top: topViewContainer.bottomAnchor,
                                      leading: self.leadingAnchor,

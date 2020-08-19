@@ -32,7 +32,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 window.rootViewController = main//tempnv //main
             } else {
                 print("Need to login")
-                window.rootViewController = temp//nv
+                window.rootViewController = tempnv//nv
             }
             self.window = window
             window.makeKeyAndVisible()
