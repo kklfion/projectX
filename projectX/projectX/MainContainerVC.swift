@@ -66,5 +66,5 @@ extension MainContainerVC: TabBarSideBarDelegate{
 struct ConstantValues {
     let animationDuration = 0.5
     let springDamping: CGFloat = 0.8
-    let slideOutChange: CGFloat = 80.0
+    let slideOutChange: CGFloat = 150.0
 }
