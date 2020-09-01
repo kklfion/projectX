@@ -45,7 +45,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         //---------------------------------------------------------------------------------------------------------
         //                                     Title
         
-        // CHANGE PLACEHOLDER IN THE  FUTURE
+        // --> Will make this uitextfield to a uitextview to remain consistency soon <--
         
         titlepost = UITextField(frame: CGRect(x: 10.0, y: 120.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 50.0))//was 200
         titlepost.backgroundColor = .white
@@ -389,11 +389,11 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
       //  self.view.addSubview(myImageView3)
     }
     
-    
+    // Might have to edit the frames soon
    @objc func didShow(_ sender: NSNotification)
     {
         UITextView.animate(withDuration: 0.3) {
-                   myTxtview.frame = CGRect(x: 10.0, y: 175.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 150.0)
+                   myTxtview.frame = CGRect(x: 10.0, y: 175.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 148.2)
                    self.view.layoutIfNeeded()
                }
     }
