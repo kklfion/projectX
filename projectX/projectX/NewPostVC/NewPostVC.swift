@@ -7,15 +7,24 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseFirestore
 
-class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
+
+
+let button = UIButton()
+var myTxtview = UITextView()
+var titlepost = UITextField()
+var postData = [String: Any]()
+
+
+class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate{
     
     
 
     //let texFiel = UITextField()
    
-    @IBOutlet weak var titlepost: UITextField!  //
-    @IBOutlet weak var titlepost1: UITextField!  //
+    //
     
     @IBOutlet weak var pickerview: UIPickerView!
     //@IBOutlet weak var label1:UILabel!
@@ -36,7 +45,9 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         //---------------------------------------------------------------------------------------------------------
         //                                     Title
         
-        let titlepost = UITextField(frame: CGRect(x: 10.0, y: 200.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 50.0))
+        // CHANGE PLACEHOLDER IN THE  FUTURE
+        
+        titlepost = UITextField(frame: CGRect(x: 10.0, y: 120.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 50.0))//was 200
         titlepost.backgroundColor = .white
         //titlepost.borderStyle = .line
         //titlepost.placeholder = "Title"
@@ -45,24 +56,133 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         titlepost.font = UIFont (name: "ChalkboardSE-Regular" , size: 20.0) // Delete if custom font
         titlepost.tintColor = UIColor.black
         titlepost.delegate = self
+        //titlepost.autocorrectionType = .yes
         self.view.addSubview(titlepost)
     
-        //                                      Enter your thoughts
-        
-        let titlepost1 = UITextField(frame: CGRect(x: 10.0, y: 255.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 280.0))
-        self.view.addSubview(titlepost1)
-        titlepost1.backgroundColor = .white
-        titlepost1.delegate = self
-        titlepost1.font = UIFont.systemFont(ofSize: 15.0)
-        titlepost1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
-        //titlepost1.placeholder = "Enter your thoughts"
-        titlepost1.attributedPlaceholder = NSAttributedString(string: "Enter your thoughts", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
-        titlepost1.tintColor = UIColor.black
-        titlepost1.textAlignment = .left
-        titlepost1.contentVerticalAlignment = .top
          
+       // myTxtview.autocorrectionType = .yes
+        myTxtview.isScrollEnabled = true
+        myTxtview.frame = CGRect(x: 10.0, y: 175.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 400.0)//y was 255, height was 280
+        NotificationCenter.default.addObserver(self, selector: #selector(didShow), name: UIResponder.keyboardDidShowNotification, object: nil)
+              
+        NotificationCenter.default.addObserver(self, selector: #selector(didHide), name: UIResponder.keyboardDidHideNotification, object: nil)
+        
+        myTxtview.backgroundColor = .white
+        myTxtview.delegate = self
+        myTxtview.font = UIFont (name: "ChalkboardSE-Regular" , size: 13.5)
+       myTxtview.tintColor = UIColor.black
+        myTxtview.textAlignment = .left
+        myTxtview.text = "Enter your thoughts here..."
+        myTxtview.textColor = .black
+        
+        self.view.addSubview(myTxtview)
+        
+        
+       // NotificationCenter.default.addObserver(self, selector: #selector(didShow), name: UIResponder.keyboardDidShowNotification, object: nil)
+        
+       // NotificationCenter.default.addObserver(self, selector: #selector(didHide), name: UIResponder.keyboardDidHideNotification, object: nil)
+        
+        
+        
+        
+        
+        
+        
+      //  NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardVisible(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
+        
+        
+        
+        
         
         //---------------------------------------------------------------------------------------------------------
+        
+        
+        // https://www.youtube.com/watch?v=UDPJj3gnuZQ
+        // https://www.youtube.com/watch?time_continue=376&v=RuzHai2RVZU&feature=emb_logo
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+       //                           REFINED TOOLBAR CODE
+        
+       // Toolbar
+        let tool = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        tool.backgroundColor = .white
+         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let fixSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        fixSpace.width = 8
+        let fixSpace1 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        fixSpace1.width = 12
+      
+        // SWITCH UI
+        let switchbar = UISwitch()
+        switchbar.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
+        let ButtonView = UIView(frame: switchbar.frame)
+        switchbar.sizeToFit()
+        switchbar.isOn = true
+        switchbar.setOn(true, animated: false)
+        switchbar.addTarget(self, action: #selector(switch2(_:)), for: .valueChanged)
+        ButtonView.sizeToFit()
+        ButtonView.addSubview(switchbar)
+        
+        // PROFILE PIC, ANON IN FUNCTION CALL
+        button.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
+        let suggestButtonContainer = UIView(frame: button.frame)
+        button.sizeToFit()
+        button.setImage(UIImage(named: "smallgurp.png"), for: .normal)
+        suggestButtonContainer.sizeToFit()
+        suggestButtonContainer.addSubview(button)
+        
+        // GALLERY BUTTON
+        let button1 = UIButton()
+        button1.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
+        let suggestButtonContainer1 = UIView(frame: button1.frame)
+        button1.setImage(UIImage(named: "mountain.png"), for: .normal)
+        suggestButtonContainer1.sizeToFit()
+        suggestButtonContainer1.addSubview(button1)
+        
+        //PAPERCLIP BUTTON IMAGE
+        let button2 = UIButton()
+        button2.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
+        let suggestButtonContainer2 = UIView(frame: button2.frame)
+        button2.setImage(UIImage(named: "paperclip.png"), for: .normal)
+        suggestButtonContainer2.sizeToFit()
+        suggestButtonContainer2.addSubview(button2)
+        
+        
+        let barButton = UIBarButtonItem()
+        barButton.customView = suggestButtonContainer
+        
+        let barButton1 = UIBarButtonItem()
+        barButton1.customView = suggestButtonContainer1
+        
+        let barButton2 = UIBarButtonItem()
+        barButton2.customView = suggestButtonContainer2
+        
+        let barSwitch = UIBarButtonItem()
+        barSwitch.customView = ButtonView
+        
+        
+        tool.barTintColor = .white
+        tool.isTranslucent = false
+        tool.clipsToBounds = true
+        tool.setItems([fixSpace1, barButton,fixSpace, barSwitch, flexSpace, barButton2,fixSpace, barButton1, fixSpace1] , animated: true)
+        tool.sizeToFit()
+        titlepost.inputAccessoryView = tool
+        myTxtview.inputAccessoryView = tool
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -73,7 +193,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         //---------------------------------------------------------------------------------------------------------
         //                                       New Post
         
-        let label = UILabel(frame: CGRect(x: 10, y: 50, width:UIScreen.main.bounds.size.width - 20.0, height: 35))
+        let label = UILabel(frame: CGRect(x: 10, y: 10, width:UIScreen.main.bounds.size.width - 20.0, height: 35))
         //label.center = CGPoint(x: 50, y: 50)
         label.textAlignment = .center
         label.text = "New Post"
@@ -100,7 +220,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         //                                       ChooseChannel
         
         let chooseChannel = UIButton(type: .system)
-        chooseChannel.frame = CGRect(x: 0.0, y: 155.0, width: UIScreen.main.bounds.size.width, height: 40)
+        chooseChannel.frame = CGRect(x: 0.0, y: 75.0, width: UIScreen.main.bounds.size.width, height: 40) //was 155
         chooseChannel.setTitle("  Choose Channel >", for: .normal)
         chooseChannel.contentHorizontalAlignment = .left
         chooseChannel.tintColor = UIColor.black
@@ -136,9 +256,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         self.view.addSubview(postButton)
         
         
-        
-        
-        
+      
         
        
          
@@ -166,7 +284,8 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
       
          
     // CHANNEL PICKER VIEW
-    let channels1 = ["Games", "Social", "Hello", "Gurpreet", "Test"]
+    let channels1 = ["", "Travel", "Art", "Drama", "Gaming", "Meme", "Makeup", "Politics", "Music", "Sports", "Food", "Abroad", "Writing", "Development", "Financial", "Pets", "Job", "Astrology", "Horror", "Anime", "LGBTQ+", "Film", "Relationship", "Photography", "International"
+    ]
     var selectedchannel = String()
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -201,7 +320,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
      toolBar.removeFromSuperview()
      picker.removeFromSuperview()
      if counter == 1{
-      label1 = UILabel(frame: CGRect(x: 10, y: 155, width:UIScreen.main.bounds.size.width - 20.0, height: 40))
+      label1 = UILabel(frame: CGRect(x: 10, y: 75, width:UIScreen.main.bounds.size.width - 20.0, height: 40)) //was 155
       label1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
       label1.textAlignment = .center
       label1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
@@ -214,6 +333,27 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         }
     }
     // END OF CHANNEL PICKER VIEW
+    
+    
+    
+    
+    func textViewDidBeginEditing (_ textView: UITextView) {
+        if myTxtview.text == "Enter your thoughts here..."  {
+            myTxtview.text = ""
+            myTxtview.textColor = .black
+        }
+        myTxtview.becomeFirstResponder()
+    }
+    
+    func textViewDidEndEditing (_ textView: UITextView) {
+        if myTxtview.text.isEmpty || myTxtview.text == "" {
+            myTxtview.textColor = .black
+            myTxtview.text = "Enter your thoughts here..."
+        }
+        myTxtview.resignFirstResponder()
+    }
+    
+   
     
     
     
@@ -231,29 +371,122 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         return true
     }
     
+    
+    
+     @objc func switch2(_ sender: UISwitch) {
+        if sender.isOn {
+        button.setImage(UIImage(named: "smallgurp.png"), for: .normal)
+        
+        }
+        else {
+         button.setImage(UIImage(named: "people.png"), for: .normal)
+        }
+    }
+    
+    
+    @objc func keyboardVisible(_ sender: NSNotification) {
+       // self.view.addSubview(switch1)
+      //  self.view.addSubview(myImageView3)
+    }
+    
+    
+   @objc func didShow(_ sender: NSNotification)
+    {
+        UITextView.animate(withDuration: 0.3) {
+                   myTxtview.frame = CGRect(x: 10.0, y: 175.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 150.0)
+                   self.view.layoutIfNeeded()
+               }
+    }
+
+   @objc func didHide(_ sender: NSNotification)
+    {
+        UITextView.animate(withDuration: 0.3) {
+           myTxtview.frame = CGRect(x: 10.0, y: 175.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 400.0)
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    
+    
+    
+    @objc func doneButtonAction(_ sender: UIButton)
+      {
+
+        print("d")
+    }
+    
+    
     // cancel button
     @objc func buttonAction(_ sender:UIButton!) {
+        
+      // For stack/container code
+      //  DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2){
+      //  let pop = Popup()
+      // self.view.addSubview(pop)
+      //   }
+        
+     //dismiss(animated: true, completion: nil)
+        
+    //Set up Ui alert controller
+        
+    // https://www.hackingwithswift.com/read/4/3/choosing-a-website-uialertcontroller-action-sheets
+    
+        
+
+        let ac = UIAlertController(title: "Are you sure you want to discard your post", message: nil, preferredStyle: .alert)
+        
+         // ac.addAction(UIAlertAction(title: "apple.com", style: .default, handler: openPage))
+         // ac.addAction(UIAlertAction(title: "hackingwithswift.com", style: .default, handler: openPage))
+          
+          ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+         ac.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: discardaction))
+         ac.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
+          present(ac, animated: true)
+    
+    }
+    
+   // look up multiline text input
+    func discardaction(action: UIAlertAction) {
         dismiss(animated: true, completion: nil)
     }
     
     
-    
-    
-    
-    
     // post button
-     @IBAction func postAction(sender: UIButton!) {
+     @objc func postAction(sender: UIButton!) {
+        postData = [
+            "title": titlepost.text!,
+            "body": myTxtview.text!,
+            "station": selectedchannel
+        ]
+        let db = Firestore.firestore()
+        db.collection("newPost").document(selectedchannel).setData(postData) { err in
+               if let err = err {
+                   print("Error writing document: \(err)")
+               } else {
+                   print("Document successfully written!")
+               }
+           }
+        // Test for reading data
+        //uncomment to make sure it works
         
-        // let nextVC = HomeTableVC()
-         //nextVC.stringHolder = titlepost1.text! + titlepost.text!
+        //let Newpost = db.collection("newPost").document(selectedchannel)
+        //Newpost.getDocument { (document, error) in
+        //    if let document = document, document.exists {
+        //        let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+        //        print("Document data: \(dataDescription)")
+        //    } else {
+        //        print("Document does not exist")
+        //    }
+        //}
         
-        //let nextVC = HomeTableVC()
-        //nextVC.stringHolder = channels1[row]
-        //navigationController?.pushViewController(nextVC, animated: true)
         
-                      //self.present(HomeTableVC, animated: true, completion: nil)
-        //navigationController?.pushViewController(HomeTableVC, animated: true)
+        
+        
+        
+        
     }
-    
 }
+
+
+
 
