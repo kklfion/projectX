@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		803D75A2250AD3E0003F569D /* AddNewCommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D759E250AD3E0003F569D /* AddNewCommentView.swift */; };
+		803D75A3250AD3E0003F569D /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D759F250AD3E0003F569D /* CommentTableViewCell.swift */; };
+		803D75A4250AD3E0003F569D /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75A0250AD3E0003F569D /* PostView.swift */; };
+		803D75A5250AD3E0003F569D /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75A1250AD3E0003F569D /* PostViewController.swift */; };
 		804E618724957D0C00825150 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E618624957D0C00825150 /* AppDelegate.swift */; };
 		804E618924957D0C00825150 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E618824957D0C00825150 /* SceneDelegate.swift */; };
 		804E618B24957D0C00825150 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E618A24957D0C00825150 /* ViewController.swift */; };
@@ -39,6 +43,10 @@
 /* Begin PBXFileReference section */
 		4A216F81A4DD94A6239F9BAE /* Pods-projectX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-projectX.debug.xcconfig"; path = "Target Support Files/Pods-projectX/Pods-projectX.debug.xcconfig"; sourceTree = "<group>"; };
 		6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_projectX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		803D759E250AD3E0003F569D /* AddNewCommentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewCommentView.swift; sourceTree = "<group>"; };
+		803D759F250AD3E0003F569D /* CommentTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
+		803D75A0250AD3E0003F569D /* PostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
+		803D75A1250AD3E0003F569D /* PostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		804E618324957D0C00825150 /* projectX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = projectX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		804E618624957D0C00825150 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		804E618824957D0C00825150 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -99,6 +107,17 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		803D759D250AD3A5003F569D /* IndividualPost */ = {
+			isa = PBXGroup;
+			children = (
+				803D759E250AD3E0003F569D /* AddNewCommentView.swift */,
+				803D759F250AD3E0003F569D /* CommentTableViewCell.swift */,
+				803D75A0250AD3E0003F569D /* PostView.swift */,
+				803D75A1250AD3E0003F569D /* PostViewController.swift */,
+			);
+			path = IndividualPost;
+			sourceTree = "<group>";
+		};
 		804E617A24957D0C00825150 = {
 			isa = PBXGroup;
 			children = (
@@ -122,6 +141,7 @@
 			children = (
 				80FDD6A4249968FF00304007 /* MainContainerVC.swift */,
 				804E619A24957E3200825150 /* MainTabBarVC.swift */,
+				803D759D250AD3A5003F569D /* IndividualPost */,
 				806E777424C7C6FA00A95B89 /* Utilities */,
 				804E61AB24980E8400825150 /* ProfileTableVC */,
 				8081185224C2624A0032D46D /* LoginVC */,
@@ -339,6 +359,7 @@
 				804E618724957D0C00825150 /* AppDelegate.swift in Sources */,
 				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,
 				804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */,
+				803D75A4250AD3E0003F569D /* PostView.swift in Sources */,
 				806E777824C9076200A95B89 /* Extensions.swift in Sources */,
 				806B790524B817AD002B45BD /* PostModel.swift in Sources */,
 				8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */,
@@ -346,9 +367,12 @@
 				80CA4FC624C4CA2900B66D6B /* SignUpViewController.swift in Sources */,
 				804E618924957D0C00825150 /* SceneDelegate.swift in Sources */,
 				80CA4FC824C4CA3E00B66D6B /* SignUpView.swift in Sources */,
+				803D75A5250AD3E0003F569D /* PostViewController.swift in Sources */,
+				803D75A2250AD3E0003F569D /* AddNewCommentView.swift in Sources */,
 				80FDD6A5249968FF00304007 /* MainContainerVC.swift in Sources */,
 				804E61A524980DFD00825150 /* HomeVC.swift in Sources */,
 				80BB37B024D7ACCB00B12253 /* StationsView.swift in Sources */,
+				803D75A3250AD3E0003F569D /* CommentTableViewCell.swift in Sources */,
 				804E619B24957E3200825150 /* MainTabBarVC.swift in Sources */,
 				8066D62F24AACAF8002A9E16 /* PostCell.swift in Sources */,
 				806E777624C9074700A95B89 /* Constants.swift in Sources */,
