@@ -84,8 +84,15 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
             
         }else if  tableView == homeView.recommendingTableView{
         }
+        cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
         addData(toCell: cell, withIndex: indexPath.row)
         return cell
+    }
+    @objc func dummyStation(){
+        let station = StationsVC()
+        station.modalPresentationStyle = .fullScreen
+        station.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(station, animated: true)
     }
     func addData(toCell cell: PostCell, withIndex index: Int ){
         cell.titleUILabel.text =  postData[index].title
