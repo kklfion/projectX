@@ -18,7 +18,11 @@ class StationsView: UIView {
         super.init(coder: coder)
         setupViews()
     }
-    
+    let topViewContainer: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        return view
+    }()
     let backgroundImageView: UIImageView = {
         let iv = UIImageView()
         iv.backgroundColor = .blue
@@ -65,7 +69,7 @@ class StationsView: UIView {
         let label = UILabel()
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: Constants.mainTextFontSize)
-        label.text = "Yeeet. Blah blah. Can I graduate on time. I want to drink. Maybe a boba too! - Jordon"
+        label.text = "Yeeet. Blah blah. Can I graduate on time. I want to drink. Maybe a boba too!"
         return label
     }()
     let segmentedControl: UISegmentedControl = {
@@ -78,24 +82,46 @@ class StationsView: UIView {
         //sc.addTarget(self, action: #selector(performAnimation), for: .valueChanged)
         return sc
     }()
+    let stationsTableView: UITableView = {
+        let tableview = UITableView()
+        tableview.backgroundColor = UIColor.init(red: 223/255.0, green: 230/255.0, blue: 233/255.0, alpha: 1.0)
+        tableview.separatorStyle = .none
+        return tableview
+    }()
     
+    var topViewContainerTopConstraint: NSLayoutConstraint?
     
     func setupViews(){
-        [backgroundImageView, frontImageView, followersLabel,stationInfoLabel,stationNameLabel,followButton,segmentedControl].forEach({self.addSubview($0)})
+        self.backgroundColor = .white 
+        [topViewContainer, stationsTableView].forEach {self.addSubview($0)}
+        topViewContainer.addAnchors(top: nil,
+                                    leading: self.leadingAnchor,
+                                    bottom: nil,
+                                    trailing: self.trailingAnchor,
+                                    size: .init(width: self.frame.width, height: self.frame.height*0.3))
+        topViewContainerTopConstraint = topViewContainer.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 0)
+        topViewContainerTopConstraint?.isActive = true
+        layoutIfNeeded()//foces to setup proper frame?!?!??!  super important ahahah
+        stationsTableView.addAnchors(top: topViewContainer.bottomAnchor,
+                                     leading: self.leadingAnchor,
+                                     bottom: self.bottomAnchor,
+                                     trailing: self.trailingAnchor, padding: .init(top: 10, left: 0, bottom: 0, right: 0))
+         
+        [backgroundImageView, frontImageView, followersLabel,stationInfoLabel,stationNameLabel,followButton,segmentedControl].forEach({topViewContainer.addSubview($0)})
         
-        backgroundImageView.addAnchors(top: self.topAnchor,
-                                       leading: self.leadingAnchor,
+        backgroundImageView.addAnchors(top: topViewContainer.topAnchor,
+                                       leading: topViewContainer.leadingAnchor,
                                        bottom: nil,
-                                       trailing: self.trailingAnchor,
-                                       size: .init(width: self.frame.width, height: self.frame.height / 2))
+                                       trailing: topViewContainer.trailingAnchor,
+                                       size: .init(width: topViewContainer.frame.width, height: topViewContainer.frame.height / 2))
         frontImageView.addAnchors(top: nil,
-                                  leading: self.leadingAnchor,
+                                  leading: topViewContainer.leadingAnchor,
                                   bottom: nil,
                                   trailing: nil,
                                   padding: .init(top: 0, left: 15, bottom: 0, right: 0),
-                                  size: .init(width: self.frame.height/3, height: self.frame.height/3))
+                                  size: .init(width: topViewContainer.frame.height/3, height: topViewContainer.frame.height/3))
         frontImageView.centerYAnchor.constraint(equalTo: backgroundImageView.bottomAnchor).isActive = true
-        frontImageView.layer.cornerRadius = ((self.frame.height/3) / 2)
+        frontImageView.layer.cornerRadius = ((topViewContainer.frame.height/3) / 2)
         
         stationNameLabel.addAnchors(top: nil,
                                     leading: frontImageView.trailingAnchor,
@@ -108,16 +134,16 @@ class StationsView: UIView {
                                   trailing: nil,
                                   padding: .init(top: 10, left: 0, bottom: 0, right: 0))
         stationInfoLabel.addAnchors(top: frontImageView.bottomAnchor,
-                                    leading: self.leadingAnchor,
+                                    leading: topViewContainer.leadingAnchor,
                                     bottom: nil, trailing: nil,
-                                    padding: .init(top: 10, left: 25, bottom: 0, right: 0), size: .init(width: self.frame.width - 50, height: 0))
-        segmentedControl.addAnchors(top: nil, leading: self.leadingAnchor,
-                                    bottom: self.bottomAnchor,
-                                    trailing: self.trailingAnchor)
+                                    padding: .init(top: 10, left: 25, bottom: 0, right: 0), size: .init(width: topViewContainer.frame.width - 50, height: 0))
+        segmentedControl.addAnchors(top: nil, leading: topViewContainer.leadingAnchor,
+                                    bottom: topViewContainer.bottomAnchor,
+                                    trailing: topViewContainer.trailingAnchor)
         followButton.addAnchors(top: backgroundImageView.bottomAnchor,
                                 leading: nil,
                                 bottom: nil,
-                                trailing: self.trailingAnchor,
+                                trailing: topViewContainer.trailingAnchor,
                                 padding: .init(top: 10, left: 0, bottom: 0, right: 15))
     }
 
