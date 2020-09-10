@@ -19,20 +19,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         if let windowScene = (scene as? UIWindowScene){
             let window = UIWindow(windowScene: windowScene)
-            let main = MainContainerVC()
-            
-            let temp = StationsVC()
-            let tempnv = UINavigationController(rootViewController: temp)
-            
+            let main = MainContainerVC() 
             let vc = LoginViewController()
-            let nv = UINavigationController(rootViewController: vc)
-            
             if Auth.auth().currentUser != nil {
                 print("User is signed in! \(Auth.auth().currentUser?.email)")
-                window.rootViewController = main//tempnv //main
+                window.rootViewController = UINavigationController(rootViewController: main)
             } else {
                 print("Need to login")
-                window.rootViewController = nv
+                window.rootViewController = UINavigationController(rootViewController: vc)
             }
             self.window = window
             window.makeKeyAndVisible()

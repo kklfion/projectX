@@ -31,6 +31,15 @@ class PostViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        self.navigationController?.isToolbarHidden = false
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        self.navigationController?.isToolbarHidden = true
+    }
+    
     //MARK: Keyboard notifications + comment view setup 
     private func setupKeyboardCommentView(){
         commentView = AddNewCommentView()
@@ -78,7 +87,6 @@ class PostViewController: UIViewController {
 
     //MARK: ToolBar setup and handlers
     private func setupToolbar(){
-        self.navigationController?.isToolbarHidden = false
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
         let shareButton = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up")?.withTintColor(.black, renderingMode: .alwaysOriginal), style: .plain, target: self, action: #selector(shareButtonPushed))
         let commentButton = UIBarButtonItem(image: UIImage(systemName: "text.bubble")?.withTintColor(.black, renderingMode: .alwaysOriginal), style: .plain, target: self, action: #selector(createCommentButtonPushed))
