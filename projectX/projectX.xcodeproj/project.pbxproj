@@ -11,6 +11,9 @@
 		803D75A3250AD3E0003F569D /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D759F250AD3E0003F569D /* CommentTableViewCell.swift */; };
 		803D75A4250AD3E0003F569D /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75A0250AD3E0003F569D /* PostView.swift */; };
 		803D75A5250AD3E0003F569D /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75A1250AD3E0003F569D /* PostViewController.swift */; };
+		803D75AA250AD74E003F569D /* CommentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75A9250AD74E003F569D /* CommentModel.swift */; };
+		803D75AC250AD75F003F569D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75AB250AD75F003F569D /* User.swift */; };
+		803D75AE250AD786003F569D /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75AD250AD786003F569D /* Station.swift */; };
 		804E618724957D0C00825150 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E618624957D0C00825150 /* AppDelegate.swift */; };
 		804E618924957D0C00825150 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E618824957D0C00825150 /* SceneDelegate.swift */; };
 		804E618B24957D0C00825150 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E618A24957D0C00825150 /* ViewController.swift */; };
@@ -47,6 +50,9 @@
 		803D759F250AD3E0003F569D /* CommentTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
 		803D75A0250AD3E0003F569D /* PostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		803D75A1250AD3E0003F569D /* PostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
+		803D75A9250AD74E003F569D /* CommentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentModel.swift; sourceTree = "<group>"; };
+		803D75AB250AD75F003F569D /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		803D75AD250AD786003F569D /* Station.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 		804E618324957D0C00825150 /* projectX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = projectX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		804E618624957D0C00825150 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		804E618824957D0C00825150 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -118,6 +124,17 @@
 			path = IndividualPost;
 			sourceTree = "<group>";
 		};
+		803D75A8250AD700003F569D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				806B790424B817AD002B45BD /* PostModel.swift */,
+				803D75A9250AD74E003F569D /* CommentModel.swift */,
+				803D75AB250AD75F003F569D /* User.swift */,
+				803D75AD250AD786003F569D /* Station.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		804E617A24957D0C00825150 = {
 			isa = PBXGroup;
 			children = (
@@ -141,6 +158,7 @@
 			children = (
 				80FDD6A4249968FF00304007 /* MainContainerVC.swift */,
 				804E619A24957E3200825150 /* MainTabBarVC.swift */,
+				803D75A8250AD700003F569D /* Models */,
 				803D759D250AD3A5003F569D /* IndividualPost */,
 				806E777424C7C6FA00A95B89 /* Utilities */,
 				804E61AB24980E8400825150 /* ProfileTableVC */,
@@ -200,7 +218,6 @@
 				804E61A424980DFD00825150 /* HomeVC.swift */,
 				80BB37AF24D7ACCB00B12253 /* StationsView.swift */,
 				80BB37B124D8C50700B12253 /* StationsVC.swift */,
-				806B790424B817AD002B45BD /* PostModel.swift */,
 				8066D62E24AACAF8002A9E16 /* PostCell.swift */,
 			);
 			path = HomeTableVC;
@@ -357,6 +374,7 @@
 				8081185624C262910032D46D /* LoginView.swift in Sources */,
 				806E777A24C9255F00A95B89 /* Data.swift in Sources */,
 				804E618724957D0C00825150 /* AppDelegate.swift in Sources */,
+				803D75AE250AD786003F569D /* Station.swift in Sources */,
 				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,
 				804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */,
 				803D75A4250AD3E0003F569D /* PostView.swift in Sources */,
@@ -367,9 +385,11 @@
 				80CA4FC624C4CA2900B66D6B /* SignUpViewController.swift in Sources */,
 				804E618924957D0C00825150 /* SceneDelegate.swift in Sources */,
 				80CA4FC824C4CA3E00B66D6B /* SignUpView.swift in Sources */,
+				803D75AA250AD74E003F569D /* CommentModel.swift in Sources */,
 				803D75A5250AD3E0003F569D /* PostViewController.swift in Sources */,
 				803D75A2250AD3E0003F569D /* AddNewCommentView.swift in Sources */,
 				80FDD6A5249968FF00304007 /* MainContainerVC.swift in Sources */,
+				803D75AC250AD75F003F569D /* User.swift in Sources */,
 				804E61A524980DFD00825150 /* HomeVC.swift in Sources */,
 				80BB37B024D7ACCB00B12253 /* StationsView.swift in Sources */,
 				803D75A3250AD3E0003F569D /* CommentTableViewCell.swift in Sources */,

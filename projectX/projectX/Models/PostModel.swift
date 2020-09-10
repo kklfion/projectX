@@ -36,7 +36,5 @@ struct PostModel{
         self.commentsCount = commentsCount
         self.station = station
         self.timestamp = timestamp
-
     }
-    
 }
