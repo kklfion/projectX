@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class MainContainerVC: UIViewController {
     // MARK: - variables
@@ -20,7 +21,9 @@ class MainContainerVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureMainTabBarVC()
+        //Data.fakeSomeData()
     }
+
     // MARK: - configure child VCs
     func configureSideBarVC(){
         if(sideBarMenu == nil){

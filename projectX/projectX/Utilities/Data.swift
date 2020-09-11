@@ -6,7 +6,25 @@
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
 
-import UIKit
+import FirebaseFirestore
+
+struct Data{
+    static func fakeSomeData(){
+        let post = Post(stationID: "123", stationName: "p", likes: 1, userInfo: User(), title: "k", text: "text", date: Date(), imageURL: nil)
+        let db = Firestore.firestore()
+        
+        let batch = db.batch()
+        batch.add(post: post)
+        
+        batch.commit { error in
+          if let error = error {
+            print("Error populating Firestore: \(error)")
+          } else {
+            print("Batch committed!")
+          }
+        }
+    }
+}
 
 struct  FakePostData{
     func giveMeSomeData() -> [PostModel]{
@@ -25,6 +43,7 @@ struct  FakePostData{
         
         return Data
     }
+    
     
     
 }

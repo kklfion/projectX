@@ -33,7 +33,7 @@ class AddNewCommentView: UIView {
         label.numberOfLines = 1
         return label
     }()
-    private lazy var closeButton: UIButton = {
+     lazy var closeButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "xmark.circle")?.withConfiguration(symbolsConfig).withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
         return button
@@ -65,9 +65,6 @@ class AddNewCommentView: UIView {
         button.clipsToBounds = true
         return button
     }()
-    
-
-    
     private func setupViews(){
         self.backgroundColor = .white
         self.layer.shadowColor = UIColor.black.cgColor

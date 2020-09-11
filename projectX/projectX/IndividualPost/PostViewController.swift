@@ -27,6 +27,7 @@ class PostViewController: UIViewController {
         setupTableView()
         setupToolbar()
         setupKeyboardCommentView()
+        addDissmissForCommentView()
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -38,6 +39,12 @@ class PostViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         self.navigationController?.isToolbarHidden = true
+    }
+    private func addDissmissForCommentView(){
+        commentView?.closeButton.addTarget(self, action: #selector(didTapDissmissNewComment), for: .touchUpInside)
+    }
+    @objc func didTapDissmissNewComment(){
+        commentView?.commentTextView.endEditing(true)
     }
     
     //MARK: Keyboard notifications + comment view setup 

@@ -11,9 +11,11 @@
 		803D75A3250AD3E0003F569D /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D759F250AD3E0003F569D /* CommentTableViewCell.swift */; };
 		803D75A4250AD3E0003F569D /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75A0250AD3E0003F569D /* PostView.swift */; };
 		803D75A5250AD3E0003F569D /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75A1250AD3E0003F569D /* PostViewController.swift */; };
-		803D75AA250AD74E003F569D /* CommentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75A9250AD74E003F569D /* CommentModel.swift */; };
+		803D75AA250AD74E003F569D /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75A9250AD74E003F569D /* Comment.swift */; };
 		803D75AC250AD75F003F569D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75AB250AD75F003F569D /* User.swift */; };
 		803D75AE250AD786003F569D /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75AD250AD786003F569D /* Station.swift */; };
+		803D75B3250AE531003F569D /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75B2250AE531003F569D /* Post.swift */; };
+		803D75B5250B079E003F569D /* FirebaseExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75B4250B079E003F569D /* FirebaseExtension.swift */; };
 		804E618724957D0C00825150 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E618624957D0C00825150 /* AppDelegate.swift */; };
 		804E618924957D0C00825150 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E618824957D0C00825150 /* SceneDelegate.swift */; };
 		804E618B24957D0C00825150 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E618A24957D0C00825150 /* ViewController.swift */; };
@@ -50,9 +52,11 @@
 		803D759F250AD3E0003F569D /* CommentTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
 		803D75A0250AD3E0003F569D /* PostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		803D75A1250AD3E0003F569D /* PostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
-		803D75A9250AD74E003F569D /* CommentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentModel.swift; sourceTree = "<group>"; };
+		803D75A9250AD74E003F569D /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		803D75AB250AD75F003F569D /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		803D75AD250AD786003F569D /* Station.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
+		803D75B2250AE531003F569D /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		803D75B4250B079E003F569D /* FirebaseExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseExtension.swift; sourceTree = "<group>"; };
 		804E618324957D0C00825150 /* projectX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = projectX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		804E618624957D0C00825150 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		804E618824957D0C00825150 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -127,9 +131,11 @@
 			isa = PBXGroup;
 			children = (
 				806B790424B817AD002B45BD /* PostModel.swift */,
-				803D75A9250AD74E003F569D /* CommentModel.swift */,
 				803D75AB250AD75F003F569D /* User.swift */,
+				803D75A9250AD74E003F569D /* Comment.swift */,
 				803D75AD250AD786003F569D /* Station.swift */,
+				803D75B2250AE531003F569D /* Post.swift */,
+				803D75B4250B079E003F569D /* FirebaseExtension.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -385,6 +391,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8081185424C2626C0032D46D /* LoginViewController.swift in Sources */,
+				803D75B5250B079E003F569D /* FirebaseExtension.swift in Sources */,
 				804E618B24957D0C00825150 /* ViewController.swift in Sources */,
 				804E619D24980C9400825150 /* NotificationsTableVC.swift in Sources */,
 				8081185624C262910032D46D /* LoginView.swift in Sources */,
@@ -393,6 +400,7 @@
 				803D75AE250AD786003F569D /* Station.swift in Sources */,
 				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,
 				804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */,
+				803D75B3250AE531003F569D /* Post.swift in Sources */,
 				803D75A4250AD3E0003F569D /* PostView.swift in Sources */,
 				806E777824C9076200A95B89 /* Extensions.swift in Sources */,
 				806B790524B817AD002B45BD /* PostModel.swift in Sources */,
@@ -401,7 +409,7 @@
 				80CA4FC624C4CA2900B66D6B /* SignUpViewController.swift in Sources */,
 				804E618924957D0C00825150 /* SceneDelegate.swift in Sources */,
 				80CA4FC824C4CA3E00B66D6B /* SignUpView.swift in Sources */,
-				803D75AA250AD74E003F569D /* CommentModel.swift in Sources */,
+				803D75AA250AD74E003F569D /* Comment.swift in Sources */,
 				803D75A5250AD3E0003F569D /* PostViewController.swift in Sources */,
 				803D75A2250AD3E0003F569D /* AddNewCommentView.swift in Sources */,
 				80FDD6A5249968FF00304007 /* MainContainerVC.swift in Sources */,
