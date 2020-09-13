@@ -62,7 +62,7 @@ extension Post{
         "stationID": stationID,
         "stationName": stationName,
         "likes": likes,
-        "userInfo": "not implemented",
+        "userInfo": userInfo,
         "title": title,
         "text": text,
         "date": Timestamp(date:date),

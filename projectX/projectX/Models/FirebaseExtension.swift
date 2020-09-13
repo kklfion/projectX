@@ -19,6 +19,9 @@ extension Firestore{
     var comments: CollectionReference{
         return self.collection("comments")
     }
+    var users: CollectionReference{
+        return self.collection("users")
+    }
 }
 
 
@@ -33,6 +36,9 @@ extension Firestore{
     }
     func add(comment: Comment) {
       self.comments.document(comment.documentID).setData(comment.documentData)
+    }
+    func add(user: User) {
+      self.users.document(user.documentID).setData(user.documentData)
     }
 }
 
@@ -50,5 +56,9 @@ extension WriteBatch{
     func add(comment: Comment) {
       let document = Firestore.firestore().comments.document(comment.documentID)
       self.setData(comment.documentData, forDocument: document)
+    }
+    func add(user: User) {
+      let document = Firestore.firestore().users.document(user.documentID)
+      self.setData(user.documentData, forDocument: document)
     }
 }

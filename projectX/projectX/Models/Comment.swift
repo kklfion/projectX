@@ -51,7 +51,7 @@ extension Comment{
     var documentData: [String: Any] {
       return [
         "postID": postID,
-        "userInfo": "not implemented",
+        "userInfo": userInfo,
         "text": text,
         "likes": likes,
         "date": Timestamp(date:date)

@@ -91,7 +91,7 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     @objc func dummyStation(){
         let station = StationsVC()
         station.modalPresentationStyle = .fullScreen
-        station.hidesBottomBarWhenPushed = true
+        //station.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(station, animated: true)
     }
     func addData(toCell cell: PostCell, withIndex index: Int ){

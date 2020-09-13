@@ -10,12 +10,13 @@ import FirebaseFirestore
 
 struct Data{
     static func fakeSomeData(){
-        let post = Post(stationID: "123", stationName: "p", likes: 1, userInfo: User(), title: "k", text: "text", date: Date(), imageURL: nil)
+        var user = User(name: "sup", email: "sup@gmai.com")
+        user.title = "suuup"
         let db = Firestore.firestore()
-        
+
         let batch = db.batch()
-        batch.add(post: post)
-        
+        batch.add(user: user)
+
         batch.commit { error in
           if let error = error {
             print("Error populating Firestore: \(error)")
