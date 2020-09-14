@@ -37,6 +37,40 @@ struct Post{
     var imageURL: URL?
 }
 extension Post{
+    /// Initializes a post from a dictionary.
+    private init?(documentID: String, dictionary: [String : Any]) {
+        
+        guard let stationID = dictionary["stationID"] as? String else {return nil}
+        guard let stationName = dictionary["stationName"] as? String else {return nil}
+        guard let likes = dictionary["likes"] as? Int else {return nil}
+        guard let userDict = dictionary["userInfo"] as? [String: Any] else {return nil}
+        guard let title = dictionary["title"] as? String else {return nil}
+        guard let text = dictionary["text"] as? String else {return nil}
+        guard let timestamp = dictionary["date"] as? Timestamp else {return nil}
+        let imageURL = dictionary["imageURL"] as? URL ?? nil
+        
+        guard let userInfo = User(dictionary: userDict) else {return nil}
+        
+        self.init(documentID: documentID,
+                  stationID: stationID,
+                  stationName: stationName,
+                  likes: likes,
+                  userInfo: userInfo,
+                  title: title,
+                  text: text,
+                  date: timestamp.dateValue(),
+                  imageURL: imageURL)
+    }
+
+//    public init?(document: QueryDocumentSnapshot) {
+//      self.init(documentID: document.documentID, dictionary: document.data())
+//    }
+
+    public init?(document: DocumentSnapshot) {
+      guard let data = document.data() else { return nil }
+      self.init(documentID: document.documentID, dictionary: data)
+    }
+    /// returns a new post object 
     public init(stationID: String,
                 stationName: String,
                 likes: Int,
@@ -62,16 +96,12 @@ extension Post{
         "stationID": stationID,
         "stationName": stationName,
         "likes": likes,
-        "userInfo": userInfo,
+        "userInfo": userInfo.documentData,
         "title": title,
         "text": text,
         "date": Timestamp(date:date),
         "imageURL": imageURL
       ]
     }
-}
-//MARK: static data
-extension Post{
-    static let defaultImageURL = URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/sslug.jpg?alt=media&token=aa2bda56-f5bc-4cc5-b9a2-ca37a6b4b7ae")!
 }
     

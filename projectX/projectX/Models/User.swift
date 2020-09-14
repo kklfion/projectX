@@ -48,7 +48,6 @@ extension User{
                   photoURL: photoURL ?? User.defaultImageURL,
                   email: email)
     }
-    
     /// A user object's representation in Firestore.
     public var documentData: [String: Any] {
         var data = [String: Any]()
@@ -63,6 +62,17 @@ extension User{
             data["titleImage"] = titleImage
         }
         return data
+    }
+    /// A convenience initializer for user data that won't be written to the Users collection
+    /// in Firestore. Unlike the other data types, users aren't dependent on Firestore to
+    /// generate unique identifiers, since they come with unique identifiers for free.
+    public init?(dictionary: [String: Any]) {
+      guard let name = dictionary["name"] as? String,
+        let userID = dictionary["userID"] as? String,
+        let photoURLString = dictionary["photoURL"] as? String,
+        let email = dictionary["photoURL"] as? String else { return nil }
+      guard let photoURL = URL(string: photoURLString) else { return nil }
+        self.init(userID: userID, name: name, photoURL: photoURL, email: email)
     }
 }
 //MARK: default data

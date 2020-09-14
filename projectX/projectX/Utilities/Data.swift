@@ -12,10 +12,10 @@ struct Data{
     static func fakeSomeData(){
         var user = User(name: "sup", email: "sup@gmai.com")
         user.title = "suuup"
+        let post = Post(stationID: "123141233123", stationName: "ucsc", likes: 12, userInfo: user, title: "Welcome to UCSC", text: "Best college ever", date: Date(), imageURL: nil)
         let db = Firestore.firestore()
-
         let batch = db.batch()
-        batch.add(user: user)
+        batch.add(post: post)
 
         batch.commit { error in
           if let error = error {
@@ -23,6 +23,23 @@ struct Data{
           } else {
             print("Batch committed!")
           }
+        }
+    }
+    static func readSomeData(){
+        var posts = [Post]()
+        let basicQuery = Firestore.firestore().posts
+        basicQuery.getDocuments { (snapshot, error) in
+          if let error = error {
+            print ("I got an error retrieving posts: \(error)")
+            return
+          }
+            guard let snapshot = snapshot else { return }
+          for postDocument in snapshot.documents {
+            if let newPost = Post(document: postDocument) {
+              posts.append(newPost)
+            }
+          }
+            print(posts)
         }
     }
 }
