@@ -10,8 +10,7 @@ import FirebaseFirestore
 
 struct Data{
     static func fakeSomeData(){
-        var user = User(name: "sup", email: "sup@gmai.com")
-        user.title = "suuup"
+        let user = User(name: "User User", email: "user@gmail.com")
         let post = Post(stationID: "123141233123", stationName: "ucsc", likes: 12, userInfo: user, title: "Welcome to UCSC", text: "Best college ever", date: Date(), imageURL: nil)
         let db = Firestore.firestore()
         let batch = db.batch()

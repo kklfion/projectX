@@ -31,6 +31,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
             self.window = window
             window.makeKeyAndVisible()
+            Data.fakeSomeData()
+            Data.readSomeData()
         }
     }
 

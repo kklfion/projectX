@@ -24,8 +24,7 @@ class MainContainerVC: UIViewController {
         let urls = URL(string: "p")!
         //let user = User()
         //print(user)
-        //Data.fakeSomeData()
-        Data.readSomeData()
+
     }
 
     // MARK: - configure child VCs

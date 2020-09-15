@@ -28,7 +28,33 @@ struct Station{
     var imageURL: URL?
 }
 extension Station{
-    public init(info: String,
+    /// Initializes a restaurant from a documentID and some data, ostensibly from Firestore.
+    private init?(documentID: String, dictionary: [String: Any]) {
+      guard let info = dictionary["info"] as? String,
+          let stationName = dictionary["stationName"] as? String,
+          let followers = dictionary["followers"] as? Int,
+          let timestamp = dictionary["date"] as? Timestamp,
+          let imageURLString = dictionary["imageURL"] as? String else { return nil }
+
+      guard let imageURL = URL(string: imageURLString) else { return nil }
+
+        self.init(documentID: documentID,
+                  info: info,
+                  stationName: stationName,
+                  followers: followers,
+                  date: timestamp.dateValue(),
+                  imageURL: imageURL)
+    }
+
+    init?(document: QueryDocumentSnapshot) {
+      self.init(documentID: document.documentID, dictionary: document.data())
+    }
+    init?(document: DocumentSnapshot) {
+      guard let data = document.data() else { return nil }
+      self.init(documentID: document.documentID, dictionary: data)
+    }
+  
+    init(info: String,
                 stationName: String,
                 followers: Int,
                 date: Date,

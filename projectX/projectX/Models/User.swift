@@ -8,7 +8,6 @@
 import FirebaseFirestore
 
 struct User {
-
     /// The ID of the user. This corresponds with a Firebase user's uid property.
     var userID: String
 
@@ -28,8 +27,6 @@ struct User {
     /// Optional title can be followed up by some special symbol: star, light bubble etc...
     /// that will be chosen from the set of given options
     var titleImage: String?
-
-
 }
 extension User{
     

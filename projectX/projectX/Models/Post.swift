@@ -37,9 +37,8 @@ struct Post{
     var imageURL: URL?
 }
 extension Post{
-    /// Initializes a post from a dictionary.
+    /// Initializes a post from a dictionary received from a snapshot
     private init?(documentID: String, dictionary: [String : Any]) {
-        
         guard let stationID = dictionary["stationID"] as? String else {return nil}
         guard let stationName = dictionary["stationName"] as? String else {return nil}
         guard let likes = dictionary["likes"] as? Int else {return nil}
@@ -47,7 +46,8 @@ extension Post{
         guard let title = dictionary["title"] as? String else {return nil}
         guard let text = dictionary["text"] as? String else {return nil}
         guard let timestamp = dictionary["date"] as? Timestamp else {return nil}
-        let imageURL = dictionary["imageURL"] as? URL ?? nil
+        guard let imageURLString = dictionary["imageURL"] as? String else {return nil}
+        guard let imageURL = URL(string: imageURLString) else {return nil}
         
         guard let userInfo = User(dictionary: userDict) else {return nil}
         
@@ -62,11 +62,11 @@ extension Post{
                   imageURL: imageURL)
     }
 
-//    public init?(document: QueryDocumentSnapshot) {
-//      self.init(documentID: document.documentID, dictionary: document.data())
-//    }
+    init?(document: QueryDocumentSnapshot) {
+      self.init(documentID: document.documentID, dictionary: document.data())
+    }
 
-    public init?(document: DocumentSnapshot) {
+    init?(document: DocumentSnapshot) {
       guard let data = document.data() else { return nil }
       self.init(documentID: document.documentID, dictionary: data)
     }
@@ -100,7 +100,7 @@ extension Post{
         "title": title,
         "text": text,
         "date": Timestamp(date:date),
-        "imageURL": imageURL
+        "imageURL": imageURL?.absoluteString
       ]
     }
 }
