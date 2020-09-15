@@ -14,14 +14,15 @@ struct Data{
         let post = Post(stationID: "123141233123", stationName: "ucsc", likes: 12, userInfo: user, title: "Welcome to UCSC", text: "Best college ever", date: Date(), imageURL: URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/sslug.jpg?alt=media&token=aa2bda56-f5bc-4cc5-b9a2-ca37a6b4b7ae")!)
         let db = Firestore.firestore()
         do {
-            let _ = try db.collection("posts").addDocument(from: post)
+            let _ = try db.collection("posts").addDocument(from: user)
+            //let _ = try db.users.document(user.documentID).setData(from: user)
         }
         catch {
                 print(error)
         }
     }
     static func readSomeData(){
-        let basicQuery = Firestore.firestore().posts.limit(to: 5)
+        let basicQuery = Firestore.firestore().posts.limit(to: 10)
         basicQuery.getDocuments { (snapshot, error) in
             if let error = error {
                 print ("I got an error retrieving posts: \(error)")
