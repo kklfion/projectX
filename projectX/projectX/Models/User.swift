@@ -6,8 +6,8 @@
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
 import FirebaseFirestore
-
-struct User {
+import FirebaseFirestoreSwift
+struct User: Codable {
     /// The ID of the user. This corresponds with a Firebase user's uid property.
     var userID: String
 
@@ -29,12 +29,10 @@ struct User {
     var titleImage: String?
 }
 extension User{
-    
     /// All users are stored by their userIDs for easier querying later.
     var documentID: String {
       return userID
     }
-    
     /// Returns a new User, providing a default name and photoURL if passed nil or left unspecified.
     public init(name: String? = "User",
                 photoURL: URL? = User.defaultImageURL,
@@ -44,32 +42,6 @@ extension User{
                   name: name ?? "User",
                   photoURL: photoURL ?? User.defaultImageURL,
                   email: email)
-    }
-    /// A user object's representation in Firestore.
-    public var documentData: [String: Any] {
-        var data = [String: Any]()
-        data["userID"] = userID
-        data["name"] = name
-        data["photoURL"] = photoURL.absoluteString
-        data["email"] = email
-        if let title = title{
-            data["title"] = title
-        }
-        if let titleImage = titleImage{
-            data["titleImage"] = titleImage
-        }
-        return data
-    }
-    /// A convenience initializer for user data that won't be written to the Users collection
-    /// in Firestore. Unlike the other data types, users aren't dependent on Firestore to
-    /// generate unique identifiers, since they come with unique identifiers for free.
-    public init?(dictionary: [String: Any]) {
-      guard let name = dictionary["name"] as? String,
-        let userID = dictionary["userID"] as? String,
-        let photoURLString = dictionary["photoURL"] as? String,
-        let email = dictionary["photoURL"] as? String else { return nil }
-      guard let photoURL = URL(string: photoURLString) else { return nil }
-        self.init(userID: userID, name: name, photoURL: photoURL, email: email)
     }
 }
 //MARK: default data

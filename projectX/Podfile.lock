@@ -266,6 +266,8 @@ PODS:
     - "gRPC-C++ (~> 1.28.0)"
     - leveldb-library (~> 1.22)
     - nanopb (~> 1.30905.0)
+  - FirebaseFirestoreSwift (0.4.0):
+    - FirebaseFirestore (>= 1.6.1, ~> 1.6)
   - FirebaseInstallations (1.5.0):
     - FirebaseCore (~> 6.8)
     - GoogleUtilities/Environment (~> 6.7)
@@ -336,6 +338,7 @@ DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Firestore
+  - FirebaseFirestoreSwift
 
 SPEC REPOS:
   trunk:
@@ -347,6 +350,7 @@ SPEC REPOS:
     - FirebaseCore
     - FirebaseCoreDiagnostics
     - FirebaseFirestore
+    - FirebaseFirestoreSwift
     - FirebaseInstallations
     - GoogleAppMeasurement
     - GoogleDataTransport
@@ -367,6 +371,7 @@ SPEC CHECKSUMS:
   FirebaseCore: 7930a1946517d94256d857f97371ed993b55f7bd
   FirebaseCoreDiagnostics: 7535fe695737f8c5b350584292a70b7f8ff0357b
   FirebaseFirestore: 5ea7b0878363f9ec66bdcee0c29ad875d1b511ac
+  FirebaseFirestoreSwift: 2c46dbc1156db97dc4f6dd798d4f5b57b9c7fab6
   FirebaseInstallations: 3c520c951305cbf9ca54eb891ff9e6d1fd384881
   GoogleAppMeasurement: 345d365fd105e6682bf5084783a5352a3db26820
   GoogleDataTransport: af0c79193dc59acd37630b4833d0dc6912ae6bd5
@@ -378,6 +383,6 @@ SPEC CHECKSUMS:
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
   PromisesObjC: b48e0338dbbac2207e611750777895f7a5811b75
 
-PODFILE CHECKSUM: 666e2f4592554b0e56cdd1a1920e738626f3760f
+PODFILE CHECKSUM: 1f33e7f4baf61c019f836c735e34655bff62d34c
 
 COCOAPODS: 1.8.4

@@ -10,38 +10,32 @@ import FirebaseFirestore
 
 struct Data{
     static func fakeSomeData(){
-        let user = User(name: "User User", email: "user@gmail.com")
-        let post = Post(stationID: "123141233123", stationName: "ucsc", likes: 12, userInfo: user, title: "Welcome to UCSC", text: "Best college ever", date: Date(), imageURL: nil)
+        let user = User(name: "NEW USER", email: "user@gmail.com")
+        let post = Post(stationID: "123141233123", stationName: "ucsc", likes: 12, userInfo: user, title: "Welcome to UCSC", text: "Best college ever", date: Date(), imageURL: URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/sslug.jpg?alt=media&token=aa2bda56-f5bc-4cc5-b9a2-ca37a6b4b7ae")!)
         let db = Firestore.firestore()
-        let batch = db.batch()
-        batch.add(post: post)
-
-        batch.commit { error in
-          if let error = error {
-            print("Error populating Firestore: \(error)")
-          } else {
-            print("Batch committed!")
-          }
+        do {
+            let _ = try db.collection("posts").addDocument(from: post)
+        }
+        catch {
+                print(error)
         }
     }
     static func readSomeData(){
-        var posts = [Post]()
-        let basicQuery = Firestore.firestore().posts
+        let basicQuery = Firestore.firestore().posts.limit(to: 5)
         basicQuery.getDocuments { (snapshot, error) in
-          if let error = error {
-            print ("I got an error retrieving posts: \(error)")
-            return
-          }
-            guard let snapshot = snapshot else { return }
-          for postDocument in snapshot.documents {
-            if let newPost = Post(document: postDocument) {
-              posts.append(newPost)
+            if let error = error {
+                print ("I got an error retrieving posts: \(error)")
+                return
             }
-          }
+            guard let documents = snapshot?.documents else { return }
+            let posts = documents.compactMap { (querySnapshot) -> Post? in
+                return try? querySnapshot.data(as: Post.self)
+            }
             print(posts)
         }
     }
 }
+
 
 struct  FakePostData{
     func giveMeSomeData() -> [PostModel]{

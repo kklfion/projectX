@@ -8,6 +8,7 @@ target 'projectX' do
   # Pods for projectX
   # add the Firebase pod for Google Analytics
   pod 'Firebase/Auth'
+  pod 'FirebaseFirestoreSwift'
   pod 'Firebase/Analytics'
   pod 'Firebase/Firestore'
   pod 'Firebase/Core'
