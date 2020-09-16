@@ -1,14 +1,18 @@
-//
 //  NewPostViewController.swift
 //  projectX
 //
 //  Created by Radomyr Bezghin on 6/15/20.
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
-
 import UIKit
 import Firebase
 import FirebaseFirestore
+
+
+
+
+
+
 
 
 
@@ -16,6 +20,11 @@ let button = UIButton()
 var myTxtview = UITextView()
 var titlepost = UITextField()
 var postData = [String: Any]()
+
+var switchbar = UISwitch()
+var Anonymity = "false"
+var success = "No Errors"
+
 
 
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate{
@@ -121,7 +130,8 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         fixSpace1.width = 12
       
         // SWITCH UI
-        let switchbar = UISwitch()
+
+       // let switchbar = UISwitch()
         switchbar.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
         let ButtonView = UIView(frame: switchbar.frame)
         switchbar.sizeToFit()
@@ -380,6 +390,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         }
         else {
          button.setImage(UIImage(named: "people.png"), for: .normal)
+
         }
     }
     
@@ -418,6 +429,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     
     // cancel button
     @objc func buttonAction(_ sender:UIButton!) {
+
         
       // For stack/container code
       //  DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2){
@@ -432,6 +444,22 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     // https://www.hackingwithswift.com/read/4/3/choosing-a-website-uialertcontroller-action-sheets
     
         
+
+        
+      // For stack/container code
+      //  DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2){
+      //  let pop = Popup()
+      // self.view.addSubview(pop)
+      //   }
+        
+     //dismiss(animated: true, completion: nil)
+        
+    //Set up Ui alert controller
+        
+    // https://www.hackingwithswift.com/read/4/3/choosing-a-website-uialertcontroller-action-sheets
+    
+        
+
 
         let ac = UIAlertController(title: "Are you sure you want to discard your post", message: nil, preferredStyle: .alert)
         
@@ -451,42 +479,109 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     }
     
     
+    
+    
+    
+    
+    let notequal = [nil, "", "Title", "Enter your thoughts here..."]
+    func title(title: String) -> String {
+        if notequal.contains(title) {
+            return "1"
+        }
+        return title
+    }
+    func body(body: String) -> String {
+        if notequal.contains(body) {
+            return "2"
+        }
+        return body
+    }
+    func channel(channel: String) -> String {
+        if notequal.contains(channel) {
+            return "3"
+        }
+        return channel
+    }
+    func assertions(title: String, body: String, channel: String){
+       
+        if (title == "1" && body == "2" && channel == "3") {
+            let ac1 = UIAlertController(title: "Title, body, and channel are missing", message: "Please fill out these fields before posting", preferredStyle: .alert)
+            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
+            return present(ac1, animated: true)
+        }
+        else if title == "1" && body == "2" {
+            let ac1 = UIAlertController(title: "Title and body are missing", message: "Please fill out these fields before posting", preferredStyle: .alert)
+            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
+            return present(ac1, animated: true)
+        }
+        else if body == "2" && channel == "3" {
+            
+            let ac1 = UIAlertController(title: "Body and channel are missing", message: "Please fill out these fields before posting", preferredStyle: .alert)
+            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
+            return present(ac1, animated: true)
+        }
+        else if title == "1" && channel == "3" {
+             let ac1 = UIAlertController(title: "Title and channel are missing", message: "Please fill out these fields before posting", preferredStyle: .alert)
+             ac1.addAction(UIAlertAction(title: "Ok", style: .default))
+             return present(ac1, animated: true)
+        }
+        else if title == "1"{
+            let ac1 = UIAlertController(title: "Title is missing", message: "Please fill out this fields before posting", preferredStyle: .alert)
+            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
+                           return present(ac1, animated: true)
+            return present(ac1, animated: true)
+        }
+        else if body == "2"{
+             let ac1 = UIAlertController(title: "Body is missing", message: "Please fill out this fields before posting", preferredStyle: .alert)
+            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
+            return present(ac1, animated: true)
+        }
+        else if channel == "3"{
+             let ac1 = UIAlertController(title: "Channel is missing", message: "Please fill out this fields before posting", preferredStyle: .alert)
+             ac1.addAction(UIAlertAction(title: "Ok", style: .default))
+             return present(ac1, animated: true)
+        }
+        else {
+            if switchbar.isOn == false {
+                Anonymity = "true"
+            }
+            else if switchbar.isOn == true {
+                Anonymity = "false"
+            }
+            postData = [
+                               "Author's Anonymity": Anonymity,
+                               "title": titlepost.text!,
+                               "body": myTxtview.text!,
+                               "station": selectedchannel
+            ]
+            let db = Firestore.firestore()
+            db.collection("newPost").document(selectedchannel).setData(postData) { err in
+            if let err = err {
+                print("Error writing document: \(err)")
+            } else {
+                print("Document successfully written!")
+                }
+                              
+            }
+            return
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
     // post button
      @objc func postAction(sender: UIButton!) {
-        postData = [
-            "title": titlepost.text!,
-            "body": myTxtview.text!,
-            "station": selectedchannel
-        ]
-        let db = Firestore.firestore()
-        db.collection("newPost").document(selectedchannel).setData(postData) { err in
-               if let err = err {
-                   print("Error writing document: \(err)")
-               } else {
-                   print("Document successfully written!")
-               }
-           }
-        // Test for reading data
-        //uncomment to make sure it works
-        
-        //let Newpost = db.collection("newPost").document(selectedchannel)
-        //Newpost.getDocument { (document, error) in
-        //    if let document = document, document.exists {
-        //        let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
-        //        print("Document data: \(dataDescription)")
-        //    } else {
-        //        print("Document does not exist")
-        //    }
-        //}
-        
-        
-        
-        
-        
-        
+        let check1 = title(title: titlepost.text!)
+        let check2 = body(body: myTxtview.text!)
+        let check3 = channel(channel: selectedchannel)
+        //Not sure how to do the author things yet, we can check for that too
+        assertions(title: check1, body: check2, channel: check3)
     }
+        
 }
-
-
 
 
