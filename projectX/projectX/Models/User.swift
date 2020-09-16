@@ -49,5 +49,5 @@ extension User{
 }
 //MARK: default data
 extension User{
-    static let defaultImageURL = URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/sslug.jpg?alt=media&token=aa2bda56-f5bc-4cc5-b9a2-ca37a6b4b7ae")!
+    static let defaultImageURL = URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/defaultUserIcon.png?alt=media&token=2e6edb8e-ac03-47fb-b58c-31bd6f3598e8")!
 }

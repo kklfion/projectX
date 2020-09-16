@@ -7,6 +7,7 @@
 //
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+
 struct Comment: Identifiable, Codable{
     /// property wrapper that stores id of the document associated with data
     @DocumentID var id: String?

@@ -26,18 +26,23 @@ struct Station:Identifiable, Codable{
     var date: Date
     
     /// Station photo url stored in the Firestore
-    var imageURL: URL?
+    var frontImageURL: URL?
+    
+    /// Station photo url stored in the Firestore
+    var backgroundImageURL: URL?
 }
 extension Station{
     init(info: String,
                 stationName: String,
                 followers: Int,
                 date: Date,
-                imageURL: URL?) {
+                frontImageURL: URL?,
+                backgroundImageURL: URL?) {
         self.info = info
         self.stationName = stationName
         self.followers = followers
         self.date = date
-        self.imageURL = imageURL
+        self.frontImageURL = frontImageURL
+        self.backgroundImageURL = backgroundImageURL
     }
 }

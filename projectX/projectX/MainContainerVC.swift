@@ -21,10 +21,11 @@ class MainContainerVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureMainTabBarVC()
-        
         //MARK: testing database
-        Data.fakeSomeData()
-        Data.readSomeData()
+        //StationsData.createStations()
+        //UsersData.createUsers()
+        //PostsData.createPosts()
+        //CommentsData.createComments()
     }
 
     // MARK: - configure child VCs
