@@ -5,7 +5,6 @@
 //  Created by Gurpreet Dhillon on 9/7/20.
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
-
 import UIKit
 
 class NotificationCell: UITableViewCell {
@@ -72,4 +71,3 @@ class NotificationCell: UITableViewCell {
         
 }
 }
-
