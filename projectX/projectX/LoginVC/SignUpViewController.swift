@@ -85,17 +85,14 @@ class SignUpViewController: UIViewController {
                 self.displayLoginErrorMessage(message: "Failed creating a new account.")
                 return
             }else if let authResult = authResult{
-                let newUser =  [
-                "firstname": name,
-                "lastname":lastname,
-                "uid": authResult.user.uid
-                ]
+                let newUser = User(name: name + " " + lastname,
+                                   photoURL: nil,
+                                   email: email)
                 let db = Firestore.firestore()
-                db.collection("users").document(authResult.user.uid).setData(newUser)
-                    { (error) in
-                        if let error = error{
-                            print("Haha no new us3r for you, heres why: \(error)")
-                        }
+                do {
+                    try db.collection("users").document(newUser.documentID).setData(from: newUser)
+                } catch let error{
+                    print("no new user for you: \(error)")
                 }
             }
             //sending authentication email
