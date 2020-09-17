@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		801A37A62514024800F22A11 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A37A52514024800F22A11 /* NotificationCell.swift */; };
+		801A37A82514025D00F22A11 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A37A72514025D00F22A11 /* NotificationView.swift */; };
 		803D75A2250AD3E0003F569D /* AddNewCommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D759E250AD3E0003F569D /* AddNewCommentView.swift */; };
 		803D75A3250AD3E0003F569D /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D759F250AD3E0003F569D /* CommentTableViewCell.swift */; };
 		803D75A4250AD3E0003F569D /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803D75A0250AD3E0003F569D /* PostView.swift */; };
@@ -48,6 +50,8 @@
 /* Begin PBXFileReference section */
 		4A216F81A4DD94A6239F9BAE /* Pods-projectX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-projectX.debug.xcconfig"; path = "Target Support Files/Pods-projectX/Pods-projectX.debug.xcconfig"; sourceTree = "<group>"; };
 		6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_projectX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		801A37A52514024800F22A11 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
+		801A37A72514025D00F22A11 /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		803D759E250AD3E0003F569D /* AddNewCommentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewCommentView.swift; sourceTree = "<group>"; };
 		803D759F250AD3E0003F569D /* CommentTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
 		803D75A0250AD3E0003F569D /* PostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
@@ -203,6 +207,8 @@
 		804E619E24980D2A00825150 /* NotificationsTableVC */ = {
 			isa = PBXGroup;
 			children = (
+				801A37A72514025D00F22A11 /* NotificationView.swift */,
+				801A37A52514024800F22A11 /* NotificationCell.swift */,
 				804E619C24980C9400825150 /* NotificationsTableVC.swift */,
 			);
 			path = NotificationsTableVC;
@@ -404,6 +410,7 @@
 				803D75A4250AD3E0003F569D /* PostView.swift in Sources */,
 				806E777824C9076200A95B89 /* Extensions.swift in Sources */,
 				806B790524B817AD002B45BD /* PostModel.swift in Sources */,
+				801A37A82514025D00F22A11 /* NotificationView.swift in Sources */,
 				8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */,
 				804E61A124980DB000825150 /* SidebarVC.swift in Sources */,
 				80CA4FC624C4CA2900B66D6B /* SignUpViewController.swift in Sources */,
@@ -414,6 +421,7 @@
 				803D75A2250AD3E0003F569D /* AddNewCommentView.swift in Sources */,
 				80FDD6A5249968FF00304007 /* MainContainerVC.swift in Sources */,
 				803D75AC250AD75F003F569D /* User.swift in Sources */,
+				801A37A62514024800F22A11 /* NotificationCell.swift in Sources */,
 				804E61A524980DFD00825150 /* HomeVC.swift in Sources */,
 				80BB37B024D7ACCB00B12253 /* StationsView.swift in Sources */,
 				803D75A3250AD3E0003F569D /* CommentTableViewCell.swift in Sources */,

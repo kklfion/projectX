@@ -56,7 +56,7 @@ class NotificationsTableVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
       
-        //tableView.register(NotificationCell.self, forCellReuseIdentifier: NotificationCell.CellID)
+        tableView.register(NotificationCell.self, forCellReuseIdentifier: NotificationCell.CellID)
         tableView.rowHeight = UITableView.automaticDimension
        
         tableView.estimatedRowHeight = 100
@@ -91,29 +91,19 @@ extension NotificationsTableVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         
-//        guard let cell = tableView.dequeueReusableCell(withIdentifier: NotificationCell.CellID, for: indexPath) as? NotificationCell else {
-//                   fatalError("Wrong cell")
-//               }
-//
-//               addData1(toCell: cell, withIndex: indexPath.row)
-//               return cell
-        
-        
-        
-        
-        
-        return UITableViewCell()
-        
-        
-      
-    }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: NotificationCell.CellID, for: indexPath) as? NotificationCell else {
+                   fatalError("Wrong cell")
+               }
+               addData1(toCell: cell, withIndex: indexPath.row)
+               return cell
+        }
 
-//    func addData1(toCell cell: NotificationCell, withIndex index: Int ){
-//        cell.dateUILabel.text = notificationsdate[index]
-//        cell.previewtxtLabel.text = notifications[index]
-//        cell.notifimage.image = UIImage(named: notificationspic[index])
-//
-//    }
+    func addData1(toCell cell: NotificationCell, withIndex index: Int ){
+        cell.dateUILabel.text = notificationsdate[index]
+        cell.previewtxtLabel.text = notifications[index]
+        cell.notifimage.image = UIImage(named: notificationspic[index])
+
+    }
     
 
 }
