@@ -39,8 +39,9 @@ extension User{
     /// Returns a new User, providing a default name and photoURL if passed nil or left unspecified.
     public init(name: String? = "User",
                 photoURL: URL? = User.defaultImageURL,
-                email: String) {
-        let uid = UUID().uuidString
+                email: String,
+                uid: String) {
+        
         self.init(userID: uid,
                   name: name ?? "User",
                   photoURL: photoURL ?? User.defaultImageURL,

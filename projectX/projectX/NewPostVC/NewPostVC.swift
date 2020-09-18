@@ -22,7 +22,7 @@ var titlepost = UITextField()
 var postData = [String: Any]()
 
 var switchbar = UISwitch()
-var Anonymity = "false"
+var Anonymity = false
 var success = "No Errors"
 
 
@@ -543,10 +543,10 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         }
         else {
             if switchbar.isOn == false {
-                Anonymity = "true"
+                Anonymity = true
             }
             else if switchbar.isOn == true {
-                Anonymity = "false"
+                Anonymity = false
             }
             postData = [
                                "Author's Anonymity": Anonymity,
