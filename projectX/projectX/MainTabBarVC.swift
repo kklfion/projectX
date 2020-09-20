@@ -7,77 +7,73 @@
 //
 
 import UIKit
-
-protocol TabBarSideBarDelegate {
-    func handleMenuToggle()
-}
-
-class MainTabBarVC: UITabBarController, UITabBarControllerDelegate {
-    
-    var tabBarDelegate: TabBarSideBarDelegate?
-    
-    var sidebar: SidebarVC!
-    var newPost: NewPostVC!
-    var home: HomeTableVC!
-    var homeNav: UINavigationController!
-    var notifications: NotificationsTableVC!
-    var profile: ProfileTableVC!
-    let imageSize = 25 //used to size image for tabbar items
-    
+class MainTabBarVC: UITabBarController {
+    let transition = SideBarSlidingTransition() // for custom transitioning of the sidebar
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
-        //create items&images
+        setupSideBarItems()
+    }
+    private func setupSideBarItems(){
         let sidebarItem = UITabBarItem()
-        sidebarItem.image = createSizedImage(named: "menu_icon", size: imageSize)
+        sidebarItem.image = UIImage(systemName: "sidebar.left")
+        sidebarItem.title = "Sidebar"
         let newPostItem = UITabBarItem()
-        newPostItem.image = createSizedImage(named: "newpost_icon", size: imageSize)
+        newPostItem.image = UIImage(systemName: "pencil")
+        newPostItem.title = "New Post"
         let homeItem = UITabBarItem()
-        homeItem.image = createSizedImage(named: "home_icon", size: imageSize)
+        homeItem.image = UIImage(systemName: "house")
+        homeItem.title = "Home"
         let notificationsItem = UITabBarItem()
-        notificationsItem.image = createSizedImage(named: "notifications_icon", size: imageSize)
+        notificationsItem.image = UIImage(systemName: "envelope")
+        notificationsItem.title = "Mailroom"
         let profileItem = UITabBarItem()
-        profileItem.image = createSizedImage(named: "profile_icon", size: imageSize)
+        profileItem.image = UIImage(systemName: "person")
+        profileItem.title = "Profile"
         
-        sidebar = SidebarVC()
+        let sidebar = SidebarViewController()
         sidebar.tabBarItem = sidebarItem
-        newPost = NewPostVC()
+        let newPost = NewPostVC()
         newPost.tabBarItem = newPostItem
-        home = HomeTableVC()
+        let home = HomeTableVC()
         home.tabBarItem = homeItem
-        homeNav = UINavigationController(rootViewController: home)
-        notifications = NotificationsTableVC()
+        let homeNav = UINavigationController(rootViewController: home)
+        let notifications = NotificationsTableVC()
         notifications.tabBarItem = notificationsItem
-        profile = ProfileTableVC() // maybe need a container VC that has two other VCs
+        let profile = ProfileTableVC()
         profile.tabBarItem = profileItem
-        
+    
         self.viewControllers = [sidebar,homeNav,newPost,notifications,profile]
         self.selectedIndex = 1
-
-        
     }
+}
+extension MainTabBarVC: UITabBarControllerDelegate{
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         if viewController.isKind(of: NewPostVC.self){
-            let newPost = NewPostVC()
-            self.present(newPost, animated: true)
+            let vc = NewPostVC()
+            self.present(vc, animated: true)
             return false
         }
-        else if viewController.isKind(of: SidebarVC.self){
-            tabBarDelegate?.handleMenuToggle()
+        else if viewController.isKind(of: SidebarViewController.self){
+            let vc = SidebarViewController()
+            vc.modalPresentationStyle = .automatic
+            vc.transitioningDelegate = self
+            //let nvc = UINavigationController(rootViewController: vc)
+            self.present(vc, animated: true)
             return false
         }
         return true
     }
-    func createSizedImage(named: String, size: Int)  -> UIImage {
-        let image = UIImage(named: named)!
-        //resizing image
-        let size = CGSize(width: size, height: size)
-        var newImage: UIImage
-        let renderer = UIGraphicsImageRenderer(size: size)
-        newImage = renderer.image { (context) in
-             image.draw(in: CGRect(origin: .zero, size: size))
-        }
-        return newImage
+}
+extension MainTabBarVC: UIViewControllerTransitioningDelegate{
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        transition.isPresenting = true
+        return transition
+    }
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        transition.isPresenting = false
+        return transition
     }
 }
 

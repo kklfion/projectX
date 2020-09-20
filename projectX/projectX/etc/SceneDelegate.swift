@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let windowScene = (scene as? UIWindowScene){
             
             let window = UIWindow(windowScene: windowScene)
-            let main = MainContainerVC()
+            let main = MainTabBarVC()
             let vc = LoginViewController()
             if Auth.auth().currentUser != nil {
                 print("User is signed in! \(String(describing: Auth.auth().currentUser?.email))")

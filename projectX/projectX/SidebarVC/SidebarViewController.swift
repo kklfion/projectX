@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SidebarVC: UIViewController {
+class SidebarViewController: UIViewController {
     
     var scrollView: UIScrollView!
     
@@ -40,13 +40,14 @@ class SidebarVC: UIViewController {
         Button.contentHorizontalAlignment = .left
         Button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 60, bottom: 0, right: 0 )
         Button.sizeToFit()
+        Button.addTarget(self, action: #selector(didTapSettingsButton), for: .touchUpInside)
         self.view.addSubview(Button)
         
         //Setting image
         let myImage:UIImage = UIImage(named: "settings.png")!
         let myImageView:UIImageView = UIImageView()
-        myImageView.image = myImage
-        myImageView.frame = CGRect(x:35,y:UIScreen.main.bounds.size.height - 67,width:40,height:40)
+        myImageView.image = UIImage(systemName: "gearshape")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        myImageView.frame = CGRect(x:35,y:UIScreen.main.bounds.size.height - 67,width:20,height:20)
        self.view.addSubview(myImageView)
         
         
@@ -70,8 +71,8 @@ class SidebarVC: UIViewController {
         //Nightmode image
         let myImage1:UIImage = UIImage(named: "nightmode.png")!
         let myImageView1:UIImageView = UIImageView()
-        myImageView1.image = myImage1
-        myImageView1.frame = CGRect(x:35,y:UIScreen.main.bounds.size.height - 107,width:40,height:40)
+        myImageView1.image = UIImage(systemName: "moon.stars")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        myImageView1.frame = CGRect(x:35,y:UIScreen.main.bounds.size.height - 107,width:20,height:20)
         self.view.addSubview(myImageView1)
         
         
@@ -96,8 +97,8 @@ class SidebarVC: UIViewController {
         //Library image
         let myImage2:UIImage = UIImage(named: "library.png")!
         let myImageView2:UIImageView = UIImageView()
-        myImageView2.image = myImage2
-        myImageView2.frame = CGRect(x:35,y:UIScreen.main.bounds.size.height - 147,width:40,height:40)
+        myImageView2.image = UIImage(systemName: "book")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        myImageView2.frame = CGRect(x:35,y:UIScreen.main.bounds.size.height - 147,width:20,height:20)
         self.view.addSubview(myImageView2)
         
         
@@ -119,8 +120,8 @@ class SidebarVC: UIViewController {
         //friends image
         let myImage3:UIImage = UIImage(named: "people.png")!
         let myImageView3:UIImageView = UIImageView()
-        myImageView3.image = myImage3
-        myImageView3.frame = CGRect(x:35,y:UIScreen.main.bounds.size.height - 187,width:40,height:40)
+        myImageView3.image = UIImage(systemName: "person.2")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        myImageView3.frame = CGRect(x:35,y:UIScreen.main.bounds.size.height - 187,width:20,height:20)
         self.view.addSubview(myImageView3)
                
                
@@ -143,10 +144,10 @@ class SidebarVC: UIViewController {
         self.view.addSubview(Button4)
         
         //match image
-        let myImage4:UIImage = UIImage(named: "match.png")!
+        let myImage4 = UIImage(systemName: "heart")
         let myImageView4:UIImageView = UIImageView()
-        myImageView4.image = myImage4
-        myImageView4.frame = CGRect(x:35,y:UIScreen.main.bounds.size.height - 227,width:40,height:40)
+        myImageView4.image = UIImage(systemName: "heart")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        myImageView4.frame = CGRect(x:35,y:UIScreen.main.bounds.size.height - 227,width:20,height:20)
         self.view.addSubview(myImageView4)
         
         
@@ -219,13 +220,16 @@ class SidebarVC: UIViewController {
         
         // https://stackoverflow.com/questions/4135032/ios-uibutton-resize-according-to-text-length
         // This helped with button fram auto layout
-        
-        
-        
-        
-        
-        
-        
+
+    }
+}
+//MARK: handlers
+extension SidebarViewController{
+    @objc func didTapSettingsButton(){
+        let settings = SettingsTableViewController()
+        settings.modalPresentationStyle = .fullScreen
+        settings.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(settings, animated: true)
     }
 }
 

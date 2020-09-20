@@ -90,7 +90,7 @@ class SignUpViewController: UIViewController {
                                    email: email)
                 let db = Firestore.firestore()
                 do {
-                    try db.collection("users").document(newUser.documentID).setData(from: newUser)
+                    try db.collection("users").document(newUser.documentID ?? "").setData(from: newUser)
                 } catch let error{
                     print("no new user for you: \(error)")
                 }
