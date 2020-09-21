@@ -10,6 +10,9 @@ import FirebaseFirestoreSwift
 struct User: Identifiable, Codable {
     /// property wrapper that stores id of the document associated with data
     @DocumentID var id: String?
+    
+    /// The ID of the user. This corresponds with a Firebase user's uid property.
+    var userID: String
 
     /// The display name of the user. Users with unspecified display names are given a default name.
     var name: String
@@ -29,11 +32,17 @@ struct User: Identifiable, Codable {
     var titleImage: String?
 }
 extension User{
+    /// All users are stored by their userIDs for easier querying later.
+    var documentID: String {
+      return userID
+    }
     /// Returns a new User, providing a default name and photoURL if passed nil or left unspecified.
     public init(name: String? = "User",
                 photoURL: URL? = User.defaultImageURL,
                 email: String) {
-        self.init(name: name ?? "User",
+        let uid = UUID().uuidString
+        self.init(userID: uid,
+                  name: name ?? "User",
                   photoURL: photoURL ?? User.defaultImageURL,
                   email: email)
     }
