@@ -40,10 +40,12 @@ class MainTabBarVC: UITabBarController {
         let homeNav = UINavigationController(rootViewController: home)
         let notifications = NotificationsTableVC()
         notifications.tabBarItem = notificationsItem
+        let notigicationsNav = UINavigationController(rootViewController: notifications)
         let profile = ProfileTableVC()
         profile.tabBarItem = profileItem
+        let profileNav = UINavigationController(rootViewController: profile)
     
-        self.viewControllers = [sidebar,homeNav,newPost,notifications,profile]
+        self.viewControllers = [sidebar,homeNav,newPost,notigicationsNav,profileNav]
         self.selectedIndex = 1
     }
 }
