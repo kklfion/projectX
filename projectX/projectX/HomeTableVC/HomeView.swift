@@ -9,6 +9,9 @@
 import UIKit
 
 class HomeView: UIView {
+    
+    private var toggle: Bool = true
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -21,11 +24,12 @@ class HomeView: UIView {
     let stackView: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .vertical
+        stack.distribution = .fillEqually
+        stack.axis = .horizontal
         return stack
     }()
     let segmentController: UISegmentedControl = {
-        let sc = UISegmentedControl(items: ["Home", "Recommending"])
+        let sc = UISegmentedControl(items: ["Lounge", "Bus Stop"])
         sc.translatesAutoresizingMaskIntoConstraints = false
         sc.selectedSegmentIndex = 0
         sc.selectedSegmentTintColor = .white
@@ -39,84 +43,50 @@ class HomeView: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    let homeTableView: UITableView = {
+    let loungeTableView: UITableView = {
         let home = UITableView()
         home.separatorStyle = .none
         home.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
         home.translatesAutoresizingMaskIntoConstraints = false
         return home
     }()
-    let recommendingTableView: UITableView = {
+    let busStopTableView: UITableView = {
         let rec = UITableView()
         rec.separatorStyle = .none
         rec.backgroundColor = .lightGray
         rec.translatesAutoresizingMaskIntoConstraints = false
         return rec
     }()
-    
-    //MARK: Setup views, add them to the stack view and then add constraints
-    var leftHomeAnchor: NSLayoutConstraint?
-    var leftRecAnchor: NSLayoutConstraint?
-    var rightHomeAnchor: NSLayoutConstraint?
-    var rightRecAnchor: NSLayoutConstraint?
-    
-    func setupViews() {
-        
-        viewForTableViews.addSubview(homeTableView)
-        viewForTableViews.addSubview(recommendingTableView)
-        
-        homeTableView.topAnchor.constraint(equalTo: viewForTableViews.safeAreaLayoutGuide.topAnchor).isActive = true
-        homeTableView.bottomAnchor.constraint(equalTo: viewForTableViews.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        leftHomeAnchor = homeTableView.leadingAnchor.constraint(equalTo: viewForTableViews.safeAreaLayoutGuide.leadingAnchor)
-        leftRecAnchor?.isActive = true
-        rightHomeAnchor = homeTableView.trailingAnchor.constraint(equalTo: viewForTableViews.safeAreaLayoutGuide.leadingAnchor)
-        rightHomeAnchor?.isActive = false
-        homeTableView.widthAnchor.constraint(equalTo: viewForTableViews.widthAnchor).isActive = true
-        
-        recommendingTableView.topAnchor.constraint(equalTo: viewForTableViews.safeAreaLayoutGuide.topAnchor).isActive = true
-        recommendingTableView.bottomAnchor.constraint(equalTo: viewForTableViews.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        leftRecAnchor = recommendingTableView.leadingAnchor.constraint(equalTo: viewForTableViews.safeAreaLayoutGuide.trailingAnchor)
-        leftRecAnchor?.isActive = true
-        rightRecAnchor = recommendingTableView.trailingAnchor.constraint(equalTo: viewForTableViews.safeAreaLayoutGuide.trailingAnchor)
-        rightRecAnchor?.isActive = false
-        recommendingTableView.widthAnchor.constraint(equalTo: viewForTableViews.widthAnchor).isActive = true
-        stackView.addArrangedSubview(segmentController)
-        stackView.addArrangedSubview(viewForTableViews)
-        
+    private func setupViews() {
+        self.addSubview(segmentController)
         self.addSubview(stackView)
-        
-        stackView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        stackView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        
-        segmentController.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        stackView.addArrangedSubview(loungeTableView)
+        stackView.addArrangedSubview(busStopTableView)
+        segmentController.addAnchors(top: self.layoutMarginsGuide.topAnchor,
+                                     leading: self.layoutMarginsGuide.leadingAnchor,
+                                     bottom: nil,
+                                     trailing: self.layoutMarginsGuide.trailingAnchor)
+        stackView.addAnchors(top: segmentController.bottomAnchor,
+                                            leading: self.leadingAnchor,
+                                            bottom: self.bottomAnchor,
+                                            trailing: nil, padding: .init(top: 10, left: 0, bottom: 0, right: 0),
+                                            size: .init(width: self.frame.width * 2, height: 0))
     }
     
     
     /// Animation for switching between two tableViewControllers
     @objc func performAnimation(){
+        let moveToBusStop = {
+            self.stackView.transform = CGAffineTransform(translationX: -self.frame.width, y: 0)
+        }
+        let reset = {
+            self.stackView.transform = .identity
+        }
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseOut,
-            animations:
-            {
-                if(self.segmentController.selectedSegmentIndex == 0){
-                    //move home to the right
-                    self.leftHomeAnchor?.isActive = true
-                    self.rightHomeAnchor?.isActive = false
-                    //move recommendation to the right
-                    self.leftRecAnchor?.isActive = true
-                    self.rightRecAnchor?.isActive = false
-                    self.viewForTableViews.layoutIfNeeded()
-                } else if (self.segmentController.selectedSegmentIndex == 1){
-                    //move home to the left
-                    self.leftHomeAnchor?.isActive = false
-                    self.rightHomeAnchor?.isActive = true
-                    //move recommendation to the left
-                    self.leftRecAnchor?.isActive = false
-                    self.rightRecAnchor?.isActive = true
-                    self.viewForTableViews.layoutIfNeeded()
-                }
-        }, completion: nil)
+            animations:{
+                self.toggle ? moveToBusStop() : reset()
+            }, completion: nil)
+        toggle = !toggle
     }
 }
 
