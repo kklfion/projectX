@@ -47,6 +47,7 @@ class MainTabBarVC: UITabBarController {
         self.selectedIndex = 1
     }
 }
+//MARK: handling special cases of tabbar items
 extension MainTabBarVC: UITabBarControllerDelegate{
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         if viewController.isKind(of: NewPostVC.self){
@@ -56,17 +57,26 @@ extension MainTabBarVC: UITabBarControllerDelegate{
         }
         else if viewController.isKind(of: SidebarViewController.self){
             let vc = SidebarViewController()
-            vc.modalPresentationStyle = .automatic
+            vc.didTapSideBarMenuType = { menuType in
+                self.transitionToNew(menuType)
+            }
             vc.transitioningDelegate = self
-            //let nvc = UINavigationController(rootViewController: vc)
             self.present(vc, animated: true)
             return false
         }
         return true
     }
+    private func transitionToNew(_ menuType: SideBarMenuType){
+        switch menuType {
+        case .settings:
+            self.present(SettingsTableViewController(), animated: true)
+        default:
+            print("error selecting sidebar menu")
+        }
+    }
 }
+//MARK: handling sidebar slideout animation -> SideBarSlidingTransition
 extension MainTabBarVC: UIViewControllerTransitioningDelegate{
-    
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         transition.isPresenting = true
         return transition

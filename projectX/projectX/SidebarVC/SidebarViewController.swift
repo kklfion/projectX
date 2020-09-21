@@ -7,13 +7,43 @@
 //
 
 import UIKit
-
+enum SideBarMenuType{
+    case match
+    case friends
+    case settings
+}
+extension SidebarViewController{
+    @objc private func didTapDissmissSidebar(){
+        self.dismiss(animated: true)
+    }
+    @objc func didTapSettingsButton(){
+        self.dismiss(animated: true) { [weak self] in
+            self?.didTapSideBarMenuType?(SideBarMenuType.settings)
+        }
+    }
+    private func setupCancelButton(){
+        view.addSubview(cancelButton)
+        cancelButton.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
+                                leading: view.safeAreaLayoutGuide.leadingAnchor,
+                                bottom: nil,
+                                trailing: nil,
+                                padding: .init(top: 10, left: 10, bottom: 0, right: 0))
+    }
+}
 class SidebarViewController: UIViewController {
-    
     var scrollView: UIScrollView!
+    let cancelButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.addTarget(self, action: #selector(didTapDissmissSidebar), for: .touchUpInside)
+        return button
+    }()
+    var didTapSideBarMenuType: ((SideBarMenuType) -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupCancelButton()
+        
         view.backgroundColor = .white
         
         //In future I will further condense code by using for loop for the hardcoded buttons (match, friends, setting, etc...) to make it simple and easy to read
@@ -221,15 +251,6 @@ class SidebarViewController: UIViewController {
         // https://stackoverflow.com/questions/4135032/ios-uibutton-resize-according-to-text-length
         // This helped with button fram auto layout
 
-    }
-}
-//MARK: handlers
-extension SidebarViewController{
-    @objc func didTapSettingsButton(){
-        let settings = SettingsTableViewController()
-        settings.modalPresentationStyle = .fullScreen
-        settings.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(settings, animated: true)
     }
 }
 

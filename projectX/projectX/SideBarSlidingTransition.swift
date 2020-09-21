@@ -8,16 +8,12 @@
 
 import UIKit
 class SideBarSlidingTransition: NSObject, UIViewControllerAnimatedTransitioning{
-    
     var isPresenting = false
     let dimmingView = UIView()
-    
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.5
     }
-    
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        
         guard let toViewController = transitionContext.viewController(forKey: .to),
               let fromViewController =  transitionContext.viewController(forKey: .from) else {
             return
@@ -45,10 +41,8 @@ class SideBarSlidingTransition: NSObject, UIViewControllerAnimatedTransitioning{
             self.dimmingView.alpha = 0.0
             fromViewController.view.transform = .identity
         }
-        
         let duration = transitionDuration(using: transitionContext)
         let isCanceled = transitionContext.transitionWasCancelled
-        
         UIView.animate(withDuration: duration,
                        delay: 0,
                        usingSpringWithDamping: 1,
@@ -60,10 +54,5 @@ class SideBarSlidingTransition: NSObject, UIViewControllerAnimatedTransitioning{
         }) { _ in
             transitionContext.completeTransition(!isCanceled)
         }
-
-        
-        
     }
-    
-    
 }
