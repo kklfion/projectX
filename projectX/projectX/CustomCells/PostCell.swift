@@ -47,12 +47,12 @@ class PostCell: UITableViewCell {
     let channelUIButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("Food", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         button.setTitleColor(.lightGray, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        button.contentEdgeInsets = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 5)
         button.layer.cornerRadius = 4
         button.layer.borderWidth = 0.5
         button.layer.borderColor = UIColor.lightGray.cgColor
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     let titleUILabel: UILabel = {
@@ -171,13 +171,14 @@ class PostCell: UITableViewCell {
                            bottom: nil,
                            trailing: channelUIButton.leadingAnchor,
                            padding: .init(top: padding, left: 0, bottom: 0, right: padding),
-                           size: .init(width: 30, height: rowHeight))
-        channelUIButton.addAnchors(top: containerView.topAnchor,
+                           size: .init(width: 0, height: 0))
+        channelUIButton.addAnchors(top: nil,
                                leading: nil,
                                bottom: nil,
                                trailing: bottomStackView.trailingAnchor,
                                padding: .init(top: padding, left: 0, bottom: 0, right: 0),
-                               size: .init(width: 60, height: rowHeight))
+                               size: .init(width: 0, height: 0))
+        channelUIButton.centerYAnchor.constraint(equalTo: dateUILabel.centerYAnchor).isActive = true
         postUIImageView.addAnchors(top: nil,
                                leading: nil,
                                bottom: nil,

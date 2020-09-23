@@ -50,7 +50,7 @@ class MainTabBarVC: UITabBarController {
         self.selectedIndex = 1
     }
     private func setupNavigationBarAppearance(){
-        UINavigationBar.appearance().tintColor = .black
+        UINavigationBar.appearance().tintColor = .systemBlue
         UINavigationBar.appearance().barTintColor = .white
         UINavigationBar.appearance().shadowImage = UIImage()
     }
