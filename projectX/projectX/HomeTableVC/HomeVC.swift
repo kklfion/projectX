@@ -6,12 +6,7 @@
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
 //
-/*
-
- */
-
 import UIKit
-
 class HomeTableVC: UIViewController{
     private var homeView: HomeView?
     private var postData = FakePostData().giveMeSomeData()
@@ -52,10 +47,6 @@ class HomeTableVC: UIViewController{
     /// setup top seatchBar to seatch for particular posts
     private func setupSearchController(){
         navigationItem.titleView = seachView
-//        navigationController?.navigationBar.setBackgroundImage(UIImage().withTintColor(.white), for: UIBarMetrics.default)
-//        navigationController?.navigationBar.shadowImage = UIImage()
-//        navigationController?.navigationBar.backgroundColor = .white
-//        //navigationController?.navigationBar.isTranslucent = true
     }
 }
 extension HomeTableVC: UISearchResultsUpdating {

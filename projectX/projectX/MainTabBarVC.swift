@@ -62,6 +62,7 @@ extension MainTabBarVC: UITabBarControllerDelegate{
             vc.didTapSideBarMenuType = { menuType in
                 self.transitionToNew(menuType)
             }
+            vc.modalPresentationStyle = .overCurrentContext
             vc.transitioningDelegate = self
             self.present(vc, animated: true)
             return false

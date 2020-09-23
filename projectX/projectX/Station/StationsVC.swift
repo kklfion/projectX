@@ -69,7 +69,6 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         }
         
     }
-    
     // scrollViewDidScroll handles the change in layout when user scrolls
     // offset starts at 0.0
     // goes negative if scroll up(tableview goes down), goes positive if scrolls down(tableView goes up)

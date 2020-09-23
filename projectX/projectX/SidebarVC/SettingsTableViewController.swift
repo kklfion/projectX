@@ -57,6 +57,7 @@ class SettingsTableViewController: UITableViewController {
             celll = UITableViewCell(style: .value1, reuseIdentifier: "reuseIdentifier")
         }
         guard let cell = celll else { return UITableViewCell()}
+        cell.selectionStyle = .none
         addData(cell, indexPath)
         return cell
     }
