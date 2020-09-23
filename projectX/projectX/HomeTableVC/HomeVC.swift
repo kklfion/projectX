@@ -22,6 +22,7 @@ class HomeTableVC: UIViewController{
         setupSearchController()
     }
     private func setupView(){
+        self.view.backgroundColor = .white
         homeView = HomeView(frame: self.view.frame)
         homeView?.backgroundColor = .white
         view.addSubview(homeView!)

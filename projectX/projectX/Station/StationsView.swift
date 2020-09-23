@@ -99,13 +99,13 @@ class StationsView: UIView {
                                     bottom: nil,
                                     trailing: self.trailingAnchor,
                                     size: .init(width: self.frame.width, height: self.frame.height*0.3))
-        topViewContainerTopConstraint = topViewContainer.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 0)
+        topViewContainerTopConstraint = topViewContainer.topAnchor.constraint(equalTo: self.topAnchor, constant: 0)
         topViewContainerTopConstraint?.isActive = true
         layoutIfNeeded()//foces to setup proper frame?!?!??!  super important ahahah
         stationsTableView.addAnchors(top: topViewContainer.bottomAnchor,
                                      leading: self.leadingAnchor,
                                      bottom: self.bottomAnchor,
-                                     trailing: self.trailingAnchor, padding: .init(top: 10, left: 0, bottom: 0, right: 0))
+                                     trailing: self.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0))
          
         [backgroundImageView, frontImageView, followersLabel,stationInfoLabel,stationNameLabel,followButton,segmentedControl].forEach({topViewContainer.addSubview($0)})
         
@@ -137,9 +137,10 @@ class StationsView: UIView {
                                     leading: topViewContainer.leadingAnchor,
                                     bottom: nil, trailing: nil,
                                     padding: .init(top: 10, left: 25, bottom: 0, right: 0), size: .init(width: topViewContainer.frame.width - 50, height: 0))
-        segmentedControl.addAnchors(top: nil, leading: topViewContainer.leadingAnchor,
+        segmentedControl.addAnchors(top: nil, leading: topViewContainer.layoutMarginsGuide.leadingAnchor,
                                     bottom: topViewContainer.bottomAnchor,
-                                    trailing: topViewContainer.trailingAnchor)
+                                    trailing: topViewContainer.layoutMarginsGuide.trailingAnchor,
+                                    padding: .init(top: 0, left: 10, bottom: 10, right: 10))
         followButton.addAnchors(top: backgroundImageView.bottomAnchor,
                                 leading: nil,
                                 bottom: nil,

@@ -36,7 +36,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 300
+        tableView.estimatedRowHeight = 100
         tableView.register(PostCell.self, forCellReuseIdentifier: Constants.PostCellID)
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
@@ -56,7 +56,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         } else {
             statusBarHeight = UIApplication.shared.statusBarFrame.height
         }
-        headerMaxHeight = view.frame.height * 0.3 //MUST equal to the height of the view's header that is set up in the stationView
+        headerMaxHeight = view.frame.height * 0.3 + 3 //MUST equal to the height of the view's header that is set up in the stationView
     }
 
     @objc func handleTableViewRefresh(_ refreshControl: UIRefreshControl){
@@ -75,18 +75,18 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
     // offet can either be too high(keep maximum offset), to little(keep minimum offstet) or inbetween(can be adjusted)
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let y_offset: CGFloat = scrollView.contentOffset.y
-        if let headerViewTopConstraint = newView.topViewContainerTopConstraint {
-            let newConstant = headerViewTopConstraint.constant - y_offset
-            //when scrolling up
-            if newConstant <= -headerMaxHeight {
-                headerViewTopConstraint.constant = -headerMaxHeight
-            //when scrolling down
-            }else if newConstant >= 0{
-                headerViewTopConstraint.constant = 0
-            }else{//inbetween we want to adjust the position of the header
-                headerViewTopConstraint.constant = newConstant
-                scrollView.contentOffset.y = 0 //to smooth out scrolling
-            }
+        guard  let headerViewTopConstraint = newView.topViewContainerTopConstraint else {return}
+        let newConstant = headerViewTopConstraint.constant - y_offset
+        
+        //when scrolling up
+        if newConstant <= -headerMaxHeight {
+            headerViewTopConstraint.constant = -headerMaxHeight
+        //when scrolling down
+        }else if newConstant >= 0{
+            headerViewTopConstraint.constant = 0
+        }else{//inbetween we want to adjust the position of the header
+            headerViewTopConstraint.constant = newConstant
+            scrollView.contentOffset.y = 0 //to smooth out scrolling
         }
     }
 }

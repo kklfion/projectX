@@ -12,6 +12,7 @@ class MainTabBarVC: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
+        setupNavigationBarAppearance()
         setupSideBarItems()
     }
     private func setupSideBarItems(){
@@ -47,6 +48,11 @@ class MainTabBarVC: UITabBarController {
     
         self.viewControllers = [sidebar,homeNav,newPost,notigicationsNav,profileNav]
         self.selectedIndex = 1
+    }
+    private func setupNavigationBarAppearance(){
+        UINavigationBar.appearance().tintColor = .black
+        UINavigationBar.appearance().barTintColor = .white
+        UINavigationBar.appearance().shadowImage = UIImage()
     }
 }
 //MARK: handling special cases of tabbar items

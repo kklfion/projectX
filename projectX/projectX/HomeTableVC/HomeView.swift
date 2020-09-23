@@ -53,7 +53,7 @@ class HomeView: UIView {
     let busStopTableView: UITableView = {
         let rec = UITableView()
         rec.separatorStyle = .none
-        rec.backgroundColor = .lightGray
+        rec.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
         rec.translatesAutoresizingMaskIntoConstraints = false
         return rec
     }()
@@ -65,7 +65,8 @@ class HomeView: UIView {
         segmentController.addAnchors(top: self.layoutMarginsGuide.topAnchor,
                                      leading: self.layoutMarginsGuide.leadingAnchor,
                                      bottom: nil,
-                                     trailing: self.layoutMarginsGuide.trailingAnchor)
+                                     trailing: self.layoutMarginsGuide.trailingAnchor,
+                                     padding: .init(top: 0, left: 10, bottom: 0, right: 10))
         stackView.addAnchors(top: segmentController.bottomAnchor,
                                             leading: self.leadingAnchor,
                                             bottom: self.bottomAnchor,
