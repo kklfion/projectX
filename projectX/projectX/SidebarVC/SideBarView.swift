@@ -69,7 +69,7 @@ class SideBarView: UIView {
     }()
     let cancelButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.setImage(UIImage(systemName: "xmark")?.withTintColor(.lightGray, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
 

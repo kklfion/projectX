@@ -24,6 +24,7 @@ class PostViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         self.navigationItem.title = "UCSC"
+        
         setupTableView()
         setupToolbar()
         setupKeyboardCommentView()
@@ -34,7 +35,7 @@ class PostViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        navigationController?.setToolbarHidden(false, animated: true)
+        //navigationController?.setToolbarHidden(false, animated: true)
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
@@ -101,7 +102,7 @@ class PostViewController: UIViewController {
         let bookmarkButton = UIBarButtonItem(image: UIImage(systemName: "bookmark")?.withTintColor(.black, renderingMode: .alwaysOriginal), style: .plain, target: self, action: #selector(bookmarkButtonPushed))
         let closeButton = UIBarButtonItem(image: UIImage(systemName: "xmark")?.withTintColor(.black, renderingMode: .alwaysOriginal), style: .plain, target: self, action: #selector(closeButtonPushed))
         self.toolbarItems = [shareButton,flexibleSpace,commentButton,flexibleSpace,writeButton,flexibleSpace,bookmarkButton, flexibleSpace ,closeButton]
-
+        navigationController?.setToolbarHidden(false, animated: true)
     }
     @objc private func shareButtonPushed(){
         

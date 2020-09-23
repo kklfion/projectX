@@ -62,7 +62,6 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //TODO: setup loading data
         let postvc = PostViewController()
-        postvc.modalPresentationStyle = .fullScreen
         postvc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(postvc, animated: true)
     }

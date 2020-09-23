@@ -102,7 +102,14 @@ class CommentTableViewCell: UITableViewCell {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fillEqually
+        stack.backgroundColor = .black
+        stack.alpha = 0.5
         stack.spacing = 10
+        stack.layer.borderWidth = 0.5
+        stack.layer.borderColor = UIColor.black.cgColor
+        stack.layer.cornerRadius = 10
+        stack.layoutMargins = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 5)
+        stack.isLayoutMarginsRelativeArrangement = true
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -117,7 +124,7 @@ class CommentTableViewCell: UITableViewCell {
     private let likesLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
-        label.textColor = .black
+        label.textColor = .white
         label.textAlignment = .center
         label.font = UIFont.preferredFont(forTextStyle: .subheadline)
         label.numberOfLines = 1
@@ -156,11 +163,10 @@ class CommentTableViewCell: UITableViewCell {
                                     trailing: contentView.trailingAnchor,
                                     padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: Constants.standardPadding))
         likesStackView.addAnchors(top: commentStackView.bottomAnchor,
-                                    leading: nil,
+                                    leading: commentStackView.leadingAnchor,
                                     bottom: contentView.bottomAnchor,
                                     trailing: nil,
                                     padding: .init(top: Constants.standardPadding, left: 0, bottom: Constants.standardPadding, right: 0))
-        likesStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
    
     }
 

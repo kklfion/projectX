@@ -104,7 +104,14 @@ class PostView: UIView {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fillEqually
-        stack.spacing = 20
+        stack.backgroundColor = .black
+        stack.alpha = 0.5
+        stack.spacing = 10
+        stack.layer.borderWidth = 0.5
+        stack.layer.borderColor = UIColor.black.cgColor
+        stack.layer.cornerRadius = 10
+        stack.layoutMargins = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 5)
+        stack.isLayoutMarginsRelativeArrangement = true
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -119,7 +126,7 @@ class PostView: UIView {
     private let likesLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
-        label.textColor = .black
+        label.textColor = .white
         label.textAlignment = .center
         label.font = UIFont.preferredFont(forTextStyle: .subheadline)
         label.numberOfLines = 1
@@ -190,10 +197,10 @@ class PostView: UIView {
                                trailing: self.trailingAnchor,
                                padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: Constants.standardPadding))
         likesStackView.addAnchors(top: bodyUILabel.bottomAnchor,
-                                  leading: nil,
+                                  leading: self.leadingAnchor,
                                   bottom: self.bottomAnchor,
                                   trailing: nil,
-                                  padding: .init(top: Constants.standardPadding, left: 0, bottom: 0, right: 0))
-        likesStackView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+                                  padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: 0))
+        //likesStackView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
     }
 }

@@ -35,7 +35,7 @@ class AddNewCommentView: UIView {
     }()
      lazy var closeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "xmark.circle")?.withConfiguration(symbolsConfig).withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "xmark")?.withConfiguration(symbolsConfig).withTintColor(.lightGray, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     private lazy var authorView: UIImageView = {
