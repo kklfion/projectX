@@ -13,7 +13,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
     var headerMaxHeight: CGFloat!
     var statusBarHeight: CGFloat!
     
-    let CellData = FakePostData().giveMeSomeData()
+    let CellData = [PostModel]()
     lazy var newView: StationsView = {
         let view = StationsView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
         return view

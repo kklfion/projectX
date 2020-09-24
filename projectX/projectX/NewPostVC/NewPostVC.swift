@@ -19,7 +19,7 @@ import FirebaseFirestore
 let button = UIButton()
 var myTxtview = UITextView()
 var titlepost = UITextField()
-var postData = [String: Any]()
+var fullname = String()
 
 var switchbar = UISwitch()
 var Anonymity = false
@@ -294,6 +294,9 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
       
          
     // CHANNEL PICKER VIEW
+    
+    
+    
     let channels1 = ["", "Travel", "Art", "Drama", "Gaming", "Meme", "Makeup", "Politics", "Music", "Sports", "Food", "Abroad", "Writing", "Development", "Financial", "Pets", "Job", "Astrology", "Horror", "Anime", "LGBTQ+", "Film", "Relationship", "Photography", "International"
     ]
     var selectedchannel = String()
@@ -542,28 +545,44 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
              return present(ac1, animated: true)
         }
         else {
+            let db = Firestore.firestore()
             if switchbar.isOn == false {
                 Anonymity = true
             }
-            else if switchbar.isOn == true {
-                Anonymity = false
+            guard let userID = Auth.auth().currentUser?.uid else{return}
+                //Recalling users data for post
+            let docRef = db.collection("users").document(userID)
+            
+            docRef.getDocument{ (document, error) in
+               let result = Result {
+                   try document?.data(as: User.self)
+               }
+               switch result {
+               case .success(let user):
+                   if let user = user{
+                       //A 'user' value was successfully initalized from the documentSnapshot
+                    fullname = user.name
+                    
+                    //Adding new document to 
+                    let newPost = Post(stationID: " ", stationName: self.selectedchannel, likes: 0, userInfo: user, title: titlepost.text!, text: myTxtview.text!, date: Date(), anonymity: Anonymity)
+                    
+                    do{
+                        try db.collection("posts").document(self.selectedchannel).setData(from: newPost)
+                    }catch let error{
+                        print("Error writing to Firestore: \(error)")
+                    }
+
+                    
+                   } else{
+                       //A stupid nil value was given, either from successful initlization or the snapShot was nil
+                       print("Document not exsist")
+                   }
+               case .failure(let error):
+                   // A user value could not be initialized from DocumnetSnapshot
+                   print("Error decoding city: \(error)")
+               }
             }
-            postData = [
-                               "Author's Anonymity": Anonymity,
-                               "title": titlepost.text!,
-                               "body": myTxtview.text!,
-                               "station": selectedchannel
-            ]
-            let db = Firestore.firestore()
-            db.collection("newPost").document(selectedchannel).setData(postData) { err in
-            if let err = err {
-                print("Error writing document: \(err)")
-            } else {
-                print("Document successfully written!")
-                }
-                              
-            }
-            return
+            
         }
     }
     
