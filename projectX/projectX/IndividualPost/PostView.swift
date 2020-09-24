@@ -32,6 +32,8 @@ import UIKit
 */
 class PostView: UIView {
     
+    var imageHeightConstaint: NSLayoutConstraint! //if image is nil we want imageview to have height of zero
+ 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: 0.0, y: 0.0, width: frame.width, height: 0.0))
         setupViews(viewFrame: frame)
@@ -42,21 +44,20 @@ class PostView: UIView {
     }
     //MARK: top view
     //holds view above the comment section
-    private let topViewContainer: UIView = {
+    let topViewContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .blue
         return view
     }()
-    private let authorUILabel: UILabel = {
+     let authorUILabel: UILabel = {
        let label = UILabel()
-       label.text = "Sammy"
       label.font = UIFont.preferredFont(forTextStyle: .subheadline)
        label.textColor = .lightGray
        label.numberOfLines = 1
        label.translatesAutoresizingMaskIntoConstraints = false
        return label
     }()
-    private let dateUILabel: UILabel = {
+     let dateUILabel: UILabel = {
        let label = UILabel()
        label.text = "1h"
        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
@@ -65,11 +66,9 @@ class PostView: UIView {
        label.translatesAutoresizingMaskIntoConstraints = false
        return label
     }()
-    private let titleUILabel: UILabel = {
+     let titleUILabel: UILabel = {
        let label = UILabel()
-       label.text = "Fire Info"
-        
-        label.font = UIFont.preferredFont(forTextStyle: .title1)
+       label.font = UIFont.preferredFont(forTextStyle: .title1)
        label.numberOfLines = 0
        label.adjustsFontSizeToFitWidth = false
        label.lineBreakMode = .byTruncatingTail
@@ -77,24 +76,19 @@ class PostView: UIView {
        label.translatesAutoresizingMaskIntoConstraints = false
        return label
     }()
-    private let postImageView: UIImageView = {
+     let postImageView: UIImageView = {
         let iv = UIImageView()
         iv.backgroundColor = .blue
         iv.clipsToBounds = true
-        iv.image = UIImage(named: "map")
         iv.contentMode = .scaleAspectFill
         return iv
     }()
-    private let bodyUILabel: UILabel = {
+     let bodyUILabel: UILabel = {
        let text = UILabel()
        text.font = UIFont.preferredFont(forTextStyle: .callout)
        text.numberOfLines = 0
        text.adjustsFontSizeToFitWidth = false
        text.lineBreakMode = .byTruncatingTail
-       text.text =
-        """
-        If you go to https://firemap.sdsc.edu/, there's a pretty useful infographic for seeing where the fire is and headed. Under the layers menu in the top right there's a bunch of different options for Fire maps, the most detailed is Satellite Fire Detection VIIRS. Idk how accurate any of this is, but it's at least the most comprehensive info I've found.
-        """
        text.textColor = .black
        text.translatesAutoresizingMaskIntoConstraints = false
        return text
@@ -115,7 +109,7 @@ class PostView: UIView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
-    private let likeButton: UIButton = {
+     let likeButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "chevron.up"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
@@ -123,7 +117,7 @@ class PostView: UIView {
         button.addTarget(self, action: #selector(likeButtonTouched), for: .touchUpInside)
         return button
     }()
-    private let likesLabel: UILabel = {
+     let likesLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
         label.textColor = .white
@@ -133,7 +127,7 @@ class PostView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    private let dislikeButton: UIButton = {
+     let dislikeButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
@@ -189,7 +183,9 @@ class PostView: UIView {
                                 bottom: nil,
                                 trailing: nil,
                                 padding: .init(top: Constants.standardPadding, left: 0, bottom: 0, right: 0),
-                                size: .init(width: size.width, height: size.width*0.7))
+                                size: .init(width: size.width, height: 0))
+        imageHeightConstaint = postImageView.heightAnchor.constraint(equalToConstant: size.width * 0.7)
+        imageHeightConstaint.isActive = true
         
         bodyUILabel.addAnchors(top: postImageView.bottomAnchor,
                                leading: self.leadingAnchor,
@@ -201,6 +197,5 @@ class PostView: UIView {
                                   bottom: self.bottomAnchor,
                                   trailing: nil,
                                   padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: 0))
-        //likesStackView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
     }
 }

@@ -121,7 +121,7 @@ class CommentTableViewCell: UITableViewCell {
         //button.addTarget(self, action: #selector(likeButtonTouched), for: .touchUpInside)
         return button
     }()
-    private let likesLabel: UILabel = {
+    let likesLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
         label.textColor = .white

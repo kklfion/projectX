@@ -7,12 +7,20 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class PostViewController: UIViewController {
     
     private var customView: PostView?
     private var commentView: AddNewCommentView?
     private var commentViewBottomConstraint: NSLayoutConstraint?
+    
+    var comments: [Comment]?{
+        didSet{
+            commentsTableView.reloadData()
+        }
+    }
+    var post: Post?
     
     private var commentsTableView: UITableView = {
         let tableview = UITableView()
@@ -23,12 +31,15 @@ class PostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        self.navigationItem.title = "UCSC"
-        
+        self.navigationItem.title = post?.stationName
         setupTableView()
+        setupViewWithPost()
         setupToolbar()
         setupKeyboardCommentView()
         addDissmissForCommentView()
+        loadComments { [weak self](comments) in
+            self?.comments = comments
+        }
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -73,6 +84,42 @@ class PostViewController: UIViewController {
                                                selector: #selector(keyboardWillHide),
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
+    }
+    private func setupViewWithPost(){
+        guard let post = post else {return}
+        customView?.authorUILabel.text = post.userInfo.name
+        let date = post.date
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        customView?.dateUILabel.text = "\(formatter.string(from: date))"
+        customView?.titleUILabel.text = post.title
+        if post.imageURL != nil {
+            let data = try? Data(contentsOf: post.imageURL!)
+            if let imageData = data {
+                customView?.postImageView.image = UIImage(data: imageData)
+            }
+        } else{
+            customView?.imageHeightConstaint.constant = 0
+        }
+        customView?.bodyUILabel.text = post.text
+        customView?.likesLabel.text = "\(post.likes)"
+        customView?.layoutIfNeeded()
+        
+    }
+    func loadComments(completion: @escaping (_ stations: [Comment]) -> Void){
+        let basicQuery = Firestore.firestore().comments.whereField("postID", isEqualTo: post?.id)
+        var comments = [Comment]()
+        basicQuery.getDocuments { (snapshot, error) in
+            if let error = error {
+                print ("I got an error retrieving comments: \(error)")
+                return
+            }
+            guard let documents = snapshot?.documents else { return }
+            comments = documents.compactMap { (querySnapshot) -> Comment? in
+                return try? querySnapshot.data(as: Comment.self)
+            }
+            completion(comments)
+        }
     }
     @objc private func keyboardWillShow(notification: NSNotification) {
         commentView?.isHidden = false
@@ -156,13 +203,22 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        20
+        comments?.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CommentTableViewCell.cellID, for: indexPath) as! CommentTableViewCell
-//        cell.optionalAuthorExtraTitle.isHidden = true
-//        cell.extraTitleImageView.isHidden = true
+        guard let comment = comments?[indexPath.row] else {fatalError("error loading comment")}
+        cell.authorTitleLable.text = comment.userInfo.name
+        cell.commentLabel.text = comment.text
+        let date = comment.date
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        cell.dateTimeLabel.text = "\(formatter.string(from: date))"
+        let likes = comment.likes
+        cell.likesLabel.text  = "\(likes)"
+        cell.extraTitleImageView.image = UIImage(systemName: comment.userInfo.titleImage ?? "")
+        cell.optionalAuthorExtraTitle.text = comment.userInfo.title
         return cell
     }
 

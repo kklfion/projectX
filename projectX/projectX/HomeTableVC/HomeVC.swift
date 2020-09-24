@@ -10,6 +10,7 @@ import UIKit
 class HomeTableVC: UIViewController{
     private var homeView: HomeView?
     private var postData = FakePostData().giveMeSomeData()
+    
     private let seachView: UISearchBar = {
         let sb = UISearchBar()
         sb.showsCancelButton = true
@@ -61,9 +62,14 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //TODO: setup loading data
-        let postvc = PostViewController()
-        postvc.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(postvc, animated: true)
+        GetData.getPosts { [weak self](posts) in
+            let postvc = PostViewController()
+            postvc.post = posts.randomElement()
+            //load comments for that particular post and
+            postvc.hidesBottomBarWhenPushed = true
+            self?.navigationController?.pushViewController(postvc, animated: true)
+        }
+
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.PostCellID, for: indexPath) as? PostCell else {
