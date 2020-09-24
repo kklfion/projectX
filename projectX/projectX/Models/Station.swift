@@ -17,7 +17,7 @@ struct Station:Identifiable, Codable{
     var info: String
 
     /// The name of the station.
-    var stationName: String
+    var stationName: String?
 
     /// The number of followers of the station.
     var followers: Int
@@ -33,7 +33,7 @@ struct Station:Identifiable, Codable{
 }
 extension Station{
     init(info: String,
-                stationName: String,
+                stationName: String?,
                 followers: Int,
                 date: Date,
                 frontImageURL: URL?,

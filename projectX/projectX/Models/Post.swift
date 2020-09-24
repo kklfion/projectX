@@ -19,7 +19,7 @@ struct Post:Identifiable, Codable{
     var stationName: String
 
     /// The number of likes of the post.
-    var likes: Int
+    var likes: Int?
 
     /// User information duplicated in the post object.
     var userInfo: User
@@ -35,18 +35,27 @@ struct Post:Identifiable, Codable{
     
     /// Post photo url stored in the Firestore
     var imageURL: URL?
+    
+    //Added anoynimity option, which will replace the author with "annoynums" in UI
+    var anonymity: Bool
+    
+    //Number of comments per post
+    var commentCount: Int?
+    
 }
 extension Post{
     /// returns a new post object 
-    public init(stationID: String,
+    public init(stationID: String?,
                 stationName: String,
-                likes: Int,
+                likes: Int? = 0,
                 userInfo: User,
                 title: String,
                 text: String,
                 date: Date,
-                imageURL: URL?) {
-        self.stationID = stationID
+                imageURL: URL? = nil,
+                anonymity: Bool = false,
+                commentCount: Int? = 0) {
+        self.stationID = stationID ?? ""
         self.stationName = stationName
         self.likes = likes
         self.userInfo = userInfo
@@ -54,6 +63,8 @@ extension Post{
         self.text = text
         self.date = date
         self.imageURL = imageURL
+        self.anonymity = anonymity
+        self.commentCount = commentCount
     }
 }
     
