@@ -22,7 +22,7 @@ class SettingsTableViewController: UITableViewController {
     ]
     override func viewDidLoad() {
         super.viewDidLoad()
-        user = User(name: "Pete", photoURL: nil, email: "pete@gmail.com")
+        user = User(name: "Pete", photoURL: nil, email: "pete@gmail.com", uid: "12344")
         navigationItem.title = "Settings"
         tableView.tableFooterView = UIView()
         navigationController?.navigationBar.prefersLargeTitles = true
