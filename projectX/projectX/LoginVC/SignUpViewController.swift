@@ -87,10 +87,11 @@ class SignUpViewController: UIViewController {
             }else if let authResult = authResult{
                 let newUser = User(name: name + " " + lastname,
                                    photoURL: nil,
-                                   email: email)
+                                   email: email,
+                                   uid: String(authResult.user.uid))
                 let db = Firestore.firestore()
                 do {
-                    try db.collection("users").document(newUser.documentID ?? "").setData(from: newUser)
+                    try db.collection("users").document(authResult.user.uid).setData(from: newUser)
                 } catch let error{
                     print("no new user for you: \(error)")
                 }
