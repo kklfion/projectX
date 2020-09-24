@@ -45,6 +45,7 @@
 		80BB37B224D8C50700B12253 /* StationsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BB37B124D8C50700B12253 /* StationsVC.swift */; };
 		80CA4FC624C4CA2900B66D6B /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CA4FC524C4CA2900B66D6B /* SignUpViewController.swift */; };
 		80CA4FC824C4CA3E00B66D6B /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CA4FC724C4CA3E00B66D6B /* SignUpView.swift */; };
+		80F52F8B251C1AA400076825 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F52F8A251C1AA400076825 /* ProfileView.swift */; };
 		80FDD6A924A188BF00304007 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 80FDD6A824A188BF00304007 /* GoogleService-Info.plist */; };
 		D376F7B778D7EC42DE2A05F2 /* Pods_projectX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */; };
 /* End PBXBuildFile section */
@@ -92,6 +93,7 @@
 		80BB37B124D8C50700B12253 /* StationsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsVC.swift; sourceTree = "<group>"; };
 		80CA4FC524C4CA2900B66D6B /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		80CA4FC724C4CA3E00B66D6B /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		80F52F8A251C1AA400076825 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		80FDD6A824A188BF00304007 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CE774F905F70DF49766D0585 /* Pods-projectX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-projectX.release.xcconfig"; path = "Target Support Files/Pods-projectX/Pods-projectX.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -261,6 +263,7 @@
 			isa = PBXGroup;
 			children = (
 				804E61A624980E4B00825150 /* ProfileTableVC.swift */,
+				80F52F8A251C1AA400076825 /* ProfileView.swift */,
 			);
 			path = ProfileTableVC;
 			sourceTree = "<group>";
@@ -430,6 +433,7 @@
 				801A37A62514024800F22A11 /* NotificationCell.swift in Sources */,
 				804E61A524980DFD00825150 /* HomeVC.swift in Sources */,
 				80BB37B024D7ACCB00B12253 /* StationsView.swift in Sources */,
+				80F52F8B251C1AA400076825 /* ProfileView.swift in Sources */,
 				80B2C6A92516E3220025F9EE /* SideBarSlidingTransition.swift in Sources */,
 				803D75A3250AD3E0003F569D /* CommentTableViewCell.swift in Sources */,
 				804E619B24957E3200825150 /* MainTabBarVC.swift in Sources */,

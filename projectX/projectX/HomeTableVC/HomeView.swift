@@ -38,11 +38,11 @@ class HomeView: UIView {
         sc.addTarget(self, action: #selector(performAnimation), for: .valueChanged)
         return sc
     }()
-    let viewForTableViews: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+//    let viewForTableViews: UIView = {
+//        let view = UIView()
+//        view.translatesAutoresizingMaskIntoConstraints = false
+//        return view
+//    }()
     let loungeTableView: UITableView = {
         let home = UITableView()
         home.separatorStyle = .none
