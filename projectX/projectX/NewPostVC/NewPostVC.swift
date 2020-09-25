@@ -545,6 +545,18 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
              return present(ac1, animated: true)
         }
         else {
+            if switchbar.isOn == false {
+                Anonymity = true
+            }
+            else if switchbar.isOn == true {
+                Anonymity = false
+            }
+            postData = [
+                               "Author's Anonymity": Anonymity,
+                               "title": titlepost.text!,
+                               "body": myTxtview.text!,
+                               "station": selectedchannel
+            ]
             let db = Firestore.firestore()
             if switchbar.isOn == false {
                 Anonymity = true

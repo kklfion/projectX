@@ -74,7 +74,7 @@ class LoginViewController: UIViewController {
                 return
             }else{
                 //transition to a new screen
-                let vc = MainContainerVC()
+                let vc = MainTabBarVC()
                 vc.modalPresentationStyle = .fullScreen
                 self?.present(vc, animated: true)
             }
@@ -101,8 +101,11 @@ class LoginViewController: UIViewController {
     }
     /// Users have an option to skip logging into their accounts.
     @objc func skipToMain(){
-        let vc = MainContainerVC()
+        let vc = MainTabBarVC()
         vc.modalPresentationStyle = .fullScreen
+        vc.modalTransitionStyle = .coverVertical
+        //let navvc = UINavigationController(rootViewController: vc)
+        //navvc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
     

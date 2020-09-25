@@ -10,114 +10,39 @@ import UIKit
 import FirebaseAuth
 
 class ProfileTableVC: UIViewController {
-        // MARK: - Properties
-
-       lazy var containerView: UIView = {
-            let view = UIView()
+    var profileView: ProfileView?
+    private var postData = FakePostData().giveMeSomeData()
+    
+    override func viewDidLoad() {
+        postData.shuffle()
+        super.viewDidLoad()
         view.backgroundColor = .white
-            
-            view.addSubview(profileImageView)
-            profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            profileImageView.anchor(top: view.topAnchor, paddingTop: 100,
-                                    width: 200, height: 200)
-            profileImageView.layer.cornerRadius = 200 / 2
-            
-            view.addSubview(nameLabel)
-            nameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            nameLabel.anchor(top: profileImageView.bottomAnchor, paddingTop: 10)
-            
-            view.addSubview(uniLabel)
-            uniLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            uniLabel.anchor(top: nameLabel.bottomAnchor, paddingTop: 4)
+        setupView()
+        setupTableViews()
+    }
+    private func setupView(){
+        profileView = ProfileView(frame: self.view.frame)
+        guard let profileView = profileView else {return}
+        view.addSubview(profileView)
+        profileView.addAnchors(top: view.topAnchor,
+                               leading: view.leadingAnchor,
+                               bottom: view.bottomAnchor,
+                                trailing: view.trailingAnchor)
+    }
+    private func setupTableViews(){
+        profileView?.loungeTableView.delegate = self
+        profileView?.missionsTableView.delegate = self
+        profileView?.loungeTableView.dataSource = self
+        profileView?.missionsTableView.dataSource = self
         
-            view.addSubview(prePostLabel)
-            prePostLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-            prePostLabel.anchor(top: uniLabel.bottomAnchor, paddingTop: 60)
-            return view
-        }()
+        profileView?.loungeTableView.rowHeight = UITableView.automaticDimension
+        profileView?.loungeTableView.estimatedRowHeight = 100
+        profileView?.missionsTableView.rowHeight = UITableView.automaticDimension
+        profileView?.missionsTableView.estimatedRowHeight = 100
         
-
-        
-        let profileImageView: UIImageView = {
-            let iv = UIImageView()
-            iv.image = #imageLiteral(resourceName: "profile_icon")
-            iv.contentMode = .scaleAspectFill
-            iv.clipsToBounds = true
-            iv.layer.borderWidth = 3
-            iv.layer.borderColor = UIColor.white.cgColor
-            return iv
-        }()
-        
-        let nameLabel: UILabel = {
-            let label = UILabel()
-            label.textAlignment = .center
-            label.text = "Jake Nations"
-            label.font = UIFont.boldSystemFont(ofSize: 26)
-            label.textColor = .white
-            return label
-        }()
-        
-        let uniLabel: UILabel = {
-            let label = UILabel()
-            label.textAlignment = .center
-            label.text = "Universtiy of California, Santa Cruz"
-            label.font = UIFont.systemFont(ofSize: 18)
-            label.textColor = .black
-            return label
-        }()
-    
-        let prePostLabel: UILabel = {
-            let label = UILabel()
-            label.textAlignment = .left
-            label.text = "Previous Posts"
-            label.font = UIFont.systemFont(ofSize: 26)
-            label.textColor = .black
-            return label
-        }()
-    
-    let logoutButton: UIButton = {
-        let button  = UIButton()
-        button.setTitle("Logout", for: .normal)
-        button.addTarget(self, action: #selector(logoutCurrentUser), for: .touchUpInside)
-        button.setTitleColor(.black, for: .normal)
-
-        return button
-    }()
-        
-        // MARK: - Lifecycle
-        
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            
-            view.backgroundColor = .white
-            
-            view.addSubview(containerView)
-            view.addSubview(logoutButton)
-            logoutButton.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
-                                    leading: nil,
-                                    bottom: nil,
-                                    trailing: view.safeAreaLayoutGuide.trailingAnchor,
-                                    padding: .init(top: 0, left: 0, bottom: 0, right: Constants.Login.padding) )
-            containerView.anchor(top: view.topAnchor, left: view.leftAnchor,
-                                 right: view.rightAnchor)
-            
-            
-        }
-        
-        override var preferredStatusBarStyle: UIStatusBarStyle {
-            return .lightContent
-        }
-        
-        // MARK: - Selectors
-        
-        @objc func handleMessageUser() {
-            print("Message user here..")
-        }
-        
-        @objc func handleFollowUser() {
-            print("Follow user here..")
-        }
-    
+        profileView?.loungeTableView.register(PostCell.self, forCellReuseIdentifier: Constants.PostCellID)
+        profileView?.missionsTableView.register(PostCell.self, forCellReuseIdentifier: Constants.PostCellID)
+    }
     @objc func logoutCurrentUser(){
         // TO DO: Send to loginviewcontroller
         if Auth.auth().currentUser != nil {
@@ -130,44 +55,56 @@ class ProfileTableVC: UIViewController {
             }
         }
     }
-    
 }
-
-    
-
-    extension UIView {
-        
-        func anchor(top: NSLayoutYAxisAnchor? = nil, left: NSLayoutXAxisAnchor? = nil, bottom: NSLayoutYAxisAnchor? = nil, right: NSLayoutXAxisAnchor? = nil, paddingTop: CGFloat? = 0,
-                    paddingLeft: CGFloat? = 0, paddingBottom: CGFloat? = 0, paddingRight: CGFloat? = 0, width: CGFloat? = nil, height: CGFloat? = nil) {
+extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        postData.count
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //TODO: setup loading data
+        let postvc = PostViewController()
+        postvc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(postvc, animated: true)
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.PostCellID, for: indexPath) as? PostCell else {
+            fatalError("Wrong cell at ?cellForRowAt? ")
+        }
+        if tableView == profileView?.loungeTableView{
             
-            translatesAutoresizingMaskIntoConstraints = false
-            
-            if let top = top {
-                topAnchor.constraint(equalTo: top, constant: paddingTop!).isActive = true
-            }
-            
-            if let left = left {
-                leftAnchor.constraint(equalTo: left, constant: paddingLeft!).isActive = true
-            }
-            
-            if let bottom = bottom {
-                if let paddingBottom = paddingBottom {
-                    bottomAnchor.constraint(equalTo: bottom, constant: -paddingBottom).isActive = true
-                }
-            }
-            
-            if let right = right {
-                if let paddingRight = paddingRight {
-                    rightAnchor.constraint(equalTo: right, constant: -paddingRight).isActive = true
-                }
-            }
-            
-            if let width = width {
-                widthAnchor.constraint(equalToConstant: width).isActive = true
-            }
-            
-            if let height = height {
-                heightAnchor.constraint(equalToConstant: height).isActive = true
-            }
+        }else if  tableView == profileView?.missionsTableView{
+        }
+        cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+        addData(toCell: cell, withIndex: indexPath.row)
+        return cell
+    }
+    @objc private func dummyStation(){
+        //TODO: finish use data to load it
+        let station = StationsVC()
+        station.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(station, animated: true)
+    }
+    private func addData(toCell cell: PostCell, withIndex index: Int ){
+        cell.titleUILabel.text =  postData[index].title
+        cell.previewUILabel.text =  postData[index].preview
+        cell.authorUILabel.text =  postData[index].author
+        cell.likesUILabel.text =  String(postData[index].likesCount)
+        cell.commentsUILabel.text =  String(postData[index].commentsCount)
+        //cell.UID =  postData[index].postID
+        cell.dateUILabel.text = "\(index)h"
+        if postData[index].image != nil{
+            cell.imageView?.isHidden = false
+            //this cell will have an image
+            cell.postUIImageView.image = postData[index].image
+            cell.withImageViewConstraints()
+        }else{
+            //change cell constraints so that text takes the extra space
+            cell.imageView?.isHidden = true
+            cell.postUIImageView.image = nil
+            cell.noImageViewConstraints()
         }
     }
+}
+  
+
+
