@@ -9,17 +9,9 @@
 import UIKit
 import FirebaseFirestore
 class HomeTableVC: UIViewController{
-    
-    var cellHeight: CGFloat? //0165 * view.frame.height
-    let homeView = HomeView()
     var postData = [Post]()
-
-    override func loadView() {
-        view = homeView
-    }
-    
     private var homeView: HomeView?
-    private var postData = FakePostData().giveMeSomeData()
+
     private let seachView: UISearchBar = {
         let sb = UISearchBar()
         sb.showsCancelButton = true
@@ -100,7 +92,7 @@ class HomeTableVC: UIViewController{
                         print("Error decoding post: \(error)")
                     }
                 }
-                self.homeView.homeTableView.reloadData()
+                self.homeView?.loungeTableView.reloadData()
             }
         }
     }

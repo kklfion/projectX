@@ -78,7 +78,9 @@ extension MainTabBarVC: UITabBarControllerDelegate{
     private func transitionToNew(_ menuType: SideBarMenuType){
         switch menuType {
         case .settings:
-            self.present(SettingsTableViewController(), animated: true)
+            print("FUCK me")
+            //let settings = SettingsTableViewController()
+            //self.present(settings, animated: true)
         default:
             print("error selecting sidebar menu")
         }

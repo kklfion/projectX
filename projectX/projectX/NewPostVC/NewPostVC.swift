@@ -5,16 +5,8 @@
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
 import UIKit
-import Firebase
+import FirebaseAuth
 import FirebaseFirestore
-
-
-
-
-
-
-
-
 
 let button = UIButton()
 var myTxtview = UITextView()
@@ -480,12 +472,6 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     func discardaction(action: UIAlertAction) {
         dismiss(animated: true, completion: nil)
     }
-    
-    
-    
-    
-    
-    
     let notequal = [nil, "", "Title", "Enter your thoughts here..."]
     func title(title: String) -> String {
         if notequal.contains(title) {
@@ -551,12 +537,12 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
             else if switchbar.isOn == true {
                 Anonymity = false
             }
-            postData = [
-                               "Author's Anonymity": Anonymity,
-                               "title": titlepost.text!,
-                               "body": myTxtview.text!,
-                               "station": selectedchannel
-            ]
+//            let postData = [
+//                               "Author's Anonymity": Anonymity,
+//                               "title": titlepost.text!,
+//                               "body": myTxtview.text!,
+//                               "station": selectedchannel
+//            ]
             let db = Firestore.firestore()
             if switchbar.isOn == false {
                 Anonymity = true
