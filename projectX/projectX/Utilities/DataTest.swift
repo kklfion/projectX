@@ -231,7 +231,7 @@ struct StationsData{
         }
     }
 }
-struct DataData{
+struct DataTest{
     static func fakeSomeData(){
         let user = User(name: "NEW USER", email: "user@gmail.com", uid: "1234")
         let post = Post(stationID: "123141233123", stationName: "ucsc", likes: 12, userInfo: user, title: "Welcome to UCSC", text: "Best college ever", date: Date(), imageURL: URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/sslug.jpg?alt=media&token=aa2bda56-f5bc-4cc5-b9a2-ca37a6b4b7ae")!)
