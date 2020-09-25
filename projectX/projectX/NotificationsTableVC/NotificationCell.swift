@@ -2,9 +2,12 @@
 //  NotificationCell.swift
 //  projectX
 //
-//  Created by Gurpreet Dhillon on 9/7/20.
+//  Created by Kirill on 9/12/20.
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
+
+import Foundation
+
 import UIKit
 
 class NotificationCell: UITableViewCell {
@@ -71,3 +74,4 @@ class NotificationCell: UITableViewCell {
         
 }
 }
+

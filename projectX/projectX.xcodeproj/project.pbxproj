@@ -45,6 +45,8 @@
 		80BB37B224D8C50700B12253 /* StationsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BB37B124D8C50700B12253 /* StationsVC.swift */; };
 		80CA4FC624C4CA2900B66D6B /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CA4FC524C4CA2900B66D6B /* SignUpViewController.swift */; };
 		80CA4FC824C4CA3E00B66D6B /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CA4FC724C4CA3E00B66D6B /* SignUpView.swift */; };
+		80D97BA9251D819000825BBB /* MissionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D97BA8251D819000825BBB /* MissionsCell.swift */; };
+		80D97BAC251D819C00825BBB /* MissionDeadlineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D97BAB251D819C00825BBB /* MissionDeadlineCell.swift */; };
 		80F52F8B251C1AA400076825 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F52F8A251C1AA400076825 /* ProfileView.swift */; };
 		80FDD6A924A188BF00304007 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 80FDD6A824A188BF00304007 /* GoogleService-Info.plist */; };
 		D376F7B778D7EC42DE2A05F2 /* Pods_projectX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */; };
@@ -93,6 +95,8 @@
 		80BB37B124D8C50700B12253 /* StationsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsVC.swift; sourceTree = "<group>"; };
 		80CA4FC524C4CA2900B66D6B /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		80CA4FC724C4CA3E00B66D6B /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		80D97BA8251D819000825BBB /* MissionsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissionsCell.swift; sourceTree = "<group>"; };
+		80D97BAB251D819C00825BBB /* MissionDeadlineCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissionDeadlineCell.swift; sourceTree = "<group>"; };
 		80F52F8A251C1AA400076825 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		80FDD6A824A188BF00304007 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CE774F905F70DF49766D0585 /* Pods-projectX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-projectX.release.xcconfig"; path = "Target Support Files/Pods-projectX/Pods-projectX.release.xcconfig"; sourceTree = "<group>"; };
@@ -213,6 +217,8 @@
 		804E619E24980D2A00825150 /* NotificationsTableVC */ = {
 			isa = PBXGroup;
 			children = (
+				80D97BAB251D819C00825BBB /* MissionDeadlineCell.swift */,
+				80D97BA8251D819000825BBB /* MissionsCell.swift */,
 				801A37A72514025D00F22A11 /* NotificationView.swift */,
 				801A37A52514024800F22A11 /* NotificationCell.swift */,
 				804E619C24980C9400825150 /* NotificationsTableVC.swift */,
@@ -409,11 +415,13 @@
 				803D75B5250B079E003F569D /* FirebaseExtension.swift in Sources */,
 				804E618B24957D0C00825150 /* ViewController.swift in Sources */,
 				804E619D24980C9400825150 /* NotificationsTableVC.swift in Sources */,
+				80D97BAC251D819C00825BBB /* MissionDeadlineCell.swift in Sources */,
 				8081185624C262910032D46D /* LoginView.swift in Sources */,
 				806E777A24C9255F00A95B89 /* DataData.swift in Sources */,
 				80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */,
 				804E618724957D0C00825150 /* AppDelegate.swift in Sources */,
 				803D75AE250AD786003F569D /* Station.swift in Sources */,
+				80D97BA9251D819000825BBB /* MissionsCell.swift in Sources */,
 				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,
 				804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */,
 				803D75B3250AE531003F569D /* Post.swift in Sources */,
