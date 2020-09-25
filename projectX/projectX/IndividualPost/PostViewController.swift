@@ -24,6 +24,7 @@ class PostViewController: UIViewController {
     
     private var commentsTableView: UITableView = {
         let tableview = UITableView()
+        tableview.tableFooterView = UIView()
         tableview.backgroundColor = UIColor.init(red: 223/255.0, green: 230/255.0, blue: 233/255.0, alpha: 1.0)
         return tableview
     }()
