@@ -11,7 +11,7 @@
  */
 
 import UIKit
-
+import FirebaseFirestore
 class HomeTableVC: UIViewController{
     
     var cellHeight: CGFloat? //0165 * view.frame.height
@@ -25,6 +25,7 @@ class HomeTableVC: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        getData()
         setupTableViewsDelegates()
         setupSearchController()
     }
@@ -53,6 +54,50 @@ class HomeTableVC: UIViewController{
         navigationItem.searchController = searchController
         definesPresentationContext = true
     }
+    
+    func getData(){
+        //Pagnating the Data TO DO
+        //let first = db.collection("posts")
+        // .order(by: "population")
+        // .limit(to: 25)
+        let db = Firestore.firestore()
+        var query: Query!
+        
+        if postData.isEmpty {
+            query = db.collection("posts")
+            print("First 10 loded")
+        }else{
+            //query = db.collection("posts").start(afterDocument: lastDocument)
+        }
+        
+        query.getDocuments { (snapshot, error) in
+            if let error = error {
+                print("\(error.localizedDescription)")
+            } else {
+                for document in snapshot!.documents{
+                    
+                    let result = Result {
+                        try document.data(as: Post.self)
+                    }
+                    switch result{
+                    case .success(let post):
+                        if let post = post {
+                            //succesfully initalized
+                            self.postData.append(post)
+                            print("document succesfully read")
+                        }else{
+                            //nil value
+                            print("Document dosent exsist")
+                        }
+                    case .failure(let error):
+                        print("Error decoding post: \(error)")
+                    }
+                }
+                self.homeView.homeTableView.reloadData()
+            }
+        }
+    }
+    
 
 }
 
@@ -97,11 +142,18 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     func addData(toCell cell: PostCell, withIndex index: Int ){
         cell.titleUILabel.text =  postData[index].title
         cell.previewUILabel.text =  postData[index].text
-        cell.authorUILabel.text =  postData[index].userInfo.name
+        
+        //Added anonymity change
+        if postData[index].anonymity == true{
+            cell.authorUILabel.text = "Anonymus"
+        }else{
+            cell.authorUILabel.text =  postData[index].userInfo.name
+        }
+        
         cell.likesUILabel.text =  String(postData[index].likes!)
-        cell.commentsUILabel.text =  String(postData[index].commentCount!)
+        cell.commentsUILabel.text =  "0"
         //cell.UID =  postData[index].postID
-        cell.dateUILabel.text = "\(index)h"
+        cell.dateUILabel.text = "\(index)"
         if postData[index].imageURL != nil{
             //this cell will have an image
             //Converting URL to UiImage object

@@ -564,7 +564,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
                     fullname = user.name
                     
                     //Adding new document to 
-                    let newPost = Post(stationID: " ", stationName: self.selectedchannel, likes: 0, userInfo: user, title: titlepost.text!, text: myTxtview.text!, date: Date(), anonymity: Anonymity)
+                    let newPost = Post(stationID: " ", stationName: self.selectedchannel, likes: 0, userInfo: user, title: titlepost.text!, text: myTxtview.text!, date: Date(), anonymity: Anonymity, commentCount: 0)
                     
                     do{
                         try db.collection("posts").document(self.selectedchannel).setData(from: newPost)
