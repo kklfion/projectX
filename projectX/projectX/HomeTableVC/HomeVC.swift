@@ -146,10 +146,12 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         if postData[index].imageURL != nil{
             //this cell will have an image
             //Converting URL to UiImage object
-            let imageTest = UIImageView()
-            imageTest.load(url: postData[index].imageURL!)
-            cell.postUIImageView.image = imageTest.image
-            cell.withImageViewConstraints()
+            let data = try? Data(contentsOf: postData[index].imageURL!)
+            if let imageData = data {
+                let image = UIImage(data: imageData)
+                cell.postUIImageView.image = image
+                cell.withImageViewConstraints()
+            }
         }else{
             //change cell constraints so that text takes the extra space
             cell.imageView?.isHidden = true
