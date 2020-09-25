@@ -69,7 +69,7 @@ class PostCell: UITableViewCell {
     let previewUILabel: UILabel = {
         let text = UILabel()
         text.font = UIFont.systemFont(ofSize: 14 )
-        text.numberOfLines = 0
+        text.numberOfLines = 5
         text.adjustsFontSizeToFitWidth = false
         text.lineBreakMode = .byTruncatingTail
         text.text = "Preview"
