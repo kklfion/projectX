@@ -136,12 +136,8 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         cell.titleUILabel.text =  postData[index].title
         cell.previewUILabel.text =  postData[index].text
         
-        //Added anonymity change
-        if postData[index].anonymity == true{
-            cell.authorUILabel.text = "Anonymus"
-        }else{
-            cell.authorUILabel.text =  postData[index].userInfo.name
-        }
+        cell.authorUILabel.text =  postData[index].userInfo.name
+
         
         cell.likesUILabel.text =  String(postData[index].likes!)
         cell.commentsUILabel.text =  "0"

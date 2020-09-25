@@ -36,9 +36,6 @@ struct Post:Identifiable, Codable{
     /// Post photo url stored in the Firestore
     var imageURL: URL?
     
-    //Added anoynimity option, which will replace the author with "annoynums" in UI
-    var anonymity: Bool
-    
     //Number of comments per post
     var commentCount: Int?
     
@@ -53,7 +50,6 @@ extension Post{
                 text: String,
                 date: Date,
                 imageURL: URL? = nil,
-                anonymity: Bool = false,
                 commentCount: Int? = 0) {
         self.stationID = stationID ?? ""
         self.stationName = stationName
@@ -63,7 +59,6 @@ extension Post{
         self.text = text
         self.date = date
         self.imageURL = imageURL
-        self.anonymity = anonymity
         self.commentCount = commentCount
     }
 }
