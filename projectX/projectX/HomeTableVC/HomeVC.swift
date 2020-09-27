@@ -7,8 +7,10 @@
 //
 //
 import UIKit
+
 class HomeTableVC: UIViewController{
     private var homeView: HomeView?
+    var refreshControl: UIRefreshControl?
     private var postData = FakePostData().giveMeSomeData()
     
     private let seachView: UISearchBar = {
@@ -21,6 +23,19 @@ class HomeTableVC: UIViewController{
         setupView()
         setupTableViewsDelegates()
         setupSearchController()
+        addRefreshControl()
+    }
+    func addRefreshControl(){
+        refreshControl = UIRefreshControl()
+        refreshControl?.tintColor = UIColor.white
+        refreshControl?.addTarget(self, action: #selector(refreshList), for: .valueChanged)
+        homeView?.loungeTableView.addSubview(refreshControl!)
+        
+    }
+    @objc func refreshList(){
+        //update data in refreshlist ... somehow, when new data appears
+        refreshControl?.endRefreshing()
+        homeView?.loungeTableView.reloadData()
     }
     private func setupView(){
         self.view.backgroundColor = .white
@@ -32,6 +47,7 @@ class HomeTableVC: UIViewController{
                              bottom: self.view.bottomAnchor,
                              trailing: self.view.trailingAnchor)
     }
+
     private func setupTableViewsDelegates(){
         homeView?.loungeTableView.delegate = self
         homeView?.busStopTableView.delegate = self
@@ -89,6 +105,7 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         station.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(station, animated: true)
     }
+        
     private func addData(toCell cell: PostCell, withIndex index: Int ){
         cell.titleUILabel.text =  postData[index].title
         cell.previewUILabel.text =  postData[index].preview
