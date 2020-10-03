@@ -11,10 +11,12 @@ struct Constants{
     
     static let PostCellID = "regularPostCell"
     
-    static let mainTextFontSize: CGFloat = 14
-    static let smallTextFontSize: CGFloat = 12
     static let standardPadding: CGFloat = 10
-   
+    
+    static let headlineTextFont = UIFont.preferredFont(forTextStyle: .headline)
+    static let bodyTextFont = UIFont.preferredFont(forTextStyle: .subheadline)
+    static let smallerTextFont = UIFont.preferredFont(forTextStyle: .footnote)
+    
     struct Screen {
         static let screenSize = UIScreen.main.bounds
         static let width = screenSize.width

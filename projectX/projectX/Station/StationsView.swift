@@ -43,14 +43,14 @@ class StationsView: UIView {
     let stationNameLabel: UILabel = {
         let label = UILabel()
         label.text = "University"
-        label.font = UIFont.systemFont(ofSize: Constants.mainTextFontSize)
+        label.font = Constants.headlineTextFont
         label.numberOfLines = 1
         return label
     }()
     let followersLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
-        label.font = UIFont.systemFont(ofSize: Constants.mainTextFontSize)
+        label.font = Constants.bodyTextFont
         label.text = "666k Followers"
         return label
     }()
@@ -68,7 +68,7 @@ class StationsView: UIView {
     let stationInfoLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: Constants.mainTextFontSize)
+        label.font = Constants.bodyTextFont
         label.text = "Yeeet. Blah blah. Can I graduate on time. I want to drink. Maybe a boba too!"
         return label
     }()

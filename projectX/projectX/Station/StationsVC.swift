@@ -111,7 +111,7 @@ extension StationsVC: UITableViewDelegate, UITableViewDataSource{
         cell.titleUILabel.text =  CellData[index].title
         cell.previewUILabel.text =  CellData[index].preview
         cell.authorUILabel.text =  CellData[index].author
-        cell.likesUILabel.text =  String(CellData[index].likesCount)
+        cell.likesLabel.text =  String(CellData[index].likesCount)
         cell.commentsUILabel.text =  String(CellData[index].commentsCount)
         //cell.UID =  CellData[index].postID
         cell.dateUILabel.text = "\(index)h"

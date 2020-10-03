@@ -73,6 +73,11 @@ extension HomeTableVC: UISearchResultsUpdating {
     }
 }
 extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        guard let cell = cell as? PostCell else {return}
+//        let radius = cell.shadowLayerView.layer.cornerRadius
+//        cell.shadowLayerView.layer.shadowPath = UIBezierPath(roundedRect: cell.shadowLayerView.bounds, cornerRadius: radius).cgPath
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         postData.count
     }
@@ -95,6 +100,7 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
             
         }else if  tableView == homeView?.busStopTableView{
         }
+        cell.selectionStyle = .none
         cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
         addData(toCell: cell, withIndex: indexPath.row)
         return cell
@@ -110,9 +116,8 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         cell.titleUILabel.text =  postData[index].title
         cell.previewUILabel.text =  postData[index].preview
         cell.authorUILabel.text =  postData[index].author
-        cell.likesUILabel.text =  String(postData[index].likesCount)
+        cell.likesLabel.text =  String(postData[index].likesCount)
         cell.commentsUILabel.text =  String(postData[index].commentsCount)
-        //cell.UID =  postData[index].postID
         cell.dateUILabel.text = "\(index)h"
         if postData[index].image != nil{
             cell.imageView?.isHidden = false

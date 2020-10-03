@@ -88,7 +88,7 @@ extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
         cell.titleUILabel.text =  postData[index].title
         cell.previewUILabel.text =  postData[index].preview
         cell.authorUILabel.text =  postData[index].author
-        cell.likesUILabel.text =  String(postData[index].likesCount)
+        cell.likesLabel.text =  String(postData[index].likesCount)
         cell.commentsUILabel.text =  String(postData[index].commentsCount)
         //cell.UID =  postData[index].postID
         cell.dateUILabel.text = "\(index)h"
