@@ -59,8 +59,10 @@ class HomeTableVC: UIViewController{
         homeView?.busStopTableView.rowHeight = UITableView.automaticDimension
         homeView?.busStopTableView.estimatedRowHeight = 100
         
-        homeView?.loungeTableView.register(PostCell.self, forCellReuseIdentifier: Constants.PostCellID)
-        homeView?.busStopTableView.register(PostCell.self, forCellReuseIdentifier: Constants.PostCellID)
+        homeView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
+        homeView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
+        homeView?.busStopTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
+        homeView?.busStopTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
     }
     /// setup top seatchBar to seatch for particular posts
     private func setupSearchController(){
@@ -93,17 +95,28 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
 
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.PostCellID, for: indexPath) as? PostCell else {
-            fatalError("Wrong cell at ?cellForRowAt? ")
+        switch postData[indexPath.row].image {
+        case nil:
+            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
+                addData(toCell: cell, withIndex: indexPath.row)
+                cell.selectionStyle = .none
+                cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+                return cell
+            }
+        default:
+            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
+                addData(toCell: cell, withIndex: indexPath.row)
+                cell.selectionStyle = .none
+                cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+                return cell
+            }
         }
-        if tableView == homeView?.loungeTableView{
-            
-        }else if  tableView == homeView?.busStopTableView{
-        }
-        cell.selectionStyle = .none
-        cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
-        addData(toCell: cell, withIndex: indexPath.row)
-        return cell
+//        if tableView == homeView?.loungeTableView{
+//
+//        }else if  tableView == homeView?.busStopTableView{
+//        }
+
+        return UITableViewCell()
     }
     @objc private func dummyStation(){
         //TODO: finish use data to load it
@@ -112,23 +125,22 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         navigationController?.pushViewController(station, animated: true)
     }
         
-    private func addData(toCell cell: PostCell, withIndex index: Int ){
-        cell.titleUILabel.text =  postData[index].title
-        cell.previewUILabel.text =  postData[index].preview
-        cell.authorUILabel.text =  postData[index].author
-        cell.likesLabel.text =  String(postData[index].likesCount)
-        cell.commentsUILabel.text =  String(postData[index].commentsCount)
-        cell.dateUILabel.text = "\(index)h"
-        if postData[index].image != nil{
-            cell.imageView?.isHidden = false
-            //this cell will have an image
+    private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
+        if let cell = cell as? PostCellWithImage{
+            cell.titleUILabel.text =  postData[index].title
+            cell.previewUILabel.text =  postData[index].preview
+            cell.authorUILabel.text =  postData[index].author
+            cell.likesLabel.text =  String(postData[index].likesCount)
+            cell.commentsUILabel.text =  String(postData[index].commentsCount)
+            cell.dateUILabel.text = "\(index)h"
             cell.postUIImageView.image = postData[index].image
-            cell.withImageViewConstraints()
-        }else{
-            //change cell constraints so that text takes the extra space
-            cell.imageView?.isHidden = true
-            cell.postUIImageView.image = nil
-            cell.noImageViewConstraints()
+        }else if let cell = cell as? PostCellWithoutImage {
+            cell.titleUILabel.text =  postData[index].title
+            cell.previewUILabel.text =  postData[index].preview
+            cell.authorUILabel.text =  postData[index].author
+            cell.likesLabel.text =  String(postData[index].likesCount)
+            cell.commentsUILabel.text =  String(postData[index].commentsCount)
+            cell.dateUILabel.text = "\(index)h"
         }
     }
 }

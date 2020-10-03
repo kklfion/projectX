@@ -41,14 +41,14 @@ class HomeView: UIView {
     let loungeTableView: UITableView = {
         let home = UITableView()
         home.separatorStyle = .none
-        home.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
+        home.backgroundColor = .white
         home.translatesAutoresizingMaskIntoConstraints = false
         return home
     }()
     let busStopTableView: UITableView = {
         let rec = UITableView()
         rec.separatorStyle = .none
-        rec.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
+        rec.backgroundColor = .white
         rec.translatesAutoresizingMaskIntoConstraints = false
         return rec
     }()

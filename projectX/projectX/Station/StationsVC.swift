@@ -37,7 +37,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         tableView.dataSource = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100
-        tableView.register(PostCell.self, forCellReuseIdentifier: Constants.PostCellID)
+        tableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
     }
@@ -97,7 +97,7 @@ extension StationsVC: UITableViewDelegate, UITableViewDataSource{
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.PostCellID, for: indexPath) as? PostCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage else {
             fatalError("Wrong cell at cellForRowAt? ")
         }
         //        if tableView == homeView.homeTableView{
@@ -107,7 +107,7 @@ extension StationsVC: UITableViewDelegate, UITableViewDataSource{
         addData(toCell: cell, withIndex: indexPath.row)
         return cell
     }
-    func addData(toCell cell: PostCell, withIndex index: Int ){
+    func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
         cell.titleUILabel.text =  CellData[index].title
         cell.previewUILabel.text =  CellData[index].preview
         cell.authorUILabel.text =  CellData[index].author
@@ -118,11 +118,11 @@ extension StationsVC: UITableViewDelegate, UITableViewDataSource{
         if CellData[index].image != nil{
             //this cell will have an image
             cell.postUIImageView.image = CellData[index].image
-            cell.withImageViewConstraints()
+            //cell.withImageViewConstraints()
         }else{
             //change cell constraints so that text takes the extra space
             cell.postUIImageView.image = nil
-            cell.noImageViewConstraints()
+            //cell.noImageViewConstraints()
         }
     }
 }

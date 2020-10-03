@@ -14,6 +14,14 @@ class MainTabBarVC: UITabBarController {
         self.delegate = self
         setupNavigationBarAppearance()
         setupSideBarItems()
+        setupTabBarAppearance()
+    }
+    private func setupTabBarAppearance(){
+        tabBar.layer.masksToBounds = true
+        tabBar.isTranslucent = true
+        tabBar.barStyle = .default
+        tabBar.layer.cornerRadius = 20
+        //tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
     private func setupSideBarItems(){
         let sidebarItem = UITabBarItem()

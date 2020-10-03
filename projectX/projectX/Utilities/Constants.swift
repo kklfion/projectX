@@ -9,8 +9,6 @@
 import UIKit
 struct Constants{
     
-    static let PostCellID = "regularPostCell"
-    
     static let standardPadding: CGFloat = 10
     
     static let headlineTextFont = UIFont.preferredFont(forTextStyle: .headline)

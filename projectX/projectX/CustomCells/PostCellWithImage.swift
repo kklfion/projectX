@@ -16,29 +16,24 @@
 */
 import UIKit
 
-class PostCell: UITableViewCell {
-    static let cellID = "PostTableViewCell"
-    /// is set to rightUIViewLeading anchor if there is an image otherwise it is set to the end of the screen
-    var previewTrailingAnchor: NSLayoutConstraint!
-    var withImageAnchor: NSLayoutConstraint!
-    var rightViewWidthAnchor: NSLayoutConstraint!
+class PostCellWithImage: UITableViewCell {
+    static let cellID = "PostCellWithImage"
 
     let shadowLayerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         view.layer.cornerRadius = 5
-        view.layer.masksToBounds = false
-        view.layer.shadowOffset = CGSize(width: 0, height: 3)
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOpacity = 0.23
-        view.layer.shadowRadius = 4
-        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.shadowColor = UIColor.gray.cgColor
+        view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
+        view.layer.shadowRadius = 5
+        view.layer.shadowOpacity = 0.4
         return view
     }()
     let containerView: UIView = {
         let view = UIView()
-        view.layer.masksToBounds = true
         view.backgroundColor = .white
+        view.layer.cornerRadius = 5
+        view.layer.masksToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -166,6 +161,9 @@ class PostCell: UITableViewCell {
         setupContentView()
     }
     func setupContentView(){
+        
+        contentView.backgroundColor = .white
+        
         [dateUILabel,channelUIButton, titleUILabel, previewUILabel, bottomStackView, postUIImageView, authorImageView, authorUILabel]
             .forEach {containerView.addSubview($0)}
         [likeButton,likesLabel,dislikeButton].forEach { likesStackView.addArrangedSubview($0)}
@@ -198,10 +196,8 @@ class PostCell: UITableViewCell {
         previewUILabel.addAnchors(top: titleUILabel.bottomAnchor,
                               leading: containerView.leadingAnchor,
                               bottom: authorImageView.topAnchor,
-                              trailing: nil,
+                              trailing: postUIImageView.leadingAnchor,
                               padding: .init(top: 0, left: 10, bottom: 10, right: 0))
-        previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
-        previewTrailingAnchor.isActive = true
         
         authorImageView.addAnchors(top: nil,
                              leading: containerView.leadingAnchor,
@@ -226,38 +222,20 @@ class PostCell: UITableViewCell {
         
         ///finish up by adding views to the content view
         [shadowLayerView,containerView].forEach({contentView.addSubview($0)})
-        containerView.backgroundColor = .white
-        containerView.layer.cornerRadius = 5
-        contentView.backgroundColor = .white
         containerView.addAnchors(top: contentView.safeAreaLayoutGuide.topAnchor,
                           leading: contentView.safeAreaLayoutGuide.leadingAnchor,
                           bottom: contentView.safeAreaLayoutGuide.bottomAnchor,
                           trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
-                          padding: .init(top: 7, left: 7, bottom: 0, right: 7),
+                          padding: .init(top: 10, left: 10, bottom: 10, right: 10),
                           size: .init(width: 0, height: 0))
         shadowLayerView.addAnchors(top: contentView.safeAreaLayoutGuide.topAnchor,
                           leading: contentView.safeAreaLayoutGuide.leadingAnchor,
                           bottom: contentView.safeAreaLayoutGuide.bottomAnchor,
                           trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
-                          padding: .init(top: 7, left: 7, bottom: 0, right: 7),
+                          padding: .init(top: 10, left: 10, bottom: 10, right: 10),
                           size: .init(width: 0, height: 0))
 
     
-    }
-    /// changes constraints so that main view takes extra space
-    func noImageViewConstraints(){
-        previewTrailingAnchor.isActive = false
-        previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
-        previewTrailingAnchor.isActive = true
-        postUIImageView.isHidden = true
-
-    }
-    /// changes constraints so that there is room for the image
-    func withImageViewConstraints(){
-        previewTrailingAnchor.isActive = false
-        previewTrailingAnchor = previewUILabel.trailingAnchor.constraint(equalTo: postUIImageView.leadingAnchor)
-        previewTrailingAnchor.isActive = true
-        postUIImageView.isHidden = false
     }
 }
 

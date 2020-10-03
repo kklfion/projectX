@@ -32,13 +32,14 @@
 		804E61A524980DFD00825150 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A424980DFD00825150 /* HomeVC.swift */; };
 		804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A624980E4B00825150 /* ProfileTableVC.swift */; };
 		8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62C24A6CEC0002A9E16 /* HomeView.swift */; };
-		8066D62F24AACAF8002A9E16 /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62E24AACAF8002A9E16 /* PostCell.swift */; };
+		8066D62F24AACAF8002A9E16 /* PostCellWithImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */; };
 		806B790524B817AD002B45BD /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806B790424B817AD002B45BD /* PostModel.swift */; };
 		806E777624C9074700A95B89 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806E777524C9074700A95B89 /* Constants.swift */; };
 		806E777824C9076200A95B89 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806E777724C9076200A95B89 /* Extensions.swift */; };
 		806E777A24C9255F00A95B89 /* DataTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806E777924C9255F00A95B89 /* DataTest.swift */; };
 		8081185424C2626C0032D46D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8081185324C2626C0032D46D /* LoginViewController.swift */; };
 		8081185624C262910032D46D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8081185524C262910032D46D /* LoginView.swift */; };
+		808361C425290DEC00DEF0DE /* PostCellWithoutImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */; };
 		80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */; };
 		80B2C6A92516E3220025F9EE /* SideBarSlidingTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */; };
 		80BB37B024D7ACCB00B12253 /* StationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BB37AF24D7ACCB00B12253 /* StationsView.swift */; };
@@ -82,13 +83,14 @@
 		804E61A424980DFD00825150 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		804E61A624980E4B00825150 /* ProfileTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableVC.swift; sourceTree = "<group>"; };
 		8066D62C24A6CEC0002A9E16 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		8066D62E24AACAF8002A9E16 /* PostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
+		8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCellWithImage.swift; sourceTree = "<group>"; };
 		806B790424B817AD002B45BD /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		806E777524C9074700A95B89 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		806E777724C9076200A95B89 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		806E777924C9255F00A95B89 /* DataTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTest.swift; sourceTree = "<group>"; };
 		8081185324C2626C0032D46D /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		8081185524C262910032D46D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCellWithoutImage.swift; sourceTree = "<group>"; };
 		80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarSlidingTransition.swift; sourceTree = "<group>"; };
 		80BB37AF24D7ACCB00B12253 /* StationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsView.swift; sourceTree = "<group>"; };
@@ -166,7 +168,8 @@
 		803D75B1250ADB84003F569D /* CustomCells */ = {
 			isa = PBXGroup;
 			children = (
-				8066D62E24AACAF8002A9E16 /* PostCell.swift */,
+				8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */,
+				808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */,
 				803D759F250AD3E0003F569D /* CommentTableViewCell.swift */,
 			);
 			path = CustomCells;
@@ -424,6 +427,7 @@
 				80D97BA9251D819000825BBB /* MissionsCell.swift in Sources */,
 				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,
 				804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */,
+				808361C425290DEC00DEF0DE /* PostCellWithoutImage.swift in Sources */,
 				803D75B3250AE531003F569D /* Post.swift in Sources */,
 				803D75A4250AD3E0003F569D /* PostView.swift in Sources */,
 				806E777824C9076200A95B89 /* Extensions.swift in Sources */,
@@ -445,7 +449,7 @@
 				80B2C6A92516E3220025F9EE /* SideBarSlidingTransition.swift in Sources */,
 				803D75A3250AD3E0003F569D /* CommentTableViewCell.swift in Sources */,
 				804E619B24957E3200825150 /* MainTabBarVC.swift in Sources */,
-				8066D62F24AACAF8002A9E16 /* PostCell.swift in Sources */,
+				8066D62F24AACAF8002A9E16 /* PostCellWithImage.swift in Sources */,
 				806E777624C9074700A95B89 /* Constants.swift in Sources */,
 				803972D52519780D002695EC /* SideBarView.swift in Sources */,
 				80BB37B224D8C50700B12253 /* StationsVC.swift in Sources */,
