@@ -10,6 +10,7 @@ import UIKit
 import FirebaseAuth
 
 class ProfileTableVC: UIViewController {
+    let userManager = UserManager.shared
     var profileView: ProfileView?
     private var postData = FakePostData().giveMeSomeData()
     
@@ -19,6 +20,7 @@ class ProfileTableVC: UIViewController {
         view.backgroundColor = .white
         setupView()
         setupTableViews()
+        getUserInformation()
     }
     private func setupView(){
         profileView = ProfileView(frame: self.view.frame)
@@ -45,16 +47,13 @@ class ProfileTableVC: UIViewController {
         profileView?.missionsTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
         profileView?.missionsTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
     }
-    @objc func logoutCurrentUser(){
-        // TO DO: Send to loginviewcontroller
-        if Auth.auth().currentUser != nil {
-            do{
-                print("signing out")
-                try Auth.auth().signOut()
-                
-            } catch let error{
-                print(error)
-            }
+    private func getUserInformation(){
+        if userManager.userData != nil {
+            //profileView?.profileImageView.image = userManager.userData?.phot
+            profileView?.usernameLabel.text = userManager.userData?.name
+            	
+        }else{
+            profileView?.usernameLabel.text = userManager.defaultUser().name
         }
     }
 }

@@ -27,6 +27,10 @@ class LoginViewController: UIViewController {
         view.registerButton.addTarget(self, action: #selector(signMeUp), for: .touchUpInside)
         view.loginButton.addTarget(self, action: #selector(logMeIn), for: .touchUpInside)
         view.skipButton.addTarget(self, action: #selector(skipToMain), for: .touchUpInside)
+        
+        view.emailTextField.delegate = self
+        view.passwordTextField.delegate = self
+        
         return view
     }
     func setupView(){
@@ -108,7 +112,10 @@ class LoginViewController: UIViewController {
         //navvc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
-    
-
-
+}
+extension LoginViewController: UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }

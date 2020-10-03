@@ -4,10 +4,17 @@
 //
 //  Created by Radomyr Bezghin on 6/13/20.
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
-//
+// radomirbezgin@gmail.com
+// 123456
+
 
 import UIKit
+import FirebaseAuth
+
 class MainTabBarVC: UITabBarController {
+    
+    var userManager = UserManager.shared
+    
     let transition = SideBarSlidingTransition() // for custom transitioning of the sidebar
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -15,6 +22,10 @@ class MainTabBarVC: UITabBarController {
         setupNavigationBarAppearance()
         setupSideBarItems()
         setupTabBarAppearance()
+        
+        if Auth.auth().currentUser != nil {
+            userManager.userID = Auth.auth().currentUser?.uid
+        }
     }
     private func setupTabBarAppearance(){
         tabBar.layer.masksToBounds = true

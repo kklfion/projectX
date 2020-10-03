@@ -7,8 +7,10 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class SettingsTableViewController: UITableViewController {
+    let userManager = UserManager.shared
     var user: User?{
         didSet{
             tableView.reloadData()
@@ -22,10 +24,12 @@ class SettingsTableViewController: UITableViewController {
     ]
     override func viewDidLoad() {
         super.viewDidLoad()
-        user = User(name: "Pete", photoURL: nil, email: "pete@gmail.com", uid: "12344")
         navigationItem.title = "Settings"
         tableView.tableFooterView = UIView()
         navigationController?.navigationBar.prefersLargeTitles = true
+        
+        user = userManager.userData
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = false
@@ -39,7 +43,7 @@ class SettingsTableViewController: UITableViewController {
         view.sectionTitleLabel.text = sections[section]
         return view
     }
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return sections.count
@@ -49,8 +53,6 @@ class SettingsTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return rows[section].count
     }
-
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var celll = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier")
         if celll == nil {
@@ -82,6 +84,24 @@ class SettingsTableViewController: UITableViewController {
             default:
                 cell.detailTextLabel?.text = ""
         }
+    }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch rows[indexPath.section][indexPath.row]{
+            case "Sign Out":
+                signMeOut()
+            case "Delete Account":
+                deleteMe()
+            default:
+                print("not implemented")
+        }
+    }
+    private func signMeOut(){
+        userManager.signMeOut()
+        user = userManager.defaultUser()
+    }
+    private func deleteMe(){
+        userManager.deleteMe()
+        user = userManager.defaultUser()
     }
 }
 class SectionHeaderView: UIView {

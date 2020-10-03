@@ -31,6 +31,12 @@ class SignUpViewController: UIViewController {
     func createSignUpView()-> SignUpView{
         let view = SignUpView(frame: self.view.frame)
         view.signUpButton.addTarget(self, action: #selector(newUserSignUp), for: .touchUpInside)
+        
+        view.emailTextField.delegate = self
+        view.passwordTextField.delegate = self
+        view.nameTextField.delegate = self
+        view.lastTextField  .delegate = self
+
         return view
         
     }
@@ -118,41 +124,47 @@ class SignUpViewController: UIViewController {
     ///   - password: password to test
     /// - Returns: returns an an error message if somewithing is invalid or nil if everything is correct
     func isEmailPasswordValid(rawEmail: String, rawPassword: String)-> String?{
-        let email = rawEmail.trimmingCharacters(in: .whitespacesAndNewlines)
-        let password = rawPassword.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        if email.isEmpty{
-            return "Please, enter your email"
-        }else if password.isEmpty{
-             return "Please, enter your password"
-        }
-        //check email
-        //There’s some text before the @
-        //There’s ucsc.edu after the @
-        let regEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+.edu"
-        let pred = NSPredicate(format:"SELF MATCHES %@", regEx)
-        if !pred.evaluate(with: email){
-            return "Please, use your .edu email"
-        }
-        // at least one uppercase,
-        // at least one digit
-        // at least one lowercase
-        // 8 characters total
-        let passwordTest = NSPredicate(format: "SELF MATCHES %@", "(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{8,}")
-        if !passwordTest.evaluate(with: password){
-            let message = """
-            Invalid Password:
-            use at least 8 characters
-            at least one upper case
-            at least one lower case
-            at least one digit
-            """
-            return message
-        }
+//        let email = rawEmail.trimmingCharacters(in: .whitespacesAndNewlines)
+//        let password = rawPassword.trimmingCharacters(in: .whitespacesAndNewlines)
+//
+//        if email.isEmpty{
+//            return "Please, enter your email"
+//        }else if password.isEmpty{
+//             return "Please, enter your password"
+//        }
+//        //check email
+//        //There’s some text before the @
+//        //There’s ucsc.edu after the @
+//        let regEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+.edu"
+//        let pred = NSPredicate(format:"SELF MATCHES %@", regEx)
+//        if !pred.evaluate(with: email){
+//            return "Please, use your .edu email"
+//        }
+//        // at least one uppercase,
+//        // at least one digit
+//        // at least one lowercase
+//        // 8 characters total
+//        let passwordTest = NSPredicate(format: "SELF MATCHES %@", "(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{8,}")
+//        if !passwordTest.evaluate(with: password){
+//            let message = """
+//            Invalid Password:
+//            use at least 8 characters
+//            at least one upper case
+//            at least one lower case
+//            at least one digit
+//            """
+//            return message
+//        }
         return nil
     }
     func displayLoginErrorMessage(message: String){
         signUpView.errorLabel.text = message
     }
 
+}
+extension SignUpViewController: UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }
