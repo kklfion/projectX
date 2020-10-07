@@ -19,7 +19,7 @@ class SideBarSlidingTransition: NSObject, UIViewControllerAnimatedTransitioning{
             return
         }
         let containerView = transitionContext.containerView
-        let finalWidth = containerView.frame.width * 0.8
+        let finalWidth = containerView.frame.width * 0.5
         let finalHeight = containerView.frame.height
         
         if isPresenting{

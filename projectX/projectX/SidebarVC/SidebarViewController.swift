@@ -7,6 +7,7 @@
 //
 
 import UIKit
+
 enum SideBarMenuType{
     case match
     case friends
@@ -15,10 +16,15 @@ enum SideBarMenuType{
     case settings
 }
 class SidebarViewController: UIViewController {
-    
-    var scrollView: UIScrollView!
+    let stations = [
+        "Travel", "Art", "Drama", "Gaming", "Meme", "Makeup", "Politics","Music",
+        "Sports","Food", "Abroad", "Writing","Financial", "Pets", "Job", "Astrology", "Horror",
+        "Anime", "LGBTQ+", "Film", "Relationship", "Photography", "International", "Development",
+        "Relationship", "Photography", "International", "Development"
+    ]
     var sideBarView: SideBarView?
-    var didTapSideBarMenuType: ((SideBarMenuType) -> Void)? // returns what side menu button was tapped
+    
+    var didTapSideBarMenuType: ((SideBarMenuType) -> Void)? // returns what side menu button was tapped to the MainTabBar
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSideView()
@@ -34,18 +40,37 @@ class SidebarViewController: UIViewController {
                              trailing: self.view.trailingAnchor)
     }
     private func setupTableViewsDelegates(){
+        
         sideBarView?.menuTableView.delegate = self
         sideBarView?.menuTableView.dataSource = self
-        sideBarView?.menuTableView.register(UITableViewCell.self, forCellReuseIdentifier: SideBarView.CellID)
+        sideBarView?.menuTableView.register(UITableViewCell.self, forCellReuseIdentifier: SideBarView.menuCellID)
+        
+        sideBarView?.stationsTableView.delegate = self
+        sideBarView?.stationsTableView.dataSource = self
+        sideBarView?.stationsTableView.register(UITableViewCell.self, forCellReuseIdentifier: SideBarView.menuCellID)
     }
 }
 extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sideBarView?.menuItems.count ?? 0
+        if tableView == sideBarView?.menuTableView{
+            return sideBarView?.menuItems.count ?? 0
+        }
+        else{ //stations
+            return stations.count
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch indexPath.row{
+        if tableView == sideBarView?.menuTableView{
+            didTapMenuButtonsFor(indexPath.row)
+        }
+        else{ //stations
+            didTapStationsButtonsFor(indexPath.row)
+        }
+
+    }
+    func didTapMenuButtonsFor(_ index: Int){
+        switch index{
         case 0:
             self.dismiss(animated: true) { [weak self] in
                 self?.didTapSideBarMenuType?(SideBarMenuType.match)
@@ -67,16 +92,27 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
                 self?.didTapSideBarMenuType?(SideBarMenuType.settings)
             }
         }
-
     }
+    func didTapStationsButtonsFor(_ index: Int){
+        
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: SideBarView.CellID, for: indexPath)
-        let imageName = sideBarView?.imageNames[indexPath.row] ?? ""
-        let text = sideBarView?.menuItems[indexPath.row]
-        let image = UIImage(systemName: imageName)?.withTintColor(.black, renderingMode: .alwaysOriginal)
-        cell.textLabel?.text = text
-        cell.imageView?.image = image
-        cell.selectionStyle = .none
+        let cell = tableView.dequeueReusableCell(withIdentifier: SideBarView.menuCellID, for: indexPath)
+        if tableView == sideBarView?.menuTableView{
+            let imageName = sideBarView?.imageNames[indexPath.row] ?? ""
+            let text = sideBarView?.menuItems[indexPath.row]
+            let image = UIImage(systemName: imageName)?.withTintColor(.black, renderingMode: .alwaysOriginal)
+            cell.textLabel?.text = text
+            cell.imageView?.image = image
+            cell.selectionStyle = .none
+        }
+        else{ //stations
+            let text = stations[indexPath.row]
+            cell.textLabel?.text = text
+            cell.imageView?.image = nil
+            cell.selectionStyle = .none
+        }
         return cell
     }
     
@@ -88,3 +124,4 @@ extension SidebarViewController{
         self.dismiss(animated: true)
     }
 }
+
