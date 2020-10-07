@@ -126,13 +126,13 @@ class PostCellWithImage: UITableViewCell {
     }()
     private let dislikeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "arrowtriangle.down.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "chevron.down")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
         //button.addTarget(self, action: #selector(dislikeButtonTouched), for: .touchUpInside)
         return button
     }()
     let commentsUIButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "bubble.right.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "text.bubble")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let commentsUILabel: UILabel = {
