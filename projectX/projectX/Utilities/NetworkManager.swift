@@ -52,4 +52,17 @@ extension NetworkManager{
             }
         }.resume()
     }
+    func getAsynchImage(withStringURL stringURL: String, completion: @escaping (_ image: UIImage?,_ error: Error?) -> ()){
+        guard let url = URL(string: stringURL) else {return}
+        URLSession.shared.dataTask(with: url) { (data, _, error) in
+            if let error = error {
+                print("Error in downloding image: \(error)")
+                completion(nil, error)
+            }
+            else if let data = data {
+                let image = UIImage(data: data)
+                completion(image, nil)
+            }
+        }.resume()
+    }
 }

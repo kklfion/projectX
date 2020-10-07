@@ -39,6 +39,7 @@ class UserManager{
     }
     var userImage: UIImage? = nil
     private(set) var userStatus: UserStatus = .invalid
+    ///after user is set tries loading the image
     func getUserImage(){
         guard let url = user?.photoURL else {return}
         networkManager.getAsynchImage(withURL: url) { [weak self] (image, error) in
