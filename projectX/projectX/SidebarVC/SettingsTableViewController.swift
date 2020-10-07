@@ -28,7 +28,7 @@ class SettingsTableViewController: UITableViewController {
         tableView.tableFooterView = UIView()
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        user = userManager.userData
+        user = userManager.user
         
     }
     override func viewWillAppear(_ animated: Bool) {

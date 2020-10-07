@@ -8,39 +8,82 @@
 
 import Foundation
 import Firebase
-/// keeps used data in sync across the app
+import Combine
+
+enum UserStatus: String{
+    case signedIn
+    case loggedOff
+    case invalid
+}
+
+///UserManager stores all the data related to the sighned in user and
+///it keeps user data in sync across the app
 class UserManager{
+    
     static let shared = UserManager()
     let networkManager = NetworkManager.shared
     
-    var userID: String?{
+    ///not sure if this works ..
+//    var userDataPublisher: AnyPublisher<User, Never>{
+//        subject.eraseToAnyPublisher()
+//    }
+//    private let subject = PassthroughSubject<User, Never>()
+    
+    ///when user is changed that data should be published to all the listening points
+    private(set) var user: User? = nil{
         didSet{
-            guard let id = userID else {return}
-            networkManager.getDataForUser(id) { (user, error) in
-                if error != nil{
-                    print("error")
-                }else{
-                    print("user was successfully set")
-                    self.userData = user
+            guard let user = user else {return}
+            getUserImage()
+            //subject.send(user)
+        }
+    }
+    var userImage: UIImage? = nil
+    private(set) var userStatus: UserStatus = .invalid
+    func getUserImage(){
+        guard let url = user?.photoURL else {return}
+        networkManager.getAsynchImage(withURL: url) { [weak self] (image, error) in
+            if error != nil {
+                print("error loading image")
+            }
+            else if image != nil {
+                DispatchQueue.main.async {
+                    self?.userImage = image
                 }
             }
         }
     }
-    var userData: User? = nil
-    
+    ///uses the id of currently logged in used to get the data stored in the Firebstore
+    func setCurrentUser(withId id: String)->Void{
+        networkManager.getDataForUser(id) { [weak self] (user, error) in
+            if error != nil{
+                print("error getting user Data \(error)")
+            }else{
+                self?.userStatus = .signedIn
+                self?.user = user
+            }
+        }
+    }
+    ///empties the current user data
+    func setDefaultUser(){
+        userImage = nil
+        user = defaultUser()
+    }
+    ///returns empty user
     func defaultUser()-> User{
         return User(name: "", photoURL: nil, email: "", uid: "")
     }
+    ///signs out current user and empties the user data
     func signMeOut(){
         do{
             try Auth.auth().signOut()
-            userData = defaultUser()
-            userID = ""
+            userStatus = .loggedOff
+            setDefaultUser()
             print("Success signing out")
         }catch let error{
             print("error signing out: \(error)")
         }
     }
+    ///deletes the current user from the database
     func deleteMe(){
         print("Deleting disabled")
 //        let user = Auth.auth().currentUser
@@ -49,6 +92,7 @@ class UserManager{
 //            if let error = error {
 //                print("Error deleting account \(error)")
 //            } else {
+//                userStatus = .loggedOff
 //                print("Account was successfully deleted!")
 //            }
 //        }

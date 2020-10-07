@@ -24,7 +24,8 @@ class MainTabBarVC: UITabBarController {
         setupTabBarAppearance()
         
         if Auth.auth().currentUser != nil {
-            userManager.userID = Auth.auth().currentUser?.uid
+            guard let id = Auth.auth().currentUser?.uid else {return}
+            userManager.setCurrentUser(withId: id)
         }
     }
     private func setupTabBarAppearance(){

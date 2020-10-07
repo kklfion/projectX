@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseAuth
+import Combine
 
 class ProfileTableVC: UIViewController {
     let userManager = UserManager.shared
@@ -20,6 +21,9 @@ class ProfileTableVC: UIViewController {
         view.backgroundColor = .white
         setupView()
         setupTableViews()
+        
+    }
+    override func viewWillAppear(_ animated: Bool) {
         getUserInformation()
     }
     private func setupView(){
@@ -48,13 +52,19 @@ class ProfileTableVC: UIViewController {
         profileView?.missionsTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
     }
     private func getUserInformation(){
-        if userManager.userData != nil {
-            //profileView?.profileImageView.image = userManager.userData?.phot
-            profileView?.usernameLabel.text = userManager.userData?.name
-            	
+        if userManager.user != nil {
+            profileView?.profileImageView.image = userManager.userImage
+            profileView?.usernameLabel.text = userManager.user?.name
         }else{
             profileView?.usernameLabel.text = userManager.defaultUser().name
+            profileView?.profileImageView.image = nil
         }
+        
+//        let cancellable = userManager.userDataPublisher
+//            .sink {  (user) in
+//                self.profileView?.usernameLabel.text = self.userManager.user?.name
+//            }
+        //userManager.setDefaultUser()
     }
 }
 extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
