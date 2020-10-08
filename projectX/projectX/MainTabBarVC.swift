@@ -53,6 +53,7 @@ class MainTabBarVC: UITabBarController {
         profileItem.title = "Profile"
         
         let sidebar = SidebarViewController()
+        sidebar.stationSelectionDelegate = self
         sidebar.tabBarItem = sidebarItem
         let newPost = NewPostVC()
         newPost.tabBarItem = newPostItem
@@ -114,6 +115,14 @@ extension MainTabBarVC: UIViewControllerTransitioningDelegate{
         transition.isPresenting = false
         return transition
     }
+}
+
+extension MainTabBarVC: SideBarStationSelectionDelegate{
+    func didTapSidebarStation(withId stationId: String) {
+        print("selected some station")
+    }
+    
+    
 }
 
 

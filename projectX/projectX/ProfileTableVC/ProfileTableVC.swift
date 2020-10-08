@@ -56,7 +56,7 @@ class ProfileTableVC: UIViewController {
             profileView?.profileImageView.image = userManager.userImage
             profileView?.usernameLabel.text = userManager.user?.name
         }else{
-            profileView?.usernameLabel.text = userManager.defaultUser().name
+            profileView?.usernameLabel.text = ""
             profileView?.profileImageView.image = nil
         }
         

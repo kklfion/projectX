@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol SideBarStationSelectionDelegate {
+    func didTapSidebarStation(withId stationId: String)
+}
+
 enum SideBarMenuType{
     case match
     case friends
@@ -16,6 +20,9 @@ enum SideBarMenuType{
     case settings
 }
 class SidebarViewController: UIViewController {
+    
+    var stationSelectionDelegate: SideBarStationSelectionDelegate?
+        
     let stations = [
         "Travel", "Art", "Drama", "Gaming", "Meme", "Makeup", "Politics","Music",
         "Sports","Food", "Abroad", "Writing","Financial", "Pets", "Job", "Astrology", "Horror",
@@ -94,7 +101,8 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
         }
     }
     func didTapStationsButtonsFor(_ index: Int){
-        
+        stationSelectionDelegate?.didTapSidebarStation(withId: "stationId")
+        self.dismiss(animated: true)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -110,6 +118,7 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
         else{ //stations
             let text = stations[indexPath.row]
             cell.textLabel?.text = text
+            cell.textLabel?.textAlignment = .center
             cell.imageView?.image = nil
             cell.selectionStyle = .none
         }

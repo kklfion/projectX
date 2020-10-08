@@ -16,23 +16,24 @@ class SettingsTableViewController: UITableViewController {
             tableView.reloadData()
         }
     }
-    let sections = ["User", "About", "Accont"]
-    let rows = [
+    let sections = ["User", "About", "Account"]
+    var rows = [
         ["User ID", "Email Address", "Blacklisted"],
         ["Comminity Guidelines", "Terms of Service", "Privacy Policy", "Contact us"],
-        ["Sign Out", "Delete Account"]
+        []
     ]
+    let signedInRows = ["Sign Out", "Delete Account"]
+    let signedOutRows = ["Sign In"]
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Settings"
         tableView.tableFooterView = UIView()
         navigationController?.navigationBar.prefersLargeTitles = true
-        
-        user = userManager.user
-        
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = false
+        user = userManager.user
+        handleRowsForSignInSignOut()
     }
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = true
@@ -91,17 +92,40 @@ class SettingsTableViewController: UITableViewController {
                 signMeOut()
             case "Delete Account":
                 deleteMe()
+            case "Sign In":
+                logMeIn()
             default:
                 print("not implemented")
         }
     }
+    private func handleRowsForSignInSignOut(){
+        if userManager.userStatus == .signedIn{
+            rows[2] = signedInRows
+            tableView.reloadData()
+        }else{
+            rows[2] = signedOutRows
+            tableView.reloadData()
+        }
+    }
     private func signMeOut(){
         userManager.signMeOut()
-        user = userManager.defaultUser()
+        userManager.setUserToNil()
+        user = userManager.user
+        handleRowsForSignInSignOut()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.dismiss(animated: true)
+        }
     }
     private func deleteMe(){
         userManager.deleteMe()
-        user = userManager.defaultUser()
+        user = userManager.user
+    }
+    private func logMeIn(){
+        //presentLoginWindow
+        let vc = LoginViewController()
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
+        print("Sign In")
     }
 }
 class SectionHeaderView: UIView {

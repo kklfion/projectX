@@ -21,7 +21,7 @@ enum UserStatus: String{
 class UserManager{
     
     static let shared = UserManager()
-    let networkManager = NetworkManager.shared
+    private let networkManager = NetworkManager.shared
     
     ///not sure if this works ..
 //    var userDataPublisher: AnyPublisher<User, Never>{
@@ -37,7 +37,10 @@ class UserManager{
             //subject.send(user)
         }
     }
-    var userImage: UIImage? = nil
+    ///is set after user was initialized
+    private(set) var userImage: UIImage? = nil
+    ///user status is changed when user was logged in or logged off
+    /// set to invalid by default signedIn or loggedOff
     private(set) var userStatus: UserStatus = .invalid
     ///after user is set tries loading the image
     func getUserImage(){
@@ -65,12 +68,12 @@ class UserManager{
         }
     }
     ///empties the current user data
-    func setDefaultUser(){
+    func setUserToNil(){
         userImage = nil
-        user = defaultUser()
+        user = nil
     }
     ///returns empty user
-    func defaultUser()-> User{
+    private func defaultUser()-> User{
         return User(name: "", photoURL: nil, email: "", uid: "")
     }
     ///signs out current user and empties the user data
@@ -78,7 +81,7 @@ class UserManager{
         do{
             try Auth.auth().signOut()
             userStatus = .loggedOff
-            setDefaultUser()
+            setUserToNil()
             print("Success signing out")
         }catch let error{
             print("error signing out: \(error)")
@@ -87,6 +90,7 @@ class UserManager{
     ///deletes the current user from the database
     func deleteMe(){
         print("Deleting disabled")
+        setUserToNil() 
 //        let user = Auth.auth().currentUser
 //
 //        user?.delete { error in
