@@ -13,7 +13,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
     var headerMaxHeight: CGFloat!
     var statusBarHeight: CGFloat!
     
-    let CellData = FakePostData().giveMeSomeData()
+    let CellData = [Post]()
     lazy var newView: StationsView = {
         let view = StationsView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
         return view
@@ -109,15 +109,16 @@ extension StationsVC: UITableViewDelegate, UITableViewDataSource{
     }
     func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
         cell.titleUILabel.text =  CellData[index].title
-        cell.previewUILabel.text =  CellData[index].preview
-        cell.authorUILabel.text =  CellData[index].author
-        cell.likesLabel.text =  String(CellData[index].likesCount)
-        cell.commentsUILabel.text =  String(CellData[index].commentsCount)
+        cell.previewUILabel.text =  CellData[index].text
+        cell.authorUILabel.text =  CellData[index].userInfo.name
+        cell.likesLabel.text =  String(CellData[index].likes)
+        cell.commentsUILabel.text =  String(CellData[index].commentCount)
         //cell.UID =  CellData[index].postID
         cell.dateUILabel.text = "\(index)h"
-        if CellData[index].image != nil{
-            //this cell will have an image
-            cell.postUIImageView.image = CellData[index].image
+        if CellData[index].imageURL != nil{
+            let temp = UIImageView()
+            temp.load(url: CellData[index].imageURL!)
+            cell.postUIImageView.image = temp.image
             //cell.withImageViewConstraints()
         }else{
             //change cell constraints so that text takes the extra space

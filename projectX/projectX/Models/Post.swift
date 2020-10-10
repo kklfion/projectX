@@ -20,6 +20,9 @@ struct Post:Identifiable, Codable{
 
     /// The number of likes of the post.
     var likes: Int
+    
+    //The number of comments
+    var commentCount: Int
 
     /// User information duplicated in the post object.
     var userInfo: User
@@ -45,7 +48,8 @@ extension Post{
                 title: String,
                 text: String,
                 date: Date,
-                imageURL: URL?) {
+                imageURL: URL?,
+                commentCount: Int) {
         self.stationID = stationID
         self.stationName = stationName
         self.likes = likes
@@ -54,6 +58,7 @@ extension Post{
         self.text = text
         self.date = date
         self.imageURL = imageURL
+        self.commentCount = commentCount
     }
 }
     

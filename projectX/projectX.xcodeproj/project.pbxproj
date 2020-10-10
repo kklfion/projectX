@@ -52,6 +52,7 @@
 		80D97BAC251D819C00825BBB /* MissionDeadlineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D97BAB251D819C00825BBB /* MissionDeadlineCell.swift */; };
 		80F52F8B251C1AA400076825 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F52F8A251C1AA400076825 /* ProfileView.swift */; };
 		80FDD6A924A188BF00304007 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 80FDD6A824A188BF00304007 /* GoogleService-Info.plist */; };
+		90C178B725319EE800200222 /* RealDATA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178B625319EE800200222 /* RealDATA.swift */; };
 		D376F7B778D7EC42DE2A05F2 /* Pods_projectX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */; };
 /* End PBXBuildFile section */
 
@@ -105,6 +106,7 @@
 		80D97BAB251D819C00825BBB /* MissionDeadlineCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissionDeadlineCell.swift; sourceTree = "<group>"; };
 		80F52F8A251C1AA400076825 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		80FDD6A824A188BF00304007 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		90C178B625319EE800200222 /* RealDATA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealDATA.swift; sourceTree = "<group>"; };
 		CE774F905F70DF49766D0585 /* Pods-projectX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-projectX.release.xcconfig"; path = "Target Support Files/Pods-projectX/Pods-projectX.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -289,6 +291,7 @@
 				806E777524C9074700A95B89 /* Constants.swift */,
 				806E777924C9255F00A95B89 /* DataTest.swift */,
 				806E777724C9076200A95B89 /* Extensions.swift */,
+				90C178B625319EE800200222 /* RealDATA.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -441,6 +444,7 @@
 				808361CB2529215700DEF0DE /* NetworkManager.swift in Sources */,
 				808361C8252920F900DEF0DE /* UserManager.swift in Sources */,
 				801A37A82514025D00F22A11 /* NotificationView.swift in Sources */,
+				90C178B725319EE800200222 /* RealDATA.swift in Sources */,
 				8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */,
 				804E61A124980DB000825150 /* SidebarViewController.swift in Sources */,
 				80CA4FC624C4CA2900B66D6B /* SignUpViewController.swift in Sources */,
