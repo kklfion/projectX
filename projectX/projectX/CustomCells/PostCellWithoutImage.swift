@@ -71,7 +71,7 @@ class PostCellWithoutImage: UITableViewCell {
     let previewUILabel: UILabel = {
         let text = UILabel()
         text.font = Constants.bodyTextFont
-        text.numberOfLines = 0
+        text.numberOfLines = 3
         text.adjustsFontSizeToFitWidth = false
         text.lineBreakMode = .byTruncatingTail
         text.text = "Preview"

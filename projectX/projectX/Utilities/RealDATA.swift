@@ -36,7 +36,7 @@ struct queryData {
             completion(posts)
         }
           
-    }
+    }//function end
     
 }//struct end
 
