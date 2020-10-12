@@ -21,7 +21,11 @@ enum SideBarMenuType{
 }
 class SidebarViewController: UIViewController {
     
-    var stationSelectionDelegate: SideBarStationSelectionDelegate?
+    var delegate: SideBarStationSelectionDelegate?{
+        didSet{
+            print("delegate was set")
+        }
+    }
         
     let stations = [
         "Travel", "Art", "Drama", "Gaming", "Meme", "Makeup", "Politics","Music",
@@ -32,6 +36,8 @@ class SidebarViewController: UIViewController {
     var sideBarView: SideBarView?
     
     var didTapSideBarMenuType: ((SideBarMenuType) -> Void)? // returns what side menu button was tapped to the MainTabBar
+    //var didTapSideBarStationsType: ((String) -> Void)?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSideView()
@@ -101,8 +107,10 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
         }
     }
     func didTapStationsButtonsFor(_ index: Int){
-        stationSelectionDelegate?.didTapSidebarStation(withId: "stationId")
-        self.dismiss(animated: true)
+        self.dismiss(animated: true) {
+            self.delegate?.didTapSidebarStation(withId: "someID")
+        }
+        
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

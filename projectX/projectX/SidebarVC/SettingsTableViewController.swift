@@ -10,12 +10,11 @@ import UIKit
 import FirebaseAuth
 
 class SettingsTableViewController: UITableViewController {
+    
     let userManager = UserManager.shared
-    var user: User?{
-        didSet{
-            tableView.reloadData()
-        }
-    }
+    
+    var user: User?
+    
     let sections = ["User", "About", "Account"]
     var rows = [
         ["User ID", "Email Address", "Blacklisted"],
@@ -31,9 +30,13 @@ class SettingsTableViewController: UITableViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     override func viewWillAppear(_ animated: Bool) {
+        print("settings view will appear")
         navigationController?.navigationBar.isHidden = false
-        user = userManager.user
-        handleRowsForSignInSignOut()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.user = UserManager.shared.user
+            self.handleRowsForSignInSignOut()
+        }
+
     }
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = true
@@ -121,11 +124,10 @@ class SettingsTableViewController: UITableViewController {
         user = userManager.user
     }
     private func logMeIn(){
-        //presentLoginWindow
         let vc = LoginViewController()
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
-        print("Sign In")
+        let navvc = UINavigationController(rootViewController: vc)
+        navvc.modalPresentationStyle = .fullScreen
+        self.present(navvc, animated: true)
     }
 }
 class SectionHeaderView: UIView {

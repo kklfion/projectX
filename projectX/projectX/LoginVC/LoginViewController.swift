@@ -11,6 +11,9 @@ import Firebase
 import FirebaseAuth
 
 class LoginViewController: UIViewController {
+    
+    //let userManager = UserManager.shared
+    
     lazy var loginView = createLoginView()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,10 +30,8 @@ class LoginViewController: UIViewController {
         view.registerButton.addTarget(self, action: #selector(signMeUp), for: .touchUpInside)
         view.loginButton.addTarget(self, action: #selector(logMeIn), for: .touchUpInside)
         view.skipButton.addTarget(self, action: #selector(skipToMain), for: .touchUpInside)
-        
         view.emailTextField.delegate = self
         view.passwordTextField.delegate = self
-        
         return view
     }
     func setupView(){
@@ -77,10 +78,16 @@ class LoginViewController: UIViewController {
                 self?.displayLoginErrorMessage(message: "User was not found. Please, try again.")
                 return
             }else{
-                //transition to a new screen
-                let vc = MainTabBarVC()
-                vc.modalPresentationStyle = .fullScreen
-                self?.present(vc, animated: true)
+                if UserManager.shared.userStatus != .signedIn{
+                    guard let id = Auth.auth().currentUser?.uid else {return}
+                    UserManager.shared.setCurrentUser(withId: id)
+                }
+                if self?.presentingViewController is SettingsTableViewController{
+                    self?.dismiss(animated: true)
+                }else{
+                    self?.dismiss(animated: true)
+                }
+               
             }
         }
     }
@@ -105,12 +112,7 @@ class LoginViewController: UIViewController {
     }
     /// Users have an option to skip logging into their accounts.
     @objc func skipToMain(){
-        let vc = MainTabBarVC()
-        vc.modalPresentationStyle = .fullScreen
-        vc.modalTransitionStyle = .coverVertical
-        //let navvc = UINavigationController(rootViewController: vc)
-        //navvc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
+        self.dismiss(animated: true)
     }
 }
 extension LoginViewController: UITextFieldDelegate{

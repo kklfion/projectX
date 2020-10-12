@@ -13,20 +13,16 @@ import FirebaseAuth
 
 class MainTabBarVC: UITabBarController {
     
-    var userManager = UserManager.shared
-    
     let transition = SideBarSlidingTransition() // for custom transitioning of the sidebar
+    
+    let home = HomeTableVC()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
         setupNavigationBarAppearance()
         setupSideBarItems()
         setupTabBarAppearance()
-        
-        if Auth.auth().currentUser != nil {
-            guard let id = Auth.auth().currentUser?.uid else {return}
-            userManager.setCurrentUser(withId: id)
-        }
     }
     private func setupTabBarAppearance(){
         tabBar.layer.masksToBounds = true
@@ -53,11 +49,9 @@ class MainTabBarVC: UITabBarController {
         profileItem.title = "Profile"
         
         let sidebar = SidebarViewController()
-        sidebar.stationSelectionDelegate = self
         sidebar.tabBarItem = sidebarItem
         let newPost = NewPostVC()
         newPost.tabBarItem = newPostItem
-        let home = HomeTableVC()
         home.tabBarItem = homeItem
         let homeNav = UINavigationController(rootViewController: home)
         let notifications = NotificationsTableVC()
@@ -86,6 +80,8 @@ extension MainTabBarVC: UITabBarControllerDelegate{
         }
         else if viewController.isKind(of: SidebarViewController.self){
             let vc = SidebarViewController()
+            vc.delegate = home
+            //vc.delegate = self
             vc.didTapSideBarMenuType = { menuType in
                 self.transitionToNew(menuType)
             }
@@ -117,12 +113,14 @@ extension MainTabBarVC: UIViewControllerTransitioningDelegate{
     }
 }
 
-extension MainTabBarVC: SideBarStationSelectionDelegate{
-    func didTapSidebarStation(withId stationId: String) {
-        print("selected some station")
-    }
-    
-    
-}
+//extension MainTabBarVC: SideBarStationSelectionDelegate{
+//    func didTapSidebarStation(withId stationId: String) {
+//        print("selected some station \(stationId)")
+//        let vc = StationsVC()
+//        let navvc = UINavigationController(rootViewController: vc)
+//        navvc.modalPresentationStyle = .overCurrentContext
+//        self.present(navvc, animated: true)
+//    }
+//}
 
 

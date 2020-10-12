@@ -11,9 +11,12 @@ import Firebase
 import Combine
 
 enum UserStatus: String{
+    ///when users data is loading
     case signedIn
+    ///when users data is loading
     case loggedOff
-    case invalid
+    ///when users data is loading
+    case loading
 }
 
 ///UserManager stores all the data related to the sighned in user and
@@ -41,7 +44,7 @@ class UserManager{
     private(set) var userImage: UIImage? = nil
     ///user status is changed when user was logged in or logged off
     /// set to invalid by default signedIn or loggedOff
-    private(set) var userStatus: UserStatus = .invalid
+    private(set) var userStatus: UserStatus = .loggedOff
     ///after user is set tries loading the image
     func getUserImage(){
         guard let url = user?.photoURL else {return}
