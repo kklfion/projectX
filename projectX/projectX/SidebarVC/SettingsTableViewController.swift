@@ -8,12 +8,11 @@
 
 import UIKit
 import FirebaseAuth
+import Combine
 
 class SettingsTableViewController: UITableViewController {
     
-    let userManager = UserManager.shared
-    
-    var user: User?
+    private var userSubscription: AnyCancellable?
     
     let sections = ["User", "About", "Account"]
     var rows = [
@@ -28,12 +27,14 @@ class SettingsTableViewController: UITableViewController {
         navigationItem.title = "Settings"
         tableView.tableFooterView = UIView()
         navigationController?.navigationBar.prefersLargeTitles = true
+        
+        userSubscription = UserManager.shared.userPublisher.sink { (user) in
+            print("received User in settings", user)
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
-        print("settings view will appear")
         navigationController?.navigationBar.isHidden = false
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.user = UserManager.shared.user
             self.handleRowsForSignInSignOut()
         }
 
@@ -80,9 +81,9 @@ class SettingsTableViewController: UITableViewController {
         //add details
         switch rows[indexPath.section][indexPath.row] {
             case "User ID":
-                cell.detailTextLabel?.text = user?.name
+                cell.detailTextLabel?.text = UserManager.shared.user?.name
             case "Email Address":
-                cell.detailTextLabel?.text = user?.email
+                cell.detailTextLabel?.text = UserManager.shared.user?.email
             case "Blacklisted":
                 cell.detailTextLabel?.text = "0"
             default:
@@ -102,26 +103,28 @@ class SettingsTableViewController: UITableViewController {
         }
     }
     private func handleRowsForSignInSignOut(){
-        if userManager.userStatus == .signedIn{
+        switch UserManager.shared.state {
+        case .signedIn:
             rows[2] = signedInRows
             tableView.reloadData()
-        }else{
+        ///TODO: loading state must be fixed
+        case .loading:
+            rows[2] = signedInRows
+            tableView.reloadData()
+        default:
             rows[2] = signedOutRows
             tableView.reloadData()
         }
     }
     private func signMeOut(){
-        userManager.signMeOut()
-        userManager.setUserToNil()
-        user = userManager.user
+        UserManager.shared.signOut()
         handleRowsForSignInSignOut()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.dismiss(animated: true)
         }
     }
     private func deleteMe(){
-        userManager.deleteMe()
-        user = userManager.user
+        UserManager.shared.deleteCurrentUser()
     }
     private func logMeIn(){
         let vc = LoginViewController()

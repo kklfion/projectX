@@ -78,10 +78,8 @@ class LoginViewController: UIViewController {
                 self?.displayLoginErrorMessage(message: "User was not found. Please, try again.")
                 return
             }else{
-                if UserManager.shared.userStatus != .signedIn{
-                    guard let id = Auth.auth().currentUser?.uid else {return}
-                    UserManager.shared.setCurrentUser(withId: id)
-                }
+                guard let id = Auth.auth().currentUser?.uid else {return}
+                UserManager.shared.loadCurrentUser(withId: id)
                 if self?.presentingViewController is SettingsTableViewController{
                     self?.dismiss(animated: true)
                 }else{

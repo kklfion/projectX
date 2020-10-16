@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// ehh when station is selected in the sidebar homeview presents station
 protocol SideBarStationSelectionDelegate {
     func didTapSidebarStation(withId stationId: String)
 }
@@ -21,12 +22,8 @@ enum SideBarMenuType{
 }
 class SidebarViewController: UIViewController {
     
-    var delegate: SideBarStationSelectionDelegate?{
-        didSet{
-            print("delegate was set")
-        }
-    }
-        
+    var sideBarTransitionDelegate: SideBarStationSelectionDelegate?
+    
     let stations = [
         "Travel", "Art", "Drama", "Gaming", "Meme", "Makeup", "Politics","Music",
         "Sports","Food", "Abroad", "Writing","Financial", "Pets", "Job", "Astrology", "Horror",
@@ -36,7 +33,7 @@ class SidebarViewController: UIViewController {
     var sideBarView: SideBarView?
     
     var didTapSideBarMenuType: ((SideBarMenuType) -> Void)? // returns what side menu button was tapped to the MainTabBar
-    //var didTapSideBarStationsType: ((String) -> Void)?
+    var didTapSideBarStationType: ((String) -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,7 +105,8 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
     }
     func didTapStationsButtonsFor(_ index: Int){
         self.dismiss(animated: true) {
-            self.delegate?.didTapSidebarStation(withId: "someID")
+            self.didTapSideBarStationType?("someId")
+            self.sideBarTransitionDelegate?.didTapSidebarStation(withId: "someID")
         }
         
     }

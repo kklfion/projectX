@@ -12,9 +12,10 @@ import UIKit
 import FirebaseAuth
 
 class MainTabBarVC: UITabBarController {
-    
-    let transition = SideBarSlidingTransition() // for custom transitioning of the sidebar
-    
+    /// custom sidebar transition
+    let transition = SideBarSlidingTransition()
+    /// has to be global, bc I need to set sidebars delegate = homeview
+    /// so that homeview can present selected station
     let home = HomeTableVC()
     
     override func viewDidLoad() {
@@ -23,13 +24,6 @@ class MainTabBarVC: UITabBarController {
         setupNavigationBarAppearance()
         setupSideBarItems()
         setupTabBarAppearance()
-    }
-    private func setupTabBarAppearance(){
-        tabBar.layer.masksToBounds = true
-        tabBar.isTranslucent = true
-        tabBar.barStyle = .default
-        tabBar.layer.cornerRadius = 20
-        //tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
     private func setupSideBarItems(){
         let sidebarItem = UITabBarItem()
@@ -69,28 +63,45 @@ class MainTabBarVC: UITabBarController {
         UINavigationBar.appearance().barTintColor = .white
         UINavigationBar.appearance().shadowImage = UIImage()
     }
+    private func setupTabBarAppearance(){
+        tabBar.layer.masksToBounds = true
+        tabBar.isTranslucent = true
+        tabBar.barStyle = .default
+        tabBar.layer.cornerRadius = 20
+    }
 }
 //MARK: handling special cases of tabbar items
+/// newPost and sidebar have special animation
+/// if some menu options were selected they will be presented full screen.
+/// if station options were selected tabbar selected item is set to 1
 extension MainTabBarVC: UITabBarControllerDelegate{
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         if viewController.isKind(of: NewPostVC.self){
-            let vc = NewPostVC()
-            self.present(vc, animated: true)
+            setupNewPostVC(tabBarController)
             return false
         }
         else if viewController.isKind(of: SidebarViewController.self){
-            let vc = SidebarViewController()
-            vc.delegate = home
-            //vc.delegate = self
-            vc.didTapSideBarMenuType = { menuType in
-                self.transitionToNew(menuType)
-            }
-            vc.modalPresentationStyle = .overCurrentContext
-            vc.transitioningDelegate = self
-            self.present(vc, animated: true)
+            setupSideBarVC(tabBarController)
             return false
         }
         return true
+    }
+    private func setupNewPostVC(_ tabBarController: UITabBarController){
+        let vc = NewPostVC()
+        self.present(vc, animated: true)
+    }
+    private func setupSideBarVC(_ tabBarController: UITabBarController){
+        let vc = SidebarViewController()
+        vc.sideBarTransitionDelegate = home
+        vc.transitioningDelegate = self
+        vc.didTapSideBarMenuType = { menuType in
+            self.transitionToNew(menuType)
+        }
+        vc.didTapSideBarStationType = { stationId in
+            tabBarController.selectedIndex = 1
+        }
+        vc.modalPresentationStyle = .overCurrentContext
+        self.present(vc, animated: true)
     }
     private func transitionToNew(_ menuType: SideBarMenuType){
         switch menuType {
@@ -112,15 +123,4 @@ extension MainTabBarVC: UIViewControllerTransitioningDelegate{
         return transition
     }
 }
-
-//extension MainTabBarVC: SideBarStationSelectionDelegate{
-//    func didTapSidebarStation(withId stationId: String) {
-//        print("selected some station \(stationId)")
-//        let vc = StationsVC()
-//        let navvc = UINavigationController(rootViewController: vc)
-//        navvc.modalPresentationStyle = .overCurrentContext
-//        self.present(navvc, animated: true)
-//    }
-//}
-
 

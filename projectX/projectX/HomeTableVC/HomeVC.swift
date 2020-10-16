@@ -10,7 +10,7 @@ import UIKit
 import FirebaseAuth
 
 class HomeTableVC: UIViewController{
-    private var userManager = UserManager.shared
+    
     private var homeView: HomeView?
     var refreshControl: UIRefreshControl?
     private var postData = FakePostData().giveMeSomeData()
@@ -33,10 +33,9 @@ class HomeTableVC: UIViewController{
             let vc = LoginViewController()
             let navvc = UINavigationController(rootViewController: vc)
             navvc.modalPresentationStyle = .fullScreen
-            print("Need to login")
             self.tabBarController?.present(navvc, animated: true)
         }else{
-            userManager.setCurrentUser(withId: Auth.auth().currentUser?.uid ?? "")
+            UserManager.shared.loadCurrentUser(withId: Auth.auth().currentUser?.uid ?? "")
         }
     }
     func addRefreshControl(){
