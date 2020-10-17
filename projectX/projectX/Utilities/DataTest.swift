@@ -157,17 +157,16 @@ struct PostsData{
     }
     static func createPostsWith(users: [User], stations: [Station])-> [Post]{
         var posts = [Post]()
-        for n in 1...12 {
-            let station = stations.randomElement(), user = users.randomElement()
-            let post = Post(stationID: station?.id ?? "",
-                            stationName: station?.stationName ?? "",
-                            likes: n*10,
-                            userInfo: user!,
-                            title: titles.randomElement() ?? "",
-                            text: text.randomElement() ?? "",
-                            date: Date())
-            posts.append(post)
-        }
+        //for n in 1...12 {
+            //let station = stations.randomElement(), user = users.randomElement()
+            //let post = Post(stationID: station?.stationName ?? "",
+                           // stationName: n*10,
+                           // likes: user!, comments: 0,
+                           // userInfo: titles.randomElement() ?? "",
+                           // title: text.randomElement() ?? "",
+                            //text: Date())
+            //posts.append(post)
+       // }
         for n in 1...10 {
             let station = stations.randomElement(), user = users.randomElement()
             let post = Post(stationID: station?.id ?? "",
@@ -177,7 +176,7 @@ struct PostsData{
                             title: titles.randomElement() ?? "",
                             text: text.randomElement() ?? "",
                             date: Date(),
-                            imageURL: postURLs.randomElement()!)
+                            imageURL: postURLs.randomElement()!, commentCount: 0)
             posts.append(post)
         }
         posts.shuffle()
@@ -234,7 +233,7 @@ struct StationsData{
 struct DataTest{
     static func fakeSomeData(){
         let user = User(name: "NEW USER", email: "user@gmail.com", uid: "1234")
-        let post = Post(stationID: "123141233123", stationName: "ucsc", likes: 12, userInfo: user, title: "Welcome to UCSC", text: "Best college ever", date: Date(), imageURL: URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/sslug.jpg?alt=media&token=aa2bda56-f5bc-4cc5-b9a2-ca37a6b4b7ae")!)
+        let post = Post(stationID: "123141233123", stationName: "ucsc", likes: 12, userInfo: user, title: "Welcome to UCSC", text: "Best college ever", date: Date(), imageURL: URL(string:  "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/sslug.jpg?alt=media&token=aa2bda56-f5bc-4cc5-b9a2-ca37a6b4b7ae")!, commentCount: 0)
         let db = Firestore.firestore()
         do {
             let _ = try db.collection("posts").addDocument(from: user)
@@ -332,22 +331,30 @@ extension PostsData{
 
 
 struct  FakePostData{
-    func giveMeSomeData() -> [PostModel]{
-        var Data = [PostModel]()
+    func giveMeSomeData(completion: @escaping (_ stations: [Post]) -> Void){
         
-        var image = UIImage(named: "ucsc")
-        Data.append(PostModel(image: image, title: "Will we be having online classes for the whole school year?", body: "I decided to stay home for the fall quarter bc everything will be online but will... ", author: "Sammy", station: "UCSC", likesCount: 17, commentsCount: 13))
-        image = UIImage(named: "airpods")
-        Data.append(PostModel(image: image, title: "Community college improves graduation rate", body: "Study: Students Who Take Some Courses At Community Colleges Increase Their Chances Of Earning A Bachelor’s Degree", author: "Sammy", station: "UCSC", likesCount: 12, commentsCount: 51))
-        Data.append(PostModel(image: nil, title: "Zoom Settings", body: "", author: "Sammy", station: "UCSC", likesCount: 6, commentsCount: 2))
-        Data.append(PostModel(image: nil, title: "UCSC 2020-21 Freshman Acceptance Rate is 65.25%", body: "some body text I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas ", author: "Sammy", station: "UCSC", likesCount: 12, commentsCount: 13))
-        Data.append(PostModel(image: nil, title: "I ran out of ideas", body: "some body text", author: "Sammy", station: "UCSC", likesCount: 12, commentsCount: 13 ))
-        Data.append(PostModel(image: nil, title: "I ran out of ideas", body: "some body text", author: "Sammy", station: "UCSC", likesCount: 12, commentsCount: 13 ))
-        Data.append(PostModel(image: nil, title: "I ran out of ideas ", body: "some body text I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas I ran out of ideas", author: "Sammy", station: "UCSC", likesCount: 12, commentsCount: 13))
-        Data.append(PostModel(image: nil, title: "I ran out of ideas", body: "some body text", author: "Sammy", station: "UCSC", likesCount: 12, commentsCount: 13))
+        var db: Firestore!
+        db = Firestore.firestore()
         
-        return Data
+        let basicQuery = db.collection("posts").limit(to: 5)
+       var posts = [Post]()
+       basicQuery.getDocuments { (snapshot, error) in
+        if let snapshotDocuments = snapshot?.documents {
+            for document in snapshotDocuments{
+                do{
+                    if let post = try document.data(as: Post.self){
+                        print(post.userInfo.name)
+                        posts.append(post)
+                    }
+                } catch let error as NSError{
+                    print("error: \(error.localizedDescription)")
+                }
+            }
+        }
+      }
+        completion(posts)
     }
+    
     
     
     

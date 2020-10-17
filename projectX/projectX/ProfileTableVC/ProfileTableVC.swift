@@ -12,6 +12,8 @@ import Combine
 
 class ProfileTableVC: UIViewController {
     var profileView: ProfileView?
+  
+    private var postData = [Post]()
     private var postData = FakePostData().giveMeSomeData()
     private var userSubscription: AnyCancellable?
     
@@ -102,16 +104,18 @@ extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
     }
     private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
         cell.titleUILabel.text =  postData[index].title
-        cell.previewUILabel.text =  postData[index].preview
-        cell.authorUILabel.text =  postData[index].author
-        cell.likesLabel.text =  String(postData[index].likesCount)
-        cell.commentsUILabel.text =  String(postData[index].commentsCount)
+        cell.previewUILabel.text =  postData[index].text
+        cell.authorUILabel.text =  postData[index].userInfo.name
+        cell.likesLabel.text =  String(postData[index].likes)
+        cell.commentsUILabel.text =  String(postData[index].commentCount)
         //cell.UID =  postData[index].postID
         cell.dateUILabel.text = "\(index)h"
-        if postData[index].image != nil{
+        if postData[index].imageURL != nil{
             cell.imageView?.isHidden = false
             //this cell will have an image
-            cell.postUIImageView.image = postData[index].image
+            let temp = UIImageView()
+            temp.load(url: postData[index].imageURL!)
+            cell.postUIImageView.image = temp.image
         }else{
             //change cell constraints so that text takes the extra space
             cell.imageView?.isHidden = true

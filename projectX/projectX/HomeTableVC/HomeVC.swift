@@ -13,7 +13,7 @@ class HomeTableVC: UIViewController{
     
     private var homeView: HomeView?
     var refreshControl: UIRefreshControl?
-    private var postData = FakePostData().giveMeSomeData()
+    private var postData = [Post]()
     
     private let seachView: UISearchBar = {
         let sb = UISearchBar()
@@ -36,6 +36,16 @@ class HomeTableVC: UIViewController{
             self.tabBarController?.present(navvc, animated: true)
         }else{
             UserManager.shared.loadCurrentUser(withId: Auth.auth().currentUser?.uid ?? "")
+        }
+    }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        queryData.queryPost{ [weak self] (posts) in
+            self?.postData.append(contentsOf: posts)
+            DispatchQueue.main.async {
+                self?.homeView?.loungeTableView.reloadData()
+            }
+
         }
     }
     func addRefreshControl(){
@@ -105,7 +115,7 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         postData.count
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //TODO: setup loading data
+        
         GetData.getPosts { [weak self](posts) in
             let postvc = PostViewController()
             postvc.post = posts.randomElement()
@@ -116,7 +126,8 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
 
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch postData[indexPath.row].image {
+        
+        switch postData[indexPath.row].imageURL {
         case nil:
             if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
                 addData(toCell: cell, withIndex: indexPath.row)
@@ -149,18 +160,21 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
         if let cell = cell as? PostCellWithImage{
             cell.titleUILabel.text =  postData[index].title
-            cell.previewUILabel.text =  postData[index].preview
-            cell.authorUILabel.text =  postData[index].author
-            cell.likesLabel.text =  String(postData[index].likesCount)
-            cell.commentsUILabel.text =  String(postData[index].commentsCount)
+            cell.previewUILabel.text =  postData[index].text
+            cell.authorUILabel.text =  postData[index].userInfo.name
+            cell.likesLabel.text =  String(postData[index].likes)
+            cell.commentsUILabel.text =  String(postData[index].commentCount)
             cell.dateUILabel.text = "\(index)h"
-            cell.postUIImageView.image = postData[index].image
+            
+            let temp = UIImageView()
+            temp.load(url: postData[index].imageURL!)
+            cell.postUIImageView.image = temp.image
         }else if let cell = cell as? PostCellWithoutImage {
             cell.titleUILabel.text =  postData[index].title
-            cell.previewUILabel.text =  postData[index].preview
-            cell.authorUILabel.text =  postData[index].author
-            cell.likesLabel.text =  String(postData[index].likesCount)
-            cell.commentsUILabel.text =  String(postData[index].commentsCount)
+            cell.previewUILabel.text =  postData[index].text
+            cell.authorUILabel.text =  postData[index].userInfo.name
+            cell.likesLabel.text =  String(postData[index].likes)
+            cell.commentsUILabel.text =  String(postData[index].commentCount)
             cell.dateUILabel.text = "\(index)h"
         }
     }
