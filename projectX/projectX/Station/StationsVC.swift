@@ -36,19 +36,29 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
                     self.posts = posts
                 }
             }
+            NetworkManager.shared.getBoardsForStation(id) { (boards, error) in
+                if error != nil{
+                    print("Error loading boards for station \(String(describing: error?.localizedDescription))")
+                }else if boards != nil{
+                    self.boards = boards
+                }
+            }
         }
     }
     private var posts: [Post]?{
         didSet{
-            
+            stationView.tableViewsView?.loungeTableView.reloadData()
         }
     }
-    private var boards: [Board]?
+    private var boards: [Board]?{
+        didSet{
+            //reload boards tableview
+        }
+    }
     
     var headerMaxHeight: CGFloat!
     var statusBarHeight: CGFloat!
 
-    let CellData = FakePostData().giveMeSomeData()
     lazy var stationView: StationsView = {
         let view = StationsView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
         return view
@@ -63,16 +73,16 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         view.backgroundColor = .white
         setupView()
         setupHeights()
-        setupTableView(tableView: stationView.stationsTableView)
-        
-       
+        setupTableView(tableView: stationView.tableViewsView?.loungeTableView ?? nil)
     }
-    private func setupTableView(tableView: UITableView){
+    private func setupTableView(tableView: UITableView?){
+        guard let tableView = tableView else {return}
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100
         tableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
+        tableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
     }
@@ -149,36 +159,51 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
 extension StationsVC: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        CellData.count
+        return posts?.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage else {
-            fatalError("Wrong cell at cellForRowAt? ")
+        switch posts?[indexPath.row].imageURL {
+        case nil:
+            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
+                addData(toCell: cell, withIndex: indexPath.row)
+                cell.selectionStyle = .none
+                //cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+                return cell
+            }
+        default:
+            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
+                cell.postUIImageView.image = nil
+                addData(toCell: cell, withIndex: indexPath.row)
+                cell.selectionStyle = .none
+                //cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+                return cell
+            }
         }
-        //        if tableView == homeView.homeTableView{
-        //
-        //        }else if  tableView == homeView.recommendingTableView{
-        //        }
-        addData(toCell: cell, withIndex: indexPath.row)
-        return cell
+        return UITableViewCell()
     }
-    func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
-        cell.titleUILabel.text =  CellData[index].title
-        cell.previewUILabel.text =  CellData[index].preview
-        cell.authorUILabel.text =  CellData[index].author
-        cell.likesLabel.text =  String(CellData[index].likesCount)
-        cell.commentsUILabel.text =  String(CellData[index].commentsCount)
-        //cell.UID =  CellData[index].postID
+    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
+        cell.titleUILabel.text =  posts?[index].title
+        cell.titleUILabel.text =  posts?[index].title
+        cell.previewUILabel.text =  posts?[index].text
+        cell.authorUILabel.text =  posts?[index].userInfo.name
+        cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
+        cell.commentsUILabel.text = "0"
         cell.dateUILabel.text = "\(index)h"
-        if CellData[index].image != nil{
-            //this cell will have an image
-            cell.postUIImageView.image = CellData[index].image
-            //cell.withImageViewConstraints()
-        }else{
-            //change cell constraints so that text takes the extra space
-            cell.postUIImageView.image = nil
-            //cell.noImageViewConstraints()
+        
+    }
+    private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
+        cell.titleUILabel.text =  posts?[index].title
+        cell.titleUILabel.text =  posts?[index].title
+        cell.previewUILabel.text =  posts?[index].text
+        cell.authorUILabel.text =  posts?[index].userInfo.name
+        cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
+        cell.commentsUILabel.text = "0"
+        cell.dateUILabel.text = "\(index)h"
+        NetworkManager.shared.getAsynchImage(withURL: posts?[index].imageURL) { (image, error) in
+            DispatchQueue.main.async {
+                cell.postUIImageView.image = image
+            }
         }
     }
 }

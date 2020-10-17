@@ -12,11 +12,11 @@ class StationsView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupViews()
+        setupViews(frame: frame)
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupViews()
+        //setupViews()
     }
     let topViewContainer: UIView = {
         let view = UIView()
@@ -72,28 +72,16 @@ class StationsView: UIView {
         //label.text = "Yeeet. Blah blah. Can I graduate on time. I want to drink. Maybe a boba too!"
         return label
     }()
-    let segmentedControl: UISegmentedControl = {
-        let sc = UISegmentedControl(items: ["Lounge", "Bulletin Board"])
-        sc.translatesAutoresizingMaskIntoConstraints = false
-        sc.selectedSegmentIndex = 0
-        sc.selectedSegmentTintColor = .white
-        sc.layer.backgroundColor = UIColor.white.cgColor
-        sc.tintColor = .white
-        //sc.addTarget(self, action: #selector(performAnimation), for: .valueChanged)
-        return sc
-    }()
-    let stationsTableView: UITableView = {
-        let tableview = UITableView()
-        tableview.backgroundColor = UIColor.init(red: 223/255.0, green: 230/255.0, blue: 233/255.0, alpha: 1.0)
-        tableview.separatorStyle = .none
-        return tableview
-    }()
     
+    var tableViewsView: SegmentedControlWithTableViewsView?
     var topViewContainerTopConstraint: NSLayoutConstraint?
     
-    func setupViews(){
-        self.backgroundColor = .white 
-        [topViewContainer, stationsTableView].forEach {self.addSubview($0)}
+    func setupViews(frame: CGRect){
+        self.backgroundColor = .white
+        tableViewsView = SegmentedControlWithTableViewsView(frame: frame)
+        guard let tableViewsView = tableViewsView else {return}
+        
+        [topViewContainer, tableViewsView].forEach {self.addSubview($0)}
         topViewContainer.addAnchors(top: nil,
                                     leading: self.leadingAnchor,
                                     bottom: nil,
@@ -101,13 +89,15 @@ class StationsView: UIView {
                                     size: .init(width: self.frame.width, height: self.frame.height*0.3))
         topViewContainerTopConstraint = topViewContainer.topAnchor.constraint(equalTo: self.topAnchor, constant: 0)
         topViewContainerTopConstraint?.isActive = true
-        layoutIfNeeded()//foces to setup proper frame?!?!??!  super important ahahah
-        stationsTableView.addAnchors(top: topViewContainer.bottomAnchor,
+    
+        tableViewsView.addAnchors(top: topViewContainer.bottomAnchor,
                                      leading: self.leadingAnchor,
                                      bottom: self.bottomAnchor,
-                                     trailing: self.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0))
-         
-        [backgroundImageView, frontImageView, followersLabel,stationInfoLabel,stationNameLabel,followButton,segmentedControl].forEach({topViewContainer.addSubview($0)})
+                                     trailing: self.trailingAnchor,
+                                     padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+                                     size: .init(width: 0, height: 0))
+        topViewContainer.layoutIfNeeded()//foces to setup proper frame?!?!??!  super important ahahah
+        [backgroundImageView, frontImageView, followersLabel,stationInfoLabel,stationNameLabel,followButton].forEach({topViewContainer.addSubview($0)})
         
         backgroundImageView.addAnchors(top: topViewContainer.topAnchor,
                                        leading: topViewContainer.leadingAnchor,
@@ -135,23 +125,14 @@ class StationsView: UIView {
                                   padding: .init(top: 10, left: 0, bottom: 0, right: 0))
         stationInfoLabel.addAnchors(top: frontImageView.bottomAnchor,
                                     leading: topViewContainer.leadingAnchor,
-                                    bottom: segmentedControl.topAnchor,
+                                    bottom: topViewContainer.bottomAnchor,
                                     trailing: topViewContainer.trailingAnchor,
                                     padding: .init(top: 10, left: 25, bottom: 0, right: 25))
-        segmentedControl.addAnchors(top: nil, leading: topViewContainer.layoutMarginsGuide.leadingAnchor,
-                                    bottom: topViewContainer.bottomAnchor,
-                                    trailing: topViewContainer.layoutMarginsGuide.trailingAnchor,
-                                    padding: .init(top: 0, left: 10, bottom: 10, right: 10))
         followButton.addAnchors(top: nil,
                                 leading: nil,
                                 bottom: nil,
                                 trailing: topViewContainer.trailingAnchor,
                                 padding: .init(top: 0, left: 0, bottom: 0, right: 15))
         followButton.centerYAnchor.constraint(equalTo: followersLabel.centerYAnchor).isActive = true
-        //followButton.heightAnchor.constraint(equalToConstant: 18).isActive = true
-        
-        
     }
-
-
 }

@@ -61,7 +61,7 @@ class PostCellWithImage: UITableViewCell {
         let label = UILabel()
         label.text = "Title"
         label.font = Constants.headlineTextFont
-        label.numberOfLines = 0
+        label.numberOfLines = 3
         label.adjustsFontSizeToFitWidth = false
         label.lineBreakMode = .byTruncatingTail
         label.textColor = .black
@@ -71,7 +71,7 @@ class PostCellWithImage: UITableViewCell {
     let previewUILabel: UILabel = {
         let text = UILabel()
         text.font = Constants.bodyTextFont
-        text.numberOfLines = 0
+        text.numberOfLines = 5
         text.adjustsFontSizeToFitWidth = false
         text.lineBreakMode = .byTruncatingTail
         text.text = "Preview"

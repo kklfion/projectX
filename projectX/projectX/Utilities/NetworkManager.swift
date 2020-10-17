@@ -39,7 +39,6 @@ class NetworkManager {
             }
         }
     }
-    
     func getDataForUser(_ uid: String,completion: @escaping (_ user: User?,_ error: Error?) -> Void){
         // Create a query against the collection.
         let query = db.users.whereField("userID", isEqualTo: uid)
