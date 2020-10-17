@@ -11,9 +11,11 @@ import FirebaseAuth
 import Combine
 
 class ProfileTableVC: UIViewController {
-    let userManager = UserManager.shared
     var profileView: ProfileView?
+  
     private var postData = [Post]()
+    private var postData = FakePostData().giveMeSomeData()
+    private var userSubscription: AnyCancellable?
     
     override func viewDidLoad() {
         postData.shuffle()
@@ -22,9 +24,13 @@ class ProfileTableVC: UIViewController {
         setupView()
         setupTableViews()
         
+        userSubscription = UserManager.shared.userPublisher.sink { (user) in
+            print("received User in Profile", user)
+        }
+        
     }
     override func viewWillAppear(_ animated: Bool) {
-        getUserInformation()
+        updateProfileInformation()
     }
     private func setupView(){
         profileView = ProfileView(frame: self.view.frame)
@@ -51,20 +57,21 @@ class ProfileTableVC: UIViewController {
         profileView?.missionsTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
         profileView?.missionsTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
     }
-    private func getUserInformation(){
-        if userManager.user != nil {
-            profileView?.profileImageView.image = userManager.userImage
-            profileView?.usernameLabel.text = userManager.user?.name
-        }else{
-            profileView?.usernameLabel.text = userManager.defaultUser().name
-            profileView?.profileImageView.image = nil
+    private func updateProfileInformation(){
+        let (user, image, state) = UserManager.shared.getCurrentUserData()
+        switch state {
+        case .signedIn:
+//            profileView?.missionsTableView.isHidden = false
+//            profileView?.loungeTableView.isHidden = false
+            profileView?.missionsTableView.reloadData()
+//            profileView?.loungeTableView.reloadData()
+        default:
+//            profileView?.missionsTableView.isHidden = true
+//            profileView?.loungeTableView.isHidden = true
+            print("other cases")
         }
-        
-//        let cancellable = userManager.userDataPublisher
-//            .sink {  (user) in
-//                self.profileView?.usernameLabel.text = self.userManager.user?.name
-//            }
-        //userManager.setDefaultUser()
+        profileView?.profileImageView.image = image
+        profileView?.usernameLabel.text = user?.name
     }
 }
 extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{

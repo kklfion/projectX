@@ -7,8 +7,10 @@
 //
 //
 import UIKit
+import FirebaseAuth
 
 class HomeTableVC: UIViewController{
+    
     private var homeView: HomeView?
     var refreshControl: UIRefreshControl?
     private var postData = [Post]()
@@ -24,6 +26,17 @@ class HomeTableVC: UIViewController{
         setupTableViewsDelegates()
         setupSearchController()
         addRefreshControl()
+        signInUserIfNeeded()
+    }
+    private func signInUserIfNeeded(){
+        if Auth.auth().currentUser == nil {
+            let vc = LoginViewController()
+            let navvc = UINavigationController(rootViewController: vc)
+            navvc.modalPresentationStyle = .fullScreen
+            self.tabBarController?.present(navvc, animated: true)
+        }else{
+            UserManager.shared.loadCurrentUser(withId: Auth.auth().currentUser?.uid ?? "")
+        }
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -77,6 +90,14 @@ class HomeTableVC: UIViewController{
     /// setup top seatchBar to seatch for particular posts
     private func setupSearchController(){
         navigationItem.titleView = seachView
+    }
+}
+extension HomeTableVC: SideBarStationSelectionDelegate{
+    func didTapSidebarStation(withId stationId: String) {
+        //print("HomeTableVC  is presenting \(stationId)")
+        let vc = StationsVC()
+        vc.stationId = "ewH1QLwp393Za7g0AQfv"
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 extension HomeTableVC: UISearchResultsUpdating {

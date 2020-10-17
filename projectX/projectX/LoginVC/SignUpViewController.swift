@@ -110,6 +110,7 @@ class SignUpViewController: UIViewController {
                 }
                  else{
                     self.displayLoginErrorMessage(message: "Email Verification sent!")
+                    self.dismiss(animated: true)
                 }
             }
         }

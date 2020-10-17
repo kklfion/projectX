@@ -22,7 +22,6 @@ class ProfileView: UIView {
     }
     let profileImageView: UIImageView = {
         let imageview = UIImageView()
-        imageview.image = UIImage(named: "sslug")
         imageview.layer.borderWidth = 0.5
         imageview.layer.borderColor = UIColor.black.cgColor
         imageview.clipsToBounds = true
@@ -46,14 +45,14 @@ class ProfileView: UIView {
     }()
     let useridLabel: UILabel = {
         let label = UILabel()
-        label.text = "@userid w/47 followers"
+        label.text = ""
         label.font = UIFont.preferredFont(forTextStyle: .body)
         label.textColor = .lightGray
         return label
     }()
     let schoolLabel: UILabel = {
         let label = UILabel()
-        label.text = "University of California, Santa Cruz"
+        label.text = ""
         label.font = UIFont.preferredFont(forTextStyle: .body)
         label.textColor = .black
         return label
@@ -85,14 +84,14 @@ class ProfileView: UIView {
     let loungeTableView: UITableView = {
         let home = UITableView()
         home.separatorStyle = .none
-        home.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
+        home.backgroundColor = .white//UIColor.lightGray.withAlphaComponent(0.3)
         home.translatesAutoresizingMaskIntoConstraints = false
         return home
     }()
     let missionsTableView: UITableView = {
         let rec = UITableView()
         rec.separatorStyle = .none
-        rec.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
+        rec.backgroundColor = .white//UIColor.lightGray.withAlphaComponent(0.3)
         rec.translatesAutoresizingMaskIntoConstraints = false
         return rec
     }()
