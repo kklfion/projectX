@@ -39,19 +39,20 @@ class SegmentedControlWithTableViewsView: UIView{
         home.translatesAutoresizingMaskIntoConstraints = false
         return home
     }()
-    let bulletinBoardTableView: UITableView = {
-        let rec = UITableView()
-        rec.separatorStyle = .none
-        rec.backgroundColor = .white
-        rec.translatesAutoresizingMaskIntoConstraints = false
-        return rec
+    lazy var bulletinBoardCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .white
+        return collectionView
     }()
     
     private func setupViews(){
         self.addSubview(segmentedControl)
         self.addSubview(stackView)
         stackView.addArrangedSubview(loungeTableView)
-        stackView.addArrangedSubview(bulletinBoardTableView)
+        stackView.addArrangedSubview(bulletinBoardCollectionView)
         segmentedControl.addAnchors(top: self.layoutMarginsGuide.topAnchor,
                                      leading: self.layoutMarginsGuide.leadingAnchor,
                                      bottom: nil,

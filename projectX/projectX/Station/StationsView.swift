@@ -9,7 +9,6 @@
 import UIKit
 
 class StationsView: UIView {
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews(frame: frame)
@@ -25,7 +24,7 @@ class StationsView: UIView {
     }()
     let backgroundImageView: UIImageView = {
         let iv = UIImageView()
-        iv.backgroundColor = .blue
+        //iv.backgroundColor = .blue
         iv.clipsToBounds = true
         //iv.image = UIImage(named: "ucsc1")
         iv.contentMode = .scaleAspectFill
@@ -33,7 +32,7 @@ class StationsView: UIView {
     }()
     let frontImageView: UIImageView = {
         let iv = UIImageView()
-        iv.backgroundColor = .yellow
+        //iv.backgroundColor = .yellow
         iv.clipsToBounds = true
         //iv.image = UIImage(named: "sslug")
         iv.layer.borderWidth = 1
@@ -56,7 +55,7 @@ class StationsView: UIView {
     }()
     let followButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Followed!", for: .normal)
+        button.setTitle("Follow", for: .normal)
         button.setTitleColor(.lightGray, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         button.contentEdgeInsets = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 5)

@@ -40,7 +40,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
                 if error != nil{
                     print("Error loading boards for station \(String(describing: error?.localizedDescription))")
                 }else if boards != nil{
-                    self.boards = boards
+                    //self.boards = boards
                 }
             }
         }
@@ -50,9 +50,10 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
             stationView.tableViewsView?.loungeTableView.reloadData()
         }
     }
-    private var boards: [Board]?{
+    //for now using posts data to create cells
+    private var boards: [Post]?{
         didSet{
-            //reload boards tableview
+            stationView.tableViewsView?.bulletinBoardCollectionView.reloadData()
         }
     }
     
@@ -74,6 +75,15 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         setupView()
         setupHeights()
         setupTableView(tableView: stationView.tableViewsView?.loungeTableView ?? nil)
+        setupBulletinBoardTableView()
+    }
+    private func setupBulletinBoardTableView(){
+        stationView.tableViewsView?.bulletinBoardCollectionView.delegate = self
+        stationView.tableViewsView?.bulletinBoardCollectionView.dataSource = self
+        //stationView.tableViewsView?.bulletinBoardCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        stationView.tableViewsView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
+        stationView.tableViewsView?.bulletinBoardCollectionView.refreshControl = UIRefreshControl()
+        //stationView.tableViewsView?.bulletinBoardCollectionView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
     }
     private func setupTableView(tableView: UITableView?){
         guard let tableView = tableView else {return}
@@ -156,9 +166,40 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         }
     }
 }
+extension StationsVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+            let numberOfItemsPerRow:CGFloat = 2
+            let spacingBetweenCells:CGFloat = 16
+            let spacing:CGFloat = 16.0
+        
+            let totalSpacing = (2 * spacing) + ((numberOfItemsPerRow - 1) * spacingBetweenCells) //Amount of total spacing in a row
+            let width = (collectionView.bounds.width - totalSpacing)/numberOfItemsPerRow
+        return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.5)
+        }
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 4
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let tryCell = collectionView.dequeueReusableCell(withReuseIdentifier: BoardCell.cellID, for: indexPath) as? BoardCell
+        guard let cell = tryCell else {
+            return UICollectionViewCell()
+        }
+        cell.backgroundColor = UIColor.red
+        
+        return cell
+    }
+    
+    
+}
 extension StationsVC: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return posts?.count ?? 0
     }
 
