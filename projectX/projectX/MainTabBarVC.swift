@@ -13,7 +13,7 @@ import FirebaseAuth
 
 class MainTabBarVC: UITabBarController {
     /// custom sidebar transition
-    let transition = SideBarSlidingTransition()
+    let sideBarTransition = SideBarSlidingTransition()
     /// has to be global, bc I need to set sidebars delegate = homeview
     /// so that homeview can present selected station
     let home = HomeTableVC()
@@ -115,12 +115,12 @@ extension MainTabBarVC: UITabBarControllerDelegate{
 //MARK: handling sidebar slideout animation -> SideBarSlidingTransition
 extension MainTabBarVC: UIViewControllerTransitioningDelegate{
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        transition.isPresenting = true
-        return transition
+        sideBarTransition.isPresenting = true
+        return sideBarTransition
     }
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        transition.isPresenting = false
-        return transition
+        sideBarTransition.isPresenting = false
+        return sideBarTransition
     }
 }
 

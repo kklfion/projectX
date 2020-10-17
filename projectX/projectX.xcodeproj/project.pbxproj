@@ -42,6 +42,8 @@
 		808361C425290DEC00DEF0DE /* PostCellWithoutImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */; };
 		808361C8252920F900DEF0DE /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361C7252920F900DEF0DE /* UserManager.swift */; };
 		808361CB2529215700DEF0DE /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361CA2529215700DEF0DE /* NetworkManager.swift */; };
+		80A0DC0C253A59F200474541 /* StationHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC0B253A59F200474541 /* StationHeaderView.swift */; };
+		80A0DC12253A5D8E00474541 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC11253A5D8E00474541 /* Board.swift */; };
 		80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */; };
 		80B2C6A92516E3220025F9EE /* SideBarSlidingTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */; };
 		80BB37B024D7ACCB00B12253 /* StationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BB37AF24D7ACCB00B12253 /* StationsView.swift */; };
@@ -95,6 +97,8 @@
 		808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCellWithoutImage.swift; sourceTree = "<group>"; };
 		808361C7252920F900DEF0DE /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		808361CA2529215700DEF0DE /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		80A0DC0B253A59F200474541 /* StationHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationHeaderView.swift; sourceTree = "<group>"; };
+		80A0DC11253A5D8E00474541 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarSlidingTransition.swift; sourceTree = "<group>"; };
 		80BB37AF24D7ACCB00B12253 /* StationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsView.swift; sourceTree = "<group>"; };
@@ -155,6 +159,7 @@
 				803D75A9250AD74E003F569D /* Comment.swift */,
 				803D75AD250AD786003F569D /* Station.swift */,
 				803D75B2250AE531003F569D /* Post.swift */,
+				80A0DC11253A5D8E00474541 /* Board.swift */,
 				803D75B4250B079E003F569D /* FirebaseExtension.swift */,
 			);
 			path = Models;
@@ -164,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				80BB37AF24D7ACCB00B12253 /* StationsView.swift */,
+				80A0DC0B253A59F200474541 /* StationHeaderView.swift */,
 				80BB37B124D8C50700B12253 /* StationsVC.swift */,
 			);
 			path = Station;
@@ -424,6 +430,7 @@
 				803D75B5250B079E003F569D /* FirebaseExtension.swift in Sources */,
 				804E618B24957D0C00825150 /* ViewController.swift in Sources */,
 				804E619D24980C9400825150 /* NotificationsTableVC.swift in Sources */,
+				80A0DC12253A5D8E00474541 /* Board.swift in Sources */,
 				80D97BAC251D819C00825BBB /* MissionDeadlineCell.swift in Sources */,
 				8081185624C262910032D46D /* LoginView.swift in Sources */,
 				806E777A24C9255F00A95B89 /* DataTest.swift in Sources */,
@@ -444,6 +451,7 @@
 				8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */,
 				804E61A124980DB000825150 /* SidebarViewController.swift in Sources */,
 				80CA4FC624C4CA2900B66D6B /* SignUpViewController.swift in Sources */,
+				80A0DC0C253A59F200474541 /* StationHeaderView.swift in Sources */,
 				804E618924957D0C00825150 /* SceneDelegate.swift in Sources */,
 				80CA4FC824C4CA3E00B66D6B /* SignUpView.swift in Sources */,
 				803D75AA250AD74E003F569D /* Comment.swift in Sources */,

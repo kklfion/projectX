@@ -27,7 +27,7 @@ class StationsView: UIView {
         let iv = UIImageView()
         iv.backgroundColor = .blue
         iv.clipsToBounds = true
-        iv.image = UIImage(named: "ucsc1")
+        //iv.image = UIImage(named: "ucsc1")
         iv.contentMode = .scaleAspectFill
         return iv
     }()
@@ -35,14 +35,14 @@ class StationsView: UIView {
         let iv = UIImageView()
         iv.backgroundColor = .yellow
         iv.clipsToBounds = true
-        iv.image = UIImage(named: "sslug")
+        //iv.image = UIImage(named: "sslug")
         iv.layer.borderWidth = 1
         iv.layer.borderColor = UIColor.black.cgColor
         return iv
     }()
     let stationNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "University"
+        //label.text = "University"
         label.font = Constants.headlineTextFont
         label.numberOfLines = 1
         return label
@@ -51,7 +51,7 @@ class StationsView: UIView {
         let label = UILabel()
         label.numberOfLines = 1
         label.font = Constants.bodyTextFont
-        label.text = "666k Followers"
+        //label.text = "666k Followers"
         return label
     }()
     let followButton: UIButton = {
@@ -67,13 +67,13 @@ class StationsView: UIView {
     }()
     let stationInfoLabel: UILabel = {
         let label = UILabel()
-        label.numberOfLines = 0
+        label.numberOfLines = 2
         label.font = Constants.bodyTextFont
-        label.text = "Yeeet. Blah blah. Can I graduate on time. I want to drink. Maybe a boba too!"
+        //label.text = "Yeeet. Blah blah. Can I graduate on time. I want to drink. Maybe a boba too!"
         return label
     }()
     let segmentedControl: UISegmentedControl = {
-        let sc = UISegmentedControl(items: ["Lounge", "List"])
+        let sc = UISegmentedControl(items: ["Lounge", "Bulletin Board"])
         sc.translatesAutoresizingMaskIntoConstraints = false
         sc.selectedSegmentIndex = 0
         sc.selectedSegmentTintColor = .white

@@ -21,19 +21,19 @@ enum SideBarMenuType{
     case settings
 }
 class SidebarViewController: UIViewController {
-    
-    var sideBarTransitionDelegate: SideBarStationSelectionDelegate?
-    
-    let stations = [
-        "Travel", "Art", "Drama", "Gaming", "Meme", "Makeup", "Politics","Music",
+    private let stations =
+    [
+        "University","Travel", "Art", "Drama", "Gaming", "Meme", "Makeup", "Politics","Music",
         "Sports","Food", "Abroad", "Writing","Financial", "Pets", "Job", "Astrology", "Horror",
         "Anime", "LGBTQ+", "Film", "Relationship", "Photography", "International", "Development",
         "Relationship", "Photography", "International", "Development"
     ]
-    var sideBarView: SideBarView?
     
-    var didTapSideBarMenuType: ((SideBarMenuType) -> Void)? // returns what side menu button was tapped to the MainTabBar
+    var sideBarView: SideBarView?
+    /// returns what side menu button was tapped to the MainTabBar
+    var didTapSideBarMenuType: ((SideBarMenuType) -> Void)?
     var didTapSideBarStationType: ((String) -> Void)?
+    var sideBarTransitionDelegate: SideBarStationSelectionDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()

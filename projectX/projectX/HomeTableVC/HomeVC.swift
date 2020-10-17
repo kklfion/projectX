@@ -84,8 +84,9 @@ class HomeTableVC: UIViewController{
 }
 extension HomeTableVC: SideBarStationSelectionDelegate{
     func didTapSidebarStation(withId stationId: String) {
-        print("HomeTableVC presenrting \(stationId)")
+        //print("HomeTableVC  is presenting \(stationId)")
         let vc = StationsVC()
+        vc.stationId = "ewH1QLwp393Za7g0AQfv"
         navigationController?.pushViewController(vc, animated: true)
     }
 }

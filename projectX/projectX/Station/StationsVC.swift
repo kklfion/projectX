@@ -5,16 +5,51 @@
 //  Created by Radomyr Bezghin on 8/3/20.
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
-
 import UIKit
 
 class StationsVC: UIViewController, UIScrollViewDelegate {
+    /// when stationVC is created stationId must be init
+    var stationId: String?{
+        didSet{
+            guard let  id = stationId else {return}
+            NetworkManager.shared.getDocumentFor(uid: id) { (document: Station?, error) in
+                if error != nil {
+                    print("error receiving station")
+                }else if document != nil {
+                    self.station = document
+                }
+            }
+            
+        }
+    }
+    /// after stationId was init, it loads data and initializes station
+    private var station: Station?{
+        didSet{
+            //setsup ui elems
+            setupStationHeaderWithStation()
+            //load data for the station
+            guard let  id = station?.id else {return}
+            NetworkManager.shared.getPostsForStation(id) { (posts, error) in
+                if error != nil{
+                    print("Error loading posts for station \(String(describing: error?.localizedDescription))")
+                }else if posts != nil{
+                    self.posts = posts
+                }
+            }
+        }
+    }
+    private var posts: [Post]?{
+        didSet{
+            
+        }
+    }
+    private var boards: [Board]?
     
     var headerMaxHeight: CGFloat!
     var statusBarHeight: CGFloat!
-    
+
     let CellData = FakePostData().giveMeSomeData()
-    lazy var newView: StationsView = {
+    lazy var stationView: StationsView = {
         let view = StationsView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
         return view
     }()
@@ -28,11 +63,11 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         view.backgroundColor = .white
         setupView()
         setupHeights()
-        setupTableView(tableView: newView.stationsTableView)
+        setupTableView(tableView: stationView.stationsTableView)
         
        
     }
-    func setupTableView(tableView: UITableView){
+    private func setupTableView(tableView: UITableView){
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableView.automaticDimension
@@ -41,15 +76,36 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
     }
-    func setupView(){
+    private func setupStationHeaderWithStation(){
+        let followers = station?.followers ?? 0
+        stationView.followersLabel.text = "\(followers) followers."
+        NetworkManager.shared.getAsynchImage(withURL: station?.backgroundImageURL) { (image, error) in
+            if image != nil {
+                DispatchQueue.main.async {
+                    self.stationView.backgroundImageView.image = image
+                }
+            }
+        }
+        NetworkManager.shared.getAsynchImage(withURL: station?.frontImageURL) { (image, error) in
+            if image != nil {
+                DispatchQueue.main.async {
+                    self.stationView.frontImageView.image = image
+                }
+            }
+        }
+        stationView.stationInfoLabel.text = station?.info
+        stationView.stationNameLabel.text = station?.stationName
+        
+    }
+    private func setupView(){
         navigationItem.titleView = seachView
-        view.addSubview(newView)
-        newView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
+        view.addSubview(stationView)
+        stationView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
                            leading: view.safeAreaLayoutGuide.leadingAnchor,
                            bottom: view.bottomAnchor,
                            trailing: view.safeAreaLayoutGuide.trailingAnchor)
     }
-    func setupHeights(){
+    private func setupHeights(){
         if #available(iOS 13.0, *) {
             let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
             statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
@@ -75,7 +131,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
     // offet can either be too high(keep maximum offset), to little(keep minimum offstet) or inbetween(can be adjusted)
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let y_offset: CGFloat = scrollView.contentOffset.y
-        guard  let headerViewTopConstraint = newView.topViewContainerTopConstraint else {return}
+        guard  let headerViewTopConstraint = stationView.topViewContainerTopConstraint else {return}
         let newConstant = headerViewTopConstraint.constant - y_offset
         
         //when scrolling up
