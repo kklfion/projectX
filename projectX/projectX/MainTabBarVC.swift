@@ -12,28 +12,18 @@ import UIKit
 import FirebaseAuth
 
 class MainTabBarVC: UITabBarController {
+    /// custom sidebar transition
+    let sideBarTransition = SideBarSlidingTransition()
+    /// has to be global, bc I need to set sidebars delegate = homeview
+    /// so that homeview can present selected station
+    let home = HomeTableVC()
     
-    var userManager = UserManager.shared
-    
-    let transition = SideBarSlidingTransition() // for custom transitioning of the sidebar
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
         setupNavigationBarAppearance()
         setupSideBarItems()
         setupTabBarAppearance()
-        
-        if Auth.auth().currentUser != nil {
-            guard let id = Auth.auth().currentUser?.uid else {return}
-            userManager.setCurrentUser(withId: id)
-        }
-    }
-    private func setupTabBarAppearance(){
-        tabBar.layer.masksToBounds = true
-        tabBar.isTranslucent = true
-        tabBar.barStyle = .default
-        tabBar.layer.cornerRadius = 20
-        //tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
     private func setupSideBarItems(){
         let sidebarItem = UITabBarItem()
@@ -56,7 +46,6 @@ class MainTabBarVC: UITabBarController {
         sidebar.tabBarItem = sidebarItem
         let newPost = NewPostVC()
         newPost.tabBarItem = newPostItem
-        let home = HomeTableVC()
         home.tabBarItem = homeItem
         let homeNav = UINavigationController(rootViewController: home)
         let notifications = NotificationsTableVC()
@@ -74,26 +63,45 @@ class MainTabBarVC: UITabBarController {
         UINavigationBar.appearance().barTintColor = .white
         UINavigationBar.appearance().shadowImage = UIImage()
     }
+    private func setupTabBarAppearance(){
+        tabBar.layer.masksToBounds = true
+        tabBar.isTranslucent = true
+        tabBar.barStyle = .default
+        tabBar.layer.cornerRadius = 20
+    }
 }
 //MARK: handling special cases of tabbar items
+/// newPost and sidebar have special animation
+/// if some menu options were selected they will be presented full screen.
+/// if station options were selected tabbar selected item is set to 1
 extension MainTabBarVC: UITabBarControllerDelegate{
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         if viewController.isKind(of: NewPostVC.self){
-            let vc = NewPostVC()
-            self.present(vc, animated: true)
+            setupNewPostVC(tabBarController)
             return false
         }
         else if viewController.isKind(of: SidebarViewController.self){
-            let vc = SidebarViewController()
-            vc.didTapSideBarMenuType = { menuType in
-                self.transitionToNew(menuType)
-            }
-            vc.modalPresentationStyle = .overCurrentContext
-            vc.transitioningDelegate = self
-            self.present(vc, animated: true)
+            setupSideBarVC(tabBarController)
             return false
         }
         return true
+    }
+    private func setupNewPostVC(_ tabBarController: UITabBarController){
+        let vc = NewPostVC()
+        self.present(vc, animated: true)
+    }
+    private func setupSideBarVC(_ tabBarController: UITabBarController){
+        let vc = SidebarViewController()
+        vc.sideBarTransitionDelegate = home
+        vc.transitioningDelegate = self
+        vc.didTapSideBarMenuType = { menuType in
+            self.transitionToNew(menuType)
+        }
+        vc.didTapSideBarStationType = { stationId in
+            tabBarController.selectedIndex = 1
+        }
+        vc.modalPresentationStyle = .overCurrentContext
+        self.present(vc, animated: true)
     }
     private func transitionToNew(_ menuType: SideBarMenuType){
         switch menuType {
@@ -107,13 +115,12 @@ extension MainTabBarVC: UITabBarControllerDelegate{
 //MARK: handling sidebar slideout animation -> SideBarSlidingTransition
 extension MainTabBarVC: UIViewControllerTransitioningDelegate{
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        transition.isPresenting = true
-        return transition
+        sideBarTransition.isPresenting = true
+        return sideBarTransition
     }
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        transition.isPresenting = false
-        return transition
+        sideBarTransition.isPresenting = false
+        return sideBarTransition
     }
 }
-
 

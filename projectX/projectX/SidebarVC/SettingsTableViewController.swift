@@ -8,31 +8,36 @@
 
 import UIKit
 import FirebaseAuth
+import Combine
 
 class SettingsTableViewController: UITableViewController {
-    let userManager = UserManager.shared
-    var user: User?{
-        didSet{
-            tableView.reloadData()
-        }
-    }
-    let sections = ["User", "About", "Accont"]
-    let rows = [
+    
+    private var userSubscription: AnyCancellable?
+    
+    let sections = ["User", "About", "Account"]
+    var rows = [
         ["User ID", "Email Address", "Blacklisted"],
         ["Comminity Guidelines", "Terms of Service", "Privacy Policy", "Contact us"],
-        ["Sign Out", "Delete Account"]
+        []
     ]
+    let signedInRows = ["Sign Out", "Delete Account"]
+    let signedOutRows = ["Sign In"]
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Settings"
         tableView.tableFooterView = UIView()
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        user = userManager.user
-        
+        userSubscription = UserManager.shared.userPublisher.sink { (user) in
+            print("received User in settings", user)
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.handleRowsForSignInSignOut()
+        }
+
     }
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = true
@@ -76,9 +81,9 @@ class SettingsTableViewController: UITableViewController {
         //add details
         switch rows[indexPath.section][indexPath.row] {
             case "User ID":
-                cell.detailTextLabel?.text = user?.name
+                cell.detailTextLabel?.text = UserManager.shared.user?.name
             case "Email Address":
-                cell.detailTextLabel?.text = user?.email
+                cell.detailTextLabel?.text = UserManager.shared.user?.email
             case "Blacklisted":
                 cell.detailTextLabel?.text = "0"
             default:
@@ -91,17 +96,41 @@ class SettingsTableViewController: UITableViewController {
                 signMeOut()
             case "Delete Account":
                 deleteMe()
+            case "Sign In":
+                logMeIn()
             default:
                 print("not implemented")
         }
     }
+    private func handleRowsForSignInSignOut(){
+        switch UserManager.shared.state {
+        case .signedIn:
+            rows[2] = signedInRows
+            tableView.reloadData()
+        ///TODO: loading state must be fixed
+        case .loading:
+            rows[2] = signedInRows
+            tableView.reloadData()
+        default:
+            rows[2] = signedOutRows
+            tableView.reloadData()
+        }
+    }
     private func signMeOut(){
-        userManager.signMeOut()
-        user = userManager.defaultUser()
+        UserManager.shared.signOut()
+        handleRowsForSignInSignOut()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.dismiss(animated: true)
+        }
     }
     private func deleteMe(){
-        userManager.deleteMe()
-        user = userManager.defaultUser()
+        UserManager.shared.deleteCurrentUser()
+    }
+    private func logMeIn(){
+        let vc = LoginViewController()
+        let navvc = UINavigationController(rootViewController: vc)
+        navvc.modalPresentationStyle = .fullScreen
+        self.present(navvc, animated: true)
     }
 }
 class SectionHeaderView: UIView {

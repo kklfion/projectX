@@ -25,6 +25,9 @@ extension Firestore{
     var users: CollectionReference{
         return self.collection("users")
     }
+    var boards: CollectionReference{
+        return self.collection("boards")
+    }
 }
 
 

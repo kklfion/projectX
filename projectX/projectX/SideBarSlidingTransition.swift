@@ -7,6 +7,8 @@
 //
 
 import UIKit
+/// for custom transitioning of the sidebar
+/// Appears left to right and takes only 50% of the width
 class SideBarSlidingTransition: NSObject, UIViewControllerAnimatedTransitioning{
     var isPresenting = false
     let dimmingView = UIView()
@@ -19,7 +21,7 @@ class SideBarSlidingTransition: NSObject, UIViewControllerAnimatedTransitioning{
             return
         }
         let containerView = transitionContext.containerView
-        let finalWidth = containerView.frame.width * 0.8
+        let finalWidth = containerView.frame.width * 0.5
         let finalHeight = containerView.frame.height
         
         if isPresenting{
