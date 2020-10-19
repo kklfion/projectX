@@ -14,7 +14,7 @@ class ProfileTableVC: UIViewController {
     var profileView: ProfileView?
   
     private var postData = [Post]()
-    private var postData = FakePostData().giveMeSomeData()
+    //private var postData = FakePostData().giveMeSomeData()
     private var userSubscription: AnyCancellable?
     
     override func viewDidLoad() {
