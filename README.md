@@ -1,17 +1,17 @@
 # Necto
 
-Necto is a social app for college students.
+Welcome ! Necto is a social app for college students.
 
 ## Installation
 ```
-git clone the project
-cd projectX
-pod install
-pod update
+% git clone https://github.com/rbezghin/projectX.git
+% cd projectX
+% pod install
+% pod update
 ```
 ## Usage
 ```
-open projectX.xcworkspace 
+% open projectX.xcworkspace 
 ```
 ## Contributing
 
@@ -23,8 +23,8 @@ When all conflicts are resolved, app is running without errors, no UI issues ope
 ## Example
 
 ```
-git checkout someBranch      # gets you "on branch someBranch"
-git pull origin master       # gets you up to date with origin
+% git checkout someBranch      # gets you "on branch someBranch"
+% git pull origin master       # gets you up to date with origin
 ```
 
 Then go to https://github.com/rbezghin/projectX/pulls to open a pull request master <- someBranch 
