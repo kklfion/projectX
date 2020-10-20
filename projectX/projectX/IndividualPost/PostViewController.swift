@@ -108,7 +108,7 @@ class PostViewController: UIViewController {
         
     }
     func loadComments(completion: @escaping (_ stations: [Comment]) -> Void){
-        let basicQuery = Firestore.firestore().comments.whereField("postID", isEqualTo: post?.id)
+        let basicQuery = Firestore.firestore().comments.whereField(Fields.postID.rawValue, isEqualTo: post?.id ?? "")
         var comments = [Comment]()
         basicQuery.getDocuments { (snapshot, error) in
             if let error = error {

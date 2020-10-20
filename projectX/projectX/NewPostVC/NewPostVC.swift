@@ -28,8 +28,6 @@ var success = "No Errors"
 
 
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate{
-    
-    
 
     //let texFiel = UITextField()
    
@@ -42,6 +40,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     
     
     override func viewDidLoad() {
+       
         super.viewDidLoad()
         view.backgroundColor = .white
         // Do any additional setup after loading the view.

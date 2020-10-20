@@ -12,6 +12,7 @@ import Firebase
 enum Fields: String {
     case stationID = "stationID"
     case userID = "userID"
+    case postID = "postID"
 }
 class NetworkManager {
 
@@ -151,7 +152,7 @@ class NetworkManager {
             }
         }
     }
-    func getBoardsForStation(_ uid: String,completion: @escaping (_ board: [Board]?,_ error: Error?) -> Void){
+    func getMissionsForStation(_ uid: String,completion: @escaping (_ board: [Mission]?,_ error: Error?) -> Void){
         // Create a query against the collection.
         let query = db.boards.whereField(Fields.stationID.rawValue, isEqualTo: uid)
         
@@ -161,11 +162,11 @@ class NetworkManager {
                 completion(nil, error)
             }
             guard let documents = snapshot?.documents else { return }
-            let boards = documents.compactMap { (querySnapshot) -> Board? in
-                return try? querySnapshot.data(as: Board.self)
+            let missions = documents.compactMap { (querySnapshot) -> Mission? in
+                return try? querySnapshot.data(as: Mission.self)
             }
-            if(boards.count > 0){
-                completion(boards, nil)
+            if(missions.count > 0){
+                completion(missions, nil)
             }else{
                 completion(nil, nil)
             }

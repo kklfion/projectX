@@ -25,7 +25,7 @@ class ProfileTableVC: UIViewController {
         setupTableViews()
         
         userSubscription = UserManager.shared.userPublisher.sink { (user) in
-            print("received User in Profile test", user)
+            print("received User in Profile test", user ?? "")
         }
         
     }
