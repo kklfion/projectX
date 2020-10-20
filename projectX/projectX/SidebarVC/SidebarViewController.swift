@@ -32,7 +32,7 @@ class SidebarViewController: UIViewController {
     var sideBarView: SideBarView?
     /// returns what side menu button was tapped to the MainTabBar
     var didTapSideBarMenuType: ((SideBarMenuType) -> Void)?
-    var didTapSideBarStationType: ((String) -> Void)?
+    var didTapSideBarStationType: ()?
     var sideBarTransitionDelegate: SideBarStationSelectionDelegate?
     
     override func viewDidLoad() {
@@ -105,7 +105,6 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
     }
     func didTapStationsButtonsFor(_ index: Int){
         self.dismiss(animated: true) {
-            self.didTapSideBarStationType?("someId")
             self.sideBarTransitionDelegate?.didTapSidebarStation(withId: "someID")
         }
         

@@ -68,7 +68,7 @@ class UserManager{
         NetworkManager.shared.getDataForUser(id) { [weak self] (user, error) in
             if error != nil{
                 self?.state = .error(error!)
-                print("error getting user Data \(error)")
+                print("error getting user Data \(String(describing: error))")
             }else{
                 guard  let user = user else {return}
                 self?.state = .signedIn(user)

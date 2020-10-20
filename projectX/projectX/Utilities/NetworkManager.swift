@@ -9,8 +9,12 @@
 import Foundation
 import Firebase
 
+enum Fields: String {
+    case stationID = "stationID"
+    case userID = "userID"
+}
 class NetworkManager {
-    
+
     static let shared = NetworkManager()
      
     let db = Firestore.firestore()
@@ -39,9 +43,52 @@ class NetworkManager {
             }
         }
     }
+    /// fetches 1 document with uid, must be decodable
+    func getDocumentsFor<GenericDocument>(uid: String,completion: @escaping (_ document: [GenericDocument]?,_ error: Error?) -> Void) where GenericDocument: Decodable{
+        // Create a query against the collection.
+        let query = db.posts.whereField(Fields.stationID.rawValue, isEqualTo: uid)
+        
+        query.getDocuments { (snapshot, error) in
+            if let error = error {
+
+                completion(nil, error)
+            }
+            guard let documents = snapshot?.documents else { return }
+            let genericDocs = documents.compactMap { (querySnapshot) -> GenericDocument? in
+                return try? querySnapshot.data(as: GenericDocument.self)
+            }
+            if(genericDocs.count > 0){
+                completion(genericDocs, nil)
+            }else{
+                completion(nil, nil)
+            }
+        }
+//        // Create a query against the collection.
+//        let query = db.stations.document("\(uid)")
+//        query.getDocument { (document, error) in
+//            let result = Result {
+//              try document?.data(as: GenericDocument.self)
+//            }
+//            switch result {
+//            case .success(let genericDocument):
+//                if let genericDocument = genericDocument {
+//                    // A `genericDocument` value was successfully initialized from the DocumentSnapshot.
+//                    completion(genericDocument, nil)
+//                } else {
+//                    // A nil value was successfully initialized from the DocumentSnapshot,
+//                    // or the DocumentSnapshot was nil.
+//                    print("Document does not exist")
+//                    completion(nil, nil)
+//                }
+//            case .failure(let error):
+//                // A `City` value could not be initialized from the DocumentSnapshot.
+//                completion(nil, error)
+//            }
+//        }
+    }
     func getDataForUser(_ uid: String,completion: @escaping (_ user: User?,_ error: Error?) -> Void){
         // Create a query against the collection.
-        let query = db.users.whereField("userID", isEqualTo: uid)
+        let query = db.users.whereField(Fields.userID.rawValue, isEqualTo: uid)
 
         query.getDocuments { (snapshot, error) in
             if let error = error {
@@ -86,7 +133,7 @@ class NetworkManager {
     /// returns top posts for station
     func getPostsForStation(_ uid: String,completion: @escaping (_ post: [Post]?,_ error: Error?) -> Void){
         // Create a query against the collection.
-        let query = db.posts.whereField("stationID", isEqualTo: uid)
+        let query = db.posts.whereField(Fields.stationID.rawValue, isEqualTo: uid)
         
         query.getDocuments { (snapshot, error) in
             if let error = error {
@@ -106,7 +153,7 @@ class NetworkManager {
     }
     func getBoardsForStation(_ uid: String,completion: @escaping (_ board: [Board]?,_ error: Error?) -> Void){
         // Create a query against the collection.
-        let query = db.boards.whereField("stationID", isEqualTo: uid)
+        let query = db.boards.whereField(Fields.stationID.rawValue, isEqualTo: uid)
         
         query.getDocuments { (snapshot, error) in
             if let error = error {
