@@ -97,9 +97,9 @@ extension MainTabBarVC: UITabBarControllerDelegate{
         vc.didTapSideBarMenuType = { menuType in
             self.transitionToNew(menuType)
         }
-        vc.didTapSideBarStationType = { stationId in
+        vc.didTapSideBarStationType = { 
             tabBarController.selectedIndex = 1
-        }
+        }()
         vc.modalPresentationStyle = .overCurrentContext
         self.present(vc, animated: true)
     }
