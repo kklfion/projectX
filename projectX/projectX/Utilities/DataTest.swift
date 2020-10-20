@@ -233,7 +233,7 @@ struct StationsData{
 struct DataTest{
     static func fakeSomeData(){
         let user = User(name: "NEW USER", email: "user@gmail.com", uid: "1234")
-        let post = Post(stationID: "123141233123", stationName: "ucsc", likes: 12, userInfo: user, title: "Welcome to UCSC", text: "Best college ever", date: Date(), imageURL: URL(string:  "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/sslug.jpg?alt=media&token=aa2bda56-f5bc-4cc5-b9a2-ca37a6b4b7ae")!, commentCount: 0)
+        _ = Post(stationID: "123141233123", stationName: "ucsc", likes: 12, userInfo: user, title: "Welcome to UCSC", text: "Best college ever", date: Date(), imageURL: URL(string:  "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/sslug.jpg?alt=media&token=aa2bda56-f5bc-4cc5-b9a2-ca37a6b4b7ae")!, commentCount: 0)
         let db = Firestore.firestore()
         do {
             let _ = try db.collection("posts").addDocument(from: user)
@@ -251,7 +251,7 @@ struct DataTest{
                 return
             }
             guard let documents = snapshot?.documents else { return }
-            let posts = documents.compactMap { (querySnapshot) -> Post? in
+            let _ = documents.compactMap { (querySnapshot) -> Post? in
                 return try? querySnapshot.data(as: Post.self)
             }
             //print(posts)

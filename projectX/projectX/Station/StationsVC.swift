@@ -36,9 +36,9 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
                     self.posts = posts
                 }
             }
-            NetworkManager.shared.getBoardsForStation(id) { (boards, error) in
+            NetworkManager.shared.getMissionsForStation(id) { (boards, error) in
                 if error != nil{
-                    print("Error loading boards for station \(String(describing: error?.localizedDescription))")
+                    print("Error loading missions for station \(String(describing: error?.localizedDescription))")
                 }else if boards != nil{
                     //self.boards = boards
                 }
@@ -168,12 +168,6 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
 }
 extension StationsVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-            let numberOfItemsPerRow:CGFloat = 2
-            let spacingBetweenCells:CGFloat = 16
-            let spacing:CGFloat = 16.0
-        
-            let totalSpacing = (2 * spacing) + ((numberOfItemsPerRow - 1) * spacingBetweenCells) //Amount of total spacing in a row
-            let width = (collectionView.bounds.width - totalSpacing)/numberOfItemsPerRow
         return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.5)
         }
     func numberOfSections(in collectionView: UICollectionView) -> Int {

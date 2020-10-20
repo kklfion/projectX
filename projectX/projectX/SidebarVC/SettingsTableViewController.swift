@@ -29,7 +29,7 @@ class SettingsTableViewController: UITableViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         
         userSubscription = UserManager.shared.userPublisher.sink { (user) in
-            print("received User in settings", user)
+            print("received User in settings", user ?? "")
         }
     }
     override func viewWillAppear(_ animated: Bool) {

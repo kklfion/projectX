@@ -18,9 +18,9 @@ class UserManager{
     
     enum UserState {
         ///failed loading user
-        case error(Error)
+        case error
         ///when users data is loading
-        case signedIn(User)
+        case signedIn
         ///when users data is loading
         case loggedOff
         ///when users data is loading somehow need to pass data after its done loading kk
@@ -67,11 +67,11 @@ class UserManager{
         state = .loading
         NetworkManager.shared.getDataForUser(id) { [weak self] (user, error) in
             if error != nil{
-                self?.state = .error(error!)
+                self?.state = .error
                 print("error getting user Data \(String(describing: error))")
             }else{
                 guard  let user = user else {return}
-                self?.state = .signedIn(user)
+                self?.state = .signedIn
                 self?.user = user
                 self?.loadUserImage()
             }
