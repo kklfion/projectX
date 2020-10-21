@@ -13,7 +13,8 @@ Welcome ! Necto is a social app for college students.
 ```
 % open projectX.xcworkspace 
 ```
-## Commiting new code to your branch
+## Commiting new code to your branch 
+("git add ." works correctly only if you have the most up to date .gitignore)
 ```
 % git add .               # gets you "on branch someBranch"
 % git commit -m "message" # commits new code
