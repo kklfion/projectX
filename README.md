@@ -13,15 +13,14 @@ Welcome ! Necto is a social app for college students.
 ```
 % open projectX.xcworkspace 
 ```
-## Contributing
-
-Create a new branch. 
-Work on your task.
-When it's done its time to merge from master -> your branch to get the most recent version of the app.
-When all conflicts are resolved, app is running without errors, no UI issues open a pull request.
-
-## Example
-
+## Commiting new code to your branch
+```
+% git add .               # gets you "on branch someBranch"
+% git commit -m "message" # commits new code
+% git pull                # gets your local branch up to date
+% git push                # gets you remote branch up to date
+```
+## Merging new code with master
 ```
 % git checkout someBranch      # gets you "on branch someBranch"
 % git pull origin master       # gets you up to date with origin
@@ -30,6 +29,3 @@ When all conflicts are resolved, app is running without errors, no UI issues ope
 Then go to https://github.com/rbezghin/projectX/pulls to open a pull request master <- someBranch 
 so that we can review it.
 
-
-## License
- 
