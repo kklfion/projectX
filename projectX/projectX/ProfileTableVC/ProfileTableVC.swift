@@ -98,7 +98,7 @@ extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
     }
     @objc private func dummyStation(){
         //TODO: finish use data to load it
-        let station = StationsVC()
+        let station = SubStationsVC()
         station.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(station, animated: true)
     }

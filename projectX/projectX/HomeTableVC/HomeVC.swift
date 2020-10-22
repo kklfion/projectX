@@ -95,7 +95,7 @@ class HomeTableVC: UIViewController{
 extension HomeTableVC: SideBarStationSelectionDelegate{
     func didTapSidebarStation(withId stationId: String) {
         //print("HomeTableVC  is presenting \(stationId)")
-        let vc = StationsVC()
+        let vc = StationsViewController()
         vc.stationId = "ewH1QLwp393Za7g0AQfv"
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -168,7 +168,7 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         self.navigationController?.pushViewController(postvc, animated: true)
     }
     private func presentStationFor(indexPath: IndexPath){
-        let station = StationsVC()
+        let station = SubStationsVC()
         station.stationId = postData[indexPath.row].stationID
         station.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(station, animated: true)

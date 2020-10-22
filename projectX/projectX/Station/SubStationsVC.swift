@@ -7,7 +7,7 @@
 //
 import UIKit
 
-class StationsVC: UIViewController, UIScrollViewDelegate {
+ class SubStationsVC: UIViewController, UIScrollViewDelegate {
     /// when stationVC is created stationId must be init
     var stationId: String?{
         didSet{
@@ -47,13 +47,13 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
     }
     private var posts: [Post]?{
         didSet{
-            stationView.tableViewsView?.loungeTableView.reloadData()
+            stationView.tableViewAndCollectionView?.loungeTableView.reloadData()
         }
     }
     //for now using posts data to create cells
     private var boards: [Post]?{
         didSet{
-            stationView.tableViewsView?.bulletinBoardCollectionView.reloadData()
+            stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
         }
     }
     
@@ -61,7 +61,11 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
     var statusBarHeight: CGFloat!
 
     lazy var stationView: StationsView = {
-        let view = StationsView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
+    let view = StationsView(frame: CGRect(x: 0,
+                                          y: 0,
+                                          width: self.view.frame.width,
+                                          height: self.view.frame.height),
+                            type: .subStation)
         return view
     }()
     let seachView: UISearchBar = {
@@ -74,15 +78,15 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         view.backgroundColor = .white
         setupView()
         setupHeights()
-        setupTableView(tableView: stationView.tableViewsView?.loungeTableView ?? nil)
+        setupTableView(tableView: stationView.tableViewAndCollectionView?.loungeTableView ?? nil)
         setupBulletinBoardTableView()
     }
     private func setupBulletinBoardTableView(){
-        stationView.tableViewsView?.bulletinBoardCollectionView.delegate = self
-        stationView.tableViewsView?.bulletinBoardCollectionView.dataSource = self
+        stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
+        stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
         //stationView.tableViewsView?.bulletinBoardCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-        stationView.tableViewsView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
-        stationView.tableViewsView?.bulletinBoardCollectionView.refreshControl = UIRefreshControl()
+        stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
+        stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.refreshControl = UIRefreshControl()
         //stationView.tableViewsView?.bulletinBoardCollectionView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
     }
     private func setupTableView(tableView: UITableView?){
@@ -166,7 +170,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         }
     }
 }
-extension StationsVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+extension SubStationsVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.6)
         }
@@ -190,7 +194,7 @@ extension StationsVC: UICollectionViewDelegate, UICollectionViewDataSource, UICo
     
     
 }
-extension StationsVC: UITableViewDelegate, UITableViewDataSource{
+extension SubStationsVC: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -242,7 +246,7 @@ extension StationsVC: UITableViewDelegate, UITableViewDataSource{
         }
     }
 }
-extension StationsVC: UISearchResultsUpdating{
+extension SubStationsVC: UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
     }
 }
