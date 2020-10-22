@@ -163,6 +163,12 @@ class PostCellWithoutImage: UITableViewCell {
         likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
         dislikeButton.addTarget(self, action: #selector(didTapDislikeButton), for: .touchUpInside)
         commentsButton.addTarget(self, action: #selector(didTapCommentsButton), for: .touchUpInside)
+        let authorTap = UITapGestureRecognizer(target: self, action: #selector(didTapAuthorLabel))
+        let imageTap = UITapGestureRecognizer(target: self, action: #selector(didTapAuthorLabel))
+        authorImageView.isUserInteractionEnabled = true
+        authorUILabel.isUserInteractionEnabled = true
+        authorUILabel.addGestureRecognizer(authorTap)
+        authorImageView.addGestureRecognizer(imageTap)
     }
     func setupContentView(){
         
@@ -237,6 +243,10 @@ class PostCellWithoutImage: UITableViewCell {
     }
 }
 extension PostCellWithoutImage{
+    @objc func didTapAuthorLabel( ) {
+        guard let indexPath = indexPath else{return}
+        self.delegate?.didTapAuthorLabel(indexPath)
+    }
     @objc func didTapStationButton( ) {
         guard let indexPath = indexPath else{return}
         self.delegate?.didTapStationButton(indexPath)

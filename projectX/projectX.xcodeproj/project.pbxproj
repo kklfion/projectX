@@ -36,6 +36,7 @@
 		8068E7CE2541029C00A85B33 /* CellProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E7CD2541029C00A85B33 /* CellProtocols.swift */; };
 		8068E7D3254107BD00A85B33 /* StationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E7D2254107BD00A85B33 /* StationsViewController.swift */; };
 		8068E80225410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */; };
+		8068E81C2542329300A85B33 /* OtherProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E81B2542329300A85B33 /* OtherProfileViewController.swift */; };
 		806B790524B817AD002B45BD /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806B790424B817AD002B45BD /* PostModel.swift */; };
 		806E777624C9074700A95B89 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806E777524C9074700A95B89 /* Constants.swift */; };
 		806E777824C9076200A95B89 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806E777724C9076200A95B89 /* Extensions.swift */; };
@@ -97,6 +98,7 @@
 		8068E7CD2541029C00A85B33 /* CellProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellProtocols.swift; sourceTree = "<group>"; };
 		8068E7D2254107BD00A85B33 /* StationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsViewController.swift; sourceTree = "<group>"; };
 		8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlWithTwoTableViews.swift; sourceTree = "<group>"; };
+		8068E81B2542329300A85B33 /* OtherProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherProfileViewController.swift; sourceTree = "<group>"; };
 		806B790424B817AD002B45BD /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		806E777524C9074700A95B89 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		806E777724C9076200A95B89 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -298,6 +300,7 @@
 			isa = PBXGroup;
 			children = (
 				804E61A624980E4B00825150 /* ProfileTableVC.swift */,
+				8068E81B2542329300A85B33 /* OtherProfileViewController.swift */,
 				80F52F8A251C1AA400076825 /* ProfileView.swift */,
 			);
 			path = ProfileTableVC;
@@ -462,6 +465,7 @@
 				806E777A24C9255F00A95B89 /* DataTest.swift in Sources */,
 				80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */,
 				804E618724957D0C00825150 /* AppDelegate.swift in Sources */,
+				8068E81C2542329300A85B33 /* OtherProfileViewController.swift in Sources */,
 				803D75AE250AD786003F569D /* Station.swift in Sources */,
 				80D97BA9251D819000825BBB /* MissionsCell.swift in Sources */,
 				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,

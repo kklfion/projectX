@@ -88,6 +88,7 @@ class PostCellWithImage: UITableViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "sslug")
+        imageView.isUserInteractionEnabled = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -97,6 +98,7 @@ class PostCellWithImage: UITableViewCell {
         label.font = Constants.smallerTextFont
         label.textColor = .lightGray
         label.numberOfLines = 1
+        label.isUserInteractionEnabled = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -170,6 +172,10 @@ class PostCellWithImage: UITableViewCell {
         likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
         dislikeButton.addTarget(self, action: #selector(didTapDislikeButton), for: .touchUpInside)
         commentsButton.addTarget(self, action: #selector(didTapCommentsButton), for: .touchUpInside)
+        let authorTap = UITapGestureRecognizer(target: self, action: #selector(didTapAuthorLabel))
+        let imageTap = UITapGestureRecognizer(target: self, action: #selector(didTapAuthorLabel))
+        authorUILabel.addGestureRecognizer(authorTap)
+        authorImageView.addGestureRecognizer(imageTap)
     }
     func setupContentView(){
         
@@ -250,6 +256,10 @@ class PostCellWithImage: UITableViewCell {
     }
 }
 extension PostCellWithImage{
+    @objc func didTapAuthorLabel( ) {
+        guard let indexPath = indexPath else{return}
+        self.delegate?.didTapAuthorLabel(indexPath)
+    }
     @objc func didTapStationButton( ) {
         guard let indexPath = indexPath else{return}
         self.delegate?.didTapStationButton(indexPath)

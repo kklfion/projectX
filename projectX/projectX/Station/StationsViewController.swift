@@ -39,13 +39,6 @@ class StationsViewController: UIViewController, UIScrollViewDelegate {
                     self.posts = posts
                 }
             }
-            NetworkManager.shared.getMissionsForStation(id) { (boards, error) in
-                if error != nil{
-                    print("Error loading missions for station \(String(describing: error?.localizedDescription))")
-                }else if boards != nil{
-                    //self.boards = boards
-                }
-            }
         }
     }
     private var posts: [Post]?{
@@ -53,12 +46,11 @@ class StationsViewController: UIViewController, UIScrollViewDelegate {
             stationView.tableViewAndTableView?.loungeTableView.reloadData()
         }
     }
-    //for now using posts data to create cells
-//    private var boards: [Post]?{
-//        didSet{
-//            stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
-//        }
-//    }
+    private var subStations: [Station]?{
+        didSet{
+            stationView.tableViewAndTableView?.listTableView.reloadData()
+        }
+    }
     
     var headerMaxHeight: CGFloat!
     var statusBarHeight: CGFloat!
@@ -189,7 +181,8 @@ extension StationsViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if tableView == stationView.tableViewAndTableView?.listTableView{
             let cell = tableView.dequeueReusableCell(withIdentifier: listTableViewCellID, for: indexPath)
-            cell.textLabel?.text = "kek \(indexPath.row)"
+            cell.textLabel?.text = "UCSC \(indexPath.row)"
+            cell.imageView?.image = UIImage(named: "sslug")
             return cell
         }else {
             switch posts?[indexPath.row].imageURL {

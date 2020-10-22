@@ -179,8 +179,17 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         station.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(station, animated: true)
     }
+    private func presentAuthorFor(indexPath: IndexPath){
+        let vc = OtherProfileViewController()
+        vc.user = postData[indexPath.row].userInfo
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }
 extension HomeTableVC: PostCellDidTapDelegate{
+    func didTapAuthorLabel(_ indexPath: IndexPath) {
+        presentAuthorFor(indexPath: indexPath)
+    }
+    
     func didTapStationButton(_ indexPath: IndexPath) {
         presentStationFor(indexPath: indexPath)
     }

@@ -1,19 +1,17 @@
 //
-//  ProfileTableVC.swift
+//  OtherProfileViewController.swift
 //  projectX
 //
-//  Created by Radomyr Bezghin on 6/15/20.
+//  Created by Radomyr Bezghin on 10/22/20.
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
 
 import UIKit
-import FirebaseAuth
-import Combine
 
-class ProfileTableVC: UIViewController {
+class OtherProfileViewController: UIViewController {
+    var user: User?
     private var profileView: ProfileView?
     private var postData = [Post]()
-    private var userSubscription: AnyCancellable?
     
     override func viewDidLoad() {
         postData.shuffle()
@@ -21,12 +19,6 @@ class ProfileTableVC: UIViewController {
         view.backgroundColor = .white
         setupView()
         setupTableViews()
-        
-        userSubscription = UserManager.shared.userPublisher.sink { (user) in
-            //print("received User in Profile test", user ?? "")
-        }
-    }
-    override func viewWillAppear(_ animated: Bool) {
         updateProfileInformation()
     }
     private func setupView(){
@@ -55,23 +47,18 @@ class ProfileTableVC: UIViewController {
         profileView?.missionsTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
     }
     private func updateProfileInformation(){
-        let (user, image, state) = UserManager.shared.getCurrentUserData()
-        switch state {
-        case .signedIn:
-//            profileView?.missionsTableView.isHidden = false
-//            profileView?.loungeTableView.isHidden = false
-            profileView?.missionsTableView.reloadData()
-//            profileView?.loungeTableView.reloadData()
-        default:
-//            profileView?.missionsTableView.isHidden = true
-//            profileView?.loungeTableView.isHidden = true
-            print("other cases")
+        guard let user = user else{return}
+        NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
+            if image != nil {
+                DispatchQueue.main.async {
+                    self.profileView?.profileImageView.image = image
+                }
+            }
         }
-        profileView?.profileImageView.image = image
-        profileView?.usernameLabel.text = user?.name
+        profileView?.usernameLabel.text = user.name
     }
 }
-extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
+extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         postData.count
     }

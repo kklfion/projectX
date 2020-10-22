@@ -12,4 +12,5 @@ protocol PostCellDidTapDelegate: class{
     func didTapLikeButton(_ indexPath: IndexPath)
     func didTapDislikeButton(_ indexPath: IndexPath)
     func didTapCommentsButton(_ indexPath: IndexPath)
+    func didTapAuthorLabel(_ indexPath: IndexPath)
 }
