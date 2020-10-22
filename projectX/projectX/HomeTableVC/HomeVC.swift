@@ -94,10 +94,16 @@ class HomeTableVC: UIViewController{
 }
 extension HomeTableVC: SideBarStationSelectionDelegate{
     func didTapSidebarStation(withId stationId: String) {
-        //print("HomeTableVC  is presenting \(stationId)")
-        let vc = StationsViewController()
-        vc.stationId = "ewH1QLwp393Za7g0AQfv"
-        navigationController?.pushViewController(vc, animated: true)
+        //need to check what kind of station is that
+        if (false){
+            let vc = SubStationsVC()
+            vc.stationId = "ewH1QLwp393Za7g0AQfv"
+            navigationController?.pushViewController(vc, animated: true)
+        }else if(true){
+            let vc = StationsViewController()
+            vc.stationId = "ewH1QLwp393Za7g0AQfv"
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
 extension HomeTableVC: UISearchResultsUpdating {

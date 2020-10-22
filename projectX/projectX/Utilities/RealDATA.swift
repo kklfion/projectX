@@ -25,7 +25,7 @@ struct queryData {
               for document in snapshotDocuments{
                   do{
                       if let post = try document.data(as: Post.self){
-                          print(post.userInfo.name)
+                          //print(post.userInfo.name)
                           posts.append(post)
                       }
                   } catch let error as NSError{
