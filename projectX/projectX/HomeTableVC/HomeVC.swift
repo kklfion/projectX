@@ -115,48 +115,29 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         postData.count
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        GetData.getPosts { [weak self](posts) in
-            let postvc = PostViewController()
-            postvc.post = posts.randomElement()
-            //load comments for that particular post and
-            postvc.hidesBottomBarWhenPushed = true
-            self?.navigationController?.pushViewController(postvc, animated: true)
-        }
-
+        presentPostFor(indexPath: indexPath)
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         switch postData[indexPath.row].imageURL {
         case nil:
             if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
                 addData(toCell: cell, withIndex: indexPath.row)
                 cell.selectionStyle = .none
-                cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+                cell.indexPath = indexPath
+                cell.delegate = self
                 return cell
             }
         default:
             if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
                 addData(toCell: cell, withIndex: indexPath.row)
+                cell.indexPath = indexPath
+                cell.delegate = self
                 cell.selectionStyle = .none
-                cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
                 return cell
             }
         }
-//        if tableView == homeView?.loungeTableView{
-//
-//        }else if  tableView == homeView?.busStopTableView{
-//        }
-
         return UITableViewCell()
     }
-    @objc private func dummyStation(){
-        //TODO: finish use data to load it
-        let station = StationsVC()
-        station.modalPresentationStyle = .fullScreen
-        navigationController?.pushViewController(station, animated: true)
-    }
-        
     private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
         if let cell = cell as? PostCellWithImage{
             cell.titleUILabel.text =  postData[index].title
@@ -165,6 +146,7 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
             cell.likesLabel.text =  String(postData[index].likes)
             cell.commentsUILabel.text =  String(postData[index].commentCount)
             cell.dateUILabel.text = "\(index)h"
+            cell.stationButton.setTitle(postData[index].stationName, for: .normal)
             
             let temp = UIImageView()
             temp.load(url: postData[index].imageURL!)
@@ -175,8 +157,34 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
             cell.authorUILabel.text =  postData[index].userInfo.name
             cell.likesLabel.text =  String(postData[index].likes)
             cell.commentsUILabel.text =  String(postData[index].commentCount)
+            cell.stationButton.setTitle(postData[index].stationName, for: .normal)
             cell.dateUILabel.text = "\(index)h"
         }
     }
+    private func presentPostFor(indexPath: IndexPath){
+        let postvc = PostViewController()
+        postvc.post = postData[indexPath.row]
+        postvc.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(postvc, animated: true)
+    }
+    private func presentStationFor(indexPath: IndexPath){
+        let station = StationsVC()
+        station.stationId = postData[indexPath.row].stationID
+        station.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(station, animated: true)
+    }
 }
-  
+extension HomeTableVC: PostCellDidTapDelegate{
+    func didTapStationButton(_ indexPath: IndexPath) {
+        presentStationFor(indexPath: indexPath)
+    }
+    func didTapLikeButton(_ indexPath: IndexPath) {
+        
+    }
+    func didTapDislikeButton(_ indexPath: IndexPath) {
+        
+    }
+    func didTapCommentsButton(_ indexPath: IndexPath) {
+        presentPostFor(indexPath: indexPath)
+    }
+}

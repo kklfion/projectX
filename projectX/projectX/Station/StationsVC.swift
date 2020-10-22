@@ -168,7 +168,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
 }
 extension StationsVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.5)
+        return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.6)
         }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2

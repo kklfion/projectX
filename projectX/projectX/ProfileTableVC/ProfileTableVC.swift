@@ -92,7 +92,7 @@ extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
             
         }else if  tableView == profileView?.missionsTableView{
         }
-        cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+        cell.stationButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
         addData(toCell: cell, withIndex: indexPath.row)
         return cell
     }
