@@ -9,19 +9,12 @@ import Firebase
 import FirebaseFirestore
 
 
-
-
-
-
-
-
-
 let button = UIButton()
 var myTxtview = UITextView()
 var titlepost = UITextField()
 var postData = [String: Any]()
-
 var switchbar = UISwitch()
+var pickerview = UIPickerView()
 var Anonymity = false
 var success = "No Errors"
 
@@ -29,39 +22,18 @@ var success = "No Errors"
 
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate{
 
-    //let texFiel = UITextField()
-   
-    //
-    
-    @IBOutlet weak var pickerview: UIPickerView!
-    //@IBOutlet weak var label1:UILabel!
-    //@IBOutlet weak var textField: UITextField!
-    
-    
-    
     override func viewDidLoad() {
-       
         super.viewDidLoad()
         view.backgroundColor = .white
-        // Do any additional setup after loading the view.
-        
-        
-        
-        
         //                                     UI Textfields
         
         //---------------------------------------------------------------------------------------------------------
         //                                     Title
-        
-        // --> Will make this uitextfield to a uitextview to remain consistency soon <--
-        
         titlepost = UITextField(frame: CGRect(x: 10.0, y: 120.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 50.0))//was 200
         titlepost.backgroundColor = .white
-        //titlepost.borderStyle = .line
-        //titlepost.placeholder = "Title"
         titlepost.attributedPlaceholder = NSAttributedString(string: "Title", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
         titlepost.font = UIFont.systemFont(ofSize: 20.0)
-        titlepost.font = UIFont (name: "ChalkboardSE-Regular" , size: 20.0) // Delete if custom font
+        titlepost.font = UIFont (name: "ChalkboardSE-Regular" , size: 20.0)
         titlepost.tintColor = UIColor.black
         titlepost.delegate = self
         //titlepost.autocorrectionType = .yes
@@ -70,7 +42,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
          
        // myTxtview.autocorrectionType = .yes
         myTxtview.isScrollEnabled = true
-        myTxtview.frame = CGRect(x: 10.0, y: 175.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 400.0)//y was 255, height was 280
+        myTxtview.frame = CGRect(x: 10.0, y: 175.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 400.0)
         NotificationCenter.default.addObserver(self, selector: #selector(didShow), name: UIResponder.keyboardDidShowNotification, object: nil)
               
         NotificationCenter.default.addObserver(self, selector: #selector(didHide), name: UIResponder.keyboardDidHideNotification, object: nil)
@@ -84,38 +56,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         myTxtview.textColor = .black
         
         self.view.addSubview(myTxtview)
-        
-        
-       // NotificationCenter.default.addObserver(self, selector: #selector(didShow), name: UIResponder.keyboardDidShowNotification, object: nil)
-        
-       // NotificationCenter.default.addObserver(self, selector: #selector(didHide), name: UIResponder.keyboardDidHideNotification, object: nil)
-        
-        
-        
-        
-        
-        
-        
-      //  NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardVisible(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
-        
-        
-        
-        
-        
-        //---------------------------------------------------------------------------------------------------------
-        
-        
-        // https://www.youtube.com/watch?v=UDPJj3gnuZQ
-        // https://www.youtube.com/watch?time_continue=376&v=RuzHai2RVZU&feature=emb_logo
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
         
        //                           REFINED TOOLBAR CODE
         
@@ -207,17 +148,8 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         label.textAlignment = .center
         label.text = "New Post"
         label.font = UIFont.systemFont(ofSize: 30)
-        label.font = UIFont (name: "ChalkboardSE-Regular" , size: 30) // Delete if custom font
+        label.font = UIFont (name: "ChalkboardSE-Regular" , size: 30)
         self.view.addSubview(label)
-        
-        //                                       Channel display
-        // let label1 = UILabel(frame: CGRect(x: 10, y: 100, width:UIScreen.main.bounds.size.width - 20.0, height: 35))
-       // label1.textAlignment = .center
-        
-     //   label1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
-      //  self.view.addSubview(label1)
-        
-        //---------------------------------------------------------------------------------------------------------
         
         
         
@@ -248,7 +180,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         Xbutton.tintColor = UIColor.black
         Xbutton.backgroundColor = UIColor.white
         Xbutton.titleLabel?.font = .systemFont(ofSize: 18)
-        Xbutton.titleLabel?.font =  UIFont(name: "ChalkboardSE-Regular", size: 18) // Delete if custom font
+        Xbutton.titleLabel?.font =  UIFont(name: "ChalkboardSE-Regular", size: 18)
         Xbutton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         self.view.addSubview(Xbutton)
         
@@ -260,33 +192,9 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         postButton.tintColor = UIColor.black
         postButton.backgroundColor = UIColor.white
         postButton.titleLabel?.font = .systemFont(ofSize: 18)
-        postButton.titleLabel?.font =  UIFont(name: "ChalkboardSE-Regular", size: 18) // Delete if custom font
+        postButton.titleLabel?.font =  UIFont(name: "ChalkboardSE-Regular", size: 18)
         postButton.addTarget(self, action: #selector(postAction), for: .touchUpInside)
         self.view.addSubview(postButton)
-        
-        
-      
-        
-       
-         
-        
-        
-        
-        
-        
-        
-        //---------------------------------------------------------------------------------------------------------
-        
-        
-        //                                       Notes
-        //  Link provides way to use View UI for horizontal borders, getting rid of right and left borders of choose channel
-        //  https://stackoverflow.com/questions/40030143/how-to-remove-right-and-left-borders-in-uibutton
-        //  Fonts here http://iosfonts.com/
-        //  Touching outside textfield
-        //https://stackoverflow.com/questions/32281651/how-to-dismiss-keyboard-when-touching-anywhere-outside-uitextfield-in-swift
-        //Ui button: https://www.appsdeveloperblog.com/create-uibutton-in-swift-programmatically/
-        //picker https://stackoverflow.com/questions/53774232/show-a-uipickerview-when-a-button-is-tapped
-        
     }
     
     
@@ -394,12 +302,9 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     }
     
     
-    @objc func keyboardVisible(_ sender: NSNotification) {
-       // self.view.addSubview(switch1)
-      //  self.view.addSubview(myImageView3)
-    }
+ 
     
-    // Might have to edit the frames soon
+    
    @objc func didShow(_ sender: NSNotification)
     {
         UITextView.animate(withDuration: 0.3) {
@@ -428,42 +333,9 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     
     // cancel button
     @objc func buttonAction(_ sender:UIButton!) {
-
-        
-      // For stack/container code
-      //  DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2){
-      //  let pop = Popup()
-      // self.view.addSubview(pop)
-      //   }
-        
-     //dismiss(animated: true, completion: nil)
-        
-    //Set up Ui alert controller
-        
-    // https://www.hackingwithswift.com/read/4/3/choosing-a-website-uialertcontroller-action-sheets
-    
-        
-
-        
-      // For stack/container code
-      //  DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2){
-      //  let pop = Popup()
-      // self.view.addSubview(pop)
-      //   }
-        
-     //dismiss(animated: true, completion: nil)
-        
-    //Set up Ui alert controller
-        
-    // https://www.hackingwithswift.com/read/4/3/choosing-a-website-uialertcontroller-action-sheets
-    
-        
-
-
         let ac = UIAlertController(title: "Are you sure you want to discard your post", message: nil, preferredStyle: .alert)
         
-         // ac.addAction(UIAlertAction(title: "apple.com", style: .default, handler: openPage))
-         // ac.addAction(UIAlertAction(title: "hackingwithswift.com", style: .default, handler: openPage))
+    
           
           ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
          ac.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: discardaction))
@@ -471,13 +343,9 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
           present(ac, animated: true)
     
     }
-    
-   // look up multiline text input
     func discardaction(action: UIAlertAction) {
         dismiss(animated: true, completion: nil)
     }
-    
-    
     
     
     
@@ -566,18 +434,11 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         }
     }
     
-    
-    
-    
-    
-    
-    
     // post button
      @objc func postAction(sender: UIButton!) {
         let check1 = title(title: titlepost.text!)
         let check2 = body(body: myTxtview.text!)
         let check3 = channel(channel: selectedchannel)
-        //Not sure how to do the author things yet, we can check for that too
         assertions(title: check1, body: check2, channel: check3)
     }
         
