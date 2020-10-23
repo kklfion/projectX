@@ -31,20 +31,17 @@ class OtherProfileViewController: UIViewController {
                                 trailing: view.trailingAnchor)
     }
     private func setupTableViews(){
-        profileView?.loungeTableView.delegate = self
-        profileView?.missionsTableView.delegate = self
-        profileView?.loungeTableView.dataSource = self
-        profileView?.missionsTableView.dataSource = self
+        profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
+        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
+        profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
+        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
         
-        profileView?.loungeTableView.rowHeight = UITableView.automaticDimension
-        profileView?.loungeTableView.estimatedRowHeight = 100
-        profileView?.missionsTableView.rowHeight = UITableView.automaticDimension
-        profileView?.missionsTableView.estimatedRowHeight = 100
+        profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
+        profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
         
-        profileView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
-        profileView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
-        profileView?.missionsTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
-        profileView?.missionsTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
+        profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
+        profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
+        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
         guard let user = user else{return}
@@ -72,11 +69,6 @@ extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource
         guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage else {
             fatalError("Wrong cell at ?cellForRowAt? ")
         }
-        if tableView == profileView?.loungeTableView{
-            
-        }else if  tableView == profileView?.missionsTableView{
-        }
-        cell.stationButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
         addData(toCell: cell, withIndex: indexPath.row)
         return cell
     }
@@ -107,6 +99,27 @@ extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource
         }
     }
 }
-  
+extension OtherProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.6)
+        }
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 4
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let tryCell = collectionView.dequeueReusableCell(withReuseIdentifier: BoardCell.cellID, for: indexPath) as? BoardCell
+        guard let cell = tryCell else {
+            return UICollectionViewCell()
+        }
+        cell.backgroundColor = UIColor.red
+        
+        return cell
+    }
+}
 
 

@@ -84,7 +84,6 @@ import UIKit
     private func setupBulletinBoardTableView(){
         stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
         stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
-        //stationView.tableViewsView?.bulletinBoardCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
         stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.refreshControl = UIRefreshControl()
         //stationView.tableViewsView?.bulletinBoardCollectionView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
@@ -191,8 +190,6 @@ extension SubStationsVC: UICollectionViewDelegate, UICollectionViewDataSource, U
         
         return cell
     }
-    
-    
 }
 extension SubStationsVC: UITableViewDelegate, UITableViewDataSource{
     

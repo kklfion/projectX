@@ -13,6 +13,8 @@ enum Fields: String {
     case stationID = "stationID"
     case userID = "userID"
     case postID = "postID"
+    
+    case userInfo = "userInfo"
 }
 class NetworkManager {
 
@@ -45,10 +47,7 @@ class NetworkManager {
         }
     }
     /// fetches 1 document with uid, must be decodable
-    func getDocumentsFor<GenericDocument>(uid: String,completion: @escaping (_ document: [GenericDocument]?,_ error: Error?) -> Void) where GenericDocument: Decodable{
-        // Create a query against the collection.
-        let query = db.posts.whereField(Fields.stationID.rawValue, isEqualTo: uid)
-        
+    func getDocumentsFor<GenericDocument>(query: Query,completion: @escaping (_ document: [GenericDocument]?,_ error: Error?) -> Void) where GenericDocument: Decodable{
         query.getDocuments { (snapshot, error) in
             if let error = error {
 
@@ -64,28 +63,6 @@ class NetworkManager {
                 completion(nil, nil)
             }
         }
-//        // Create a query against the collection.
-//        let query = db.stations.document("\(uid)")
-//        query.getDocument { (document, error) in
-//            let result = Result {
-//              try document?.data(as: GenericDocument.self)
-//            }
-//            switch result {
-//            case .success(let genericDocument):
-//                if let genericDocument = genericDocument {
-//                    // A `genericDocument` value was successfully initialized from the DocumentSnapshot.
-//                    completion(genericDocument, nil)
-//                } else {
-//                    // A nil value was successfully initialized from the DocumentSnapshot,
-//                    // or the DocumentSnapshot was nil.
-//                    print("Document does not exist")
-//                    completion(nil, nil)
-//                }
-//            case .failure(let error):
-//                // A `City` value could not be initialized from the DocumentSnapshot.
-//                completion(nil, error)
-//            }
-//        }
     }
     func getDataForUser(_ uid: String,completion: @escaping (_ user: User?,_ error: Error?) -> Void){
         // Create a query against the collection.

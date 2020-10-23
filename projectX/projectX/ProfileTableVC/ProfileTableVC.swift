@@ -7,64 +7,75 @@
 //
 
 import UIKit
-import FirebaseAuth
+import Firebase
 import Combine
 
 class ProfileTableVC: UIViewController {
     private var profileView: ProfileView?
-    private var postData = [Post]()
-    private var userSubscription: AnyCancellable?
+    private var userSubscription: AnyCancellable? //not implemented currently
+    private var posts: [Post]?{
+        didSet{
+            profileView?.tableViewAndCollectionView?.loungeTableView.reloadData()
+        }
+    }
+    //for now using posts data to create cells
+    private var boards: [Post]?{
+        didSet{
+            profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
-        postData.shuffle()
         super.viewDidLoad()
         view.backgroundColor = .white
         setupView()
         setupTableViews()
-        
+        updateProfileInformation()
         userSubscription = UserManager.shared.userPublisher.sink { (user) in
             //print("received User in Profile test", user ?? "")
         }
+        getPostsForUser()
     }
-    override func viewWillAppear(_ animated: Bool) {
-        updateProfileInformation()
+    private func getPostsForUser(){
+        guard let userid = UserManager.shared.user?.id else {return}
+        let query = NetworkManager.shared.db.posts.whereField("userInfo.userID", isEqualTo: userid)
+        NetworkManager.shared.getDocumentsFor(query: query) { (posts: [Post]?, error) in
+            if error != nil{
+                print("Error loading posts for station \(String(describing: error?.localizedDescription))")
+            }else if posts != nil{
+                self.posts = posts
+                self.boards = posts
+            }
+        }
     }
     private func setupView(){
         profileView = ProfileView(frame: self.view.frame)
         guard let profileView = profileView else {return}
         view.addSubview(profileView)
-        profileView.addAnchors(top: view.topAnchor,
-                               leading: view.leadingAnchor,
+        profileView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
+                               leading: view.safeAreaLayoutGuide.leadingAnchor,
                                bottom: view.bottomAnchor,
-                                trailing: view.trailingAnchor)
+                               trailing: view.safeAreaLayoutGuide.trailingAnchor)
     }
     private func setupTableViews(){
-        profileView?.loungeTableView.delegate = self
-        profileView?.missionsTableView.delegate = self
-        profileView?.loungeTableView.dataSource = self
-        profileView?.missionsTableView.dataSource = self
+        profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
+        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
+        profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
+        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
         
-        profileView?.loungeTableView.rowHeight = UITableView.automaticDimension
-        profileView?.loungeTableView.estimatedRowHeight = 100
-        profileView?.missionsTableView.rowHeight = UITableView.automaticDimension
-        profileView?.missionsTableView.estimatedRowHeight = 100
+        profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
+        profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
         
-        profileView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
-        profileView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
-        profileView?.missionsTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
-        profileView?.missionsTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
+        profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
+        profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
+        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
         let (user, image, state) = UserManager.shared.getCurrentUserData()
         switch state {
         case .signedIn:
-//            profileView?.missionsTableView.isHidden = false
-//            profileView?.loungeTableView.isHidden = false
-            profileView?.missionsTableView.reloadData()
-//            profileView?.loungeTableView.reloadData()
+            print("signedin")
         default:
-//            profileView?.missionsTableView.isHidden = true
-//            profileView?.loungeTableView.isHidden = true
             print("other cases")
         }
         profileView?.profileImageView.image = image
@@ -73,7 +84,7 @@ class ProfileTableVC: UIViewController {
 }
 extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        postData.count
+        posts?.count ?? 0
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //TODO: setup loading data
@@ -82,16 +93,24 @@ extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
         navigationController?.pushViewController(postvc, animated: true)
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage else {
-            fatalError("Wrong cell at ?cellForRowAt? ")
+        switch posts?[indexPath.row].imageURL {
+        case nil:
+            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
+                addData(toCell: cell, withIndex: indexPath.row)
+                cell.selectionStyle = .none
+                //cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+                return cell
+            }
+        default:
+            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
+                cell.postUIImageView.image = nil
+                addData(toCell: cell, withIndex: indexPath.row)
+                cell.selectionStyle = .none
+                //cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+                return cell
+            }
         }
-        if tableView == profileView?.loungeTableView{
-            
-        }else if  tableView == profileView?.missionsTableView{
-        }
-        cell.stationButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
-        addData(toCell: cell, withIndex: indexPath.row)
-        return cell
+        return UITableViewCell()
     }
     @objc private func dummyStation(){
         //TODO: finish use data to load it
@@ -99,26 +118,53 @@ extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
         station.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(station, animated: true)
     }
-    private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
-        cell.titleUILabel.text =  postData[index].title
-        cell.previewUILabel.text =  postData[index].text
-        cell.authorUILabel.text =  postData[index].userInfo.name
-        cell.likesLabel.text =  String(postData[index].likes)
-        cell.commentsUILabel.text =  String(postData[index].commentCount)
-        //cell.UID =  postData[index].postID
+    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
+        cell.titleUILabel.text =  posts?[index].title
+        cell.titleUILabel.text =  posts?[index].title
+        cell.previewUILabel.text =  posts?[index].text
+        cell.authorUILabel.text =  posts?[index].userInfo.name
+        cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
+        cell.commentsUILabel.text = "0"
         cell.dateUILabel.text = "\(index)h"
-        if postData[index].imageURL != nil{
-            cell.imageView?.isHidden = false
-            //this cell will have an image
-            let temp = UIImageView()
-            temp.load(url: postData[index].imageURL!)
-            cell.postUIImageView.image = temp.image
-        }else{
-            //change cell constraints so that text takes the extra space
-            cell.imageView?.isHidden = true
-            cell.postUIImageView.image = nil
+        
+    }
+    private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
+        cell.titleUILabel.text =  posts?[index].title
+        cell.titleUILabel.text =  posts?[index].title
+        cell.previewUILabel.text =  posts?[index].text
+        cell.authorUILabel.text =  posts?[index].userInfo.name
+        cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
+        cell.commentsUILabel.text = "0"
+        cell.dateUILabel.text = "\(index)h"
+        NetworkManager.shared.getAsynchImage(withURL: posts?[index].imageURL) { (image, error) in
+            DispatchQueue.main.async {
+                cell.postUIImageView.image = image
+            }
         }
     }
+}
+extension ProfileTableVC: UICollectionViewDelegate, UICollectionViewDataSource{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.6)
+        }
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 4
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let tryCell = collectionView.dequeueReusableCell(withReuseIdentifier: BoardCell.cellID, for: indexPath) as? BoardCell
+        guard let cell = tryCell else {
+            return UICollectionViewCell()
+        }
+        cell.backgroundColor = UIColor.red
+        
+        return cell
+    }
+    
 }
   
 
