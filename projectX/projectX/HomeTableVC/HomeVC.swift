@@ -14,6 +14,7 @@ class HomeTableVC: UIViewController{
     private var homeView: HomeView?
     var refreshControl: UIRefreshControl?
     private var postData = [Post]()
+    private let queryPosts = queryData()
     
     private let seachView: UISearchBar = {
         let sb = UISearchBar()
@@ -40,13 +41,17 @@ class HomeTableVC: UIViewController{
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        queryData.queryPost{ [weak self] (posts) in
-            self?.postData.append(contentsOf: posts)
-            DispatchQueue.main.async {
-                self?.homeView?.loungeTableView.reloadData()
+        queryPosts.queryPost(pagination: false, completion: {[weak self] result in
+            switch result {
+            case .success(let data):
+                self?.postData.append(contentsOf: data)
+                DispatchQueue.main.async {
+                    self?.homeView?.loungeTableView.reloadData()
+                }
+            case .failure(_):
+                break
             }
-
-        }
+        })
     }
     func addRefreshControl(){
         refreshControl = UIRefreshControl()
@@ -124,6 +129,29 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
             self?.navigationController?.pushViewController(postvc, animated: true)
         }
 
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let position = scrollView.contentOffset.y
+        if position > (homeView!.loungeTableView.contentSize.height-100-scrollView.frame.size.height){
+            guard !queryPosts.isPaginating else{
+                //we fetching data chill the fuck out
+                return
+            }
+            queryPosts.queryPost(pagination: true) { result in
+                switch result {
+                    case .success(let moreData):
+                        self.postData.append(contentsOf: moreData)
+                    DispatchQueue.main.async {
+                        self.homeView?.loungeTableView.reloadData()
+                    }
+                    case .failure(_):
+                        break
+                }
+
+            }
+            print("Fetch more data")
+        }
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
