@@ -26,6 +26,9 @@ struct Comment: Identifiable, Codable{
 
     /// The date the comment was posted.
     var date: Date
+    
+    /// If author of the comment wants to be Anonymous
+    var isAnonymous: Bool?
 
 }
 extension Comment{
@@ -33,11 +36,13 @@ extension Comment{
                 userInfo: User,
                 text: String,
                 likes: Int,
-                date: Date) {
+                date: Date,
+                isAnonymous: Bool? = false) {
         self.postID = postID
         self.userInfo = userInfo
         self.text = text
         self.likes = likes
         self.date = date
+        self.isAnonymous = isAnonymous
     }
 }

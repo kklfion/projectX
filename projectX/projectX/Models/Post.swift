@@ -38,6 +38,9 @@ struct Post:Identifiable, Codable{
     
     /// Post photo url stored in the Firestore
     var imageURL: URL?
+    
+    /// If user wants his name to be anoynmous
+    var isAnonymous: Bool?
 }
 extension Post{
     /// returns a new post object 
@@ -49,7 +52,8 @@ extension Post{
                 text: String,
                 date: Date,
                 imageURL: URL?,
-                commentCount: Int) {
+                commentCount: Int,
+                isAnonymous: Bool? = false) {
         self.stationID = stationID
         self.stationName = stationName
         self.likes = likes
@@ -59,6 +63,7 @@ extension Post{
         self.date = date
         self.imageURL = imageURL
         self.commentCount = commentCount
+        self.isAnonymous = isAnonymous
     }
 }
     

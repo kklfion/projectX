@@ -57,6 +57,12 @@
 		80F52F8B251C1AA400076825 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F52F8A251C1AA400076825 /* ProfileView.swift */; };
 		80FDD6A924A188BF00304007 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 80FDD6A824A188BF00304007 /* GoogleService-Info.plist */; };
 		90C178B725319EE800200222 /* RealDATA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178B625319EE800200222 /* RealDATA.swift */; };
+		90C178CD25439A5200200222 /* AcceptedMissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178CC25439A5200200222 /* AcceptedMissions.swift */; };
+		90C178CF25439A6300200222 /* LikedPosts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178CE25439A6300200222 /* LikedPosts.swift */; };
+		90C178D125439A7C00200222 /* LikedComments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178D025439A7C00200222 /* LikedComments.swift */; };
+		90C178D325439A9000200222 /* Followers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178D225439A9000200222 /* Followers.swift */; };
+		90C178D525439AA100200222 /* FollowedStations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178D425439AA100200222 /* FollowedStations.swift */; };
+		90C178D72543AC8000200222 /* BlacklistedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178D62543AC8000200222 /* BlacklistedUser.swift */; };
 		D376F7B778D7EC42DE2A05F2 /* Pods_projectX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */; };
 		ED4E056E2533C3CF007ED4FA /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4E056D2533C3CF007ED4FA /* Notification.swift */; };
 		ED4E05722533C7C2007ED4FA /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4E05712533C7C2007ED4FA /* Mission.swift */; };
@@ -117,6 +123,12 @@
 		80F52F8A251C1AA400076825 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		80FDD6A824A188BF00304007 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		90C178B625319EE800200222 /* RealDATA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealDATA.swift; sourceTree = "<group>"; };
+		90C178CC25439A5200200222 /* AcceptedMissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptedMissions.swift; sourceTree = "<group>"; };
+		90C178CE25439A6300200222 /* LikedPosts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedPosts.swift; sourceTree = "<group>"; };
+		90C178D025439A7C00200222 /* LikedComments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedComments.swift; sourceTree = "<group>"; };
+		90C178D225439A9000200222 /* Followers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Followers.swift; sourceTree = "<group>"; };
+		90C178D425439AA100200222 /* FollowedStations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowedStations.swift; sourceTree = "<group>"; };
+		90C178D62543AC8000200222 /* BlacklistedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlacklistedUser.swift; sourceTree = "<group>"; };
 		CE774F905F70DF49766D0585 /* Pods-projectX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-projectX.release.xcconfig"; path = "Target Support Files/Pods-projectX/Pods-projectX.release.xcconfig"; sourceTree = "<group>"; };
 		ED4E056D2533C3CF007ED4FA /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		ED4E05712533C7C2007ED4FA /* Mission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mission.swift; sourceTree = "<group>"; };
@@ -173,6 +185,12 @@
 				803D75B4250B079E003F569D /* FirebaseExtension.swift */,
 				ED4E056D2533C3CF007ED4FA /* Notification.swift */,
 				ED4E05712533C7C2007ED4FA /* Mission.swift */,
+				90C178CC25439A5200200222 /* AcceptedMissions.swift */,
+				90C178CE25439A6300200222 /* LikedPosts.swift */,
+				90C178D025439A7C00200222 /* LikedComments.swift */,
+				90C178D225439A9000200222 /* Followers.swift */,
+				90C178D425439AA100200222 /* FollowedStations.swift */,
+				90C178D62543AC8000200222 /* BlacklistedUser.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -472,6 +490,7 @@
 				808361C8252920F900DEF0DE /* UserManager.swift in Sources */,
 				801A37A82514025D00F22A11 /* NotificationView.swift in Sources */,
 				90C178B725319EE800200222 /* RealDATA.swift in Sources */,
+				90C178D125439A7C00200222 /* LikedComments.swift in Sources */,
 				ED4E05722533C7C2007ED4FA /* Mission.swift in Sources */,
 				8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */,
 				804E61A124980DB000825150 /* SidebarViewController.swift in Sources */,
@@ -494,8 +513,13 @@
 				8066D62F24AACAF8002A9E16 /* PostCellWithImage.swift in Sources */,
 				80A0DC1D253B780300474541 /* BoardCell.swift in Sources */,
 				80A0DC16253B56A500474541 /* SegmentedControlWithTableViewsView.swift in Sources */,
+				90C178CD25439A5200200222 /* AcceptedMissions.swift in Sources */,
+				90C178D325439A9000200222 /* Followers.swift in Sources */,
 				806E777624C9074700A95B89 /* Constants.swift in Sources */,
+				90C178CF25439A6300200222 /* LikedPosts.swift in Sources */,
 				803972D52519780D002695EC /* SideBarView.swift in Sources */,
+				90C178D72543AC8000200222 /* BlacklistedUser.swift in Sources */,
+				90C178D525439AA100200222 /* FollowedStations.swift in Sources */,
 				80BB37B224D8C50700B12253 /* StationsVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
