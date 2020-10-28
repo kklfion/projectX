@@ -24,7 +24,6 @@ class ProfileTableVC: UIViewController {
             profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
         }
     }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -143,16 +142,16 @@ extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
         }
     }
 }
-extension ProfileTableVC: UICollectionViewDelegate, UICollectionViewDataSource{
+extension ProfileTableVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.6)
         }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return 4
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

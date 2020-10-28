@@ -96,7 +96,6 @@ class ProfileView: UIView {
                                 trailing: self.trailingAnchor,
                                 padding: .init(top: 10, left: 10, bottom: 0, right: 10),
                                 size: .init(width: 0, height: 1))
-        
         tableViewAndCollectionView = SegmentedControlWithTableViewAndCollectionView(frame: frame)
         self.addSubview(tableViewAndCollectionView!)
         tableViewAndCollectionView?.addAnchors(top: spacingView.bottomAnchor,
