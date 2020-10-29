@@ -10,6 +10,7 @@
 
 import UIKit
 import FirebaseAuth
+import Firebase
 
 class MainTabBarVC: UITabBarController {
     /// custom sidebar transition
@@ -24,6 +25,12 @@ class MainTabBarVC: UITabBarController {
         setupNavigationBarAppearance()
         setupSideBarItems()
         setupTabBarAppearance()
+        
+        ///test
+        tempQueries()
+    }
+    private func tempQueries(){
+
     }
     private func setupSideBarItems(){
         let sidebarItem = UITabBarItem()

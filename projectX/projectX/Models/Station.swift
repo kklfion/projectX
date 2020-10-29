@@ -9,6 +9,16 @@
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
+/// an enum that stores type of a station. Used to distinguish stations with different UI and queries
+enum TypeOfStation: String, Codable{
+    /// paremt station will have substations as second tableView list
+    case parentStation
+    /// is a "main" station that doesn't have substations and will display missions
+    case station
+    /// is a substation of a parentstation, will be displayed in the parentStation list and it will have missions as second tableview
+    case subStation
+}
+
 struct Station:Identifiable, Codable{
     /// property wrapper that stores id of the document associated with data
     @DocumentID var id: String?
@@ -37,9 +47,11 @@ struct Station:Identifiable, Codable{
     /// IF this station is a "sub-station" this is the ID for that parent station
     var parentStationID: String?
     
-    /// If substation = True, if not = False
+    /// If station substation is substations then it can be displayed in the list of substations of the parentStation
     var isSubStation: Bool?
     
+    /// If station hasSubStations then it will display a list of substations as second tableview, else it will display missions
+    var stationType: TypeOfStation
     
 }
 extension Station{
@@ -50,8 +62,9 @@ extension Station{
                 frontImageURL: URL?,
                 backgroundImageURL: URL?,
                 postCount: Int? = 0,
-                parentStationID: String? = "N/A",
-                isSubStation: Bool? = false) {
+                parentStationID: String?,
+                isSubStation: Bool? = false,
+                stationType: TypeOfStation) {
         self.info = info
         self.stationName = stationName
         self.followers = followers
@@ -61,6 +74,7 @@ extension Station{
         self.postCount = postCount
         self.parentStationID = parentStationID
         self.isSubStation = isSubStation
+        self.stationType = stationType
         
     }
 }

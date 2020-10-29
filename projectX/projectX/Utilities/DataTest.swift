@@ -225,23 +225,18 @@ struct StationsData{
     /// creates UC colleges as  default stations
      static func createStations(){
         let db = Firestore.firestore()
-        var stations = [Station]()
-        for (college, collegeName) in colleges{
-            let station = Station(info: infoDict[college]!,
-                                  stationName: collegeName,
-                                  followers: 0,
-                                  date: Date(),
-                                  frontImageURL: collegeLogoURLSDict[college]!,
-                                  backgroundImageURL: collegeBackgroundPhotoURLSDict[college]!)
-            stations.append(station)
+        let station = Station(info: "Anime is hand-drawn and computer animation originating from Japan. Anime, a term derived from the English word animation, is used in Japanese to describe ...",
+                              stationName: "Anime",
+                              followers: 0,
+                              date: Date(),
+                              frontImageURL: URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/stationsImages%2FAnime%2Ffront.png?alt=media&token=81197112-b2e9-4e75-818d-d2f13cdee4a5"),
+                              backgroundImageURL: URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/stationsImages%2FAnime%2Fbackground.jpg?alt=media&token=4042c7f8-54b2-49d8-80fa-6da1e562cfed"),
+                              stationType: .station)
+        do {
+            let _ = try db.stations.addDocument(from: station)
         }
-        for station in stations{
-            do {
-                let _ = try db.stations.addDocument(from: station)
-            }
-            catch {
-                    print(error)
-            }
+        catch {
+                print(error)
         }
     }
 }

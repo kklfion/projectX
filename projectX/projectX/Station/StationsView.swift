@@ -7,10 +7,6 @@
 //
 
 import UIKit
-enum TypeOfStation{
-    case subStation
-    case station
-}
 /// use init(frame: CGRect, type: TypeOfStation) and specify what type of station it is! Depending on that different tableViews will be displayed
 class StationsView: UIView {
     override init(frame: CGRect) {
@@ -99,7 +95,7 @@ class StationsView: UIView {
         topViewContainerTopConstraint?.isActive = true
         
         switch type{
-        case .station:
+        case .parentStation:
             tableViewAndTableView = SegmentedControlWithTwoTableViews(frame: frame)
             self.addSubview(tableViewAndTableView!)
             tableViewAndTableView?.addAnchors(top: topViewContainer.bottomAnchor,
