@@ -14,11 +14,10 @@ class ProfileView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupViews()
+        setupViews(frame: frame)
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupViews()
     }
     let profileImageView: UIImageView = {
         let imageview = UIImageView()
@@ -63,51 +62,18 @@ class ProfileView: UIView {
         view.alpha = 0.5
         return view
     }()
-    //stack that keeps all the views arranged
-    let tableViewStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.distribution = .fillEqually
-        stack.axis = .horizontal
-        return stack
-    }()
-    let segmentController: UISegmentedControl = {
-        let sc = UISegmentedControl(items: ["Lounge", "Missions"])
-        sc.translatesAutoresizingMaskIntoConstraints = false
-        sc.selectedSegmentIndex = 0
-        sc.selectedSegmentTintColor = .white
-        sc.layer.backgroundColor = UIColor.white.cgColor
-        sc.tintColor = .white
-        sc.addTarget(self, action: #selector(performAnimation), for: .valueChanged)
-        return sc
-    }()
-    let loungeTableView: UITableView = {
-        let home = UITableView()
-        home.separatorStyle = .none
-        home.backgroundColor = .white//UIColor.lightGray.withAlphaComponent(0.3)
-        home.translatesAutoresizingMaskIntoConstraints = false
-        return home
-    }()
-    let missionsTableView: UITableView = {
-        let rec = UITableView()
-        rec.separatorStyle = .none
-        rec.backgroundColor = .white//UIColor.lightGray.withAlphaComponent(0.3)
-        rec.translatesAutoresizingMaskIntoConstraints = false
-        return rec
-    }()
-    private func setupViews() {
+
+    var tableViewAndCollectionView: SegmentedControlWithTableViewAndCollectionView?
+    
+    private func setupViews(frame: CGRect) {
+        
         self.addSubview(profileImageView)
         self.addSubview(bioStackView)
-        self.addSubview(segmentController)
-        self.addSubview(tableViewStackView)
         self.addSubview(spacingView)
         
         bioStackView.addArrangedSubview(usernameLabel)
         bioStackView.addArrangedSubview(useridLabel)
         bioStackView.addArrangedSubview(schoolLabel)
-        
-        tableViewStackView.addArrangedSubview(loungeTableView)
-        tableViewStackView.addArrangedSubview(missionsTableView)
         
         profileImageView.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
                                      leading: nil,
@@ -130,31 +96,14 @@ class ProfileView: UIView {
                                 trailing: self.trailingAnchor,
                                 padding: .init(top: 10, left: 10, bottom: 0, right: 10),
                                 size: .init(width: 0, height: 1))
+        tableViewAndCollectionView = SegmentedControlWithTableViewAndCollectionView(frame: frame)
+        self.addSubview(tableViewAndCollectionView!)
+        tableViewAndCollectionView?.addAnchors(top: spacingView.bottomAnchor,
+                                     leading: self.leadingAnchor,
+                                     bottom: self.bottomAnchor,
+                                     trailing: self.trailingAnchor,
+                                     padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+                                     size: .init(width: 0, height: 0))
         
-        segmentController.addAnchors(top: spacingView.bottomAnchor,
-                                     leading: self.layoutMarginsGuide.leadingAnchor,
-                                     bottom: nil,
-                                     trailing: self.layoutMarginsGuide.trailingAnchor,
-                                     padding: .init(top: 10, left: 10, bottom: 0, right: 10))
-        tableViewStackView.addAnchors(top: segmentController.bottomAnchor,
-                                            leading: self.leadingAnchor,
-                                            bottom: self.bottomAnchor,
-                                            trailing: nil, padding: .init(top: 10, left: 0, bottom: 0, right: 0),
-                                            size: .init(width: self.frame.width * 2, height: 0))
     }
-    /// Animation for switching between two tableViewControllers
-    @objc func performAnimation(){
-        let moveToBusStop = {
-            self.tableViewStackView.transform = CGAffineTransform(translationX: -self.frame.width, y: 0)
-        }
-        let reset = {
-            self.tableViewStackView.transform = .identity
-        }
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseOut,
-            animations:{
-                self.toggle ? moveToBusStop() : reset()
-            }, completion: nil)
-        toggle = !toggle
-    }
-
 }

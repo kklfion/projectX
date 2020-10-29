@@ -7,16 +7,27 @@
 //
 
 import UIKit
-
+enum TypeOfStation{
+    case subStation
+    case station
+}
+/// use init(frame: CGRect, type: TypeOfStation) and specify what type of station it is! Depending on that different tableViews will be displayed
 class StationsView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews(frame: frame)
     }
+    init(frame: CGRect, type: TypeOfStation) {
+        self.type = type
+        super.init(frame: frame)
+        setupViews(frame: frame)
+    }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        //setupViews()
     }
+    /// type of station
+    var type: TypeOfStation?
+    
     let topViewContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -68,19 +79,17 @@ class StationsView: UIView {
         let label = UILabel()
         label.numberOfLines = 2
         label.font = Constants.bodyTextFont
-        //label.text = "Yeeet. Blah blah. Can I graduate on time. I want to drink. Maybe a boba too!"
         return label
     }()
     
-    var tableViewsView: SegmentedControlWithTableViewsView?
+    var tableViewAndCollectionView: SegmentedControlWithTableViewAndCollectionView?
+    var tableViewAndTableView: SegmentedControlWithTwoTableViews?
+    
     var topViewContainerTopConstraint: NSLayoutConstraint?
     
     func setupViews(frame: CGRect){
         self.backgroundColor = .white
-        tableViewsView = SegmentedControlWithTableViewsView(frame: frame)
-        guard let tableViewsView = tableViewsView else {return}
-        
-        [topViewContainer, tableViewsView].forEach {self.addSubview($0)}
+        [topViewContainer].forEach {self.addSubview($0)}
         topViewContainer.addAnchors(top: nil,
                                     leading: self.leadingAnchor,
                                     bottom: nil,
@@ -88,13 +97,28 @@ class StationsView: UIView {
                                     size: .init(width: self.frame.width, height: self.frame.height*0.3))
         topViewContainerTopConstraint = topViewContainer.topAnchor.constraint(equalTo: self.topAnchor, constant: 0)
         topViewContainerTopConstraint?.isActive = true
-    
-        tableViewsView.addAnchors(top: topViewContainer.bottomAnchor,
-                                     leading: self.leadingAnchor,
-                                     bottom: self.bottomAnchor,
-                                     trailing: self.trailingAnchor,
-                                     padding: .init(top: 0, left: 0, bottom: 0, right: 0),
-                                     size: .init(width: 0, height: 0))
+        
+        switch type{
+        case .station:
+            tableViewAndTableView = SegmentedControlWithTwoTableViews(frame: frame)
+            self.addSubview(tableViewAndTableView!)
+            tableViewAndTableView?.addAnchors(top: topViewContainer.bottomAnchor,
+                                         leading: self.leadingAnchor,
+                                         bottom: self.bottomAnchor,
+                                         trailing: self.trailingAnchor,
+                                         padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+                                         size: .init(width: 0, height: 0))
+        default:
+            tableViewAndCollectionView = SegmentedControlWithTableViewAndCollectionView(frame: frame)
+            self.addSubview(tableViewAndCollectionView!)
+            tableViewAndCollectionView?.addAnchors(top: topViewContainer.bottomAnchor,
+                                         leading: self.leadingAnchor,
+                                         bottom: self.bottomAnchor,
+                                         trailing: self.trailingAnchor,
+                                         padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+                                         size: .init(width: 0, height: 0))
+        }
+
         topViewContainer.layoutIfNeeded()//foces to setup proper frame?!?!??!  super important ahahah
         [backgroundImageView, frontImageView, followersLabel,stationInfoLabel,stationNameLabel,followButton].forEach({topViewContainer.addSubview($0)})
         

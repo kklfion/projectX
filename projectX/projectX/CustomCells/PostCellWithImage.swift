@@ -18,7 +18,10 @@ import UIKit
 
 class PostCellWithImage: UITableViewCell {
     static let cellID = "PostCellWithImage"
-
+    
+    weak var delegate: PostCellDidTapDelegate?
+    var indexPath: IndexPath?
+    
     let shadowLayerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -46,12 +49,13 @@ class PostCellWithImage: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    let channelUIButton: UIButton = {
+    let stationButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("Food", for: .normal)
         button.setTitleColor(.lightGray, for: .normal)
         button.titleLabel?.font = Constants.smallerTextFont
         button.contentEdgeInsets = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 5)
+        button.addTarget(self, action: #selector(didTapStationButton), for: .touchUpInside)
         button.layer.cornerRadius = 4
         button.layer.borderWidth = 0.5
         button.layer.borderColor = UIColor.lightGray.cgColor
@@ -84,6 +88,7 @@ class PostCellWithImage: UITableViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "sslug")
+        imageView.isUserInteractionEnabled = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -93,6 +98,7 @@ class PostCellWithImage: UITableViewCell {
         label.font = Constants.smallerTextFont
         label.textColor = .lightGray
         label.numberOfLines = 1
+        label.isUserInteractionEnabled = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -130,7 +136,7 @@ class PostCellWithImage: UITableViewCell {
         //button.addTarget(self, action: #selector(dislikeButtonTouched), for: .touchUpInside)
         return button
     }()
-    let commentsUIButton: UIButton = {
+    let commentsButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "text.bubble")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
@@ -155,32 +161,43 @@ class PostCellWithImage: UITableViewCell {
         contentView.backgroundColor = .clear
         backgroundColor = .clear
         setupContentView()
+        setupButtons()
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupContentView()
     }
+    func setupButtons(){
+        stationButton.addTarget(self, action: #selector(didTapStationButton), for: .touchUpInside)
+        likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
+        dislikeButton.addTarget(self, action: #selector(didTapDislikeButton), for: .touchUpInside)
+        commentsButton.addTarget(self, action: #selector(didTapCommentsButton), for: .touchUpInside)
+        let authorTap = UITapGestureRecognizer(target: self, action: #selector(didTapAuthorLabel))
+        let imageTap = UITapGestureRecognizer(target: self, action: #selector(didTapAuthorLabel))
+        authorUILabel.addGestureRecognizer(authorTap)
+        authorImageView.addGestureRecognizer(imageTap)
+    }
     func setupContentView(){
         
         contentView.backgroundColor = .white
         
-        [dateUILabel,channelUIButton, titleUILabel, previewUILabel, bottomStackView, postUIImageView, authorImageView, authorUILabel]
+        [dateUILabel,stationButton, titleUILabel, previewUILabel, bottomStackView, postUIImageView, authorImageView, authorUILabel]
             .forEach {containerView.addSubview($0)}
         [likeButton,likesLabel,dislikeButton].forEach { likesStackView.addArrangedSubview($0)}
-        [likesStackView, commentsUIButton, commentsUILabel].forEach ({bottomStackView.addArrangedSubview($0)})
+        [likesStackView, commentsButton, commentsUILabel].forEach ({bottomStackView.addArrangedSubview($0)})
         dateUILabel.addAnchors(top: containerView.topAnchor,
                            leading: nil,
                            bottom: nil,
-                           trailing: channelUIButton.leadingAnchor,
+                           trailing: stationButton.leadingAnchor,
                            padding: .init(top: 10, left: 0, bottom: 0, right: 10),
                            size: .init(width: 0, height: 0))
-        channelUIButton.addAnchors(top: nil,
+        stationButton.addAnchors(top: nil,
                                leading: nil,
                                bottom: nil,
                                trailing: bottomStackView.trailingAnchor,
                                padding: .init(top: 10, left: 0, bottom: 0, right: 0),
                                size: .init(width: 0, height: 0))
-        channelUIButton.centerYAnchor.constraint(equalTo: dateUILabel.centerYAnchor).isActive = true
+        stationButton.centerYAnchor.constraint(equalTo: dateUILabel.centerYAnchor).isActive = true
         postUIImageView.addAnchors(top: nil,
                                leading: nil,
                                bottom: nil,
@@ -236,6 +253,28 @@ class PostCellWithImage: UITableViewCell {
                           size: .init(width: 0, height: 0))
 
     
+    }
+}
+extension PostCellWithImage{
+    @objc func didTapAuthorLabel( ) {
+        guard let indexPath = indexPath else{return}
+        self.delegate?.didTapAuthorLabel(indexPath)
+    }
+    @objc func didTapStationButton( ) {
+        guard let indexPath = indexPath else{return}
+        self.delegate?.didTapStationButton(indexPath)
+    }
+    @objc func didTapLikeButton() {
+        guard let indexPath = indexPath else{return}
+        self.delegate?.didTapLikeButton(indexPath)
+    }
+    @objc func didTapDislikeButton() {
+        guard let indexPath = indexPath else{return}
+        self.delegate?.didTapDislikeButton(indexPath)
+    }
+    @objc func didTapCommentsButton() {
+        guard let indexPath = indexPath else{return}
+        self.delegate?.didTapCommentsButton(indexPath)
     }
 }
 
