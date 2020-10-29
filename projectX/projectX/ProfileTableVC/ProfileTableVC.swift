@@ -61,10 +61,10 @@ class ProfileTableVC: UIViewController {
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
         profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
-        
+
         profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
         profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
-        
+
         profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
         profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
@@ -125,7 +125,7 @@ extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
         cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
         cell.commentsUILabel.text = "0"
         cell.dateUILabel.text = "\(index)h"
-        
+
     }
     private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
         cell.titleUILabel.text =  posts?[index].title
@@ -149,22 +149,19 @@ extension ProfileTableVC: UICollectionViewDelegate, UICollectionViewDataSource, 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 4
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 2
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let tryCell = collectionView.dequeueReusableCell(withReuseIdentifier: BoardCell.cellID, for: indexPath) as? BoardCell
         guard let cell = tryCell else {
             return UICollectionViewCell()
         }
         cell.backgroundColor = UIColor.red
-        
+
         return cell
     }
-    
+
 }
-  
-
-

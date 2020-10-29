@@ -11,7 +11,7 @@
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Board:Identifiable, Codable{
+struct Mission:Identifiable, Codable{
     /// property wrapper that stores id of the document associated with data
     @DocumentID var id: String?
 
@@ -39,7 +39,7 @@ struct Board:Identifiable, Codable{
     /// Post photo url stored in the Firestore
     var imageURL: URL?
 }
-extension Board{
+extension Mission{
     /// returns a new post object
     public init(stationID: String,
                 stationName: String,

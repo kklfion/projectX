@@ -30,6 +30,11 @@ struct User: Identifiable, Codable {
     /// Optional title can be followed up by some special symbol: star, light bubble etc...
     /// that will be chosen from the set of given options
     var titleImage: String?
+    
+    /// Age of the user
+    var age: Int?
+
+
 }
 extension User{
     /// All users are stored by their userIDs for easier querying later.

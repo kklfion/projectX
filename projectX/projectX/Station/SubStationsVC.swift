@@ -19,7 +19,7 @@ import UIKit
                     self.station = document
                 }
             }
-            
+
         }
     }
     /// after stationId was init, it loads data and initializes station
@@ -56,7 +56,7 @@ import UIKit
             stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
         }
     }
-    
+
     var headerMaxHeight: CGFloat!
     var statusBarHeight: CGFloat!
 
@@ -73,7 +73,7 @@ import UIKit
         sb.showsCancelButton = true
         return sb
     }()
-    
+
     override func viewDidLoad() {
         view.backgroundColor = .white
         setupView()
@@ -118,7 +118,7 @@ import UIKit
         }
         stationView.stationInfoLabel.text = station?.info
         stationView.stationNameLabel.text = station?.stationName
-        
+
     }
     private func setupView(){
         navigationItem.titleView = seachView
@@ -146,7 +146,7 @@ import UIKit
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             refreshControl.endRefreshing()
         }
-        
+
     }
     // scrollViewDidScroll handles the change in layout when user scrolls
     // offset starts at 0.0
@@ -156,7 +156,7 @@ import UIKit
         let y_offset: CGFloat = scrollView.contentOffset.y
         guard  let headerViewTopConstraint = stationView.topViewContainerTopConstraint else {return}
         let newConstant = headerViewTopConstraint.constant - y_offset
-        
+
         //when scrolling up
         if newConstant <= -headerMaxHeight {
             headerViewTopConstraint.constant = -headerMaxHeight
@@ -176,25 +176,25 @@ extension SubStationsVC: UICollectionViewDelegate, UICollectionViewDataSource, U
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 4
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let tryCell = collectionView.dequeueReusableCell(withReuseIdentifier: BoardCell.cellID, for: indexPath) as? BoardCell
         guard let cell = tryCell else {
             return UICollectionViewCell()
         }
         cell.backgroundColor = UIColor.red
-        
+
         return cell
     }
 }
 extension SubStationsVC: UITableViewDelegate, UITableViewDataSource{
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
+
         return posts?.count ?? 0
     }
 
@@ -226,7 +226,7 @@ extension SubStationsVC: UITableViewDelegate, UITableViewDataSource{
         cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
         cell.commentsUILabel.text = "0"
         cell.dateUILabel.text = "\(index)h"
-        
+
     }
     private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
         cell.titleUILabel.text =  posts?[index].title

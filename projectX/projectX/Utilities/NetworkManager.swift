@@ -13,13 +13,12 @@ enum Fields: String {
     case stationID = "stationID"
     case userID = "userID"
     case postID = "postID"
-    
     case userInfo = "userInfo"
 }
 class NetworkManager {
 
     static let shared = NetworkManager()
-     
+
     let db = Firestore.firestore()
     /// fetches 1 document with uid, must be decodable
     func getDocumentFor<GenericDocument>(uid: String,completion: @escaping (_ document: GenericDocument?,_ error: Error?) -> Void) where GenericDocument: Decodable{
@@ -82,7 +81,7 @@ class NetworkManager {
             }else{
                 completion(nil, nil)
             }
-            
+
         }
     }
     func getDataForStation(_ uid: String,completion: @escaping (_ station: Station?,_ error: Error?) -> Void){
@@ -112,7 +111,7 @@ class NetworkManager {
     func getPostsForStation(_ uid: String,completion: @escaping (_ post: [Post]?,_ error: Error?) -> Void){
         // Create a query against the collection.
         let query = db.posts.whereField(Fields.stationID.rawValue, isEqualTo: uid)
-        
+
         query.getDocuments { (snapshot, error) in
             if let error = error {
 
@@ -129,18 +128,18 @@ class NetworkManager {
             }
         }
     }
-    func getMissionsForStation(_ uid: String,completion: @escaping (_ board: [Board]?,_ error: Error?) -> Void){
+    func getMissionsForStation(_ uid: String,completion: @escaping (_ board: [Mission]?,_ error: Error?) -> Void){
         // Create a query against the collection.
         let query = db.boards.whereField(Fields.stationID.rawValue, isEqualTo: uid)
-        
+
         query.getDocuments { (snapshot, error) in
             if let error = error {
 
                 completion(nil, error)
             }
             guard let documents = snapshot?.documents else { return }
-            let missions = documents.compactMap { (querySnapshot) -> Board? in
-                return try? querySnapshot.data(as: Board.self)
+            let missions = documents.compactMap { (querySnapshot) -> Mission? in
+                return try? querySnapshot.data(as: Mission.self)
             }
             if(missions.count > 0){
                 completion(missions, nil)

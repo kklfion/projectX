@@ -20,7 +20,7 @@ struct Station:Identifiable, Codable{
     var stationName: String
 
     /// The number of followers of the station.
-    var followers: Int
+    var followers: Int?
 
     /// The date when station was created.
     var date: Date
@@ -30,6 +30,17 @@ struct Station:Identifiable, Codable{
     
     /// Station photo url stored in the Firestore
     var backgroundImageURL: URL?
+    
+    /// Station's post count
+    var postCount: Int?
+    
+    /// IF this station is a "sub-station" this is the ID for that parent station
+    var parentStationID: String?
+    
+    /// If substation = True, if not = False
+    var isSubStation: Bool?
+    
+    
 }
 extension Station{
     init(info: String,
@@ -37,12 +48,19 @@ extension Station{
                 followers: Int,
                 date: Date,
                 frontImageURL: URL?,
-                backgroundImageURL: URL?) {
+                backgroundImageURL: URL?,
+                postCount: Int? = 0,
+                parentStationID: String? = "N/A",
+                isSubStation: Bool? = false) {
         self.info = info
         self.stationName = stationName
         self.followers = followers
         self.date = date
         self.frontImageURL = frontImageURL
         self.backgroundImageURL = backgroundImageURL
+        self.postCount = postCount
+        self.parentStationID = parentStationID
+        self.isSubStation = isSubStation
+        
     }
 }

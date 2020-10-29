@@ -10,11 +10,12 @@ import UIKit
 import FirebaseAuth
 
 class HomeTableVC: UIViewController{
-    
+
     private var homeView: HomeView?
     var refreshControl: UIRefreshControl?
     private var postData = [Post]()
-    
+    private let queryPosts = queryData()
+
     private let seachView: UISearchBar = {
         let sb = UISearchBar()
         sb.showsCancelButton = true
@@ -40,20 +41,24 @@ class HomeTableVC: UIViewController{
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        queryData.queryPost{ [weak self] (posts) in
-            self?.postData.append(contentsOf: posts)
-            DispatchQueue.main.async {
-                self?.homeView?.loungeTableView.reloadData()
+        queryPosts.queryPost(pagination: false, completion: {[weak self] result in
+            switch result {
+            case .success(let data):
+                self?.postData.append(contentsOf: data)
+                DispatchQueue.main.async {
+                    self?.homeView?.loungeTableView.reloadData()
+                }
+            case .failure(_):
+                break
             }
-
-        }
+        })
     }
     func addRefreshControl(){
         refreshControl = UIRefreshControl()
         refreshControl?.tintColor = UIColor.white
         refreshControl?.addTarget(self, action: #selector(refreshList), for: .valueChanged)
         homeView?.loungeTableView.addSubview(refreshControl!)
-        
+
     }
     @objc func refreshList(){
         //update data in refreshlist ... somehow, when new data appears
@@ -76,12 +81,12 @@ class HomeTableVC: UIViewController{
         homeView?.busStopTableView.delegate = self
         homeView?.loungeTableView.dataSource = self
         homeView?.busStopTableView.dataSource = self
-        
+
         homeView?.loungeTableView.rowHeight = UITableView.automaticDimension
         homeView?.loungeTableView.estimatedRowHeight = 100
         homeView?.busStopTableView.rowHeight = UITableView.automaticDimension
         homeView?.busStopTableView.estimatedRowHeight = 100
-        
+
         homeView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
         homeView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
         homeView?.busStopTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
@@ -108,7 +113,7 @@ extension HomeTableVC: SideBarStationSelectionDelegate{
 }
 extension HomeTableVC: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        
+
     }
 }
 extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
@@ -122,6 +127,29 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         presentPostFor(indexPath: indexPath)
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let position = scrollView.contentOffset.y
+        if position > (homeView!.loungeTableView.contentSize.height-100-scrollView.frame.size.height){
+            guard !queryPosts.isPaginating else{
+                //we fetching data chill the fuck out
+                return
+            }
+            queryPosts.queryPost(pagination: true) { result in
+                switch result {
+                    case .success(let moreData):
+                        self.postData.append(contentsOf: moreData)
+                    DispatchQueue.main.async {
+                        self.homeView?.loungeTableView.reloadData()
+                    }
+                    case .failure(_):
+                        break
+                }
+
+            }
+            print("Fetch more data")
+        }
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch postData[indexPath.row].imageURL {
@@ -153,7 +181,7 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
             cell.commentsUILabel.text =  String(postData[index].commentCount)
             cell.dateUILabel.text = "\(index)h"
             cell.stationButton.setTitle(postData[index].stationName, for: .normal)
-            
+
             let temp = UIImageView()
             temp.load(url: postData[index].imageURL!)
             cell.postUIImageView.image = temp.image
@@ -189,15 +217,15 @@ extension HomeTableVC: PostCellDidTapDelegate{
     func didTapAuthorLabel(_ indexPath: IndexPath) {
         presentAuthorFor(indexPath: indexPath)
     }
-    
+
     func didTapStationButton(_ indexPath: IndexPath) {
         presentStationFor(indexPath: indexPath)
     }
     func didTapLikeButton(_ indexPath: IndexPath) {
-        
+
     }
     func didTapDislikeButton(_ indexPath: IndexPath) {
-        
+
     }
     func didTapCommentsButton(_ indexPath: IndexPath) {
         presentPostFor(indexPath: indexPath)
