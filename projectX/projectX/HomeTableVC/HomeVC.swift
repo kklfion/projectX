@@ -98,15 +98,15 @@ class HomeTableVC: UIViewController{
     }
 }
 extension HomeTableVC: SideBarStationSelectionDelegate{
-    func didTapSidebarStation(withId stationId: String) {
-        //need to check what kind of station is that
-        if (false){
-            let vc = SubStationsVC()
-            vc.stationId = "ewH1QLwp393Za7g0AQfv"
+    func didTapSidebar(station: Station) {
+        switch station.stationType {
+        case .subStation:
+            let vc = StationViewController()
+            vc.station = station
             navigationController?.pushViewController(vc, animated: true)
-        }else if(true){
-            let vc = StationsViewController()
-            vc.stationId = "ewH1QLwp393Za7g0AQfv"
+        default:
+            let vc = ParentStationViewController()
+            vc.station = station
             navigationController?.pushViewController(vc, animated: true)
         }
     }
@@ -202,10 +202,16 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         self.navigationController?.pushViewController(postvc, animated: true)
     }
     private func presentStationFor(indexPath: IndexPath){
-        let station = SubStationsVC()
-        station.stationId = postData[indexPath.row].stationID
-        station.modalPresentationStyle = .fullScreen
-        navigationController?.pushViewController(station, animated: true)
+        NetworkManager.shared.getDocumentFor(uid: postData[indexPath.row].stationID) { (document: Station?, error) in
+            if error != nil {
+                print("error receiving station")
+            }else if document != nil {
+                let vc = StationViewController()
+                vc.station = document
+                vc.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
     }
     private func presentAuthorFor(indexPath: IndexPath){
         let vc = OtherProfileViewController()

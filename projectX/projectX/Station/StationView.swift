@@ -8,12 +8,12 @@
 
 import UIKit
 /// use init(frame: CGRect, type: TypeOfStation) and specify what type of station it is! Depending on that different tableViews will be displayed
-class StationsView: UIView {
+class StationView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews(frame: frame)
     }
-    init(frame: CGRect, type: TypeOfStation) {
+    init(frame: CGRect, type: StationType) {
         self.type = type
         super.init(frame: frame)
         setupViews(frame: frame)
@@ -22,7 +22,7 @@ class StationsView: UIView {
         super.init(coder: coder)
     }
     /// type of station
-    var type: TypeOfStation?
+    var type: StationType?
     
     let topViewContainer: UIView = {
         let view = UIView()

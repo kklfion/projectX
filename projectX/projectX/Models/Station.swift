@@ -10,7 +10,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 /// an enum that stores type of a station. Used to distinguish stations with different UI and queries
-enum TypeOfStation: String, Codable{
+enum StationType: String, Codable{
     /// paremt station will have substations as second tableView list
     case parentStation
     /// is a "main" station that doesn't have substations and will display missions
@@ -51,7 +51,7 @@ struct Station:Identifiable, Codable{
     var isSubStation: Bool?
     
     /// If station hasSubStations then it will display a list of substations as second tableview, else it will display missions
-    var stationType: TypeOfStation
+    var stationType: StationType
     
 }
 extension Station{
@@ -64,7 +64,7 @@ extension Station{
                 postCount: Int? = 0,
                 parentStationID: String?,
                 isSubStation: Bool? = false,
-                stationType: TypeOfStation) {
+                stationType: StationType) {
         self.info = info
         self.stationName = stationName
         self.followers = followers

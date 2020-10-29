@@ -10,7 +10,7 @@ import UIKit
 
 /// ehh when station is selected in the sidebar homeview presents station
 protocol SideBarStationSelectionDelegate {
-    func didTapSidebarStation(withId stationId: String)
+    func didTapSidebar(station station: Station)
 }
 
 enum SideBarMenuType{
@@ -29,6 +29,12 @@ class SidebarViewController: UIViewController {
         "Relationship", "Photography", "International", "Development"
     ]
     
+    private var dbstations: [Station]? = nil{
+        didSet{
+            sideBarView?.stationsTableView.reloadData()
+        }
+    }
+    
     var sideBarView: SideBarView?
     /// returns what side menu button was tapped to the MainTabBar
     var didTapSideBarMenuType: ((SideBarMenuType) -> Void)?
@@ -39,6 +45,17 @@ class SidebarViewController: UIViewController {
         super.viewDidLoad()
         setupSideView()
         setupTableViewsDelegates()
+        loadStations()
+    }
+    private func loadStations(){
+        let query = NetworkManager.shared.db.stations.whereField(Fields.stationType.rawValue, in: [StationType.parentStation.rawValue, StationType.station.rawValue])
+        NetworkManager.shared.getDocumentsFor(query: query) { (documents: [Station]?, error) in
+            if documents != nil {
+                self.dbstations = documents
+            }else {
+                print(error?.localizedDescription ?? "Error loading stations")
+            }
+        }
     }
     private func setupSideView(){
         sideBarView = SideBarView(frame: self.view.frame)
@@ -66,7 +83,7 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
             return sideBarView?.menuItems.count ?? 0
         }
         else{ //stations
-            return stations.count
+            return dbstations?.count ?? 0
         }
     }
     
@@ -105,7 +122,8 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
     }
     func didTapStationsButtonsFor(_ index: Int){
         self.dismiss(animated: true) {
-            self.sideBarTransitionDelegate?.didTapSidebarStation(withId: "someID")
+            guard let station = self.dbstations?[index] else {return}
+            self.sideBarTransitionDelegate?.didTapSidebar(station: station)
         }
         
     }
@@ -121,7 +139,7 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
             cell.selectionStyle = .none
         }
         else{ //stations
-            let text = stations[indexPath.row]
+            let text = dbstations?[indexPath.row].stationName
             cell.textLabel?.text = text
             cell.textLabel?.textAlignment = .center
             cell.imageView?.image = nil
