@@ -46,7 +46,7 @@
 		808361C425290DEC00DEF0DE /* PostCellWithoutImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */; };
 		808361C8252920F900DEF0DE /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361C7252920F900DEF0DE /* UserManager.swift */; };
 		808361CB2529215700DEF0DE /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361CA2529215700DEF0DE /* NetworkManager.swift */; };
-		80A0DC12253A5D8E00474541 /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC11253A5D8E00474541 /* Mission.swift */; };
+		80A0DC12253A5D8E00474541 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC11253A5D8E00474541 /* Board.swift */; };
 		80A0DC16253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC15253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift */; };
 		80A0DC1D253B780300474541 /* BoardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC1C253B780300474541 /* BoardCell.swift */; };
 		80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */; };
@@ -107,7 +107,7 @@
 		808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCellWithoutImage.swift; sourceTree = "<group>"; };
 		808361C7252920F900DEF0DE /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		808361CA2529215700DEF0DE /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		80A0DC11253A5D8E00474541 /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mission.swift; sourceTree = "<group>"; };
+		80A0DC11253A5D8E00474541 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		80A0DC15253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlWithTableViewAndCollectionView.swift; sourceTree = "<group>"; };
 		80A0DC1C253B780300474541 /* BoardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCell.swift; sourceTree = "<group>"; };
 		80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
@@ -171,7 +171,7 @@
 				803D75A9250AD74E003F569D /* Comment.swift */,
 				803D75AD250AD786003F569D /* Station.swift */,
 				803D75B2250AE531003F569D /* Post.swift */,
-				80A0DC11253A5D8E00474541 /* Mission.swift */,
+				80A0DC11253A5D8E00474541 /* Board.swift */,
 				803D75B4250B079E003F569D /* FirebaseExtension.swift */,
 			);
 			path = Models;
@@ -456,7 +456,7 @@
 				803D75B5250B079E003F569D /* FirebaseExtension.swift in Sources */,
 				804E618B24957D0C00825150 /* ViewController.swift in Sources */,
 				804E619D24980C9400825150 /* NotificationsTableVC.swift in Sources */,
-				80A0DC12253A5D8E00474541 /* Mission.swift in Sources */,
+				80A0DC12253A5D8E00474541 /* Board.swift in Sources */,
 				80D97BAC251D819C00825BBB /* MissionDeadlineCell.swift in Sources */,
 				8081185624C262910032D46D /* LoginView.swift in Sources */,
 				806E777A24C9255F00A95B89 /* DataTest.swift in Sources */,
