@@ -74,7 +74,7 @@ extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource
     }
     @objc private func dummyStation(){
         //TODO: finish use data to load it
-        let station = SubStationsVC()
+        let station = StationViewController()
         station.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(station, animated: true)
     }

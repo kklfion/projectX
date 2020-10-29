@@ -7,26 +7,10 @@
 //
 import UIKit
 
- class SubStationsVC: UIViewController, UIScrollViewDelegate {
-    /// when stationVC is created stationId must be init
-    var stationId: String?{
-        didSet{
-            guard let  id = stationId else {return}
-            NetworkManager.shared.getDocumentFor(uid: id) { (document: Station?, error) in
-                if error != nil {
-                    print("error receiving station")
-                }else if document != nil {
-                    self.station = document
-                }
-            }
-
-        }
-    }
+ class StationViewController: UIViewController, UIScrollViewDelegate {
     /// after stationId was init, it loads data and initializes station
-    private var station: Station?{
+    var station: Station?{
         didSet{
-            //setsup ui elems
-            setupStationHeaderWithStation()
             //load data for the station
             guard let  id = station?.id else {return}
             NetworkManager.shared.getPostsForStation(id) { (posts, error) in
@@ -60,8 +44,8 @@ import UIKit
     var headerMaxHeight: CGFloat!
     var statusBarHeight: CGFloat!
 
-    lazy var stationView: StationsView = {
-    let view = StationsView(frame: CGRect(x: 0,
+    lazy var stationView: StationView = {
+    let view = StationView(frame: CGRect(x: 0,
                                           y: 0,
                                           width: self.view.frame.width,
                                           height: self.view.frame.height),
@@ -80,6 +64,7 @@ import UIKit
         setupHeights()
         setupTableView(tableView: stationView.tableViewAndCollectionView?.loungeTableView ?? nil)
         setupBulletinBoardTableView()
+        setupStationHeaderWithStation()
     }
     private func setupBulletinBoardTableView(){
         stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
@@ -169,7 +154,7 @@ import UIKit
         }
     }
 }
-extension SubStationsVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+extension StationViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.6)
         }
@@ -191,7 +176,7 @@ extension SubStationsVC: UICollectionViewDelegate, UICollectionViewDataSource, U
         return cell
     }
 }
-extension SubStationsVC: UITableViewDelegate, UITableViewDataSource{
+extension StationViewController: UITableViewDelegate, UITableViewDataSource{
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
@@ -243,7 +228,7 @@ extension SubStationsVC: UITableViewDelegate, UITableViewDataSource{
         }
     }
 }
-extension SubStationsVC: UISearchResultsUpdating{
+extension StationViewController: UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
     }
 }

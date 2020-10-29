@@ -13,7 +13,11 @@ enum Fields: String {
     case stationID = "stationID"
     case userID = "userID"
     case postID = "postID"
+    
     case userInfo = "userInfo"
+    case parentStationID = "parentStationID"
+    
+    case stationType = "stationType"
 }
 class NetworkManager {
 
@@ -45,6 +49,7 @@ class NetworkManager {
             }
         }
     }
+    /// query example let query = NetworkManager.shared.db.posts.whereField("userInfo.userID", isEqualTo: userid)
     /// fetches 1 document with uid, must be decodable
     func getDocumentsFor<GenericDocument>(query: Query,completion: @escaping (_ document: [GenericDocument]?,_ error: Error?) -> Void) where GenericDocument: Decodable{
         query.getDocuments { (snapshot, error) in
