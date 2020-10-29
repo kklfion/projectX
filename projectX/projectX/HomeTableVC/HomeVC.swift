@@ -10,12 +10,12 @@ import UIKit
 import FirebaseAuth
 
 class HomeTableVC: UIViewController{
-    
+
     private var homeView: HomeView?
     var refreshControl: UIRefreshControl?
     private var postData = [Post]()
     private let queryPosts = queryData()
-    
+
     private let seachView: UISearchBar = {
         let sb = UISearchBar()
         sb.showsCancelButton = true
@@ -58,7 +58,7 @@ class HomeTableVC: UIViewController{
         refreshControl?.tintColor = UIColor.white
         refreshControl?.addTarget(self, action: #selector(refreshList), for: .valueChanged)
         homeView?.loungeTableView.addSubview(refreshControl!)
-        
+
     }
     @objc func refreshList(){
         //update data in refreshlist ... somehow, when new data appears
@@ -81,12 +81,12 @@ class HomeTableVC: UIViewController{
         homeView?.busStopTableView.delegate = self
         homeView?.loungeTableView.dataSource = self
         homeView?.busStopTableView.dataSource = self
-        
+
         homeView?.loungeTableView.rowHeight = UITableView.automaticDimension
         homeView?.loungeTableView.estimatedRowHeight = 100
         homeView?.busStopTableView.rowHeight = UITableView.automaticDimension
         homeView?.busStopTableView.estimatedRowHeight = 100
-        
+
         homeView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
         homeView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
         homeView?.busStopTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
@@ -99,15 +99,21 @@ class HomeTableVC: UIViewController{
 }
 extension HomeTableVC: SideBarStationSelectionDelegate{
     func didTapSidebarStation(withId stationId: String) {
-        //print("HomeTableVC  is presenting \(stationId)")
-        let vc = StationsVC()
-        vc.stationId = "ewH1QLwp393Za7g0AQfv"
-        navigationController?.pushViewController(vc, animated: true)
+        //need to check what kind of station is that
+        if (false){
+            let vc = SubStationsVC()
+            vc.stationId = "ewH1QLwp393Za7g0AQfv"
+            navigationController?.pushViewController(vc, animated: true)
+        }else if(true){
+            let vc = StationsViewController()
+            vc.stationId = "ewH1QLwp393Za7g0AQfv"
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
 extension HomeTableVC: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        
+
     }
 }
 extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
@@ -120,17 +126,9 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         postData.count
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        GetData.getPosts { [weak self](posts) in
-            let postvc = PostViewController()
-            postvc.post = posts.randomElement()
-            //load comments for that particular post and
-            postvc.hidesBottomBarWhenPushed = true
-            self?.navigationController?.pushViewController(postvc, animated: true)
-        }
-
+        presentPostFor(indexPath: indexPath)
     }
-    
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let position = scrollView.contentOffset.y
         if position > (homeView!.loungeTableView.contentSize.height-100-scrollView.frame.size.height){
@@ -154,37 +152,26 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         }
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         switch postData[indexPath.row].imageURL {
         case nil:
             if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
                 addData(toCell: cell, withIndex: indexPath.row)
                 cell.selectionStyle = .none
-                cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+                cell.indexPath = indexPath
+                cell.delegate = self
                 return cell
             }
         default:
             if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
                 addData(toCell: cell, withIndex: indexPath.row)
+                cell.indexPath = indexPath
+                cell.delegate = self
                 cell.selectionStyle = .none
-                cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
                 return cell
             }
         }
-//        if tableView == homeView?.loungeTableView{
-//
-//        }else if  tableView == homeView?.busStopTableView{
-//        }
-
         return UITableViewCell()
     }
-    @objc private func dummyStation(){
-        //TODO: finish use data to load it
-        let station = StationsVC()
-        station.modalPresentationStyle = .fullScreen
-        navigationController?.pushViewController(station, animated: true)
-    }
-        
     private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
         if let cell = cell as? PostCellWithImage{
             cell.titleUILabel.text =  postData[index].title
@@ -193,7 +180,8 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
             cell.likesLabel.text =  String(postData[index].likes)
             cell.commentsUILabel.text =  String(postData[index].commentCount)
             cell.dateUILabel.text = "\(index)h"
-            
+            cell.stationButton.setTitle(postData[index].stationName, for: .normal)
+
             let temp = UIImageView()
             temp.load(url: postData[index].imageURL!)
             cell.postUIImageView.image = temp.image
@@ -203,8 +191,43 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
             cell.authorUILabel.text =  postData[index].userInfo.name
             cell.likesLabel.text =  String(postData[index].likes)
             cell.commentsUILabel.text =  String(postData[index].commentCount)
+            cell.stationButton.setTitle(postData[index].stationName, for: .normal)
             cell.dateUILabel.text = "\(index)h"
         }
     }
+    private func presentPostFor(indexPath: IndexPath){
+        let postvc = PostViewController()
+        postvc.post = postData[indexPath.row]
+        postvc.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(postvc, animated: true)
+    }
+    private func presentStationFor(indexPath: IndexPath){
+        let station = SubStationsVC()
+        station.stationId = postData[indexPath.row].stationID
+        station.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(station, animated: true)
+    }
+    private func presentAuthorFor(indexPath: IndexPath){
+        let vc = OtherProfileViewController()
+        vc.user = postData[indexPath.row].userInfo
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }
-  
+extension HomeTableVC: PostCellDidTapDelegate{
+    func didTapAuthorLabel(_ indexPath: IndexPath) {
+        presentAuthorFor(indexPath: indexPath)
+    }
+
+    func didTapStationButton(_ indexPath: IndexPath) {
+        presentStationFor(indexPath: indexPath)
+    }
+    func didTapLikeButton(_ indexPath: IndexPath) {
+
+    }
+    func didTapDislikeButton(_ indexPath: IndexPath) {
+
+    }
+    func didTapCommentsButton(_ indexPath: IndexPath) {
+        presentPostFor(indexPath: indexPath)
+    }
+}

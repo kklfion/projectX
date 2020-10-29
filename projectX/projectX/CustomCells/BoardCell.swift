@@ -92,10 +92,11 @@ class BoardCell: UICollectionViewCell {
         
         [boardImageView,descriptionLabel,locationStackView].forEach({containerView.addSubview($0)})
         boardImageView.addAnchors(top: containerView.topAnchor,
-                                  leading: containerView.leadingAnchor,
+                                  leading: nil,
                                   bottom: nil,
-                                  trailing: containerView.trailingAnchor,
-                                  size: .init(width: 0, height: 0))
+                                  trailing: nil,
+                                  size: .init(width: contentView.frame.width*0.7, height: contentView.frame.width*0.7))
+        boardImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         descriptionLabel.addAnchors(top: boardImageView.bottomAnchor,
                                     leading: containerView.leadingAnchor,
                                     bottom: nil,

@@ -7,7 +7,7 @@
 //
 import UIKit
 
-class StationsVC: UIViewController, UIScrollViewDelegate {
+ class SubStationsVC: UIViewController, UIScrollViewDelegate {
     /// when stationVC is created stationId must be init
     var stationId: String?{
         didSet{
@@ -19,7 +19,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
                     self.station = document
                 }
             }
-            
+
         }
     }
     /// after stationId was init, it loads data and initializes station
@@ -47,21 +47,25 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
     }
     private var posts: [Post]?{
         didSet{
-            stationView.tableViewsView?.loungeTableView.reloadData()
+            stationView.tableViewAndCollectionView?.loungeTableView.reloadData()
         }
     }
     //for now using posts data to create cells
     private var boards: [Post]?{
         didSet{
-            stationView.tableViewsView?.bulletinBoardCollectionView.reloadData()
+            stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
         }
     }
-    
+
     var headerMaxHeight: CGFloat!
     var statusBarHeight: CGFloat!
 
     lazy var stationView: StationsView = {
-        let view = StationsView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
+    let view = StationsView(frame: CGRect(x: 0,
+                                          y: 0,
+                                          width: self.view.frame.width,
+                                          height: self.view.frame.height),
+                            type: .subStation)
         return view
     }()
     let seachView: UISearchBar = {
@@ -69,20 +73,19 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         sb.showsCancelButton = true
         return sb
     }()
-    
+
     override func viewDidLoad() {
         view.backgroundColor = .white
         setupView()
         setupHeights()
-        setupTableView(tableView: stationView.tableViewsView?.loungeTableView ?? nil)
+        setupTableView(tableView: stationView.tableViewAndCollectionView?.loungeTableView ?? nil)
         setupBulletinBoardTableView()
     }
     private func setupBulletinBoardTableView(){
-        stationView.tableViewsView?.bulletinBoardCollectionView.delegate = self
-        stationView.tableViewsView?.bulletinBoardCollectionView.dataSource = self
-        //stationView.tableViewsView?.bulletinBoardCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-        stationView.tableViewsView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
-        stationView.tableViewsView?.bulletinBoardCollectionView.refreshControl = UIRefreshControl()
+        stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
+        stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
+        stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
+        stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.refreshControl = UIRefreshControl()
         //stationView.tableViewsView?.bulletinBoardCollectionView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
     }
     private func setupTableView(tableView: UITableView?){
@@ -115,7 +118,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         }
         stationView.stationInfoLabel.text = station?.info
         stationView.stationNameLabel.text = station?.stationName
-        
+
     }
     private func setupView(){
         navigationItem.titleView = seachView
@@ -143,7 +146,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             refreshControl.endRefreshing()
         }
-        
+
     }
     // scrollViewDidScroll handles the change in layout when user scrolls
     // offset starts at 0.0
@@ -153,7 +156,7 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         let y_offset: CGFloat = scrollView.contentOffset.y
         guard  let headerViewTopConstraint = stationView.topViewContainerTopConstraint else {return}
         let newConstant = headerViewTopConstraint.constant - y_offset
-        
+
         //when scrolling up
         if newConstant <= -headerMaxHeight {
             headerViewTopConstraint.constant = -headerMaxHeight
@@ -166,34 +169,32 @@ class StationsVC: UIViewController, UIScrollViewDelegate {
         }
     }
 }
-extension StationsVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+extension SubStationsVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.5)
+        return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.6)
         }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 4
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let tryCell = collectionView.dequeueReusableCell(withReuseIdentifier: BoardCell.cellID, for: indexPath) as? BoardCell
         guard let cell = tryCell else {
             return UICollectionViewCell()
         }
         cell.backgroundColor = UIColor.red
-        
+
         return cell
     }
-    
-    
 }
-extension StationsVC: UITableViewDelegate, UITableViewDataSource{
-    
+extension SubStationsVC: UITableViewDelegate, UITableViewDataSource{
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
+
         return posts?.count ?? 0
     }
 
@@ -225,7 +226,7 @@ extension StationsVC: UITableViewDelegate, UITableViewDataSource{
         cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
         cell.commentsUILabel.text = "0"
         cell.dateUILabel.text = "\(index)h"
-        
+
     }
     private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
         cell.titleUILabel.text =  posts?[index].title
@@ -242,7 +243,7 @@ extension StationsVC: UITableViewDelegate, UITableViewDataSource{
         }
     }
 }
-extension StationsVC: UISearchResultsUpdating{
+extension SubStationsVC: UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
     }
 }

@@ -23,6 +23,7 @@ var success = "No Errors"
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate{
 
     override func viewDidLoad() {
+       
         super.viewDidLoad()
         view.backgroundColor = .white
         //                                     UI Textfields
