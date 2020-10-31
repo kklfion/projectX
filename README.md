@@ -2,6 +2,22 @@
 
 Welcome ! Necto is a social app for college students.
 
+## Project Overview
+
+## [Developers] (#dev)
+
+## Project status
+
+- [x] Basic UI
+- [x] Basic functinality
+- [ ] Updated UI
+- [ ] Refactor Networking
+- [ ] Unit testing
+- [ ] UI testing
+
+
+## <a name="dev"></a> Developers
+
 ## Installation
 ```
 % git clone https://github.com/rbezghin/projectX.git
