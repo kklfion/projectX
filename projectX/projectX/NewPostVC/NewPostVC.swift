@@ -4,6 +4,8 @@
 //  Created by Radomyr Bezghin on 6/15/20.
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
+import Photos
+import AVFoundation
 import UIKit
 import Firebase
 import FirebaseFirestore
@@ -17,10 +19,12 @@ var switchbar = UISwitch()
 var pickerview = UIPickerView()
 var Anonymity = false
 var success = "No Errors"
+var postImage = UIImage()
+var label1 = UILabel()
 
-
-
-class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate{
+class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate,
+UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificationCenterDelegate
+{
 
     override func viewDidLoad() {
        
@@ -94,15 +98,17 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         let button1 = UIButton()
         button1.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
         let suggestButtonContainer1 = UIView(frame: button1.frame)
-        button1.setImage(UIImage(named: "mountain.png"), for: .normal)
+        button1.setImage(UIImage(named: "newpost_icon.png"), for: .normal)
+        button1.addTarget(self, action: #selector(loadPhotoTapped), for: .touchUpInside)
         suggestButtonContainer1.sizeToFit()
         suggestButtonContainer1.addSubview(button1)
         
-        //PAPERCLIP BUTTON IMAGE
+        //PAPERCLIP BUTTON IMAGE   --> Now new post
         let button2 = UIButton()
         button2.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
         let suggestButtonContainer2 = UIView(frame: button2.frame)
-        button2.setImage(UIImage(named: "paperclip.png"), for: .normal)
+        button2.setImage(UIImage(named: "newpost.png"), for: .normal)
+        button2.addTarget(self, action: #selector(postAction), for: .touchUpInside)
         suggestButtonContainer2.sizeToFit()
         suggestButtonContainer2.addSubview(button2)
         
@@ -123,7 +129,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         tool.barTintColor = .white
         tool.isTranslucent = false
         tool.clipsToBounds = true
-        tool.setItems([fixSpace1, barButton,fixSpace, barSwitch, flexSpace, barButton2,fixSpace, barButton1, fixSpace1] , animated: true)
+        tool.setItems([fixSpace1, barButton, fixSpace, barSwitch, flexSpace, barButton1,fixSpace, barButton2, fixSpace1] , animated: true)
         tool.sizeToFit()
         titlepost.inputAccessoryView = tool
         myTxtview.inputAccessoryView = tool
@@ -151,8 +157,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         label.font = UIFont.systemFont(ofSize: 30)
         label.font = UIFont (name: "ChalkboardSE-Regular" , size: 30)
         self.view.addSubview(label)
-        
-        
+                
         
         
         
@@ -195,7 +200,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         postButton.titleLabel?.font = .systemFont(ofSize: 18)
         postButton.titleLabel?.font =  UIFont(name: "ChalkboardSE-Regular", size: 18)
         postButton.addTarget(self, action: #selector(postAction), for: .touchUpInside)
-        self.view.addSubview(postButton)
+        //self.view.addSubview(postButton)
     }
     
     
@@ -271,12 +276,6 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         myTxtview.resignFirstResponder()
     }
     
-   
-    
-    
-    
-    
-    
     
     // How to exit textfield, clicking away
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -290,19 +289,19 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     }
     
     
-    
+    //for profile to anonymous change with switchbar
      @objc func switch2(_ sender: UISwitch) {
         if sender.isOn {
         button.setImage(UIImage(named: "smallgurp.png"), for: .normal)
         
         }
         else {
-         button.setImage(UIImage(named: "people.png"), for: .normal)
+         button.setImage(UIImage(named: "smallgurp.png"), for: .normal)
 
         }
     }
     
-    
+   
  
     
     
@@ -321,9 +320,6 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
             self.view.layoutIfNeeded()
         }
     }
-    
-    
-    
     
     @objc func doneButtonAction(_ sender: UIButton)
       {
@@ -442,7 +438,96 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         let check3 = channel(channel: selectedchannel)
         assertions(title: check1, body: check2, channel: check3)
     }
+  
+    
+    
+    
+    
+    var loadPhoto = UIButton()
+    func displayUploadImageDialog(btnSelected: UIButton) {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        if UI_USER_INTERFACE_IDIOM() == .pad {
+            OperationQueue.main.addOperation({() -> Void in
+                picker.sourceType = .photoLibrary
+                self.present(picker, animated: true) {() -> Void in }
+            })
+        }
+        else {
+            picker.sourceType = .photoLibrary
+            self.present(picker, animated: true) {() -> Void in }
+        }
+    }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let image = info[UIImagePickerController.InfoKey.originalImage.rawValue] as! UIImage
+        let postImage = image
+        let imageData = image.jpegData(compressionQuality: 0.05)
+        let imageview = UIImageView(image: postImage)
+        self.dismiss(animated: true, completion: nil)
+    }
+
+    func checkPermission() {
+        let authStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
+        switch authStatus {
+        case .authorized:
+            print("ok man")
+            self.displayUploadImageDialog(btnSelected: self.loadPhoto)
+        case .denied:
+            print("Error")
+        default:
+            break
+        }
+    }
+
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        self.dismiss(animated: true, completion: nil)
+    }
+
+    func checkLibrary() {
+        let photos = PHPhotoLibrary.authorizationStatus()
+        if photos == .authorized {
+            switch photos {
+            case .authorized:
+                print("ok")
+                self.displayUploadImageDialog(btnSelected: self.loadPhoto)
+            case .denied:
+                print("Error")
+            default:
+                break
+            }
+        }
+    }
+    
+    @objc func loadPhotoTapped(_ sender: UIButton) {
+        self.displayUploadImageDialog(btnSelected: self.loadPhoto)
         
+            let photos = PHPhotoLibrary.authorizationStatus()
+             if photos == .notDetermined {
+                 PHPhotoLibrary.requestAuthorization({status in
+                     if status == .authorized{
+                         print("ok")
+                     } else {
+                         print("no")
+                     }
+                 })
+             }
+             checkLibrary()
+             checkPermission()
+        }
 }
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
 
 
