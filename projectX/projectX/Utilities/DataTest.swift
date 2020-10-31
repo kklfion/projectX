@@ -69,6 +69,21 @@ struct GetData {
             completion(comments)
         }
     }
+    static func getNotifications(completion: @escaping (_ notifs: [Notification]) -> Void){
+        let basicQuery = Firestore.firestore().collection("notifications")
+        var notifs = [Notification]()
+        basicQuery.getDocuments { (snapshot, error) in
+            if let error = error {
+                print ("I got an error retrieving comments: \(error)")
+                return
+            }
+            guard let documents = snapshot?.documents else { return }
+            notifs = documents.compactMap { (querySnapshot) -> Notification? in
+                return try? querySnapshot.data(as: Notification.self)
+            }
+            completion(notifs)
+        }
+    }
 }
 struct CommentsData{
     static func createComments(){
@@ -230,6 +245,30 @@ struct StationsData{
         }
     }
 }
+//MARK: Notifications
+struct NotificationsData{
+    /// create some fake notifications
+    static func createNotifications(){
+        let db = Firestore.firestore()
+        var notifs = [Notification]()
+        for (index, body) in notifications.enumerated() {
+            notifs.append(
+                Notification(
+                    image: notificationspic[index],
+                    body: body,
+                    timestamp: notificationsdate[index])
+            )
+        }
+        for notif in notifs {
+            do {
+                let _ = try db.collection("notifications").addDocument(from: notif)
+            }
+            catch {
+                print(error)
+            }
+        }
+    }
+}
 struct DataTest{
     static func fakeSomeData(){
         let user = User(name: "NEW USER", email: "user@gmail.com", uid: "1234")
@@ -328,7 +367,11 @@ extension PostsData{
         URL(string:"https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/fakePostImages%2Frandompostimage3.jpg?alt=media&token=838315e5-66ee-421b-af90-62c6b63f96f3")
     ]
 }
-
+extension NotificationsData {
+    static let notifications = ["UCSC's Channel will be undergoing a scheduled maintenance at 10pm PST. Click to learn more.","Hello fellow slugs, it's time to support our vets! Please join us in the Stevenson Lounge from 12pm to 2pm as we will be holding a fundraiser for our vets and host a ton of fun activities. See ya soon!","Freddy Mercury liked your post in the Gaming Station, check it out!","The wrestling season is starting soon! We're looking for big boy slugs, not skinny wimps. Click to learn more.", "Freddy Mercury replied to your post in the Gaming Station, check it out!"]
+    static let notificationspic = ["sluglogoo.png", "slugvet.png", "xbox.png", "bigslug.png", "xbox.png"]
+    static let notificationsdate = ["1h", "5h", "1d", "2y", "5y"]
+}
 
 struct  FakePostData{
     func giveMeSomeData(completion: @escaping (_ stations: [Post]) -> Void){

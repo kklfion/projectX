@@ -27,6 +27,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
 {
 
     override func viewDidLoad() {
+       
         super.viewDidLoad()
         view.backgroundColor = .white
         //                                     UI Textfields
