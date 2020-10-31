@@ -54,8 +54,8 @@ class ParentStationViewController: UIViewController, UIScrollViewDelegate {
             let group = DispatchGroup()
             //load stations that have parent station as substation
             group.enter()
-            let query = NetworkManager.shared.db.stations.whereField(Fields.parentStationID.rawValue, isEqualTo: self.station?.id ?? "")
-            NetworkManager.shared.getDocumentsFor(query: query) { (documents: [Station]?, error) in
+            let query = NetworkManager.shared.db.stations.whereField(FirestoreFields.parentStationID.rawValue, isEqualTo: self.station?.id ?? "")
+            NetworkManager.shared.getDocumentsForQuery(query: query) { (documents: [Station]?, error) in
                 if documents != nil {
                     self.subStations.append(contentsOf: documents!)
                 }else {
@@ -297,7 +297,7 @@ extension ParentStationViewController: PostCellDidTapDelegate{
         self.navigationController?.pushViewController(postvc, animated: true)
     }
     private func presentStationFor(indexPath: IndexPath){
-        NetworkManager.shared.getDocumentFor(uid: posts[indexPath.row].stationID) { (document: Station?, error) in
+        NetworkManager.shared.getDocumentForID(uid: posts[indexPath.row].stationID) { (document: Station?, error) in
             if error != nil {
                 print("error receiving station")
             }else if document != nil {

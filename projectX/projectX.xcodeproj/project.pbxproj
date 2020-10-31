@@ -185,7 +185,6 @@
 				803D75A9250AD74E003F569D /* Comment.swift */,
 				803D75AD250AD786003F569D /* Station.swift */,
 				803D75B2250AE531003F569D /* Post.swift */,
-				803D75B4250B079E003F569D /* FirebaseExtension.swift */,
 				ED4E056D2533C3CF007ED4FA /* Notification.swift */,
 				ED4E05712533C7C2007ED4FA /* Mission.swift */,
 				90C178CC25439A5200200222 /* AcceptedMissions.swift */,
@@ -194,6 +193,7 @@
 				90C178D225439A9000200222 /* Followers.swift */,
 				90C178D425439AA100200222 /* FollowedStations.swift */,
 				90C178D62543AC8000200222 /* BlacklistedUser.swift */,
+				803D75B4250B079E003F569D /* FirebaseExtension.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";

@@ -9,23 +9,31 @@
 import Foundation
 import Firebase
 
-enum Fields: String {
-    case stationID = "stationID"
-    case userID = "userID"
-    case postID = "postID"
+///enum used to create whereField queries with Firebase
+enum FirestoreFields: String {
     
-    case userInfo = "userInfo"
-    case parentStationID = "parentStationID"
+    case stationID
+    case stationType
+    case parentStationID
     
-    case stationType = "stationType"
+    case userID
+    case userInfo
+    case userInfoUserID = "userInfo.userID"
+    
+    case postID
+    
+    case missionID
+
 }
 class NetworkManager {
 
     static let shared = NetworkManager()
 
+    /// query example let query = NetworkManager.shared.db.posts.whereField("userInfo.userID", isEqualTo: userid)
     let db = Firestore.firestore()
-    /// fetches 1 document with uid, must be decodable
-    func getDocumentFor<GenericDocument>(uid: String,completion: @escaping (_ document: GenericDocument?,_ error: Error?) -> Void) where GenericDocument: Decodable{
+    
+    /// fetches 1 document for uid, must be decodable
+    func getDocumentForID<GenericDocument>(uid: String,completion: @escaping (_ document: GenericDocument?,_ error: Error?) -> Void) where GenericDocument: Decodable{
         // Create a query against the collection.
         let query = db.stations.document("\(uid)")
         query.getDocument { (document, error) in
@@ -49,9 +57,8 @@ class NetworkManager {
             }
         }
     }
-    /// query example let query = NetworkManager.shared.db.posts.whereField("userInfo.userID", isEqualTo: userid)
-    /// fetches 1 document with uid, must be decodable
-    func getDocumentsFor<GenericDocument>(query: Query,completion: @escaping (_ document: [GenericDocument]?,_ error: Error?) -> Void) where GenericDocument: Decodable{
+    /// fetches generic documents for query.
+    func getDocumentsForQuery<GenericDocument>(query: Query,completion: @escaping (_ document: [GenericDocument]?,_ error: Error?) -> Void) where GenericDocument: Decodable{
         query.getDocuments { (snapshot, error) in
             if let error = error {
 
@@ -68,9 +75,14 @@ class NetworkManager {
             }
         }
     }
+    
+}
+
+//MARK: outdated, can be refactored with generic queries
+extension NetworkManager {
     func getDataForUser(_ uid: String,completion: @escaping (_ user: User?,_ error: Error?) -> Void){
         // Create a query against the collection.
-        let query = db.users.whereField(Fields.userID.rawValue, isEqualTo: uid)
+        let query = db.users.whereField(FirestoreFields.userID.rawValue, isEqualTo: uid)
 
         query.getDocuments { (snapshot, error) in
             if let error = error {
@@ -115,7 +127,7 @@ class NetworkManager {
     /// returns top posts for station
     func getPostsForStation(_ uid: String,completion: @escaping (_ post: [Post]?,_ error: Error?) -> Void){
         // Create a query against the collection.
-        let query = db.posts.whereField(Fields.stationID.rawValue, isEqualTo: uid)
+        let query = db.posts.whereField(FirestoreFields.stationID.rawValue, isEqualTo: uid)
 
         query.getDocuments { (snapshot, error) in
             if let error = error {
@@ -135,7 +147,7 @@ class NetworkManager {
     }
     func getMissionsForStation(_ uid: String,completion: @escaping (_ board: [Mission]?,_ error: Error?) -> Void){
         // Create a query against the collection.
-        let query = db.boards.whereField(Fields.stationID.rawValue, isEqualTo: uid)
+        let query = db.boards.whereField(FirestoreFields.stationID.rawValue, isEqualTo: uid)
 
         query.getDocuments { (snapshot, error) in
             if let error = error {
@@ -154,7 +166,7 @@ class NetworkManager {
         }
     }
 }
-
+//MARK: Loading images Async
 extension NetworkManager{
     func getAsynchImage(withURL url: URL?, completion: @escaping (_ image: UIImage?,_ error: Error?) -> ()){
         guard let url = url else {return}
