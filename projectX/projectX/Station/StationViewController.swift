@@ -261,7 +261,7 @@ extension StationViewController: PostCellDidTapDelegate{
         self.navigationController?.pushViewController(postvc, animated: true)
     }
     private func presentStationFor(indexPath: IndexPath){
-        NetworkManager.shared.getDocumentFor(uid: posts[indexPath.row].stationID) { (document: Station?, error) in
+        NetworkManager.shared.getDocumentForID(uid: posts[indexPath.row].stationID) { (document: Station?, error) in
             if error != nil {
                 print("error receiving station")
             }else if document != nil {

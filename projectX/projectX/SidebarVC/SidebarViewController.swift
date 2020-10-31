@@ -48,8 +48,8 @@ class SidebarViewController: UIViewController {
         loadStations()
     }
     private func loadStations(){
-        let query = NetworkManager.shared.db.stations.whereField(Fields.stationType.rawValue, in: [StationType.parentStation.rawValue, StationType.station.rawValue])
-        NetworkManager.shared.getDocumentsFor(query: query) { (documents: [Station]?, error) in
+        let query = NetworkManager.shared.db.stations.whereField(FirestoreFields.stationType.rawValue, in: [StationType.parentStation.rawValue, StationType.station.rawValue])
+        NetworkManager.shared.getDocumentsForQuery(query: query) { (documents: [Station]?, error) in
             if documents != nil {
                 self.dbstations = documents
             }else {
