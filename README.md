@@ -3,12 +3,23 @@
 Welcome ! Necto is a social app for college students.
 
 1. [Project Overview](#overview)
-2. [Developers](#dev)
+2. [For developers](#dev)
 
 ## <a name="overview"></a> Project status
 
-- [x] Basic UI
+- [ ] Basic UI
+  - [x] Home page
+  - [x] Station, SubStation
+  - [x] SideBar
+  - [x] Notification page
+  - [ ] Searchbar
 - [x] Basic functinality
+  - [x] Adding a post
+  - [x] Adding a comment
+  - [x] Loading posts for Home, Station, SubStation
+  - [x] Loading comments for post
+  - [x] Login a user
+  - [x] Loading data for user
 - [ ] Updated UI
 - [ ] Refactor Networking
 - [ ] Unit testing
