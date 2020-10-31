@@ -8,48 +8,24 @@
 import UIKit
 
  class StationViewController: UIViewController, UIScrollViewDelegate {
-    /// after stationId was init, it loads data and initializes station
-    var station: Station?{
-        didSet{
-            //load data for the station
-            guard let  id = station?.id else {return}
-            NetworkManager.shared.getPostsForStation(id) { (posts, error) in
-                if error != nil{
-                    print("Error loading posts for station \(String(describing: error?.localizedDescription))")
-                }else if posts != nil{
-                    self.posts = posts
-                }
-            }
-            NetworkManager.shared.getMissionsForStation(id) { (boards, error) in
-                if error != nil{
-                    print("Error loading missions for station \(String(describing: error?.localizedDescription))")
-                }else if boards != nil{
-                    //self.boards = boards
-                }
-            }
-        }
-    }
-    private var posts: [Post]?{
-        didSet{
-            stationView.tableViewAndCollectionView?.loungeTableView.reloadData()
-        }
-    }
-    //for now using posts data to create cells
-    private var boards: [Post]?{
-        didSet{
-            stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
-        }
-    }
+    
+    ///presented Station, either a substation or a regular station
+    var station: Station?
+    
+    ///posts for Station are loaded after viewcontroller was loaded
+    private var posts = [Post]()
+    
+    ///missions for Station are loaded after viewcontroller was loaded
+    private var missions = [Post]()
 
+    ///used for calculating sliding up/down header when scrolling
     var headerMaxHeight: CGFloat!
+    ///used for calculating sliding up/down header when scrolling
     var statusBarHeight: CGFloat!
-
+    
     lazy var stationView: StationView = {
-    let view = StationView(frame: CGRect(x: 0,
-                                          y: 0,
-                                          width: self.view.frame.width,
-                                          height: self.view.frame.height),
-                            type: .subStation)
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+        let view = StationView(frame: frame, type: .subStation)
         return view
     }()
     let seachView: UISearchBar = {
@@ -65,6 +41,27 @@ import UIKit
         setupTableView(tableView: stationView.tableViewAndCollectionView?.loungeTableView ?? nil)
         setupBulletinBoardTableView()
         setupStationHeaderWithStation()
+        loadDataForStation()
+    }
+    private func loadDataForStation(){
+        //load data for the station
+        guard let  id = station?.id else {return}
+        NetworkManager.shared.getPostsForStation(id) { (posts, error) in
+            if error != nil{
+                print("Error loading posts for station \(String(describing: error?.localizedDescription))")
+            }else if posts != nil{
+                self.posts = posts!
+                self.stationView.tableViewAndCollectionView?.loungeTableView.reloadData()
+            }
+        }
+        NetworkManager.shared.getMissionsForStation(id) { (missions, error) in
+            if error != nil{
+                print("Error loading missions for station \(String(describing: error?.localizedDescription))")
+            }else if missions != nil{
+                //self.missions = missions!
+                self.stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
+            }
+        }
     }
     private func setupBulletinBoardTableView(){
         stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
@@ -163,7 +160,7 @@ extension StationViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return 2
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -179,49 +176,55 @@ extension StationViewController: UICollectionViewDelegate, UICollectionViewDataS
 extension StationViewController: UITableViewDelegate, UITableViewDataSource{
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
-        return posts?.count ?? 0
+        return posts.count
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        presentPostFor(indexPath: indexPath)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch posts?[indexPath.row].imageURL {
+        switch posts[indexPath.row].imageURL {
         case nil:
             if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
                 addData(toCell: cell, withIndex: indexPath.row)
+                cell.indexPath = indexPath
+                cell.delegate = self
                 cell.selectionStyle = .none
-                //cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
                 return cell
             }
         default:
             if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
                 cell.postUIImageView.image = nil
                 addData(toCell: cell, withIndex: indexPath.row)
+                cell.indexPath = indexPath
+                cell.delegate = self
                 cell.selectionStyle = .none
-                //cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
                 return cell
             }
         }
         return UITableViewCell()
     }
     private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
-        cell.titleUILabel.text =  posts?[index].title
-        cell.titleUILabel.text =  posts?[index].title
-        cell.previewUILabel.text =  posts?[index].text
-        cell.authorUILabel.text =  posts?[index].userInfo.name
-        cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
+        cell.titleUILabel.text =  posts[index].title
+        cell.titleUILabel.text =  posts[index].title
+        cell.previewUILabel.text =  posts[index].text
+        cell.authorUILabel.text =  posts[index].userInfo.name
+        cell.likesLabel.text = "\(posts[index].likes)"
         cell.commentsUILabel.text = "0"
         cell.dateUILabel.text = "\(index)h"
+        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
 
     }
     private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
-        cell.titleUILabel.text =  posts?[index].title
-        cell.titleUILabel.text =  posts?[index].title
-        cell.previewUILabel.text =  posts?[index].text
-        cell.authorUILabel.text =  posts?[index].userInfo.name
-        cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
+        cell.titleUILabel.text =  posts[index].title
+        cell.titleUILabel.text =  posts[index].title
+        cell.previewUILabel.text =  posts[index].text
+        cell.authorUILabel.text =  posts[index].userInfo.name
+        cell.likesLabel.text = "\(posts[index].likes)"
+        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
         cell.commentsUILabel.text = "0"
         cell.dateUILabel.text = "\(index)h"
-        NetworkManager.shared.getAsynchImage(withURL: posts?[index].imageURL) { (image, error) in
+        NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
             DispatchQueue.main.async {
                 cell.postUIImageView.image = image
             }
@@ -230,5 +233,48 @@ extension StationViewController: UITableViewDelegate, UITableViewDataSource{
 }
 extension StationViewController: UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
+    }
+}
+//MARK:  handling cell buttons
+extension StationViewController: PostCellDidTapDelegate{
+    func didTapAuthorLabel(_ indexPath: IndexPath) {
+        presentAuthorFor(indexPath: indexPath)
+    }
+
+    func didTapStationButton(_ indexPath: IndexPath) {
+        presentStationFor(indexPath: indexPath)
+    }
+    func didTapLikeButton(_ indexPath: IndexPath) {
+
+    }
+    func didTapDislikeButton(_ indexPath: IndexPath) {
+
+    }
+    func didTapCommentsButton(_ indexPath: IndexPath) {
+        presentPostFor(indexPath: indexPath)
+    }
+    
+    private func presentPostFor(indexPath: IndexPath){
+        let postvc = PostViewController()
+        postvc.post = posts[indexPath.row]
+        postvc.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(postvc, animated: true)
+    }
+    private func presentStationFor(indexPath: IndexPath){
+        NetworkManager.shared.getDocumentFor(uid: posts[indexPath.row].stationID) { (document: Station?, error) in
+            if error != nil {
+                print("error receiving station")
+            }else if document != nil {
+                let vc = StationViewController()
+                vc.station = document
+                vc.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
+    }
+    private func presentAuthorFor(indexPath: IndexPath){
+        let vc = OtherProfileViewController()
+        vc.user = posts[indexPath.row].userInfo
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }

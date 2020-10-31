@@ -100,12 +100,12 @@ class HomeTableVC: UIViewController{
 extension HomeTableVC: SideBarStationSelectionDelegate{
     func didTapSidebar(station: Station) {
         switch station.stationType {
-        case .subStation:
-            let vc = StationViewController()
+        case .parentStation:
+            let vc = ParentStationViewController()
             vc.station = station
             navigationController?.pushViewController(vc, animated: true)
         default:
-            let vc = ParentStationViewController()
+            let vc = StationViewController()
             vc.station = station
             navigationController?.pushViewController(vc, animated: true)
         }
@@ -195,6 +195,25 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
             cell.dateUILabel.text = "\(index)h"
         }
     }
+}
+extension HomeTableVC: PostCellDidTapDelegate{
+    func didTapAuthorLabel(_ indexPath: IndexPath) {
+        presentAuthorFor(indexPath: indexPath)
+    }
+
+    func didTapStationButton(_ indexPath: IndexPath) {
+        presentStationFor(indexPath: indexPath)
+    }
+    func didTapLikeButton(_ indexPath: IndexPath) {
+
+    }
+    func didTapDislikeButton(_ indexPath: IndexPath) {
+
+    }
+    func didTapCommentsButton(_ indexPath: IndexPath) {
+        presentPostFor(indexPath: indexPath)
+    }
+    
     private func presentPostFor(indexPath: IndexPath){
         let postvc = PostViewController()
         postvc.post = postData[indexPath.row]
@@ -217,23 +236,5 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         let vc = OtherProfileViewController()
         vc.user = postData[indexPath.row].userInfo
         self.navigationController?.pushViewController(vc, animated: true)
-    }
-}
-extension HomeTableVC: PostCellDidTapDelegate{
-    func didTapAuthorLabel(_ indexPath: IndexPath) {
-        presentAuthorFor(indexPath: indexPath)
-    }
-
-    func didTapStationButton(_ indexPath: IndexPath) {
-        presentStationFor(indexPath: indexPath)
-    }
-    func didTapLikeButton(_ indexPath: IndexPath) {
-
-    }
-    func didTapDislikeButton(_ indexPath: IndexPath) {
-
-    }
-    func didTapCommentsButton(_ indexPath: IndexPath) {
-        presentPostFor(indexPath: indexPath)
     }
 }

@@ -243,9 +243,9 @@
 			children = (
 				804E619A24957E3200825150 /* MainTabBarVC.swift */,
 				80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */,
+				803D75A8250AD700003F569D /* Models */,
 				80A0DC19253B5BB600474541 /* ReusableUIElements */,
 				806E777424C7C6FA00A95B89 /* Utilities */,
-				803D75A8250AD700003F569D /* Models */,
 				803D75B1250ADB84003F569D /* CustomCells */,
 				803D75B0250ADB73003F569D /* Station */,
 				803D759D250AD3A5003F569D /* IndividualPost */,

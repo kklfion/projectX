@@ -11,15 +11,19 @@ import FirebaseFirestoreSwift
 
 /// an enum that stores type of a station. Used to distinguish stations with different UI and queries
 enum StationType: String, Codable{
-    /// paremt station will have substations as second tableView list
+    
+    /// parent station will have substations as second tableView list
     case parentStation
+    
     /// is a "main" station that doesn't have substations and will display missions
     case station
+    
     /// is a substation of a parentstation, will be displayed in the parentStation list and it will have missions as second tableview
     case subStation
 }
 
 struct Station:Identifiable, Codable{
+    
     /// property wrapper that stores id of the document associated with data
     @DocumentID var id: String?
 
