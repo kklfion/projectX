@@ -1,8 +1,9 @@
 # Necto
 
 Welcome ! Necto is a social app for college students.
-1. [Project Overview] (#overview)
-2. [Developers] (#dev)
+
+1. [Project Overview](#overview)
+2. [Developers](#dev)
 
 ## <a name="overview"></a> Project status
 
