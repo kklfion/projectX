@@ -13,7 +13,7 @@ Welcome ! Necto is a social app for college students.
   - [x] SideBar
   - [x] Notification page
   - [ ] Searchbar
-- [x] Basic functinality
+- [x] Basic functionality
   - [x] Adding a post
   - [x] Adding a comment
   - [x] Loading posts for Home, Station, SubStation
