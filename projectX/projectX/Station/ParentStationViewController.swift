@@ -9,23 +9,28 @@
 import UIKit
 /// controller for a parent station. It will display posts of its subStations and lists of substations
 class ParentStationViewController: UIViewController, UIScrollViewDelegate {
-
+    
+    /// id for list of stations
     let listTableViewCellID = "listTableViewCellID"
     
+    /// parent station
     var station: Station?
     
+    /// top posts of substations sorted by date
     private var posts = [Post]()
+    
+    /// substations listed in the second tableView
     private var subStations = [Station]()
     
+    
+    ///used for calculating sliding up/down header when scrolling
     var headerMaxHeight: CGFloat!
+    ///used for calculating sliding up/down header when scrolling
     var statusBarHeight: CGFloat!
 
     lazy var stationView: StationView = {
-        let view = StationView(frame: CGRect(x: 0,
-                                              y: 0,
-                                              width: self.view.frame.width,
-                                              height: self.view.frame.height),
-                                type: station?.stationType ?? .parentStation)
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+        let view = StationView(frame: frame, type: .parentStation)
         return view
     }()
     let seachView: UISearchBar = {
@@ -42,7 +47,8 @@ class ParentStationViewController: UIViewController, UIScrollViewDelegate {
         getDataForStation()
         setupStationHeaderWithStation()
     }
-    /// loads substations and then loads posts of those substations, sorts posts by date
+    /// getDataForStation loads substations and then loads posts of those substations, sorts posts by date.
+    /// Must go to the global queue so that group.wait doesnt block the main thread.
     private func getDataForStation(){
         DispatchQueue.global(qos: .userInitiated).async {
             let group = DispatchGroup()
@@ -82,6 +88,7 @@ class ParentStationViewController: UIViewController, UIScrollViewDelegate {
             }
         }
     }
+    /// sets up delegates etc
     private func setupTableView(){
         guard let tableView = stationView.tableViewAndTableView?.loungeTableView else {return}
         tableView.delegate = self
@@ -101,6 +108,7 @@ class ParentStationViewController: UIViewController, UIScrollViewDelegate {
         tableViewList.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
         
     }
+    /// Fills header with data from the Station. Loads images using URLs provided in the Station
     private func setupStationHeaderWithStation(){
         let followers = station?.followers ?? 0
         stationView.followersLabel.text = "\(followers) followers."
@@ -122,6 +130,7 @@ class ParentStationViewController: UIViewController, UIScrollViewDelegate {
         stationView.stationNameLabel.text = station?.stationName
         
     }
+    /// sets up stationView and searchbar
     private func setupView(){
         navigationItem.titleView = seachView
         view.addSubview(stationView)
@@ -130,6 +139,7 @@ class ParentStationViewController: UIViewController, UIScrollViewDelegate {
                            bottom: view.bottomAnchor,
                            trailing: view.safeAreaLayoutGuide.trailingAnchor)
     }
+    /// calculates height of the station header view + status bar. User for calculating animation (sliding up / down)
     private func setupHeights(){
         if #available(iOS 13.0, *) {
             let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
@@ -139,7 +149,7 @@ class ParentStationViewController: UIViewController, UIScrollViewDelegate {
         }
         headerMaxHeight = view.frame.height * 0.3 + 3 //MUST equal to the height of the view's header that is set up in the stationView
     }
-
+    
     @objc func handleTableViewRefresh(_ refreshControl: UIRefreshControl){
         //load data
         //add it to the tableview
@@ -180,17 +190,29 @@ extension ParentStationViewController: UITableViewDelegate, UITableViewDataSourc
             return posts.count
         }
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //present station
+        if tableView == stationView.tableViewAndTableView?.listTableView{
+            presentStationFor(indexPath: indexPath)
+        }else{
+            //present post
+            presentPostFor(indexPath: indexPath)
+        }
+    }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if tableView == stationView.tableViewAndTableView?.listTableView{
             let cell = tableView.dequeueReusableCell(withIdentifier: listTableViewCellID, for: indexPath)
             addData(toCell: cell, withIndex: indexPath.row)
+            cell.selectionStyle = .none
             return cell
         }else {
             switch posts[indexPath.row].imageURL {
             case nil:
                 if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
                     addData(toCell: cell, withIndex: indexPath.row)
+                    cell.indexPath = indexPath
+                    cell.delegate = self
                     cell.selectionStyle = .none
                     return cell
                 }
@@ -198,6 +220,8 @@ extension ParentStationViewController: UITableViewDelegate, UITableViewDataSourc
                 if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
                     cell.postUIImageView.image = nil
                     addData(toCell: cell, withIndex: indexPath.row)
+                    cell.indexPath = indexPath
+                    cell.delegate = self
                     cell.selectionStyle = .none
                     return cell
                 }
@@ -206,7 +230,7 @@ extension ParentStationViewController: UITableViewDelegate, UITableViewDataSourc
         return UITableViewCell()
     }
     private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
-        cell.textLabel?.text = "\(subStations[index].stationName ?? "college")"
+        cell.textLabel?.text = "\(subStations[index].stationName)"
         NetworkManager.shared.getAsynchImage(withURL: subStations[index].frontImageURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
@@ -214,8 +238,6 @@ extension ParentStationViewController: UITableViewDelegate, UITableViewDataSourc
                 }
             }
         }
-        
-        
     }
     private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
         cell.titleUILabel.text =  posts[index].title
@@ -240,11 +262,55 @@ extension ParentStationViewController: UITableViewDelegate, UITableViewDataSourc
         NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
             DispatchQueue.main.async {
                 cell.postUIImageView.image = image
+                cell.layoutSubviews()
             }
         }
     }
 }
 extension ParentStationViewController: UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
+    }
+}
+//MARK:  handling cell buttons
+extension ParentStationViewController: PostCellDidTapDelegate{
+    func didTapAuthorLabel(_ indexPath: IndexPath) {
+        presentAuthorFor(indexPath: indexPath)
+    }
+
+    func didTapStationButton(_ indexPath: IndexPath) {
+        presentStationFor(indexPath: indexPath)
+    }
+    func didTapLikeButton(_ indexPath: IndexPath) {
+
+    }
+    func didTapDislikeButton(_ indexPath: IndexPath) {
+
+    }
+    func didTapCommentsButton(_ indexPath: IndexPath) {
+        presentPostFor(indexPath: indexPath)
+    }
+    
+    private func presentPostFor(indexPath: IndexPath){
+        let postvc = PostViewController()
+        postvc.post = posts[indexPath.row]
+        postvc.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(postvc, animated: true)
+    }
+    private func presentStationFor(indexPath: IndexPath){
+        NetworkManager.shared.getDocumentFor(uid: posts[indexPath.row].stationID) { (document: Station?, error) in
+            if error != nil {
+                print("error receiving station")
+            }else if document != nil {
+                let vc = StationViewController()
+                vc.station = document
+                vc.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
+    }
+    private func presentAuthorFor(indexPath: IndexPath){
+        let vc = OtherProfileViewController()
+        vc.user = posts[indexPath.row].userInfo
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }

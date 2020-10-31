@@ -10,7 +10,7 @@ import UIKit
 
 /// ehh when station is selected in the sidebar homeview presents station
 protocol SideBarStationSelectionDelegate {
-    func didTapSidebar(station station: Station)
+    func didTapSidebar(station: Station)
 }
 
 enum SideBarMenuType{
