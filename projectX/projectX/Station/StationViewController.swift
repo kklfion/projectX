@@ -16,11 +16,10 @@ import UIKit
     private var posts = [Post]()
     
     ///missions for Station are loaded after viewcontroller was loaded
-    private var missions = [Post]()
+    private var missions = [Mission]()
 
     ///used for calculating sliding up/down header when scrolling
     var headerMaxHeight: CGFloat!
-    ///used for calculating sliding up/down header when scrolling
     var statusBarHeight: CGFloat!
     
     lazy var stationView: StationView = {
@@ -43,10 +42,12 @@ import UIKit
         setupStationHeaderWithStation()
         loadDataForStation()
     }
+    ///fetches posts and missions for station
     private func loadDataForStation(){
-        //load data for the station
         guard let  id = station?.id else {return}
-        NetworkManager.shared.getPostsForStation(id) { (posts, error) in
+        //fetch posts
+        var query = NetworkManager.shared.db.posts.whereField(FirestoreFields.stationID.rawValue, isEqualTo: id)
+        NetworkManager.shared.getDocumentsForQuery(query: query) { (posts: [Post]?, error) in
             if error != nil{
                 print("Error loading posts for station \(String(describing: error?.localizedDescription))")
             }else if posts != nil{
@@ -54,11 +55,13 @@ import UIKit
                 self.stationView.tableViewAndCollectionView?.loungeTableView.reloadData()
             }
         }
-        NetworkManager.shared.getMissionsForStation(id) { (missions, error) in
+        //fetch missions
+        query = NetworkManager.shared.db.missions.whereField(FirestoreFields.stationID.rawValue, isEqualTo: id)
+        NetworkManager.shared.getDocumentsForQuery(query: query) { (missions: [Mission]?, error) in
             if error != nil{
                 print("Error loading missions for station \(String(describing: error?.localizedDescription))")
             }else if missions != nil{
-                //self.missions = missions!
+                self.missions = missions!
                 self.stationView.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
             }
         }
@@ -156,7 +159,7 @@ extension StationViewController: UICollectionViewDelegate, UICollectionViewDataS
         return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.6)
         }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return missions.count / 2
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -168,8 +171,15 @@ extension StationViewController: UICollectionViewDelegate, UICollectionViewDataS
         guard let cell = tryCell else {
             return UICollectionViewCell()
         }
-        cell.backgroundColor = UIColor.red
-
+        
+        cell.descriptionLabel.text = missions[indexPath.row].text
+        NetworkManager.shared.getAsynchImage(withURL: missions[indexPath.row].imageURL) { (image, error) in
+            if image != nil {
+                DispatchQueue.main.async {
+                    cell.boardImageView.image = image
+                }
+            }
+        }
         return cell
     }
 }

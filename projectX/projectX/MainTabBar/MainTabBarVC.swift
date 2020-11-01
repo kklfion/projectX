@@ -30,7 +30,27 @@ class MainTabBarVC: UITabBarController {
         tempQueries()
     }
     private func tempQueries(){
+//        let user = User(name: "Radomyr Bezghin",
+//                        photoURL: URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/defaultUserIcon.png?alt=media&token=2e6edb8e-ac03-47fb-b58c-31bd6f3598e8"),
+//                        email: "radomirbezgin@gmail.com", uid: "59qIdPL8uAfltJryIrAWfQNFcuN2")
+//
+//        let mission = Mission(stationID: "vpuu9oIPMkkxxRh3qINU",
+//                              stationName: "UC Santa Cruz",
+//                              likes: 0,
+//                              userInfo: user,
+//                              title: "Fix my brain",
+//                              text: "test mission #2",
+//                              date: Date(),
+//                              imageURL: nil)
 
+//        let acceptedMission = AcceptedMissions(userID: "59qIdPL8uAfltJryIrAWfQNFcuN2", missionID: "jbq6fTixiEoQn6LhyAIL", date: Date())
+        
+//        NetworkManager.shared.writeDocumentsWith(collectionType: .missions, documents: [mission]) { (error) in
+//            if error != nil {
+//                print(error)
+//            }
+//        }
+        
     }
     private func setupSideBarItems(){
         let sidebarItem = UITabBarItem()

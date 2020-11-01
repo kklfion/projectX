@@ -25,7 +25,10 @@ extension Firestore{
     var users: CollectionReference{
         return self.collection("users")
     }
-    var boards: CollectionReference{
+    var missions: CollectionReference{
         return self.collection("missions")
+    }
+    var acceptedMissions: CollectionReference{
+        return self.collection("acceptedMissions")
     }
 }
