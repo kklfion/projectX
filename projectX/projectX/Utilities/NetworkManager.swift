@@ -16,7 +16,7 @@ enum FirestoreFields: String {
     case stationType
     case parentStationID
     
-    case userID
+    case userID = "userID"
     case userInfo
     case userInfoUserID = "userInfo.userID"
     
@@ -30,10 +30,15 @@ class NetworkManager {
     static let shared = NetworkManager()
 
     /// query example let query = NetworkManager.shared.db.posts.whereField("userInfo.userID", isEqualTo: userid)
-    let db = Firestore.firestore()
     
+    let db = Firestore.firestore()
+}
+//MARK: Get data
+extension NetworkManager {
     /// fetches 1 document for uid, must be decodable
-    func getDocumentForID<GenericDocument>(uid: String,completion: @escaping (_ document: GenericDocument?,_ error: Error?) -> Void) where GenericDocument: Decodable{
+    func getDocumentForID<GenericDocument>(uid: String,
+                                           completion: @escaping (_ document: GenericDocument?,_ error: Error?) -> Void)
+                                           where GenericDocument: Decodable{
         // Create a query against the collection.
         let query = db.stations.document("\(uid)")
         query.getDocument { (document, error) in
@@ -58,7 +63,9 @@ class NetworkManager {
         }
     }
     /// fetches generic documents for query.
-    func getDocumentsForQuery<GenericDocument>(query: Query,completion: @escaping (_ document: [GenericDocument]?,_ error: Error?) -> Void) where GenericDocument: Decodable{
+    func getDocumentsForQuery<GenericDocument>(query: Query,
+                                               completion: @escaping (_ document: [GenericDocument]?,_ error: Error?) -> Void)
+                                               where GenericDocument: Decodable{
         query.getDocuments { (snapshot, error) in
             if let error = error {
 
@@ -76,6 +83,25 @@ class NetworkManager {
         }
     }
     
+}
+//MARK: Put data
+extension NetworkManager {
+    func writeDocumentsWith<GenericDocuments>(collectionType: CollectionEnumType,
+                                              documents: [GenericDocuments],
+                                              completion: @escaping (_ error: Error?) -> Void)
+                                              where GenericDocuments: Encodable{
+        for document in documents{
+            do {
+                let _ = try db.collection(collectionType.rawValue).addDocument(from: document)
+            }
+            catch {
+                completion(error)
+                break;
+            }
+            completion(nil)
+        }
+        
+    }
 }
 
 //MARK: outdated, can be refactored with generic queries
@@ -147,7 +173,7 @@ extension NetworkManager {
     }
     func getMissionsForStation(_ uid: String,completion: @escaping (_ board: [Mission]?,_ error: Error?) -> Void){
         // Create a query against the collection.
-        let query = db.boards.whereField(FirestoreFields.stationID.rawValue, isEqualTo: uid)
+        let query = db.missions.whereField(FirestoreFields.stationID.rawValue, isEqualTo: uid)
 
         query.getDocuments { (snapshot, error) in
             if let error = error {
