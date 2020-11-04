@@ -55,11 +55,13 @@ class PostViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         self.navigationItem.title = post.stationName
+        
+        //only this order works, some bug that makes newcommentview invisible if this is changed
+        setupTableViewAndHeader()
+        populatePostViewWithPost()
         setupToolbar()
         setupNewCommentView()
-        setupTableViewAndHeader()
         setupKeyboardnotifications()
-        populatePostViewWithPost()
         loadCommentsForPost()
     }
     override func viewWillDisappear(_ animated: Bool) {
@@ -130,12 +132,8 @@ extension PostViewController{
     @objc private func keyboardWillShow(notification: NSNotification) {
         newCommentView.isHidden = false
         newCommentView.isUserInteractionEnabled = true
-        print(newCommentView.frame)
-        print(self.view.frame)
-        //let rect = CGRect(x: <#T##Double#>, y: <#T##Double#>, width: <#T##Double#>, height: <#T##Double#>)
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
-            print(keyboardRectangle)
             let keyboardHeight = keyboardRectangle.height
             newCommentViewBottomConstraint?.constant = -keyboardHeight
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseInOut, animations: {
@@ -144,7 +142,6 @@ extension PostViewController{
         }
     }
     @objc private func keyboardWillHide(notification: NSNotification) {
-        print(newCommentView.frame)
         newCommentView.isHidden = true
         newCommentView.isUserInteractionEnabled = false
         newCommentViewBottomConstraint?.constant = 0
