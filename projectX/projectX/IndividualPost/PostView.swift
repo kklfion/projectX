@@ -8,28 +8,6 @@
 
 import UIKit
 
-/*
- View outline
- 
- Nav bar with back button Title
- 
- TOP View
- Username timestamp
- Title
- Image optional
- Body optional
- 
- MIDDLE view
- tableview with comments (not nested for now)
- 
- BOTTOM
- stackview with 5 buttons
- share, comment, pen?, bookmark, cancel
- comment pullsout an input view and a keyboard
- input view has top left cancel button, top right send button
- bottom left incognito mode onoff, bottom right attach smth or image.
- 
-*/
 class PostView: UIView {
     
     var imageHeightConstaint: NSLayoutConstraint! //if image is nil we want imageview to have height of zero

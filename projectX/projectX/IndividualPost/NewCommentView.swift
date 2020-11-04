@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AddNewCommentView: UIView {
+class NewCommentView: UIView {
     var commentTextViewHeightConstraint: NSLayoutConstraint? // used to make textview's height adjustable accoring to how much text there is
     private let symbolsConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .light, scale: .default)
     
@@ -43,7 +43,7 @@ class AddNewCommentView: UIView {
         iv.image = (UIImage(systemName: "person.circle")?.withConfiguration(symbolsConfig).withTintColor(.black, renderingMode: .alwaysOriginal))
         return iv
     }()
-    private let anonimousSwitch: UISwitch = {
+    let anonimousSwitch: UISwitch = {
         let sw = UISwitch()
         sw.transform = CGAffineTransform(scaleX: 0.75, y: 0.75);
         return sw
@@ -58,7 +58,7 @@ class AddNewCommentView: UIView {
         button.setImage(UIImage(systemName: "photo")?.withConfiguration(symbolsConfig).withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
-    private let sendButton: UIButton = {
+    let sendButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle(" SEND ", for: .normal)
         button.setTitleColor(.black, for: .normal)
@@ -128,7 +128,6 @@ class AddNewCommentView: UIView {
                                  trailing: self.trailingAnchor,
                                  padding: .init(top: 0, left: 0, bottom: 0, right: Constants.standardPadding))
         sendButton.centerYAnchor.constraint(equalTo: anonimousSwitch.centerYAnchor).isActive = true
-        
-        
+
     }
 }

@@ -87,7 +87,8 @@ extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //TODO: setup loading data
-        let postvc = PostViewController()
+        guard let post =  posts?[indexPath.row] else {return}
+        let postvc = PostViewController(post: post)
         postvc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(postvc, animated: true)
     }
