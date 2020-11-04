@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CommentTableViewCell: UITableViewCell {
+class CommentCell: UITableViewCell {
     
     static let cellID = "CommentTableViewCell"
     
@@ -136,7 +136,6 @@ class CommentTableViewCell: UITableViewCell {
         button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.translatesAutoresizingMaskIntoConstraints = false
-        //button.addTarget(self, action: #selector(dislikeButtonTouched), for: .touchUpInside)
         return button
     }()
     

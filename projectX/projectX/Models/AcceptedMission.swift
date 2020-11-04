@@ -10,7 +10,7 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct AcceptedMissions : Identifiable, Codable{
+struct AcceptedMission: Identifiable, Codable{
     
     @DocumentID var id: String?
     
@@ -26,7 +26,7 @@ struct AcceptedMissions : Identifiable, Codable{
 
     
 }
-extension AcceptedMissions{
+extension AcceptedMission{
     /// returns a new post object
     public init(userID: String,
                 missionID: String,

@@ -9,6 +9,24 @@
 import Foundation
 import Firebase
 
+///enables sending collection type as a parameter in a function
+enum CollectionEnumType: String{
+    case posts
+    case users
+    case missions
+    case stations
+    case comments
+    
+    case notifications
+    case acceptedMissions
+    case followedStations
+    case likedPosts
+    case likedComments
+    case followers
+    case blacklistedUsers
+
+}
+
 ///enum used to create whereField queries with Firebase
 enum FirestoreFields: String {
     
@@ -36,11 +54,12 @@ class NetworkManager {
 //MARK: Get data
 extension NetworkManager {
     /// fetches 1 document for uid, must be decodable
-    func getDocumentForID<GenericDocument>(uid: String,
+    func getDocumentForID<GenericDocument>(collection: CollectionEnumType,
+                                           uid: String,
                                            completion: @escaping (_ document: GenericDocument?,_ error: Error?) -> Void)
                                            where GenericDocument: Decodable{
         // Create a query against the collection.
-        let query = db.stations.document("\(uid)")
+        let query = db.collection(collection.rawValue).document("\(uid)")
         query.getDocument { (document, error) in
             let result = Result {
               try document?.data(as: GenericDocument.self)

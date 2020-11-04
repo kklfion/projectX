@@ -1,5 +1,5 @@
 //
-//  Followers.swift
+//  LikedPosts.swift
 //  projectX
 //
 //  Created by Jake Nations on 10/23/20.
@@ -10,7 +10,7 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Followers : Identifiable, Codable{
+struct LikedPost: Identifiable, Codable{
     
     @DocumentID var id: String?
     
@@ -22,7 +22,7 @@ struct Followers : Identifiable, Codable{
 
     
 }
-extension Followers{
+extension LikedPost{
     /// returns a new post object
     public init(postID: String) {
         self.postID = postID

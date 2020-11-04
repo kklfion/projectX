@@ -1,5 +1,5 @@
 //
-//  LikedComments.swift
+//  FollowedStations.swift
 //  projectX
 //
 //  Created by Jake Nations on 10/23/20.
@@ -10,24 +10,21 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct LikedComments : Identifiable, Codable{
+struct FollowedStation : Identifiable, Codable{
     
     @DocumentID var id: String?
     
-    /// ID of the liked comment
-    var commentID: String
+    /// ID of the liked post
+    var postID: String
     
     //TODO: Probably have some more varaibles and implement the firebase increment funcion here
     
 
     
-
-    
 }
-extension LikedComments{
+extension FollowedStation{
     /// returns a new post object
-    public init(commentID: String) {
-        self.commentID = commentID
+    public init(postID: String) {
+        self.postID = postID
     }
 }
-
