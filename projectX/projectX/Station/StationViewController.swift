@@ -41,6 +41,11 @@ import UIKit
         setupBulletinBoardTableView()
         setupStationHeaderWithStation()
         loadDataForStation()
+        checkIfStationFollowed()
+    }
+    ///if user is signed in station can be followed/not followed
+    private func checkIfStationFollowed(){
+        
     }
     ///fetches posts and missions for station
     private func loadDataForStation(){
@@ -121,17 +126,6 @@ import UIKit
             statusBarHeight = UIApplication.shared.statusBarFrame.height
         }
         headerMaxHeight = view.frame.height * 0.3 + 3 //MUST equal to the height of the view's header that is set up in the stationView
-    }
-
-    @objc func handleTableViewRefresh(_ refreshControl: UIRefreshControl){
-        //load data
-        //add it to the tableview
-        //self.tableView.reloadData()
-        // for now fake loading
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            refreshControl.endRefreshing()
-        }
-
     }
     // scrollViewDidScroll handles the change in layout when user scrolls
     // offset starts at 0.0
@@ -245,7 +239,7 @@ extension StationViewController: UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
     }
 }
-//MARK:  handling cell buttons
+//MARK:  handling cell buttons, and presenting functions
 extension StationViewController: PostCellDidTapDelegate{
     func didTapAuthorLabel(_ indexPath: IndexPath) {
         presentAuthorFor(indexPath: indexPath)
@@ -285,5 +279,21 @@ extension StationViewController: PostCellDidTapDelegate{
         let vc = OtherProfileViewController()
         vc.user = posts[indexPath.row].userInfo
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+}
+//MARK: Handlers
+extension StationViewController{
+    @objc private func didTapFollowButton(){
+        
+    }
+    @objc private func handleTableViewRefresh(_ refreshControl: UIRefreshControl){
+        //load data
+        //add it to the tableview
+        //self.tableView.reloadData()
+        // for now fake loading
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            refreshControl.endRefreshing()
+        }
+
     }
 }

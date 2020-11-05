@@ -11,13 +11,19 @@ import Firebase
 import Combine
 
 class ProfileTableVC: UIViewController {
+    
     private var profileView: ProfileView?
-    private var userSubscription: AnyCancellable? //not implemented currently
+    
+    //private var userSubscription: AnyCancellable? //not implemented currently
+    
     private var posts: [Post]?{
         didSet{
             profileView?.tableViewAndCollectionView?.loungeTableView.reloadData()
         }
     }
+    
+    private var user: User?
+    
     //for now using posts data to create cells
     private var boards: [Post]?{
         didSet{
@@ -30,13 +36,21 @@ class ProfileTableVC: UIViewController {
         setupView()
         setupTableViews()
         updateProfileInformation()
-        userSubscription = UserManager.shared.userPublisher.sink { (user) in
-            //print("received User in Profile test", user ?? "")
+//        userSubscription = UserManager.shared.userPublisher.sink { (user) in
+//            //print("received User in Profile test", user ?? "")
+//        }
+        switch UserManager.shared.state{
+        case .signedIn(let user):
+            print("user is signed in \(user)")
+            self.user = user
+        case .signedOut:
+            print("user isnt signed in")
         }
-        getPostsForUser()
+        
     }
     private func getPostsForUser(){
-        guard let userid = UserManager.shared.user?.id else {return}
+        let userid = user?.userID
+        //guard let userid = UserManager.shared.user?.id else {return}
         let query = NetworkManager.shared.db.posts.whereField("userInfo.userID", isEqualTo: userid)
         NetworkManager.shared.getDocumentsForQuery(query: query) { (posts: [Post]?, error) in
             if error != nil{

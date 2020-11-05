@@ -2,7 +2,7 @@
 //  FollowedStations.swift
 //  projectX
 //
-//  Created by Jake Nations on 10/23/20.
+//  Created by Jake Nations, Radomyr Bezghin on 10/23/20.
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
 
@@ -12,19 +12,29 @@ import FirebaseFirestoreSwift
 
 struct FollowedStation : Identifiable, Codable{
     
+    ///uid of this document
     @DocumentID var id: String?
     
-    /// ID of the liked post
-    var postID: String
+    ///userid of the user that follows a station
+    var userID: String
     
-    //TODO: Probably have some more varaibles and implement the firebase increment funcion here
+    ///stationid of station that is being followed
+    var stationID: String
     
+    ///station name (might  be redundant, but helps to make less requests)
+    var stationName: String
+    
+    ///date when user followed this station
+    var date: Date
 
-    
 }
 extension FollowedStation{
-    /// returns a new post object
-    public init(postID: String) {
-        self.postID = postID
+    
+    public init(userID: String, stationID: String, stationName: String){
+        self.userID = userID
+        self.stationID = stationID
+        self.stationName = stationName
+        self.date = Date()
     }
+    
 }
