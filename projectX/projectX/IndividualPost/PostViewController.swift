@@ -18,7 +18,7 @@ class PostViewController: UIViewController {
     ///comments for post
     private var comments = [Comment] ()
     
-    ///header view for the post table view
+    ///header view for the post table view will be initialized with frame
     private var postHeaderView: PostView?
 
     ///view for adding a new comment, is hidden by default and is shown when keyboard appears
@@ -191,6 +191,7 @@ extension PostViewController{
             presenter.present(in: self)
             return
         }
+        //move it to global so that group.wait doesnt make thread stuck
         DispatchQueue.global(qos: .userInitiated).async {
             var user: User?
             var comment: Comment?
@@ -213,6 +214,12 @@ extension PostViewController{
                 NetworkManager.shared.writeDocumentsWith(collectionType: .comments, documents: [comment]) { (error) in
                     if error != nil {
                         print(error ?? "error sending comment")
+                        DispatchQueue.main.sync {
+                            let presenter = AlertPresenter(message: "Connectivity issues, maybe try again!") {
+                                self.dismiss(animated: true)
+                            }
+                            presenter.present(in: self)
+                        }
                     }else{
                         DispatchQueue.main.sync {
                             self.comments.append(comment!)
@@ -224,8 +231,11 @@ extension PostViewController{
                     }
                 }
             case .timedOut:
-                print("timedout receiving user")
+                let presenter = AlertPresenter(message: "Connectivity issues, maybe try again!") {
+                    self.dismiss(animated: true)
+                }
                 DispatchQueue.main.sync {
+                    presenter.present(in: self)
                     self.didTapDissmissNewComment()
                 }
             }
