@@ -48,7 +48,7 @@ class queryData {
             if lastDocument != nil {
                 query = db.collection("posts").start(afterDocument: lastDocument).limit(to: 5)
                 query.addSnapshotListener { (snapshot, error) in
-                guard let snapshot = snapshot else {
+                    guard snapshot != nil else {
                     print("Error retreving data in query: \(error.debugDescription)")
                     return
                 }
