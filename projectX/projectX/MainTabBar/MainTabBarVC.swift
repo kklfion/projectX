@@ -25,7 +25,7 @@ class MainTabBarVC: UITabBarController {
         setupNavigationBarAppearance()
         setupSideBarItems()
         setupTabBarAppearance()
-        
+
         ///test
         tempQueries()
     }

@@ -39,9 +39,9 @@ class ProfileTableVC: UIViewController {
 //        userSubscription = UserManager.shared.userPublisher.sink { (user) in
 //            //print("received User in Profile test", user ?? "")
 //        }
-        switch UserManager.shared.state{
+        switch UserManager.shared().state{
         case .signedIn(let user):
-            print("user is signed in \(user)")
+            //print("user is signed in \(user)")
             self.user = user
         case .signedOut:
             print("user isnt signed in")
@@ -84,7 +84,7 @@ class ProfileTableVC: UIViewController {
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
-        let (user, image, state) = UserManager.shared.getCurrentUserData()
+        let (user, image, state) = UserManager.shared().getCurrentUserData()
         switch state {
         case .signedIn:
             print("signedin")

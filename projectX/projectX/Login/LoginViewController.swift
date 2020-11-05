@@ -79,7 +79,7 @@ class LoginViewController: UIViewController {
                 return
             }else{
                 guard let id = Auth.auth().currentUser?.uid else {return}
-                UserManager.shared.loadCurrentUser(withId: id)
+                UserManager.shared().loadDataFor(userID: id)
                 if self?.presentingViewController is SettingsTableViewController{
                     self?.dismiss(animated: true)
                 }else{

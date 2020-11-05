@@ -31,4 +31,7 @@ extension Firestore{
     var acceptedMissions: CollectionReference{
         return self.collection("acceptedMissions")
     }
+    var followedStations: CollectionReference{
+        return self.collection("acceptedMissions")
+    }
 }
