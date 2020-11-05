@@ -51,7 +51,7 @@ class ProfileTableVC: UIViewController {
     private func getPostsForUser(){
         let userid = user?.userID
         //guard let userid = UserManager.shared.user?.id else {return}
-        let query = NetworkManager.shared.db.posts.whereField("userInfo.userID", isEqualTo: userid)
+        let query = NetworkManager.shared.db.posts.whereField("userInfo.userID", isEqualTo: userid ?? "")
         NetworkManager.shared.getDocumentsForQuery(query: query) { (posts: [Post]?, error) in
             if error != nil{
                 print("Error loading posts for station \(String(describing: error?.localizedDescription))")

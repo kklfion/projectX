@@ -459,11 +459,11 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
             self.present(picker, animated: true) {() -> Void in }
         }
     }
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    private func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         let image = info[UIImagePickerController.InfoKey.originalImage.rawValue] as! UIImage
         let postImage = image
-        let imageData = image.jpegData(compressionQuality: 0.05)
-        let imageview = UIImageView(image: postImage)
+        _ = image.jpegData(compressionQuality: 0.05)
+        _ = UIImageView(image: postImage)
         self.dismiss(animated: true, completion: nil)
     }
 
@@ -480,7 +480,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         }
     }
 
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         self.dismiss(animated: true, completion: nil)
     }
 

@@ -541,7 +541,6 @@
 				80BB37B224D8C50700B12253 /* StationViewController.swift in Sources */,
 				90C178D72543AC8000200222 /* BlacklistedUser.swift in Sources */,
 				90C178D525439AA100200222 /* FollowedStation.swift in Sources */,
-				80BB37B224D8C50700B12253 /* StationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
