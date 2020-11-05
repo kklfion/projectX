@@ -45,8 +45,16 @@ import UIKit
     }
     ///if user is signed in station can be followed/not followed
     private func checkIfStationFollowed(){
-        
+        switch UserManager.shared().state{
+        case .signedIn(let user):
+            //can verify if is followed
+            print("naah")
+        case .signedOut:
+            //nope
+            print("naah")
+        }
     }
+
     ///fetches posts and missions for station
     private func loadDataForStation(){
         guard let  id = station?.id else {return}

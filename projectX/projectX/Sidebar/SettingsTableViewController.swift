@@ -30,7 +30,7 @@ class SettingsTableViewController: UITableViewController {
         tableView.tableFooterView = UIView()
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        switch UserManager.shared.state{
+        switch UserManager.shared().state{
         case .signedIn(let user):
             print("user is signed in \(user)")
             self.user = user
@@ -114,7 +114,7 @@ class SettingsTableViewController: UITableViewController {
         }
     }
     private func handleRowsForSignInSignOut(){
-        switch UserManager.shared.state {
+        switch UserManager.shared().state {
         case .signedIn:
             rows[2] = signedInRows
             tableView.reloadData()
@@ -124,14 +124,14 @@ class SettingsTableViewController: UITableViewController {
         }
     }
     private func signMeOut(){
-        UserManager.shared.signOut()
+        UserManager.shared().signOut()
         handleRowsForSignInSignOut()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.dismiss(animated: true)
         }
     }
     private func deleteMe(){
-        UserManager.shared.deleteCurrentUser()
+        UserManager.shared().deleteCurrentUser()
     }
     private func logMeIn(){
         let vc = LoginViewController()

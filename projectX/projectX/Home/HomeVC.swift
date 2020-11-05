@@ -29,16 +29,6 @@ class HomeTableVC: UIViewController{
         addRefreshControl()
         signInUserIfNeeded()
     }
-    private func signInUserIfNeeded(){
-        if Auth.auth().currentUser == nil {
-            let vc = LoginViewController()
-            let navvc = UINavigationController(rootViewController: vc)
-            navvc.modalPresentationStyle = .fullScreen
-            self.tabBarController?.present(navvc, animated: true)
-        }else{
-            UserManager.shared.loadCurrentUser(withId: Auth.auth().currentUser?.uid ?? "")
-        }
-    }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         queryPosts.queryPost(pagination: false, completion: {[weak self] result in
@@ -52,6 +42,14 @@ class HomeTableVC: UIViewController{
                 break
             }
         })
+    }
+    private func signInUserIfNeeded(){
+        if Auth.auth().currentUser == nil {
+            let vc = LoginViewController()
+            let navvc = UINavigationController(rootViewController: vc)
+            navvc.modalPresentationStyle = .fullScreen
+            self.tabBarController?.present(navvc, animated: true)
+        }
     }
     func addRefreshControl(){
         refreshControl = UIRefreshControl()
