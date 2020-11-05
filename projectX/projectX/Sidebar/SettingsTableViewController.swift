@@ -12,7 +12,9 @@ import Combine
 
 class SettingsTableViewController: UITableViewController {
     
-    private var userSubscription: AnyCancellable?
+   // private var userSubscription: AnyCancellable?
+    
+    private var user: User?
     
     let sections = ["User", "About", "Account"]
     var rows = [
@@ -28,9 +30,16 @@ class SettingsTableViewController: UITableViewController {
         tableView.tableFooterView = UIView()
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        userSubscription = UserManager.shared.userPublisher.sink { (user) in
-            print("received User in settings", user ?? "")
+        switch UserManager.shared.state{
+        case .signedIn(let user):
+            print("user is signed in \(user)")
+            self.user = user
+        case .signedOut:
+            print("user isnt signed in")
         }
+//        userSubscription = UserManager.shared.userPublisher.sink { (user) in
+//            print("received User in settings", user ?? "")
+//        }
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = false
@@ -79,11 +88,13 @@ class SettingsTableViewController: UITableViewController {
             cell.accessoryType = .disclosureIndicator
         }
         //add details
+        
+        
         switch rows[indexPath.section][indexPath.row] {
             case "User ID":
-                cell.detailTextLabel?.text = UserManager.shared.user?.name
+                cell.detailTextLabel?.text = user?.name
             case "Email Address":
-                cell.detailTextLabel?.text = UserManager.shared.user?.email
+                cell.detailTextLabel?.text = user?.email
             case "Blacklisted":
                 cell.detailTextLabel?.text = "0"
             default:
@@ -105,10 +116,6 @@ class SettingsTableViewController: UITableViewController {
     private func handleRowsForSignInSignOut(){
         switch UserManager.shared.state {
         case .signedIn:
-            rows[2] = signedInRows
-            tableView.reloadData()
-        ///TODO: loading state must be fixed
-        case .loading:
             rows[2] = signedInRows
             tableView.reloadData()
         default:

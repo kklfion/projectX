@@ -12,34 +12,31 @@ import Combine
 
 ///UserManager stores all the data related to the sighned in user and
 ///it keeps user data in sync across the app
+
+enum UserState {
+    
+    ///when user was signedin, returns current user data
+    case signedIn(user: User)
+    
+    ///when user is signed out
+    case signedOut
+
+}
+
 class UserManager{
     
     static let shared = UserManager()
-    
-    enum UserState {
-        ///failed loading user
-        case error
-        ///when users data is loading
-        case signedIn
-        ///when users data is loading
-        case loggedOff
-        ///when users data is loading somehow need to pass data after its done loading kk
-        case loading
-    }
+
+    ///creates an empty user
     private init(){
         user = nil
         userImage = nil
-        state = .loggedOff
+        state = .signedOut
     }
-    
-    public var userPublisher = CurrentValueSubject<User?, Never>(nil)
     
     ///when user is changed that data should be published to all the listening points
-    private(set) var user: User?{
-        didSet{
-            userPublisher.send(user)
-        }
-    }
+    private var user: User?
+
     ///is set after user was initialized
     private(set) var userImage: UIImage?
     ///users state
@@ -64,14 +61,13 @@ class UserManager{
     }
     ///uses the id of currently logged in used to get the data stored in the Firebstore
     func loadCurrentUser(withId id: String){
-        state = .loading
         NetworkManager.shared.getDataForUser(id) { [weak self] (user, error) in
             if error != nil{
-                self?.state = .error
+                self?.state = .signedOut
                 print("error getting user Data \(String(describing: error))")
             }else{
                 guard  let user = user else {return}
-                self?.state = .signedIn
+                self?.state = .signedIn(user: user)
                 self?.user = user
                 self?.loadUserImage()
             }
@@ -81,7 +77,7 @@ class UserManager{
     func signOut(){
         do{
             try Auth.auth().signOut()
-            state = .loggedOff
+            state = .signedOut
             setUserToNil()
             print("Success signing out")
         }catch let error{
@@ -115,3 +111,14 @@ class UserManager{
     
     
 }
+
+//not implemented! maybe not even needed
+//public var userPublisher = CurrentValueSubject<User?, Never>(nil)
+//    {
+//        didSet{
+//            userPublisher.send(user)
+//        }
+//    }
+//        userSubscription = UserManager.shared.userPublisher.sink { (user) in
+//            //print("received User in Profile test", user ?? "")
+//        }
