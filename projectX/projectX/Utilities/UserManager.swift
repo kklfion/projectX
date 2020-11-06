@@ -66,8 +66,6 @@ extension UserManager{
     
     ///returns optinal followedStation if stationID is in the followedStations
     func isStationFollowed(stationID: String) -> FollowedStation? {
-        print(stationID)
-        print(followedStations)
         for followedStation in followedStations{
             if stationID == followedStation.stationID{
                 return followedStation
@@ -75,11 +73,11 @@ extension UserManager{
         }
         return nil
     }
-    ///when new followed station is added (button tapped) followedStations must be updated
+    ///when new followed station is added (button tapped) followedStations must be updated to the array, and it is separately added to the db
     func addFollowedStation(followedStation: FollowedStation){
         followedStations.append(followedStation)
     }
-    ///removes station that is unfollowed from current followedStations
+    ///removes station that is unfollowed from current followedStations, it is separately removed from the db
     func removeFollowedStation(stationID: String){
         followedStations = followedStations.filter { $0.stationID != stationID }
     }
@@ -136,20 +134,21 @@ extension UserManager{
                 guard  let user = user else {return}
                 self?.state = .signedIn(user: user)
                 self?.user = user
-                print("user loaded")
+                print("\(user.name) user loaded")
                 completion()
             }
         }
     }
+    ///fetches stations that user follows
     private func fetchFollowedStations(){
         guard let userID = user?.userID else { print(UserError.userIsNil.localizedDescription);return}
-        
         let query = NetworkManager.shared.db.followedStations.whereField(FirestoreFields.userID.rawValue, isEqualTo: userID)
         NetworkManager.shared.getDocumentsForQuery(query: query) { (followedStations: [FollowedStation]?, error) in
             if error != nil {
-                print(error?.localizedDescription ?? "error fetching followedStations")
             }else if followedStations != nil {
                 self.followedStations = followedStations!
+            }else{
+                print("No followed stations to load")
             }
         }
         

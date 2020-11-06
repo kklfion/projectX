@@ -109,29 +109,45 @@ extension NetworkManager {
                                               documents: [GenericDocuments],
                                               completion: @escaping (_ error: Error?) -> Void)
                                               where GenericDocuments: Encodable{
+        var ref: DocumentReference? = nil
         for document in documents{
             do {
-                let _ = try db.collection(collectionType.rawValue).addDocument(from: document)
+                ref = try db.collection(collectionType.rawValue).addDocument(from: document)
             }
             catch {
                 completion(error)
                 break;
             }
-            completion(nil)
         }
-        
+        completion(nil)
+    }
+    ///writes a document to the db, and it returns reference - documentID
+    func writeDocumentReturnReference<GenericDocument>(collectionType: CollectionEnumType,
+                                                       document: GenericDocument,
+                                                       completion: @escaping (_ documentID: String?, _ error: Error?) -> Void)
+                                                       where GenericDocument: Encodable{
+        var ref: DocumentReference? = nil
+        do {
+            ref = try db.collection(collectionType.rawValue).addDocument(from: document)
+        }
+        catch {
+            completion(nil, error)
+        }
+        completion(ref?.documentID, nil)
     }
     func deleteDocumentsWith(collectionType: CollectionEnumType,
-                                              documentID: String,
-                                              completion: @escaping (_ error: Error?) -> Void)
-        {
-        
-        
+                             documentID: String,
+                             completion: @escaping (_ error: Error?) -> Void){
+        //this should never happen
+        if(documentID.count < 1){
+            fatalError("can't delete document without doc id")
+        }
         db.collection(collectionType.rawValue).document(documentID).delete() { err in
             if let err = err {
                 print("Error removing document: \(err)")
+                completion(err)
             } else {
-                print("Document successfully removed!")
+                completion(nil)
             }
         }
         
