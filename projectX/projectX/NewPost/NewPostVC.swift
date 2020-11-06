@@ -36,7 +36,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
                 switch result {
                 case .success(let data):
                     RadoymyrsStations.append(contentsOf: data)
-                    print("Here")
+                    print(RadoymyrsStations)
                     for station in RadoymyrsStations{
                         channels1.append(station.stationName)
                     }
@@ -458,11 +458,18 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
                                    //A 'user' value was successfully initalized from the documentSnapshot
                                 fullname = user.name
                                 
-                                //Need to fix sationID
-                                let newPost = Post(stationID: " ", stationName: self.selectedchannel, likes: 0, userInfo: user, title: titlepost.text!, text: myTxtview.text!, date: Date(), imageURL: nil, commentCount: 0)
+                                //FIXED - when post is made it assigns correct station ID
+                                var stationIden = String()
+                                for station in RadoymyrsStations{
+                                    if station.stationName == self.selectedchannel{
+                                        stationIden = station.id!
+                                    }
+                                }
+                                
+                                let newPost = Post(stationID: stationIden, stationName: self.selectedchannel, likes: 0, userInfo: user, title: titlepost.text!, text: myTxtview.text!, date: Date(), imageURL: nil, commentCount: 0)
                                 
                                 do{
-                                    try db.collection("posts").document(self.selectedchannel).setData(from: newPost)
+                                    try db.collection("posts").document(stationIden).setData(from: newPost)
                                 }catch let error{
                                     print("Error writing to Firestore: \(error)")
                                 }
