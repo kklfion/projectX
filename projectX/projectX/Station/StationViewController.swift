@@ -47,14 +47,21 @@ import UIKit
     private func checkIfStationFollowed(){
         switch UserManager.shared().state{
         case .signedIn(let user):
-            //can verify if is followed
-            print("naah")
+            handleFollowButton()
         case .signedOut:
             //nope
             print("naah")
         }
     }
-
+    ///button's UI should be changed if station is followed by the user
+    private func handleFollowButton(){
+        guard let id = station?.id else {return}
+        if UserManager.shared().isStationFollowed(stationID: id) != nil {
+            stationView.followedButton()
+        }else{
+            stationView.notFollowedButton()
+        }
+    }
     ///fetches posts and missions for station
     private func loadDataForStation(){
         guard let  id = station?.id else {return}
@@ -121,6 +128,7 @@ import UIKit
     private func setupView(){
         navigationItem.titleView = seachView
         view.addSubview(stationView)
+        stationView.followButton.addTarget(self, action: #selector(didTapFollowButton), for: .touchUpInside)
         stationView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
                            leading: view.safeAreaLayoutGuide.leadingAnchor,
                            bottom: view.bottomAnchor,
@@ -291,8 +299,34 @@ extension StationViewController: PostCellDidTapDelegate{
 }
 //MARK: Handlers
 extension StationViewController{
+    
     @objc private func didTapFollowButton(){
-        
+        guard let stationID = station?.id else {return}
+        guard  let userID = UserManager.shared().user?.userID else {return}
+        //if station is followed - unfollow it
+        if let followedStation = UserManager.shared().isStationFollowed(stationID: stationID){
+            //delete it from db
+            NetworkManager.shared.deleteDocumentsWith(collectionType: .followedStations, documentID: followedStation.id ?? "") { (error) in
+                if error != nil {
+                    print(error?.localizedDescription ?? "error deleting followedStation")
+                }else{
+                    UserManager.shared().removeFollowedStation(stationID: stationID)
+                    self.stationView.notFollowedButton()
+                }
+            }
+
+        }else{//else follow it
+            let document = FollowedStation(userID: userID, stationID: stationID, stationName: station?.stationName ?? "")
+            NetworkManager.shared.writeDocumentsWith(collectionType: .followedStations, documents: [document]) { (error) in
+                if error != nil {
+                    print(error?.localizedDescription ?? "error creating followedStation")
+                }else{
+                    self.stationView.followedButton()
+                    UserManager.shared().addFollowedStation(followedStation: document)
+                }
+            }
+        }
+  
     }
     @objc private func handleTableViewRefresh(_ refreshControl: UIRefreshControl){
         //load data

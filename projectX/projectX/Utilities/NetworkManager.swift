@@ -121,7 +121,31 @@ extension NetworkManager {
         }
         
     }
+    func deleteDocumentsWith(collectionType: CollectionEnumType,
+                                              documentID: String,
+                                              completion: @escaping (_ error: Error?) -> Void)
+        {
+        
+        
+        db.collection(collectionType.rawValue).document(documentID).delete() { err in
+            if let err = err {
+                print("Error removing document: \(err)")
+            } else {
+                print("Document successfully removed!")
+            }
+        }
+        
+    }
 }
+    
+//    db.collection("cities").document("DC").delete() { err in
+//        if let err = err {
+//            print("Error removing document: \(err)")
+//        } else {
+//            print("Document successfully removed!")
+//        }
+//    }
+
 
 //MARK: outdated, can be refactored with generic queries
 extension NetworkManager {

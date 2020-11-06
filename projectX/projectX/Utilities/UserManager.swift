@@ -13,7 +13,7 @@ import Combine
 ///UserManager stores all the data related to the sighned in user and
 ///it keeps user data in sync across the app
 class UserManager{
-    
+    ///runs initialization, can be created once
     private static var sharedUserManager: UserManager = {
         var userID = String()
         //user is currently logged in, initialize it right away.
@@ -64,6 +64,26 @@ extension UserManager{
         user = User(name: "", photoURL: nil, email: "", uid: "")
     }
     
+    ///returns optinal followedStation if stationID is in the followedStations
+    func isStationFollowed(stationID: String) -> FollowedStation? {
+        print(stationID)
+        print(followedStations)
+        for followedStation in followedStations{
+            if stationID == followedStation.stationID{
+                return followedStation
+            }
+        }
+        return nil
+    }
+    ///when new followed station is added (button tapped) followedStations must be updated
+    func addFollowedStation(followedStation: FollowedStation){
+        followedStations.append(followedStation)
+    }
+    ///removes station that is unfollowed from current followedStations
+    func removeFollowedStation(stationID: String){
+        followedStations = followedStations.filter { $0.stationID != stationID }
+    }
+
     ///returns empty user
     private func defaultUser()-> User{
         return User(name: "", photoURL: nil, email: "", uid: "")
@@ -123,7 +143,8 @@ extension UserManager{
     }
     private func fetchFollowedStations(){
         guard let userID = user?.userID else { print(UserError.userIsNil.localizedDescription);return}
-        let query = NetworkManager.shared.db.followedStations.whereField("userID", isEqualTo: userID)
+        
+        let query = NetworkManager.shared.db.followedStations.whereField(FirestoreFields.userID.rawValue, isEqualTo: userID)
         NetworkManager.shared.getDocumentsForQuery(query: query) { (followedStations: [FollowedStation]?, error) in
             if error != nil {
                 print(error?.localizedDescription ?? "error fetching followedStations")
