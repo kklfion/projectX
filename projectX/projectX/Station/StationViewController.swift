@@ -105,8 +105,7 @@ import UIKit
         tableView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
     }
     private func setupStationHeaderWithStation(){
-        let followers = station?.followers ?? 0
-        stationView.followersLabel.text = "\(followers) followers."
+        stationView.changeFollowerCount(by: station?.followers ?? 0)
         NetworkManager.shared.getAsynchImage(withURL: station?.backgroundImageURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
@@ -301,7 +300,8 @@ extension StationViewController: PostCellDidTapDelegate{
 extension StationViewController{
     /// when follow button is tapped followedStation should be added/removes in UserManager and in the Firestore
     @objc private func didTapFollowButton(){
-        guard let stationID = station?.id else {return}
+        guard let station = station else {return}
+        guard let stationID = station.id else {return}
         guard  let userID = UserManager.shared().user?.userID else {return}
         //if station is followed - unfollow it
         if let followedStation = UserManager.shared().isStationFollowed(stationID: stationID){
@@ -313,18 +313,30 @@ extension StationViewController{
                 }else{
                     UserManager.shared().removeFollowedStation(stationID: stationID)
                     self.stationView.notFollowedButton()
+                    self.station?.followers -= 1
+                    self.stationView.changeFollowerCount(by: self.station?.followers ?? 0)
+                    NetworkManager.shared.incrementDocumentValue(collectionType: .stations,
+                                                                 documentID: stationID,
+                                                                 value: Double(-1),
+                                                                 field: .followers)
                 }
             }
 
         }else{//else follow it
-            var document = FollowedStation(userID: userID, stationID: stationID, stationName: station?.stationName ?? "", date: Date())
+            var document = FollowedStation(userID: userID, stationID: stationID, stationName: station.stationName, date: Date())
             NetworkManager.shared.writeDocumentReturnReference(collectionType: .followedStations, document: document) { (referenceID, error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "error creating followedStation")
                 }else if (referenceID != nil){
+                    self.station?.followers += 1
+                    self.stationView.changeFollowerCount(by: self.station?.followers ?? 0)
                     self.stationView.followedButton()
                     document.id = referenceID
                     UserManager.shared().addFollowedStation(followedStation: document)
+                    NetworkManager.shared.incrementDocumentValue(collectionType: .stations,
+                                                                 documentID: stationID,
+                                                                 value: Double(1),
+                                                                 field: .followers)
                 }
             }
         }

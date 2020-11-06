@@ -34,7 +34,7 @@ struct Station:Identifiable, Codable{
     var stationName: String
 
     /// The number of followers of the station.
-    var followers: Int?
+    var followers: Int
 
     /// The date when station was created.
     var date: Date

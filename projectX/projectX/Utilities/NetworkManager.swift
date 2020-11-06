@@ -34,9 +34,11 @@ enum FirestoreFields: String {
     case stationType
     case parentStationID
     
-    case userID = "userID"
+    case userID
     case userInfo
     case userInfoUserID = "userInfo.userID"
+    
+    case followers
     
     case postID
     
@@ -150,8 +152,17 @@ extension NetworkManager {
                 completion(nil)
             }
         }
-        
     }
+    func incrementDocumentValue(collectionType: CollectionEnumType,
+                                documentID: String,
+                                value: Double,
+                                field: FirestoreFields){
+        let _ = db.collection(collectionType.rawValue)
+                                .document(documentID)
+                                .updateData([field.rawValue : FieldValue.increment(value)])
+
+    }
+        
 }
     
 //    db.collection("cities").document("DC").delete() { err in
