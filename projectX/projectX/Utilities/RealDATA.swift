@@ -106,15 +106,6 @@ class queryData {
         }
         
     }//function end
-    
-    func commentInc(increase: Bool = true){
-        
-        if !increase{
-            
-        }else{
-            
-        }
-    }
 }//class end
 
 
