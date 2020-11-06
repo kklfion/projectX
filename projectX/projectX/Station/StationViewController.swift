@@ -49,7 +49,7 @@ import UIKit
         case .signedIn(let user):
             handleFollowButton()
         case .signedOut:
-            //nope
+            stationView.notFollowedButton()
             print("naah")
         }
     }
@@ -299,14 +299,15 @@ extension StationViewController: PostCellDidTapDelegate{
 }
 //MARK: Handlers
 extension StationViewController{
-    
+    /// when follow button is tapped followedStation should be added/removes in UserManager and in the Firestore
     @objc private func didTapFollowButton(){
         guard let stationID = station?.id else {return}
         guard  let userID = UserManager.shared().user?.userID else {return}
         //if station is followed - unfollow it
         if let followedStation = UserManager.shared().isStationFollowed(stationID: stationID){
             //delete it from db
-            NetworkManager.shared.deleteDocumentsWith(collectionType: .followedStations, documentID: followedStation.id ?? "") { (error) in
+            guard let followedStationID = followedStation.id else {return}
+            NetworkManager.shared.deleteDocumentsWith(collectionType: .followedStations, documentID: followedStationID) { (error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "error deleting followedStation")
                 }else{
@@ -316,12 +317,13 @@ extension StationViewController{
             }
 
         }else{//else follow it
-            let document = FollowedStation(userID: userID, stationID: stationID, stationName: station?.stationName ?? "")
-            NetworkManager.shared.writeDocumentsWith(collectionType: .followedStations, documents: [document]) { (error) in
+            var document = FollowedStation(userID: userID, stationID: stationID, stationName: station?.stationName ?? "", date: Date())
+            NetworkManager.shared.writeDocumentReturnReference(collectionType: .followedStations, document: document) { (referenceID, error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "error creating followedStation")
-                }else{
+                }else if (referenceID != nil){
                     self.stationView.followedButton()
+                    document.id = referenceID
                     UserManager.shared().addFollowedStation(followedStation: document)
                 }
             }
