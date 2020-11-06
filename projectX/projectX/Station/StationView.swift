@@ -57,7 +57,7 @@ class StationView: UIView {
         let label = UILabel()
         label.numberOfLines = 1
         label.font = Constants.bodyTextFont
-        //label.text = "666k Followers"
+        //label.text = v
         return label
     }()
     let followButton: UIButton = {
@@ -83,6 +83,7 @@ class StationView: UIView {
     
     var topViewContainerTopConstraint: NSLayoutConstraint?
 }
+//MARK: view setup
 extension StationView{
     
     func setupViews(frame: CGRect){
@@ -156,7 +157,9 @@ extension StationView{
                                 padding: .init(top: 0, left: 0, bottom: 0, right: 15))
         followButton.centerYAnchor.constraint(equalTo: followersLabel.centerYAnchor).isActive = true
     }
-    
+}
+//MARK: helper functions
+extension StationView {
     func notFollowedButton(){
         followButton.setTitle("Follow", for: .normal)
         followButton.backgroundColor = .blue
@@ -164,5 +167,13 @@ extension StationView{
     func followedButton(){
         followButton.setTitle("Followed", for: .normal)
         followButton.backgroundColor = .yellow
+    }
+    func changeFollowerCount(by number: Int){
+        if number >= 1000{
+            followersLabel.text = "\(number/1000)k Followers"
+        }else{
+            followersLabel.text = "\(number) Followers"
+        }
+
     }
 }
