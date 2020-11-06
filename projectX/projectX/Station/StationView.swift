@@ -82,6 +82,8 @@ class StationView: UIView {
     var tableViewAndTableView: SegmentedControlWithTwoTableViews?
     
     var topViewContainerTopConstraint: NSLayoutConstraint?
+}
+extension StationView{
     
     func setupViews(frame: CGRect){
         self.backgroundColor = .white
@@ -153,5 +155,14 @@ class StationView: UIView {
                                 trailing: topViewContainer.trailingAnchor,
                                 padding: .init(top: 0, left: 0, bottom: 0, right: 15))
         followButton.centerYAnchor.constraint(equalTo: followersLabel.centerYAnchor).isActive = true
+    }
+    
+    func notFollowedButton(){
+        followButton.setTitle("Follow", for: .normal)
+        followButton.backgroundColor = .blue
+    }
+    func followedButton(){
+        followButton.setTitle("Followed", for: .normal)
+        followButton.backgroundColor = .yellow
     }
 }
