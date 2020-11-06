@@ -31,18 +31,22 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
 {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        queryStations.queryStations(completion: {[weak self] result in
-            switch result {
-            case .success(let data):
-                RadoymyrsStations.append(contentsOf: data)
-                print("Here")
-                for station in RadoymyrsStations{
-                    channels1.append(station.stationName)
+        if queryStations.loaded == false {
+            queryStations.queryStations(completion: {[weak self] result in
+                switch result {
+                case .success(let data):
+                    RadoymyrsStations.append(contentsOf: data)
+                    print("Here")
+                    for station in RadoymyrsStations{
+                        channels1.append(station.stationName)
+                    }
+                case .failure(_):
+                    break
                 }
-            case .failure(_):
-                break
-            }
-        })
+            })
+        } else {
+            
+        }
     }
     override func viewDidLoad() {
        
@@ -221,12 +225,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         postButton.addTarget(self, action: #selector(postAction), for: .touchUpInside)
         //self.view.addSubview(postButton)
     }
-    // function that is called in loadDidView for the purpose of populating a list of station
-    func loadinStations(){
-        for station in RadoymyrsStations{
-            channels1.append(station.stationName)
-        }
-    }
+
     
       
 
@@ -364,6 +363,9 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
     
     }
     func discardaction(action: UIAlertAction) {
+        //when discared, clear out channel and deload station options
+        channels1.removeAll()
+        queryStations.loaded = false
         dismiss(animated: true, completion: nil)
     }
     
@@ -476,6 +478,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
                            }
                         }
                         print("Success")
+                        //Removing all
                         return
                     }
                 }
