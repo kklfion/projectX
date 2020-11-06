@@ -10,11 +10,11 @@ import UIKit
 import Firebase
 import FirebaseFirestore
 
-
 let button = UIButton()
 var myTxtview = UITextView()
 var titlepost = UITextField()
 var postData = [String: Any]()
+var postData1 = [String: Any]()
 var switchbar = UISwitch()
 var pickerview = UIPickerView()
 var Anonymity = false
@@ -203,8 +203,6 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         //self.view.addSubview(postButton)
     }
     
-    
-      
          
     // CHANNEL PICKER VIEW
     let channels1 = ["", "Travel", "Art", "Drama", "Gaming", "Meme", "Makeup", "Politics", "Music", "Sports", "Food", "Abroad", "Writing", "Development", "Financial", "Pets", "Job", "Astrology", "Horror", "Anime", "LGBTQ+", "Film", "Relationship", "Photography", "International"
@@ -438,10 +436,6 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         let check3 = channel(channel: selectedchannel)
         assertions(title: check1, body: check2, channel: check3)
     }
-  
-    // testing commit
-    
-    
     
     var loadPhoto = UIButton()
     func displayUploadImageDialog(btnSelected: UIButton) {
@@ -459,14 +453,51 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
             self.present(picker, animated: true) {() -> Void in }
         }
     }
+    
+    
+    
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         let image = info[UIImagePickerController.InfoKey.originalImage.rawValue] as! UIImage
-        let postImage = image
-        let imageData = image.jpegData(compressionQuality: 0.05)
-        let imageview = UIImageView(image: postImage)
+        var data = Data()
+        data = image.jpegData(compressionQuality: 0.8)!
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        let spaceRef = storageRef.child("postImages/image.jpg")
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpeg"
+        spaceRef.putData(data, metadata: metadata) {
+            (metadata, error) in guard let metadata = metadata else {
+                print("error")
+                return
+            }
+       let size = metadata.size
+        spaceRef.downloadURL { (url, error) in
+            guard let downloadURL = url else {
+                print("error")
+                return
+            }
+          }
+        }
         self.dismiss(animated: true, completion: nil)
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     func checkPermission() {
         let authStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
         switch authStatus {
@@ -480,7 +511,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         }
     }
 
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         self.dismiss(animated: true, completion: nil)
     }
 
