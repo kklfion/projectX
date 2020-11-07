@@ -21,15 +21,38 @@ var Anonymity = false
 var success = "No Errors"
 var postImage = UIImage()
 var label1 = UILabel()
+var fullname = String()
+var queryStations = queryData()
+var RadoymyrsStations = [Station]()
+var channels1 = [String]()
 
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate,
 UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificationCenterDelegate
 {
-
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if queryStations.loaded == false {
+            queryStations.queryStations(completion: {[weak self] result in
+                switch result {
+                case .success(let data):
+                    RadoymyrsStations.append(contentsOf: data)
+                    print(RadoymyrsStations)
+                    for station in RadoymyrsStations{
+                        channels1.append(station.stationName)
+                    }
+                case .failure(_):
+                    break
+                }
+            })
+        } else {
+            
+        }
+    }
     override func viewDidLoad() {
        
         super.viewDidLoad()
         view.backgroundColor = .white
+        
         //                                     UI Textfields
         
         //---------------------------------------------------------------------------------------------------------
@@ -202,13 +225,12 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         postButton.addTarget(self, action: #selector(postAction), for: .touchUpInside)
         //self.view.addSubview(postButton)
     }
-    
+
     
       
-         
+
     // CHANNEL PICKER VIEW
-    let channels1 = ["", "Travel", "Art", "Drama", "Gaming", "Meme", "Makeup", "Politics", "Music", "Sports", "Food", "Abroad", "Writing", "Development", "Financial", "Pets", "Job", "Astrology", "Horror", "Anime", "LGBTQ+", "Film", "Relationship", "Photography", "International"
-    ]
+    
     var selectedchannel = String()
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -341,6 +363,9 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
     
     }
     func discardaction(action: UIAlertAction) {
+        //when discared, clear out channel and deload station options
+        channels1.removeAll()
+        queryStations.loaded = false
         dismiss(animated: true, completion: nil)
     }
     
@@ -419,18 +444,51 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
                                "station": selectedchannel
             ]
             let db = Firestore.firestore()
-            db.collection("newPost").document(selectedchannel).setData(postData) { err in
-            if let err = err {
-                print("Error writing document: \(err)")
-            } else {
-                print("Document successfully written!")
+                       guard let userID = Auth.auth().currentUser?.uid else{return}
+                            //Recalling users data for post
+                        let docRef = db.collection("users").document(userID)
+                        
+                        docRef.getDocument{ (document, error) in
+                           let result = Result {
+                               try document?.data(as: User.self)
+                           }
+                           switch result {
+                           case .success(let user):
+                               if let user = user{
+                                   //A 'user' value was successfully initalized from the documentSnapshot
+                                fullname = user.name
+                                
+                                //FIXED - when post is made it assigns correct station ID
+                                var stationIden = String()
+                                for station in RadoymyrsStations{
+                                    if station.stationName == self.selectedchannel{
+                                        stationIden = station.id!
+                                    }
+                                }
+                                
+                                let newPost = Post(stationID: stationIden, stationName: self.selectedchannel, likes: 0, userInfo: user, title: titlepost.text!, text: myTxtview.text!, date: Date(), imageURL: nil, commentCount: 0)
+                                
+                                do{
+                                    try db.collection("posts").document(stationIden).setData(from: newPost)
+                                }catch let error{
+                                    print("Error writing to Firestore: \(error)")
+                                }
+
+                                
+                               } else{
+                                   //A stupid nil value was given, either from successful initlization or the snapShot was nil
+                                   print("Document not exsist")
+                               }
+                           case .failure(let error):
+                               // A user value could not be initialized from DocumnetSnapshot
+                               print("Error decoding city: \(error)")
+                           }
+                        }
+                        print("Success")
+                        //Removing all
+                        return
+                    }
                 }
-                              
-            }
-            return
-        }
-    }
-    
     // post button
      @objc func postAction(sender: UIButton!) {
         let check1 = title(title: titlepost.text!)

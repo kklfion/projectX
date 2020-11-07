@@ -27,6 +27,7 @@ class queryData {
     
     //pagination
     var isPaginating = false
+    var loaded = false
     
     func queryPost(pagination: Bool = false, completion: @escaping (Result<[Post], Error>) -> Void){
         
@@ -81,40 +82,37 @@ class queryData {
 
           
     }//function end
-    func queryStations(completion: @escaping (Result<[Station], Error>) -> Void){
+    //ADDED firstPass variable: A temporary fix to prevent runtime error of viewed channels
+    func queryStations(firstPass: Bool = true,completion: @escaping (Result<[Station], Error>) -> Void){
         
-        var stations = [Station]()
-        db = Firestore.firestore()
-        
-        db.collection("stations").getDocuments() { (querySnapshot, err) in
-            if let err = err {
-                print("Error getting documents: \(err)")
-            } else {
-                for document in querySnapshot!.documents {
-                    do{
-                        if let station = try document.data(as: Station.self){
-                            print(station.stationName)
-                            stations.append(station)
-                        }
-                    } catch let error as NSError{
-                        print("error: \(error.localizedDescription)")
-                    }
-                }
+        if firstPass {
+            loaded = true
+            var stations = [Station]()
+            db = Firestore.firestore()
             
+            db.collection("stations").getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    for document in querySnapshot!.documents {
+                        do{
+                            if let station = try document.data(as: Station.self){
+                                print(station.stationName)
+                                stations.append(station)
+                            }
+                        } catch let error as NSError{
+                            print("error: \(error.localizedDescription)")
+                        }
+                    }
+                    
+                }
+                completion(.success(stations))
             }
-            completion(.success(stations))
+        } else {
+            
         }
         
     }//function end
-    
-    func commentInc(increase: Bool = true){
-        
-        if !increase{
-            
-        }else{
-            
-        }
-    }
 }//class end
 
 
