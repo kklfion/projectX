@@ -47,18 +47,8 @@ import UIKit
     private func checkIfStationFollowed(){
         switch UserManager.shared().state{
         case .signedIn(let user):
-            handleFollowButton()
-        case .signedOut:
-            stationView.notFollowedButton()
-            print("naah")
-        }
-    }
-    ///button's UI should be changed if station is followed by the user
-    private func handleFollowButton(){
-        guard let id = station?.id else {return}
-        if UserManager.shared().isStationFollowed(stationID: id) != nil {
             stationView.followedButton()
-        }else{
+        case .signedOut:
             stationView.notFollowedButton()
         }
     }
