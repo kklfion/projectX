@@ -146,7 +146,7 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
                 }
 
             }
-            print("Fetch more data")
+            //print("Fetch more data")
         }
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

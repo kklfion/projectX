@@ -23,7 +23,7 @@ var postImage = UIImage()
 var label1 = UILabel()
 var fullname = String()
 var queryStations = queryData()
-var RadoymyrsStations = [Station]()
+var JakeStations = [Station]()
 var channels1 = [String]()
 
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate,
@@ -35,9 +35,8 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
             queryStations.queryStations(completion: {[weak self] result in
                 switch result {
                 case .success(let data):
-                    RadoymyrsStations.append(contentsOf: data)
-                    print(RadoymyrsStations)
-                    for station in RadoymyrsStations{
+                    JakeStations.append(contentsOf: data)
+                    for station in JakeStations{
                         channels1.append(station.stationName)
                     }
                 case .failure(_):
@@ -346,7 +345,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
     @objc func doneButtonAction(_ sender: UIButton)
       {
 
-        print("d")
+        //print("d")
     }
     
     
@@ -460,7 +459,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
                                 
                                 //FIXED - when post is made it assigns correct station ID
                                 var stationIden = String()
-                                for station in RadoymyrsStations{
+                                for station in JakeStations{
                                     if station.stationName == self.selectedchannel{
                                         stationIden = station.id!
                                     }
@@ -477,14 +476,14 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
                                 
                                } else{
                                    //A stupid nil value was given, either from successful initlization or the snapShot was nil
-                                   print("Document not exsist")
+                                   //print("Document not exsist")
                                }
                            case .failure(let error):
                                // A user value could not be initialized from DocumnetSnapshot
                                print("Error decoding city: \(error)")
                            }
                         }
-                        print("Success")
+                        //print("Success")
                         //Removing all
                         return
                     }
@@ -564,9 +563,9 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
              if photos == .notDetermined {
                  PHPhotoLibrary.requestAuthorization({status in
                      if status == .authorized{
-                         print("ok")
+                         //print("ok")
                      } else {
-                         print("no")
+                        // print("no")
                      }
                  })
              }

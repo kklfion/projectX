@@ -162,11 +162,11 @@ extension StationView{
 extension StationView {
     func notFollowedButton(){
         followButton.setTitle("Follow", for: .normal)
-        followButton.backgroundColor = .blue
+        //followButton.backgroundColor = .blue
     }
     func followedButton(){
         followButton.setTitle("Followed", for: .normal)
-        followButton.backgroundColor = .yellow
+        //followButton.backgroundColor = .yellow
     }
     func changeFollowerCount(by number: Int){
         if number >= 1000{

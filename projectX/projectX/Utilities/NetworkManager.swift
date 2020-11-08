@@ -111,10 +111,9 @@ extension NetworkManager {
                                               documents: [GenericDocuments],
                                               completion: @escaping (_ error: Error?) -> Void)
                                               where GenericDocuments: Encodable{
-        var ref: DocumentReference? = nil
         for document in documents{
             do {
-                ref = try db.collection(collectionType.rawValue).addDocument(from: document)
+                let _ = try db.collection(collectionType.rawValue).addDocument(from: document)
             }
             catch {
                 completion(error)

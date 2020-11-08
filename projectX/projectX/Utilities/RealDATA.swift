@@ -97,7 +97,7 @@ class queryData {
                     for document in querySnapshot!.documents {
                         do{
                             if let station = try document.data(as: Station.self){
-                                print(station.stationName)
+                                //print(station.stationName)
                                 stations.append(station)
                             }
                         } catch let error as NSError{
