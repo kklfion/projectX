@@ -9,6 +9,7 @@ import AVFoundation
 import UIKit
 import Firebase
 import FirebaseFirestore
+import FirebaseUI
 
 let button = UIButton()
 var myTxtview = UITextView()
@@ -21,6 +22,7 @@ var Anonymity = false
 var success = "No Errors"
 var postImage = UIImage()
 var label1 = UILabel()
+var imagePreview = UIImageView()
 
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate,
 UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificationCenterDelegate
@@ -30,6 +32,14 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
        
         super.viewDidLoad()
         view.backgroundColor = .white
+        
+        
+        
+        
+        imagePreview.frame = CGRect(x: UIScreen.main.bounds.size.width - 50.0, y: 10, width: 40, height: 40)
+        view.addSubview(imagePreview)
+            
+            
         //                                     UI Textfields
         
         //---------------------------------------------------------------------------------------------------------
@@ -90,7 +100,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         button.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
         let suggestButtonContainer = UIView(frame: button.frame)
         button.sizeToFit()
-        button.setImage(UIImage(named: "smallgurp.png"), for: .normal)
+        button.setImage(UIImage(named: "bigslug.png"), for: .normal)
         suggestButtonContainer.sizeToFit()
         suggestButtonContainer.addSubview(button)
         
@@ -98,7 +108,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         let button1 = UIButton()
         button1.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
         let suggestButtonContainer1 = UIView(frame: button1.frame)
-        button1.setImage(UIImage(named: "newpost_icon.png"), for: .normal)
+        button1.setImage(UIImage(named: "slug.png"), for: .normal)
         button1.addTarget(self, action: #selector(loadPhotoTapped), for: .touchUpInside)
         suggestButtonContainer1.sizeToFit()
         suggestButtonContainer1.addSubview(button1)
@@ -290,11 +300,11 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
     //for profile to anonymous change with switchbar
      @objc func switch2(_ sender: UISwitch) {
         if sender.isOn {
-        button.setImage(UIImage(named: "smallgurp.png"), for: .normal)
+        button.setImage(UIImage(named: "bigslug.png"), for: .normal)
         
         }
         else {
-         button.setImage(UIImage(named: "smallgurp.png"), for: .normal)
+         button.setImage(UIImage(named: "sslug.png"), for: .normal)
 
         }
     }
@@ -339,6 +349,14 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
     
     }
     func discardaction(action: UIAlertAction) {
+        let storage = Storage.storage()
+        let data = Data()
+        let storageRef = storage.reference()
+        let ref = storageRef.child("postImages/My garden")
+        ref.delete { (error) in
+            print(error)
+        }
+        imagePreview.image = nil
         dismiss(animated: true, completion: nil)
     }
     
@@ -442,61 +460,40 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.allowsEditing = true
-        if UI_USER_INTERFACE_IDIOM() == .pad {
-            OperationQueue.main.addOperation({() -> Void in
-                picker.sourceType = .photoLibrary
-                self.present(picker, animated: true) {() -> Void in }
-            })
-        }
-        else {
-            picker.sourceType = .photoLibrary
-            self.present(picker, animated: true) {() -> Void in }
-        }
+        picker.sourceType = .photoLibrary
+        self.present(picker, animated: true) {() -> Void in }
+       
+    
     }
     
     
-    
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        let image = info[UIImagePickerController.InfoKey.originalImage.rawValue] as! UIImage
-        var data = Data()
-        data = image.jpegData(compressionQuality: 0.8)!
-        let storage = Storage.storage()
-        let storageRef = storage.reference()
-        let spaceRef = storageRef.child("postImages/image.jpg")
-        let metadata = StorageMetadata()
-        metadata.contentType = "image/jpeg"
-        spaceRef.putData(data, metadata: metadata) {
-            (metadata, error) in guard let metadata = metadata else {
-                print("error")
-                return
-            }
-       let size = metadata.size
-        spaceRef.downloadURL { (url, error) in
-            guard let downloadURL = url else {
-                print("error")
-                return
-            }
-          }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let url = info[UIImagePickerController.InfoKey.imageURL] as? URL {
+            uploadToStorage(fileURL: url)
         }
         self.dismiss(animated: true, completion: nil)
     }
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    // : if request.auth != null;
+    func uploadToStorage(fileURL: URL) {
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        let localFile = fileURL
+        let photoRef = storageRef.child("postImages/My garden")
+        let uploadTask = photoRef.putFile(from: localFile, metadata: nil) { (metadata, err) in
+            guard let metadata = metadata else {
+                print(err?.localizedDescription)
+                return
+            }
+            imagePreview.sd_setImage(with: photoRef)
+                    }
+    }
+    func showUpload() {
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        let ref = storageRef.child("postImages/My garden")
+        imagePreview.sd_setImage(with: ref)
+        
+    }
     
     func checkPermission() {
         let authStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
