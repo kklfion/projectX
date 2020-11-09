@@ -468,7 +468,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
                                 let newPost = Post(stationID: stationIden, stationName: self.selectedchannel, likes: 0, userInfo: user, title: titlepost.text!, text: myTxtview.text!, date: Date(), imageURL: nil, commentCount: 0)
                                 
                                 do{
-                                    try db.collection("posts").document(stationIden).setData(from: newPost)
+                                    try db.collection("posts").document().setData(from: newPost)
                                 }catch let error{
                                     print("Error writing to Firestore: \(error)")
                                 }
