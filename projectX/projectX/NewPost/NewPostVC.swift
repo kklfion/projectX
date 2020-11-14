@@ -23,6 +23,7 @@ var success = "No Errors"
 var postImage = UIImage()
 var label1 = UILabel()
 var imagePreview = UIImageView()
+var imageCancel = UIButton()
 
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate,
 UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificationCenterDelegate
@@ -36,15 +37,14 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         
         
         
-        imagePreview.frame = CGRect(x: UIScreen.main.bounds.size.width - 50.0, y: 10, width: 40, height: 40)
-        view.addSubview(imagePreview)
-            
-            
+        imagePreview.frame = CGRect(x: 25.0, y: 160.0, width:UIScreen.main.bounds.size.width - 50.0 , height: 300)
+        imagePreview.layer.borderColor = UIColor.black.cgColor
+        imagePreview.layer.borderWidth = 2.6
         //                                     UI Textfields
         
         //---------------------------------------------------------------------------------------------------------
         //                                     Title
-        titlepost = UITextField(frame: CGRect(x: 10.0, y: 120.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 50.0))//was 200
+        titlepost = UITextField(frame: CGRect(x: 10.0, y: 95.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 50.0))//was 200
         titlepost.backgroundColor = .white
         titlepost.attributedPlaceholder = NSAttributedString(string: "Title", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
         titlepost.font = UIFont.systemFont(ofSize: 20.0)
@@ -57,7 +57,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
          
        // myTxtview.autocorrectionType = .yes
         myTxtview.isScrollEnabled = true
-        myTxtview.frame = CGRect(x: 10.0, y: 175.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 400.0)
+        myTxtview.frame = CGRect(x: 10.0, y: 150.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 400.0)
         NotificationCenter.default.addObserver(self, selector: #selector(didShow), name: UIResponder.keyboardDidShowNotification, object: nil)
               
         NotificationCenter.default.addObserver(self, selector: #selector(didHide), name: UIResponder.keyboardDidHideNotification, object: nil)
@@ -80,14 +80,14 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         tool.backgroundColor = .white
          let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let fixSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        fixSpace.width = 8
+        fixSpace.width = 12
         let fixSpace1 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         fixSpace1.width = 12
       
         // SWITCH UI
 
        // let switchbar = UISwitch()
-        switchbar.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
+        switchbar.frame = CGRect(x: 0, y: 5, width: 23, height: 23)
         let ButtonView = UIView(frame: switchbar.frame)
         switchbar.sizeToFit()
         switchbar.isOn = true
@@ -97,26 +97,31 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         ButtonView.addSubview(switchbar)
         
         // PROFILE PIC, ANON IN FUNCTION CALL
-        button.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
+        button.frame = CGRect(x: 0, y: -1, width: 23, height: 23)
         let suggestButtonContainer = UIView(frame: button.frame)
         button.sizeToFit()
-        button.setImage(UIImage(named: "bigslug.png"), for: .normal)
+        button.setImage(UIImage(named: "sluglogoo.png"), for: .normal)
         suggestButtonContainer.sizeToFit()
         suggestButtonContainer.addSubview(button)
         
         // GALLERY BUTTON
         let button1 = UIButton()
-        button1.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
+        button1.frame = CGRect(x: 0, y: -1.2, width: 23, height: 23)
         let suggestButtonContainer1 = UIView(frame: button1.frame)
-        button1.setImage(UIImage(named: "slug.png"), for: .normal)
+        
+        // DELETE sizeToFit for the buttons, its screwing everything up, maybe keep?
+        
+        button1.sizeToFit()
+        button1.setImage(UIImage(named: "sluglogoo.png"), for: .normal)
         button1.addTarget(self, action: #selector(loadPhotoTapped), for: .touchUpInside)
         suggestButtonContainer1.sizeToFit()
         suggestButtonContainer1.addSubview(button1)
         
         //PAPERCLIP BUTTON IMAGE   --> Now new post
         let button2 = UIButton()
-        button2.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
+        button2.frame = CGRect(x: 0, y: -1, width: 23, height: 23)
         let suggestButtonContainer2 = UIView(frame: button2.frame)
+        button2.sizeToFit()
         button2.setImage(UIImage(named: "newpost.png"), for: .normal)
         button2.addTarget(self, action: #selector(postAction), for: .touchUpInside)
         suggestButtonContainer2.sizeToFit()
@@ -176,8 +181,20 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
         //---------------------------------------------------------------------------------------------------------
         //                                       ChooseChannel
         
+        
+        imageCancel.frame = CGRect(x: 18.0, y: 153.5, width: 15, height: 15)
+        imageCancel.setTitle("X", for: .normal)
+        //imageCancel.setTitleColor(UIColor.black, for: .normal)
+        imageCancel.layer.borderWidth = 1
+        imageCancel.layer.cornerRadius = 7
+        imageCancel.backgroundColor = .black
+        imageCancel.layer.borderColor = UIColor.black.cgColor
+        imageCancel.addTarget(self, action: #selector(cancelingimage), for: .touchUpInside)
+        
+        
+        
         let chooseChannel = UIButton(type: .system)
-        chooseChannel.frame = CGRect(x: 0.0, y: 75.0, width: UIScreen.main.bounds.size.width, height: 40) //was 155
+        chooseChannel.frame = CGRect(x: 0.0, y: 55.0, width: UIScreen.main.bounds.size.width, height: 40) //was 155
         chooseChannel.setTitle("  Choose Channel >", for: .normal)
         chooseChannel.contentHorizontalAlignment = .left
         chooseChannel.tintColor = UIColor.black
@@ -300,23 +317,28 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
     //for profile to anonymous change with switchbar
      @objc func switch2(_ sender: UISwitch) {
         if sender.isOn {
-        button.setImage(UIImage(named: "bigslug.png"), for: .normal)
+        button.setImage(UIImage(named: "sluglogoo.png"), for: .normal)
         
         }
         else {
-         button.setImage(UIImage(named: "sslug.png"), for: .normal)
+         button.setImage(UIImage(named: "sluglogoo.png"), for: .normal)
 
         }
     }
     
-   
+    @objc func cancelingimage(_ sender: UIButton) {
+        imagePreview.image = nil
+        self.view.addSubview(myTxtview)
+        imagePreview.removeFromSuperview()
+        imageCancel.removeFromSuperview()
+    }
  
     
     
    @objc func didShow(_ sender: NSNotification)
     {
         UITextView.animate(withDuration: 0.3) {
-                   myTxtview.frame = CGRect(x: 10.0, y: 175.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 148.2)
+                   myTxtview.frame = CGRect(x: 10.0, y: 150.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 150)
                    self.view.layoutIfNeeded()
                }
     }
@@ -324,7 +346,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
    @objc func didHide(_ sender: NSNotification)
     {
         UITextView.animate(withDuration: 0.3) {
-           myTxtview.frame = CGRect(x: 10.0, y: 175.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 400.0)
+           myTxtview.frame = CGRect(x: 10.0, y: 150.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 400.0)
             self.view.layoutIfNeeded()
         }
     }
@@ -468,6 +490,12 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
     
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+        imagePreview.image = image
+        myTxtview.text = nil
+        myTxtview.removeFromSuperview()
+        self.view.addSubview(imagePreview)
+        self.view.addSubview(imageCancel)
         if let url = info[UIImagePickerController.InfoKey.imageURL] as? URL {
             uploadToStorage(fileURL: url)
         }
@@ -484,7 +512,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
                 print(err?.localizedDescription)
                 return
             }
-            imagePreview.sd_setImage(with: photoRef)
+            //imagePreview.sd_setImage(with: photoRef)
                     }
     }
     func showUpload() {
