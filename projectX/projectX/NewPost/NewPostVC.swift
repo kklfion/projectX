@@ -268,7 +268,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
      toolBar.removeFromSuperview()
      picker.removeFromSuperview()
      if counter == 1{
-      label1 = UILabel(frame: CGRect(x: 10, y: 75, width:UIScreen.main.bounds.size.width - 20.0, height: 40)) //was 155
+      label1 = UILabel(frame: CGRect(x: 10, y: 55, width:UIScreen.main.bounds.size.width - 20.0, height: 40)) //was 155
       label1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
       label1.textAlignment = .center
       label1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
