@@ -170,11 +170,33 @@ class PostCellWithoutImage: UITableViewCell {
         authorUILabel.addGestureRecognizer(authorTap)
         authorImageView.addGestureRecognizer(imageTap)
     }
+    
+    
+    let postUIImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 5
+        imageView.clipsToBounds = true
+        
+        imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        
+        return imageView
+    }()
+    
+    
     func setupContentView(){
         
         contentView.backgroundColor = .white
         
-        [dateUILabel,stationButton, titleUILabel, previewUILabel, bottomStackView, authorImageView, authorUILabel]
+        let stackImage = UIStackView(arrangedSubviews: [previewUILabel, postUIImageView])
+        //stackImage.spacing = 15
+        stackImage.axis = .horizontal
+        stackImage.alignment = .center
+        //titleUILabel, previewUILabel
+        
+        [dateUILabel,stationButton, stackImage, bottomStackView, authorImageView, authorUILabel]
             .forEach {containerView.addSubview($0)}
         [likeButton,likesLabel,dislikeButton].forEach { likesStackView.addArrangedSubview($0)}
         [likesStackView, commentsButton, commentsUILabel].forEach ({bottomStackView.addArrangedSubview($0)})
@@ -192,16 +214,16 @@ class PostCellWithoutImage: UITableViewCell {
                                size: .init(width: 0, height: 0))
         stationButton.centerYAnchor.constraint(equalTo: dateUILabel.centerYAnchor).isActive = true
 
-        titleUILabel.addAnchors(top: dateUILabel.bottomAnchor,
+        stackImage.addAnchors(top: dateUILabel.bottomAnchor,
                             leading: containerView.leadingAnchor,
-                            bottom: previewUILabel.topAnchor,
-                            trailing: previewUILabel.trailingAnchor,
-                            padding: .init(top: 10, left: 10, bottom: 0, right: 0))
-        previewUILabel.addAnchors(top: titleUILabel.bottomAnchor,
-                              leading: containerView.leadingAnchor,
-                              bottom: authorImageView.topAnchor,
-                              trailing: containerView.trailingAnchor,
-                              padding: .init(top: 0, left: 10, bottom: 10, right: 10))
+                            bottom: authorImageView.topAnchor,
+                            trailing: containerView.trailingAnchor,
+                            padding: .init(top: 10, left: 10, bottom: 0, right: 10))
+//        previewUILabel.addAnchors(top: titleUILabel.bottomAnchor,
+//                              leading: containerView.leadingAnchor,
+//                              bottom: authorImageView.topAnchor,
+//                              trailing: containerView.trailingAnchor,
+//                              padding: .init(top: 0, left: 10, bottom: 10, right: 10))
         
         authorImageView.addAnchors(top: nil,
                              leading: containerView.leadingAnchor,

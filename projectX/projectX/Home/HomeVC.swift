@@ -150,49 +150,34 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         }
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch postData[indexPath.row].imageURL {
-        case nil:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.selectionStyle = .none
-                cell.indexPath = indexPath
-                cell.delegate = self
-                return cell
-            }
-        default:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.indexPath = indexPath
-                cell.delegate = self
-                cell.selectionStyle = .none
-                return cell
-            }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage else {
+            fatalError("Dequeued wrong cell in Home")
         }
-        return UITableViewCell()
+        addData(toCell: cell, withIndex: indexPath.row)
+        cell.selectionStyle = .none
+        cell.indexPath = indexPath
+        cell.delegate = self
+        return cell
     }
-    private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
-        if let cell = cell as? PostCellWithImage{
+    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
+            cell.postUIImageView.image = nil
             cell.titleUILabel.text =  postData[index].title
             cell.previewUILabel.text =  postData[index].text
             cell.authorUILabel.text =  postData[index].userInfo.name
             cell.likesLabel.text =  String(postData[index].likes)
             cell.commentsUILabel.text =  String(postData[index].commentCount)
-            cell.dateUILabel.text = "\(index)h"
             cell.stationButton.setTitle(postData[index].stationName, for: .normal)
-            NetworkManager.shared.getAsynchImage(withURL: postData[index].imageURL) { (image, error) in
-                DispatchQueue.main.async {
-                    cell.postUIImageView.image = image
+            cell.dateUILabel.text = "\(index)h"
+            if postData[index].imageURL != nil {
+                cell.postUIImageView.isHidden = false
+                NetworkManager.shared.getAsynchImage(withURL: postData[index].imageURL) { (image, error) in
+                    DispatchQueue.main.async {
+                        cell.postUIImageView.image = image
+                    }
                 }
+            } else{
+                cell.postUIImageView.isHidden = true
             }
-        }else if let cell = cell as? PostCellWithoutImage {
-            cell.titleUILabel.text =  postData[index].title
-            cell.previewUILabel.text =  postData[index].text
-            cell.authorUILabel.text =  postData[index].userInfo.name
-            cell.likesLabel.text =  String(postData[index].likes)
-            cell.commentsUILabel.text =  String(postData[index].commentCount)
-            cell.stationButton.setTitle(postData[index].stationName, for: .normal)
-            cell.dateUILabel.text = "\(index)h"
-        }
     }
 }
 extension HomeTableVC: PostCellDidTapDelegate{
