@@ -24,6 +24,9 @@ class LoginViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         addBottomLine()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        view.setNeedsLayout()
+    }
     func createLoginView()-> LoginView{
         let view = LoginView(frame: self.view.frame)
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -36,19 +39,20 @@ class LoginViewController: UIViewController {
     }
     func setupView(){
         view.addSubview(loginView)
+        self.addKeyboardTapOutGesture(target: self)
         loginView.addAnchors(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
     /// draws a line belowe the email and password fields, has to be here because frame is not defined before subviews did layout
     func addBottomLine(){
         var bottomLine = CALayer()
         bottomLine.frame = CGRect(x: 0.0, y: loginView.emailTextField.frame.height - 1, width: loginView.emailTextField.frame.width, height: 1.0)
-        bottomLine.backgroundColor = UIColor.systemGreen.cgColor
+        bottomLine.backgroundColor = Constants.Colors.darkBrown.cgColor
         loginView.emailTextField.borderStyle = .none
         loginView.emailTextField.layer.addSublayer(bottomLine)
         
         bottomLine = CALayer()
         bottomLine.frame = CGRect(x: 0.0, y: loginView.passwordTextField.frame.height - 1, width: loginView.passwordTextField.frame.width, height: 1.0)
-        bottomLine.backgroundColor = UIColor.systemGreen.cgColor
+        bottomLine.backgroundColor = Constants.Colors.darkBrown.cgColor
         loginView.passwordTextField.borderStyle = .none
         loginView.passwordTextField.layer.addSublayer(bottomLine)
     }
@@ -117,5 +121,9 @@ extension LoginViewController: UITextFieldDelegate{
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        // clear error label when user begins typing
+        loginView.errorLabel.text = ""
     }
 }

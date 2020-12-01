@@ -12,7 +12,7 @@ import Combine
 
 ///UserManager stores all the data related to the sighned in user and
 ///it keeps user data in sync across the app
-class UserManager{
+class UserManager {
     ///runs initialization, can be created once
     private static var sharedUserManager: UserManager = {
         var userID = String()
