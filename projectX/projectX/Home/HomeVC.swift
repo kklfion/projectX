@@ -72,6 +72,7 @@ class HomeTableVC: UIViewController{
                              leading: self.view.leadingAnchor,
                              bottom: self.view.bottomAnchor,
                              trailing: self.view.trailingAnchor)
+        self.addKeyboardTapOutGesture(target: self)
     }
 
     private func setupTableViewsDelegates(){

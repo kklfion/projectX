@@ -74,3 +74,56 @@ extension UIImageView {
         }
     }
 }
+
+// Set text field icon with padding
+extension UITextField {
+    
+    /// set icon of 20x20 with left padding of 8px
+    func setLeftIcon(_ icon: UIImage, width: Int = 20, height: Int = 20) {
+        
+        let outerView = UIView(frame: CGRect(x: 0, y: 0, width: 35, height: height) )
+        let iconView  = UIImageView(frame: CGRect(x: 0, y: 0, width: width, height: height))
+        iconView.image = icon
+        outerView.addSubview(iconView)
+        
+        leftView = outerView
+        leftView?.tintColor = Constants.Colors.darkBrown
+        leftViewMode = .always
+    }
+}
+
+// Used to convert hexcodes to UIcolor
+extension UIColor {
+    convenience init(red: Int, green: Int, blue: Int) {
+        assert(red >= 0 && red <= 255, "Invalid red component")
+        assert(green >= 0 && green <= 255, "Invalid green component")
+        assert(blue >= 0 && blue <= 255, "Invalid blue component")
+        
+        self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
+    }
+    
+    convenience init(rgb: Int) {
+        self.init(
+            red: (rgb >> 16) & 0xFF,
+            green: (rgb >> 8) & 0xFF,
+            blue: rgb & 0xFF
+        )
+    }
+}
+
+extension UIViewController {
+    // dismiss keyboard by tapping on page
+    func addKeyboardTapOutGesture(target: Any)
+    {
+        let tapGesture = UITapGestureRecognizer(target: target, action: #selector(self.dismissKeyboard (_:)))
+        tapGesture.cancelsTouchesInView = false
+        self.view.addGestureRecognizer(tapGesture)
+    }
+    func sidebarTapOutGesture(target: Any)
+    {
+        print("dismiss")
+    }
+    @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+}

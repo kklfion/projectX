@@ -24,7 +24,7 @@ class SignUpView: UIView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.distribution = .fillEqually
         stack.axis = .vertical
-        stack.spacing = 5
+        stack.spacing = 25
         return stack
     }()
     let nameTextField: UITextField = {
