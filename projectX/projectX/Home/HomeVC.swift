@@ -179,10 +179,11 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
             cell.commentsUILabel.text =  String(postData[index].commentCount)
             cell.dateUILabel.text = "\(index)h"
             cell.stationButton.setTitle(postData[index].stationName, for: .normal)
-
-            let temp = UIImageView()
-            temp.load(url: postData[index].imageURL!)
-            cell.postUIImageView.image = temp.image
+            NetworkManager.shared.getAsynchImage(withURL: postData[index].imageURL) { (image, error) in
+                DispatchQueue.main.async {
+                    cell.postUIImageView.image = image
+                }
+            }
         }else if let cell = cell as? PostCellWithoutImage {
             cell.titleUILabel.text =  postData[index].title
             cell.previewUILabel.text =  postData[index].text

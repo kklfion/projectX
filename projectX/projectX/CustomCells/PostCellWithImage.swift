@@ -54,11 +54,11 @@ class PostCellWithImage: UITableViewCell {
         button.setTitle("Food", for: .normal)
         button.setTitleColor(.lightGray, for: .normal)
         button.titleLabel?.font = Constants.smallerTextFont
-        button.contentEdgeInsets = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 5)
+        //button.contentEdgeInsets = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 5)
         button.addTarget(self, action: #selector(didTapStationButton), for: .touchUpInside)
-        button.layer.cornerRadius = 4
-        button.layer.borderWidth = 0.5
-        button.layer.borderColor = UIColor.lightGray.cgColor
+        //button.layer.cornerRadius = 4
+        //button.layer.borderWidth = 0.5
+        //button.layer.borderColor = UIColor.lightGray.cgColor
         return button
     }()
     let titleUILabel: UILabel = {
@@ -75,7 +75,7 @@ class PostCellWithImage: UITableViewCell {
     let previewUILabel: UILabel = {
         let text = UILabel()
         text.font = Constants.bodyTextFont
-        text.numberOfLines = 5
+        text.numberOfLines = 4
         text.adjustsFontSizeToFitWidth = false
         text.lineBreakMode = .byTruncatingTail
         text.text = "Preview"
@@ -151,8 +151,10 @@ class PostCellWithImage: UITableViewCell {
     }()
     let postUIImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 5
+        imageView.clipsToBounds = true
         return imageView
     }()
 
@@ -202,8 +204,8 @@ class PostCellWithImage: UITableViewCell {
                                leading: nil,
                                bottom: nil,
                                trailing: containerView.trailingAnchor,
-                               padding: .init(top: 0, left: 0, bottom: 0, right: 0),
-                               size: .init(width: contentView.frame.height * 2.5 , height: contentView.frame.height * 2.5))
+                               padding: .init(top: 0, left: 0, bottom: 0, right: 10),
+                               size: .init(width: contentView.frame.width / 3 , height: contentView.frame.width / 4))
         postUIImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
         titleUILabel.addAnchors(top: dateUILabel.bottomAnchor,
                             leading: containerView.leadingAnchor,

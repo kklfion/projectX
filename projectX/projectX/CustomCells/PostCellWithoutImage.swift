@@ -54,10 +54,10 @@ class PostCellWithoutImage: UITableViewCell {
         button.setTitle("Food", for: .normal)
         button.setTitleColor(.lightGray, for: .normal)
         button.titleLabel?.font = Constants.smallerTextFont
-        button.contentEdgeInsets = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 5)
-        button.layer.cornerRadius = 4
-        button.layer.borderWidth = 0.5
-        button.layer.borderColor = UIColor.lightGray.cgColor
+//        button.contentEdgeInsets = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 5)
+//        button.layer.cornerRadius = 4
+//        button.layer.borderWidth = 0.5
+//        button.layer.borderColor = UIColor.lightGray.cgColor
         return button
     }()
     let titleUILabel: UILabel = {
@@ -74,7 +74,7 @@ class PostCellWithoutImage: UITableViewCell {
     let previewUILabel: UILabel = {
         let text = UILabel()
         text.font = Constants.bodyTextFont
-        text.numberOfLines = 5
+        text.numberOfLines = 4
         text.adjustsFontSizeToFitWidth = false
         text.lineBreakMode = .byTruncatingTail
         text.text = "Preview"
