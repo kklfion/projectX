@@ -127,13 +127,13 @@ extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource
             temp.load(url: posts[index].imageURL!)
             cell.postUIImageView.image = temp.image
         }else if let cell = cell as? PostCellWithoutImage {
-            cell.titleUILabel.text =  posts[index].title
-            cell.previewUILabel.text =  posts[index].text
-            cell.authorUILabel.text =  posts[index].userInfo.name
+            cell.titleLabel.text =  posts[index].title
+            cell.messageLabel.text =  posts[index].text
+            cell.authorLabel.text =  posts[index].userInfo.name
             cell.likesLabel.text =  String(posts[index].likes)
-            cell.commentsUILabel.text =  String(posts[index].commentCount)
+            cell.commentsLabel.text =  String(posts[index].commentCount)
             cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-            cell.dateUILabel.text = "\(index)h"
+            cell.dateLabel.text = "\(index)h"
         }
     }
 }

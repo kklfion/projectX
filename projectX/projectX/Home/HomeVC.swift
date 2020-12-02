@@ -160,24 +160,24 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         return cell
     }
     private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
-            cell.postUIImageView.image = nil
-            cell.titleUILabel.text =  postData[index].title
-            cell.previewUILabel.text =  postData[index].text
-            cell.authorUILabel.text =  postData[index].userInfo.name
-            cell.likesLabel.text =  String(postData[index].likes)
-            cell.commentsUILabel.text =  String(postData[index].commentCount)
-            cell.stationButton.setTitle(postData[index].stationName, for: .normal)
-            cell.dateUILabel.text = "\(index)h"
-            if postData[index].imageURL != nil {
-                cell.postUIImageView.isHidden = false
-                NetworkManager.shared.getAsynchImage(withURL: postData[index].imageURL) { (image, error) in
-                    DispatchQueue.main.async {
-                        cell.postUIImageView.image = image
-                    }
+        cell.postImageView.image = nil
+        cell.titleLabel.text =  postData[index].title
+        cell.messageLabel.text =  postData[index].text
+        cell.authorLabel.text =  postData[index].userInfo.name
+        cell.likesLabel.text =  String(postData[index].likes)
+        cell.commentsLabel.text =  String(postData[index].commentCount)
+        cell.stationButton.setTitle(postData[index].stationName, for: .normal)
+        cell.dateLabel.text = "\(index)h"
+        if postData[index].imageURL != nil {
+            cell.postImageView.isHidden = false
+            NetworkManager.shared.getAsynchImage(withURL: postData[index].imageURL) { (image, error) in
+                DispatchQueue.main.async {
+                    cell.postImageView.image = image
                 }
-            } else{
-                cell.postUIImageView.isHidden = true
             }
+        } else{
+            cell.postImageView.isHidden = true
+        }
     }
 }
 extension HomeTableVC: PostCellDidTapDelegate{

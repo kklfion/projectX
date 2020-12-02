@@ -133,13 +133,13 @@ extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
         navigationController?.pushViewController(station, animated: true)
     }
     private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
-        cell.titleUILabel.text =  posts?[index].title
-        cell.titleUILabel.text =  posts?[index].title
-        cell.previewUILabel.text =  posts?[index].text
-        cell.authorUILabel.text =  posts?[index].userInfo.name
+        cell.titleLabel.text =  posts?[index].title
+        cell.titleLabel.text =  posts?[index].title
+        cell.messageLabel.text =  posts?[index].text
+        cell.authorLabel.text =  posts?[index].userInfo.name
         cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
-        cell.commentsUILabel.text = "0"
-        cell.dateUILabel.text = "\(index)h"
+        cell.commentsLabel.text = "0"
+        cell.dateLabel.text = "\(index)h"
 
     }
     private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
