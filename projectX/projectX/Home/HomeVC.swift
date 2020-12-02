@@ -167,7 +167,12 @@ extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
         cell.likesLabel.text =  String(postData[index].likes)
         cell.commentsLabel.text =  String(postData[index].commentCount)
         cell.stationButton.setTitle(postData[index].stationName, for: .normal)
-        cell.dateLabel.text = "\(index)h"
+        
+        let formatter = DateFormatter()
+        formatter.timeStyle = .medium
+        let dateString = formatter.string(from: postData[index].date)
+        
+        cell.dateLabel.text = "\(dateString)"
         if postData[index].imageURL != nil {
             cell.postImageView.isHidden = false
             NetworkManager.shared.getAsynchImage(withURL: postData[index].imageURL) { (image, error) in

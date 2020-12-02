@@ -56,11 +56,13 @@ class PostCellWithoutImage: UITableViewCell {
     }()
     let stationButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Food", for: .normal)
+        button.setTitle("Station", for: .normal)
         button.setTitleColor(.lightGray, for: .normal)
         button.titleLabel?.font = Constants.smallerTextFont
+        button.contentHorizontalAlignment = .left
         return button
     }()
+    //view for title&message labels
     let textView: UIView = {
         let view = UIView()
         return view
@@ -160,7 +162,7 @@ class PostCellWithoutImage: UITableViewCell {
         super.init(coder: aDecoder)
         setupContentView()
     }
-    func setupButtons(){
+    private func setupButtons(){
         stationButton.addTarget(self, action: #selector(didTapStationButton), for: .touchUpInside)
         likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
         commentsButton.addTarget(self, action: #selector(didTapCommentsButton), for: .touchUpInside)
@@ -172,11 +174,7 @@ class PostCellWithoutImage: UITableViewCell {
         authorImageView.addGestureRecognizer(imageTap)
     }
     
-    
-
-    
-    
-    func setupContentView(){
+    private func setupContentView(){
         
         contentView.backgroundColor = .white
         
@@ -187,10 +185,11 @@ class PostCellWithoutImage: UITableViewCell {
         
         textView.addSubview(titleLabel)
         textView.addSubview(messageLabel)
+        //TODO: fix this !!!!
         textView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         titleLabel.addAnchors(top: textView.topAnchor,
                                 leading: textView.leadingAnchor,
-                                bottom: nil,
+                                bottom: messageLabel.topAnchor,
                                 trailing: textView.trailingAnchor,
                                 padding: .init(top: 0, left: 0, bottom: 0, right: 0))
         messageLabel.addAnchors(top: titleLabel.bottomAnchor,
@@ -225,7 +224,7 @@ class PostCellWithoutImage: UITableViewCell {
         
         //MAIN stack, all stacks come in this stack
         let stack = UIStackView(arrangedSubviews: [stationDateStack, textImageStack, bottomStack])
-        stack.spacing = 10
+        stack.spacing = 0
         stack.axis = .vertical
         
         [stack].forEach { containerView.addSubview($0) }
@@ -233,20 +232,9 @@ class PostCellWithoutImage: UITableViewCell {
                          leading: containerView.leadingAnchor,
                          bottom: containerView.bottomAnchor,
                          trailing: containerView.trailingAnchor,
-                         padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+                         padding: .init(top: 0, left: 10, bottom: 10, right: 10),
                          size: .init(width: 0, height: 0))
         
-        
-        
-        
-        
-//        let stackImage = UIStackView(arrangedSubviews: [messageLabel, postImageView])
-//        //stackImage.spacing = 15
-//        stackImage.axis = .horizontal
-//        stackImage.alignment = .center
-
-        
-
         
         ///finish up by adding views to the content view
         [shadowLayerView,containerView].forEach({contentView.addSubview($0)})
