@@ -9,7 +9,7 @@
 import UIKit
 import FirebaseAuth
 
-class HomeTableVC: UIViewController{
+class HomeTableVC: UIViewController, RoundedCornerNavigationBar{
 
     private var homeView: HomeView?
     var refreshControl: UIRefreshControl?
@@ -18,6 +18,7 @@ class HomeTableVC: UIViewController{
 
     private let seachView: UISearchBar = {
         let sb = UISearchBar()
+        sb.searchTextField.backgroundColor = .white
         sb.showsCancelButton = true
         return sb
     }()
@@ -28,6 +29,9 @@ class HomeTableVC: UIViewController{
         setupSearchController()
         addRefreshControl()
         signInUserIfNeeded()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        self.addRoundedCorner(OnNavigationBar: navigationController!.navigationBar, cornerRadius: 20)
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -71,7 +75,8 @@ class HomeTableVC: UIViewController{
         homeView?.addAnchors(top: self.view.topAnchor,
                              leading: self.view.leadingAnchor,
                              bottom: self.view.bottomAnchor,
-                             trailing: self.view.trailingAnchor)
+                             trailing: self.view.trailingAnchor,
+                             padding: .init(top: 30, left: 0, bottom: 0, right: 0))
     }
 
     private func setupTableViewsDelegates(){

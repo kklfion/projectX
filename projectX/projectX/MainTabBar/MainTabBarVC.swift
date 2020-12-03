@@ -19,6 +19,8 @@ class MainTabBarVC: UITabBarController {
     /// so that homeview can present selected station
     let home = HomeTableVC()
     
+    let tabBarSymbolsConfiguration = UIImage.SymbolConfiguration(weight: .semibold)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
@@ -54,19 +56,19 @@ class MainTabBarVC: UITabBarController {
     }
     private func setupSideBarItems(){
         let sidebarItem = UITabBarItem()
-        sidebarItem.image = UIImage(systemName: "sidebar.left")
+        sidebarItem.image = UIImage(systemName: "sidebar.left")?.withConfiguration(tabBarSymbolsConfiguration)
         sidebarItem.title = "Sidebar"
         let newPostItem = UITabBarItem()
-        newPostItem.image = UIImage(systemName: "pencil")
+        newPostItem.image = UIImage(systemName: "pencil")?.withConfiguration(tabBarSymbolsConfiguration)
         newPostItem.title = "New Post"
         let homeItem = UITabBarItem()
-        homeItem.image = UIImage(systemName: "house")
+        homeItem.image = UIImage(systemName: "house")?.withConfiguration(tabBarSymbolsConfiguration)
         homeItem.title = "Home"
         let notificationsItem = UITabBarItem()
-        notificationsItem.image = UIImage(systemName: "envelope")
+        notificationsItem.image = UIImage(systemName: "envelope")?.withConfiguration(tabBarSymbolsConfiguration)
         notificationsItem.title = "Mailroom"
         let profileItem = UITabBarItem()
-        profileItem.image = UIImage(systemName: "person")
+        profileItem.image = UIImage(systemName: "person")?.withConfiguration(tabBarSymbolsConfiguration)
         profileItem.title = "Profile"
         
         let sidebar = SidebarViewController()
@@ -75,6 +77,7 @@ class MainTabBarVC: UITabBarController {
         newPost.tabBarItem = newPostItem
         home.tabBarItem = homeItem
         let homeNav = UINavigationController(rootViewController: home)
+        homeNav.navigationBar.barTintColor = Constants.yellowColor
         let notifications = NotificationsTableVC()
         notifications.tabBarItem = notificationsItem
         let notigicationsNav = UINavigationController(rootViewController: notifications)
@@ -86,15 +89,23 @@ class MainTabBarVC: UITabBarController {
         self.selectedIndex = 1
     }
     private func setupNavigationBarAppearance(){
-        UINavigationBar.appearance().tintColor = .systemBlue
-        UINavigationBar.appearance().barTintColor = .white
-        UINavigationBar.appearance().shadowImage = UIImage()
+//        UINavigationBar.appearance().tintColor = .systemBlue
+//        UINavigationBar.appearance().barTintColor = .white
+//        UINavigationBar.appearance().shadowImage = UIImage()
     }
     private func setupTabBarAppearance(){
-        tabBar.layer.masksToBounds = true
-        tabBar.isTranslucent = true
+        //tabBar.layer.masksToBounds = true
+        tabBar.isTranslucent = false
         tabBar.barStyle = .default
         tabBar.layer.cornerRadius = 20
+        tabBar.barTintColor = .white
+        tabBar.unselectedItemTintColor = Constants.brownColor
+        tabBar.tintColor = Constants.yellowColor
+        
+        tabBar.layer.shadowOffset = CGSize(width: 0, height: -4.0)
+        tabBar.layer.shadowRadius = 2
+        tabBar.layer.shadowColor = UIColor.lightGray.cgColor
+        tabBar.layer.shadowOpacity = 0.2
     }
 }
 //MARK: handling special cases of tabbar items

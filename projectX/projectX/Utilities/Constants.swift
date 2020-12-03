@@ -11,6 +11,10 @@ struct Constants{
     
     static let standardPadding: CGFloat = 10
     
+    //MARK: Colors
+    static let yellowColor = UIColor(hexString: "#f6e58f")
+    static let brownColor = UIColor(hexString: "#434239")
+    
     static let headlineTextFont = UIFont.preferredFont(forTextStyle: .headline)
     static let bodyTextFont = UIFont.preferredFont(forTextStyle: .subheadline)
     static let smallerTextFont = UIFont.preferredFont(forTextStyle: .footnote)

@@ -50,6 +50,7 @@
 		808361CB2529215700DEF0DE /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361CA2529215700DEF0DE /* NetworkManager.swift */; };
 		80A0DC16253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC15253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift */; };
 		80A0DC1D253B780300474541 /* BoardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC1C253B780300474541 /* BoardCell.swift */; };
+		80AF6F0C2577285F006A6C57 /* RoundedNavBarProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AF6F0B2577285F006A6C57 /* RoundedNavBarProtocol.swift */; };
 		80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */; };
 		80B2C6A92516E3220025F9EE /* SideBarSlidingTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */; };
 		80BB37B024D7ACCB00B12253 /* StationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BB37AF24D7ACCB00B12253 /* StationView.swift */; };
@@ -120,6 +121,7 @@
 		808361CA2529215700DEF0DE /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		80A0DC15253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlWithTableViewAndCollectionView.swift; sourceTree = "<group>"; };
 		80A0DC1C253B780300474541 /* BoardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCell.swift; sourceTree = "<group>"; };
+		80AF6F0B2577285F006A6C57 /* RoundedNavBarProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedNavBarProtocol.swift; sourceTree = "<group>"; };
 		80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarSlidingTransition.swift; sourceTree = "<group>"; };
 		80BB37AF24D7ACCB00B12253 /* StationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationView.swift; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 				806E777924C9255F00A95B89 /* DataTest.swift */,
 				806E777724C9076200A95B89 /* Extensions.swift */,
 				90C178B625319EE800200222 /* RealDATA.swift */,
+				80AF6F0B2577285F006A6C57 /* RoundedNavBarProtocol.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -522,6 +525,7 @@
 				ED4E056E2533C3CF007ED4FA /* Notification.swift in Sources */,
 				803D75A5250AD3E0003F569D /* PostViewController.swift in Sources */,
 				803D75A2250AD3E0003F569D /* NewCommentView.swift in Sources */,
+				80AF6F0C2577285F006A6C57 /* RoundedNavBarProtocol.swift in Sources */,
 				803D75AC250AD75F003F569D /* User.swift in Sources */,
 				801A37A62514024800F22A11 /* NotificationCell.swift in Sources */,
 				804E61A524980DFD00825150 /* HomeVC.swift in Sources */,
