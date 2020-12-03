@@ -70,13 +70,13 @@ class HomeTableVC: UIViewController, RoundedCornerNavigationBar{
     private func setupView(){
         self.view.backgroundColor = .white
         homeView = HomeView(frame: self.view.frame)
-        homeView?.backgroundColor = .white
+        homeView?.backgroundColor = .blue
         view.addSubview(homeView!)
         homeView?.addAnchors(top: self.view.topAnchor,
                              leading: self.view.leadingAnchor,
                              bottom: self.view.bottomAnchor,
                              trailing: self.view.trailingAnchor,
-                             padding: .init(top: 30, left: 0, bottom: 0, right: 0))
+                             padding: .init(top: 0, left: 0, bottom: 0, right: 0))
     }
 
     private func setupTableViewsDelegates(){

@@ -89,13 +89,18 @@ class MainTabBarVC: UITabBarController {
         self.selectedIndex = 1
     }
     private func setupNavigationBarAppearance(){
-//        UINavigationBar.appearance().tintColor = .systemBlue
-//        UINavigationBar.appearance().barTintColor = .white
-//        UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().tintColor = .systemBlue
+        UINavigationBar.appearance().barTintColor = .white
+        UINavigationBar.appearance().shadowImage = UIImage()
     }
     private func setupTabBarAppearance(){
         //tabBar.layer.masksToBounds = true
-        tabBar.isTranslucent = false
+        //tabBar.isTranslucent = false
+        
+        UITabBar.appearance().backgroundImage = UIImage()
+        UITabBar.appearance().shadowImage = UIImage()
+        UITabBar.appearance().clipsToBounds = true
+        
         tabBar.barStyle = .default
         tabBar.layer.cornerRadius = 20
         tabBar.barTintColor = .white

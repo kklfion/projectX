@@ -12,6 +12,8 @@ struct Constants{
     static let standardPadding: CGFloat = 10
     
     //MARK: Colors
+    static let backgroundColor =  UIColor(hexString: "#fff9f5")
+    static let redColor = UIColor(hexString: "#f2aba7")
     static let yellowColor = UIColor(hexString: "#f6e58f")
     static let brownColor = UIColor(hexString: "#434239")
     

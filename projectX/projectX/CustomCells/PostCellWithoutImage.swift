@@ -40,7 +40,7 @@ class PostCellWithoutImage: UITableViewCell {
     //container contains all the stacks
     let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.backgroundColor //.white
         view.layer.cornerRadius = 5
         view.layer.masksToBounds = true
         return view
@@ -125,26 +125,26 @@ class PostCellWithoutImage: UITableViewCell {
 
     let likeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "heart")?.withTintColor(Constants.redColor, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let likesLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
         label.textColor = .black
-        label.textAlignment = .center
+        label.textAlignment = .left
         label.font = Constants.smallerTextFont
         label.numberOfLines = 1
         return label
     }()
     let commentsButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "bubble.right.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "bubble.right.fill")?.withTintColor(Constants.redColor, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let commentsLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
+        label.textAlignment = .left
         label.font = Constants.smallerTextFont
         label.textColor = .black
         label.numberOfLines = 1
