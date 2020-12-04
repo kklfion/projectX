@@ -7,11 +7,12 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class OtherProfileViewController: UIViewController {
     
     ///user displayed by the controller
-    var user: User?
+    var user: User
     
     ///posts that were created by user
     private var posts = [Post]()
@@ -21,6 +22,34 @@ class OtherProfileViewController: UIViewController {
     
     ///custom view
     private var profileView: ProfileView?
+    
+    ///initialize profileviewcontroller with user data (to display other user profile)
+    init(user: User){
+        self.user = user
+        super.init(nibName: nil, bundle: nil)
+    }
+    ///user to display current user
+    init(){
+        //must wait for usermanager to complete and update self
+        user = User(email: "1", uid: "1")
+        super.init(nibName: nil, bundle: nil)
+        let user = Auth.auth().currentUser
+        guard let id = user?.uid else {return}
+        NetworkManager.shared.getDataForUser(id) { [weak self] (user, error) in
+            if error != nil {
+                print(error)
+            }else if user != nil {
+                self?.user = user!
+                self?.updateProfileInformation()
+            }
+        }
+        
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,7 +81,7 @@ class OtherProfileViewController: UIViewController {
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
-        guard let user = user else{return}
+        //guard let user = user else{return}
         NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
@@ -73,7 +102,7 @@ class OtherProfileViewController: UIViewController {
             }
         }
         //fetch missions
-        print(user.userID)
+        //print(user.userID)
         query = NetworkManager.shared.db.missions.whereField(FirestoreFields.userInfoUserID.rawValue, isEqualTo: user.userID)
         NetworkManager.shared.getDocumentsForQuery(query: query) { (missions: [Mission]?, error) in
             if error != nil{
@@ -202,8 +231,8 @@ extension OtherProfileViewController: PostCellDidTapDelegate{
         }
     }
     private func presentAuthorFor(indexPath: IndexPath){
-        let vc = OtherProfileViewController()
-        vc.user = posts[indexPath.row].userInfo
+        let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
+        //vc.user = posts[indexPath.row].userInfo
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

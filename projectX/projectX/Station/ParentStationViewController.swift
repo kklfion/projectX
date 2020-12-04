@@ -308,8 +308,8 @@ extension ParentStationViewController: PostCellDidTapDelegate{
         }
     }
     private func presentAuthorFor(indexPath: IndexPath){
-        let vc = OtherProfileViewController()
-        vc.user = posts[indexPath.row].userInfo
+        let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
+        //vc.user = posts[indexPath.row].userInfo
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

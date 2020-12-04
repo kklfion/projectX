@@ -18,7 +18,9 @@ class MainTabBarVC: UITabBarController {
     /// has to be global, bc I need to set sidebars delegate = homeview
     /// so that homeview can present selected station
     let home = HomeTableVC()
-    
+    ///adds a shadow to the tabbar
+    let tabBarShadowView = ShadowLayerView()
+    ///tabbaritems configuration
     let tabBarSymbolsConfiguration = UIImage.SymbolConfiguration(weight: .semibold)
     
     override func viewDidLoad() {
@@ -27,66 +29,34 @@ class MainTabBarVC: UITabBarController {
         setupNavigationBarAppearance()
         setupSideBarItems()
         setupTabBarAppearance()
-
-        ///test
-        tempQueries()
     }
-    private func tempQueries(){
-//        let user = User(name: "Radomyr Bezghin",
-//                        photoURL: URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/defaultUserIcon.png?alt=media&token=2e6edb8e-ac03-47fb-b58c-31bd6f3598e8"),
-//                        email: "radomirbezgin@gmail.com", uid: "59qIdPL8uAfltJryIrAWfQNFcuN2")
-//
-//        let mission = Mission(stationID: "vpuu9oIPMkkxxRh3qINU",
-//                              stationName: "UC Santa Cruz",
-//                              likes: 0,
-//                              userInfo: user,
-//                              title: "Fix my brain",
-//                              text: "test mission #2",
-//                              date: Date(),
-//                              imageURL: nil)
 
-//        let acceptedMission = AcceptedMissions(userID: "59qIdPL8uAfltJryIrAWfQNFcuN2", missionID: "jbq6fTixiEoQn6LhyAIL", date: Date())
-        
-//        NetworkManager.shared.writeDocumentsWith(collectionType: .missions, documents: [mission]) { (error) in
-//            if error != nil {
-//                print(error)
-//            }
-//        }
-        
+    override func viewDidLayoutSubviews() {
+        //sets a shade for tabbar
+        tabBarShadowView.frame = tabBar.frame
     }
     private func setupSideBarItems(){
-        let sidebarItem = UITabBarItem()
-        sidebarItem.image = UIImage(systemName: "sidebar.left")?.withConfiguration(tabBarSymbolsConfiguration)
-        sidebarItem.title = "Sidebar"
-        let newPostItem = UITabBarItem()
-        newPostItem.image = UIImage(systemName: "pencil")?.withConfiguration(tabBarSymbolsConfiguration)
-        newPostItem.title = "New Post"
-        let homeItem = UITabBarItem()
-        homeItem.image = UIImage(systemName: "house")?.withConfiguration(tabBarSymbolsConfiguration)
-        homeItem.title = "Home"
-        let notificationsItem = UITabBarItem()
-        notificationsItem.image = UIImage(systemName: "envelope")?.withConfiguration(tabBarSymbolsConfiguration)
-        notificationsItem.title = "Mailroom"
-        let profileItem = UITabBarItem()
-        profileItem.image = UIImage(systemName: "person")?.withConfiguration(tabBarSymbolsConfiguration)
-        profileItem.title = "Profile"
+        let sidebar = createViewController(tabBarItemImageName: "sidebar.left", title: "Sidebar", controller: SidebarViewController())
+        let newPost = createViewController(tabBarItemImageName: "pencil", title: "New Post", controller: NewPostVC())
+        _ = createViewController(tabBarItemImageName: "house", title: "Home", controller: home)
+        let notifications = createViewController(tabBarItemImageName: "envelope", title: "Mailroom", controller: NotificationsTableVC())
+        let profile = createViewController(tabBarItemImageName: "person", title: "Profile", controller: OtherProfileViewController())
         
-        let sidebar = SidebarViewController()
-        sidebar.tabBarItem = sidebarItem
-        let newPost = NewPostVC()
-        newPost.tabBarItem = newPostItem
-        home.tabBarItem = homeItem
         let homeNav = UINavigationController(rootViewController: home)
         homeNav.navigationBar.barTintColor = Constants.yellowColor
-        let notifications = NotificationsTableVC()
-        notifications.tabBarItem = notificationsItem
         let notigicationsNav = UINavigationController(rootViewController: notifications)
-        let profile = ProfileTableVC()
-        profile.tabBarItem = profileItem
         let profileNav = UINavigationController(rootViewController: profile)
     
         self.viewControllers = [sidebar,homeNav,newPost,notigicationsNav,profileNav]
         self.selectedIndex = 1
+    }
+    ///creates tabbarItems and assigns them to the viewControllers
+    private func createViewController(tabBarItemImageName: String, title: String, controller: UIViewController) -> UIViewController{
+        let item = UITabBarItem()
+        item.image = UIImage(systemName: tabBarItemImageName)?.withConfiguration(tabBarSymbolsConfiguration)
+        item.title = title
+        controller.tabBarItem = item
+        return controller
     }
     private func setupNavigationBarAppearance(){
         UINavigationBar.appearance().tintColor = .systemBlue
@@ -94,23 +64,20 @@ class MainTabBarVC: UITabBarController {
         UINavigationBar.appearance().shadowImage = UIImage()
     }
     private func setupTabBarAppearance(){
-        //tabBar.layer.masksToBounds = true
-        //tabBar.isTranslucent = false
-        
-        UITabBar.appearance().backgroundImage = UIImage()
-        UITabBar.appearance().shadowImage = UIImage()
-        UITabBar.appearance().clipsToBounds = true
-        
-        tabBar.barStyle = .default
-        tabBar.layer.cornerRadius = 20
-        tabBar.barTintColor = .white
+        tabBar.layer.masksToBounds = true
+        tabBar.layer.cornerRadius = 15
+
+        tabBar.barTintColor = Constants.backgroundColor
         tabBar.unselectedItemTintColor = Constants.brownColor
         tabBar.tintColor = Constants.yellowColor
         
-        tabBar.layer.shadowOffset = CGSize(width: 0, height: -4.0)
-        tabBar.layer.shadowRadius = 2
-        tabBar.layer.shadowColor = UIColor.lightGray.cgColor
-        tabBar.layer.shadowOpacity = 0.2
+        view.insertSubview(tabBarShadowView, belowSubview: tabBar)
+        tabBarShadowView.addAnchors(top: view.safeAreaLayoutGuide.bottomAnchor,
+                          leading: view.leadingAnchor,
+                          bottom: view.bottomAnchor,
+                          trailing: view.trailingAnchor,
+                          padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+                          size: .init(width: 0, height:  0))
     }
 }
 //MARK: handling special cases of tabbar items

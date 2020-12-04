@@ -31,10 +31,10 @@ class PostCellWithoutImage: UITableViewCell {
         let view = UIView()
         view.backgroundColor = .white
         view.layer.cornerRadius = 5
-        view.layer.shadowColor = UIColor.gray.cgColor
+        view.layer.shadowColor = UIColor.lightGray.cgColor
         view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
         view.layer.shadowRadius = 5
-        view.layer.shadowOpacity = 0.4
+        view.layer.shadowOpacity = 0.2
         return view
     }()
     //container contains all the stacks

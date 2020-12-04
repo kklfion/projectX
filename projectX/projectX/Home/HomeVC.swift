@@ -32,6 +32,11 @@ class HomeTableVC: UIViewController, RoundedCornerNavigationBar{
     }
     override func viewWillAppear(_ animated: Bool) {
         self.addRoundedCorner(OnNavigationBar: navigationController!.navigationBar, cornerRadius: 20)
+        
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default) //UIImage.init(named: "transparent.png")
+//        self.navigationController?.navigationBar.shadowImage = UIImage()
+//        self.navigationController?.navigationBar.isTranslucent = true
+//        self.navigationController?.view.backgroundColor = .clear
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -70,13 +75,13 @@ class HomeTableVC: UIViewController, RoundedCornerNavigationBar{
     private func setupView(){
         self.view.backgroundColor = .white
         homeView = HomeView(frame: self.view.frame)
-        homeView?.backgroundColor = .blue
+        homeView?.backgroundColor = .none
         view.addSubview(homeView!)
         homeView?.addAnchors(top: self.view.topAnchor,
                              leading: self.view.leadingAnchor,
                              bottom: self.view.bottomAnchor,
                              trailing: self.view.trailingAnchor,
-                             padding: .init(top: 0, left: 0, bottom: 0, right: 0))
+                             padding: .init(top: 30, left: 0, bottom: 0, right: 0))
     }
 
     private func setupTableViewsDelegates(){
@@ -226,8 +231,7 @@ extension HomeTableVC: PostCellDidTapDelegate{
         }
     }
     private func presentAuthorFor(indexPath: IndexPath){
-        let vc = OtherProfileViewController()
-        vc.user = postData[indexPath.row].userInfo
+        let vc = OtherProfileViewController(user: postData[indexPath.row].userInfo)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }
