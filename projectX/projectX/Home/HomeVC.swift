@@ -27,10 +27,16 @@ class HomeTableVC: UICollectionViewController{
         setupCollectionView()
         getData()
     }
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
     private func setupCollectionView(){
         collectionView.backgroundColor = .white
         collectionView.isPrefetchingEnabled = false
-        self.collectionView?.register(PostCellWithoutImage.self, forCellWithReuseIdentifier: PostCellWithoutImage.cellID)
+        self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.cellID)
         self.navigationItem.title = "Home"
         self.navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.searchController = searchController
@@ -84,12 +90,14 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
         presentPostFor(indexPath: indexPath)
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage else {return UICollectionViewCell()}
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.cellID, for: indexPath) as? PostCollectionViewCell else {return UICollectionViewCell()}
         addData(toCell: cell, withIndex: indexPath.row)
+        cell.delegate = self
+        cell.indexPath = indexPath
         return cell
     }
 
-    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
+    private func addData(toCell cell: PostCollectionViewCell, withIndex index: Int ){
         cell.postImageView.image = nil
         cell.titleLabel.text =  posts[index].title
         cell.messageLabel.text =  posts[index].text
