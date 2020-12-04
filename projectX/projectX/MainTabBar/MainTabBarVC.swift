@@ -37,11 +37,12 @@ class MainTabBarVC: UITabBarController {
         
         let homeNav = UINavigationController(rootViewController: home)
         homeNav.navigationBar.barTintColor = .white//Constants.yellowColor
+        homeNav.navigationBar.backgroundColor = .white
         let notigicationsNav = UINavigationController(rootViewController: notifications)
         let profileNav = UINavigationController(rootViewController: profile)
     
-        self.viewControllers = [sidebar,homeNav,newPost,notigicationsNav,profileNav]
-        self.selectedIndex = 1
+        self.viewControllers = [sidebar, newPost, homeNav, notigicationsNav, profileNav]
+        self.selectedIndex = 2
     }
     ///creates tabbarItems and assigns them to the viewControllers
     private func createViewController(tabBarItemImageName: String, title: String, controller: UIViewController) -> UIViewController{
@@ -80,8 +81,8 @@ class MainTabBarVC: UITabBarController {
         self.tabBar.layer.insertSublayer(layer, at: 0)
 
         tabBar.barTintColor = Constants.backgroundColor
-        tabBar.unselectedItemTintColor = Constants.brownColor
-        tabBar.tintColor = Constants.yellowColor
+        //tabBar.unselectedItemTintColor = Constants.brownColor
+        tabBar.tintColor = Constants.brownColor//Constants.yellowColor
     }
 }
 //MARK: handling special cases of tabbar items
@@ -112,7 +113,7 @@ extension MainTabBarVC: UITabBarControllerDelegate{
             self.transitionToNew(menuType)
         }
         vc.didTapSideBarStationType = { 
-            tabBarController.selectedIndex = 1
+            tabBarController.selectedIndex = 2
         }()
         vc.modalPresentationStyle = .overCurrentContext
         self.present(vc, animated: true)

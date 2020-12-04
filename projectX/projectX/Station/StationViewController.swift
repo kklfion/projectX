@@ -89,7 +89,7 @@ import UIKit
         tableView.dataSource = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100
-        tableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
+        //tableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
         tableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
@@ -112,10 +112,12 @@ import UIKit
         }
         stationView.stationInfoLabel.text = station?.info
         stationView.stationNameLabel.text = station?.stationName
+        self.navigationItem.title = station?.stationName ?? "Station"
 
     }
     private func setupView(){
-        navigationItem.titleView = seachView
+        navigationItem.titleView = UISearchBar()
+        //navigationItem.searchController = UISearchController(searchResultsController: nil)
         view.addSubview(stationView)
         stationView.followButton.addTarget(self, action: #selector(didTapFollowButton), for: .touchUpInside)
         stationView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
@@ -192,51 +194,34 @@ extension StationViewController: UITableViewDelegate, UITableViewDataSource{
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        switch posts[indexPath.row].imageURL {
-//        case nil:
-//            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
-//                addData(toCell: cell, withIndex: indexPath.row)
-//                cell.indexPath = indexPath
-//                cell.delegate = self
-//                cell.selectionStyle = .none
-//                return cell
-//            }
-//        default:
-//            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
-//                cell.postUIImageView.image = nil
-//                addData(toCell: cell, withIndex: indexPath.row)
-//                cell.indexPath = indexPath
-//                cell.delegate = self
-//                cell.selectionStyle = .none
-//                return cell
-//            }
-//        }
-        return UITableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage else {return UITableViewCell()}
+        addData(toCell: cell, withIndex: indexPath.row)
+        cell.indexPath = indexPath
+        cell.delegate = self
+        cell.selectionStyle = .none
+        return cell
     }
     private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
-        cell.titleLabel.text =  posts[index].title
+        cell.postImageView.image = nil
         cell.titleLabel.text =  posts[index].title
         cell.messageLabel.text =  posts[index].text
         cell.authorLabel.text =  posts[index].userInfo.name
-        cell.likesLabel.text = "\(posts[index].likes)"
-        cell.commentsLabel.text = "0"
-        cell.dateLabel.text = "\(index)h"
+        cell.likesLabel.text =  String(posts[index].likes)
+        cell.commentsLabel.text =  String(posts[index].commentCount)
         cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-
-    }
-    private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
-        cell.titleUILabel.text =  posts[index].title
-        cell.titleUILabel.text =  posts[index].title
-        cell.previewUILabel.text =  posts[index].text
-        cell.authorUILabel.text =  posts[index].userInfo.name
-        cell.likesLabel.text = "\(posts[index].likes)"
-        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-        cell.commentsUILabel.text = "0"
-        cell.dateUILabel.text = "\(index)h"
-        NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
-            DispatchQueue.main.async {
-                cell.postUIImageView.image = image
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        let dateString = formatter.string(from: posts[index].date)
+        cell.dateLabel.text = "\(dateString)"
+        if posts[index].imageURL != nil {
+            cell.postImageView.isHidden = false
+            NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
+                DispatchQueue.main.async {
+                    cell.postImageView.image = image
+                }
             }
+        } else{
+            cell.postImageView.isHidden = true
         }
     }
 }

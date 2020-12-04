@@ -1,24 +1,15 @@
 //
-//  PostCell.swift
+//  PostCollectionViewCell.swift
 //  projectX
 //
-//  Created by Radomyr Bezghin on 6/29/20.
+//  Created by Radomyr Bezghin on 12/4/20.
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
-/*
 
- TODO:
- 1. Create the view
- 2. change constraints from nubmers to variables or ratios
- 3. populate with some data
- 
- 
-*/
 import UIKit
 
-class PostCellWithoutImage: UITableViewCell {
-    
-    static let cellID = "PostCellWithoutImage"
+class PostCollectionViewCell: UICollectionViewCell {
+    static let cellID = "PostCollectionViewCell"
     
     ///to add actions to cell buttons
     weak var delegate: PostCellDidTapDelegate?
@@ -151,16 +142,15 @@ class PostCellWithoutImage: UITableViewCell {
         return label
     }()
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         contentView.backgroundColor = .clear
         backgroundColor = .clear
         setupContentView()
         setupButtons()
     }
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupContentView()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     private func setupButtons(){
         stationButton.addTarget(self, action: #selector(didTapStationButton), for: .touchUpInside)
@@ -254,7 +244,7 @@ class PostCellWithoutImage: UITableViewCell {
     
     }
 }
-extension PostCellWithoutImage{
+extension PostCollectionViewCell{
     @objc func didTapAuthorLabel( ) {
         guard let indexPath = indexPath else{return}
         self.delegate?.didTapAuthorLabel(indexPath)
