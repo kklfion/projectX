@@ -68,9 +68,9 @@ class OtherProfileViewController: UIViewController {
                                 trailing: view.trailingAnchor)
     }
     private func setupTableViews(){
-        profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
+        //profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
-        profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
+        //profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
         
         profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
@@ -114,58 +114,58 @@ class OtherProfileViewController: UIViewController {
         }
     }
 }
-extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        posts.count
-    }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        presentPostFor(indexPath: indexPath)
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch posts[indexPath.row].imageURL {
-        case nil:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.selectionStyle = .none
-                cell.indexPath = indexPath
-                cell.delegate = self
-                return cell
-            }
-        default:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.indexPath = indexPath
-                cell.delegate = self
-                cell.selectionStyle = .none
-                return cell
-            }
-        }
-        return UITableViewCell()
-    }
-    private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
-        if let cell = cell as? PostCellWithImage{
-            cell.titleUILabel.text =  posts[index].title
-            cell.previewUILabel.text =  posts[index].text
-            cell.authorUILabel.text =  posts[index].userInfo.name
-            cell.likesLabel.text =  String(posts[index].likes)
-            cell.commentsUILabel.text =  String(posts[index].commentCount)
-            cell.dateUILabel.text = "\(index)h"
-            cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-
-            let temp = UIImageView()
-            temp.load(url: posts[index].imageURL!)
-            cell.postUIImageView.image = temp.image
-        }else if let cell = cell as? PostCellWithoutImage {
-            cell.titleLabel.text =  posts[index].title
-            cell.messageLabel.text =  posts[index].text
-            cell.authorLabel.text =  posts[index].userInfo.name
-            cell.likesLabel.text =  String(posts[index].likes)
-            cell.commentsLabel.text =  String(posts[index].commentCount)
-            cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-            cell.dateLabel.text = "\(index)h"
-        }
-    }
-}
+//extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource{
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        posts.count
+//    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        presentPostFor(indexPath: indexPath)
+//    }
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        switch posts[indexPath.row].imageURL {
+//        case nil:
+//            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
+//                addData(toCell: cell, withIndex: indexPath.row)
+//                cell.selectionStyle = .none
+//                cell.indexPath = indexPath
+//                cell.delegate = self
+//                return cell
+//            }
+//        default:
+//            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
+//                addData(toCell: cell, withIndex: indexPath.row)
+//                cell.indexPath = indexPath
+//                cell.delegate = self
+//                cell.selectionStyle = .none
+//                return cell
+//            }
+//        }
+//        return UITableViewCell()
+//    }
+//    private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
+//        if let cell = cell as? PostCellWithImage{
+//            cell.titleUILabel.text =  posts[index].title
+//            cell.previewUILabel.text =  posts[index].text
+//            cell.authorUILabel.text =  posts[index].userInfo.name
+//            cell.likesLabel.text =  String(posts[index].likes)
+//            cell.commentsUILabel.text =  String(posts[index].commentCount)
+//            cell.dateUILabel.text = "\(index)h"
+//            cell.stationButton.setTitle(posts[index].stationName, for: .normal)
+//
+//            let temp = UIImageView()
+//            temp.load(url: posts[index].imageURL!)
+//            cell.postUIImageView.image = temp.image
+//        }else if let cell = cell as? PostCellWithoutImage {
+//            cell.titleLabel.text =  posts[index].title
+//            cell.messageLabel.text =  posts[index].text
+//            cell.authorLabel.text =  posts[index].userInfo.name
+//            cell.likesLabel.text =  String(posts[index].likes)
+//            cell.commentsLabel.text =  String(posts[index].commentCount)
+//            cell.stationButton.setTitle(posts[index].stationName, for: .normal)
+//            cell.dateLabel.text = "\(index)h"
+//        }
+//    }
+//}
 extension OtherProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.6)

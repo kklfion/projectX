@@ -16,7 +16,7 @@
 */
 import UIKit
 
-class PostCellWithoutImage: UITableViewCell {
+class PostCellWithoutImage: UICollectionViewCell {
     
     static let cellID = "PostCellWithoutImage"
     
@@ -40,7 +40,7 @@ class PostCellWithoutImage: UITableViewCell {
     //container contains all the stacks
     let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.backgroundColor //.white
+        view.backgroundColor = .white//Constants.backgroundColor //
         view.layer.cornerRadius = 5
         view.layer.masksToBounds = true
         return view
@@ -151,16 +151,15 @@ class PostCellWithoutImage: UITableViewCell {
         return label
     }()
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         contentView.backgroundColor = .clear
         backgroundColor = .clear
         setupContentView()
         setupButtons()
     }
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupContentView()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     private func setupButtons(){
         stationButton.addTarget(self, action: #selector(didTapStationButton), for: .touchUpInside)
@@ -176,7 +175,7 @@ class PostCellWithoutImage: UITableViewCell {
     
     private func setupContentView(){
         
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .none
         
         let stationDateStack = UIStackView(arrangedSubviews: [dateLabel, stationButton])
         stationDateStack.spacing = 10

@@ -62,10 +62,10 @@ class HomeView: UIView {
                                      bottom: nil,
                                      trailing: self.layoutMarginsGuide.trailingAnchor,
                                      padding: .init(top: 0, left: 10, bottom: 0, right: 10))
-        stackView.addAnchors(top: segmentController.bottomAnchor,
+        stackView.addAnchors(top: self.topAnchor,
                                             leading: self.leadingAnchor,
                                             bottom: self.bottomAnchor,
-                                            trailing: nil, padding: .init(top: 10, left: 0, bottom: 0, right: 0),
+                                            trailing: nil, padding: .init(top: 0, left: 0, bottom: 0, right: 0),
                                             size: .init(width: self.frame.width * 2, height: 0))
     }
     
