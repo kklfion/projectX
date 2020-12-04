@@ -71,9 +71,9 @@ class ProfileTableVC: UIViewController {
                                trailing: view.safeAreaLayoutGuide.trailingAnchor)
     }
     private func setupTableViews(){
-        profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
+        //profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
-        profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
+        //profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
 
         profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
@@ -95,68 +95,68 @@ class ProfileTableVC: UIViewController {
         profileView?.usernameLabel.text = user?.name
     }
 }
-extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        posts?.count ?? 0
-    }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //TODO: setup loading data
-        guard let post =  posts?[indexPath.row] else {return}
-        let postvc = PostViewController(post: post)
-        postvc.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(postvc, animated: true)
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch posts?[indexPath.row].imageURL {
-        case nil:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.selectionStyle = .none
-                //cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
-                return cell
-            }
-        default:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
-                cell.postUIImageView.image = nil
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.selectionStyle = .none
-                //cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
-                return cell
-            }
-        }
-        return UITableViewCell()
-    }
-    @objc private func dummyStation(){
-        //TODO: finish use data to load it
-        let station = StationViewController()
-        station.modalPresentationStyle = .fullScreen
-        navigationController?.pushViewController(station, animated: true)
-    }
-    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
-        cell.titleLabel.text =  posts?[index].title
-        cell.titleLabel.text =  posts?[index].title
-        cell.messageLabel.text =  posts?[index].text
-        cell.authorLabel.text =  posts?[index].userInfo.name
-        cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
-        cell.commentsLabel.text = "0"
-        cell.dateLabel.text = "\(index)h"
-
-    }
-    private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
-        cell.titleUILabel.text =  posts?[index].title
-        cell.titleUILabel.text =  posts?[index].title
-        cell.previewUILabel.text =  posts?[index].text
-        cell.authorUILabel.text =  posts?[index].userInfo.name
-        cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
-        cell.commentsUILabel.text = "0"
-        cell.dateUILabel.text = "\(index)h"
-        NetworkManager.shared.getAsynchImage(withURL: posts?[index].imageURL) { (image, error) in
-            DispatchQueue.main.async {
-                cell.postUIImageView.image = image
-            }
-        }
-    }
-}
+//extension ProfileTableVC: UITableViewDelegate, UITableViewDataSource{
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        posts?.count ?? 0
+//    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        //TODO: setup loading data
+//        guard let post =  posts?[indexPath.row] else {return}
+//        let postvc = PostViewController(post: post)
+//        postvc.hidesBottomBarWhenPushed = true
+//        navigationController?.pushViewController(postvc, animated: true)
+//    }
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        switch posts?[indexPath.row].imageURL {
+//        case nil:
+//            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
+//                addData(toCell: cell, withIndex: indexPath.row)
+//                cell.selectionStyle = .none
+//                //cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+//                return cell
+//            }
+//        default:
+//            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
+//                cell.postUIImageView.image = nil
+//                addData(toCell: cell, withIndex: indexPath.row)
+//                cell.selectionStyle = .none
+//                //cell.channelUIButton.addTarget(self, action: #selector(dummyStation), for: .touchUpInside)
+//                return cell
+//            }
+//        }
+//        return UITableViewCell()
+//    }
+//    @objc private func dummyStation(){
+//        //TODO: finish use data to load it
+//        let station = StationViewController()
+//        station.modalPresentationStyle = .fullScreen
+//        navigationController?.pushViewController(station, animated: true)
+//    }
+//    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
+//        cell.titleLabel.text =  posts?[index].title
+//        cell.titleLabel.text =  posts?[index].title
+//        cell.messageLabel.text =  posts?[index].text
+//        cell.authorLabel.text =  posts?[index].userInfo.name
+//        cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
+//        cell.commentsLabel.text = "0"
+//        cell.dateLabel.text = "\(index)h"
+//
+//    }
+//    private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
+//        cell.titleUILabel.text =  posts?[index].title
+//        cell.titleUILabel.text =  posts?[index].title
+//        cell.previewUILabel.text =  posts?[index].text
+//        cell.authorUILabel.text =  posts?[index].userInfo.name
+//        cell.likesLabel.text = "\(posts?[index].likes ?? 0)"
+//        cell.commentsUILabel.text = "0"
+//        cell.dateUILabel.text = "\(index)h"
+//        NetworkManager.shared.getAsynchImage(withURL: posts?[index].imageURL) { (image, error) in
+//            DispatchQueue.main.async {
+//                cell.postUIImageView.image = image
+//            }
+//        }
+//    }
+//}
 extension ProfileTableVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.6)

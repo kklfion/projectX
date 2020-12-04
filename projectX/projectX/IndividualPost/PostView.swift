@@ -46,7 +46,7 @@ class PostView: UIView {
     }()
      let titleUILabel: UILabel = {
        let label = UILabel()
-       label.font = UIFont.preferredFont(forTextStyle: .title1)
+       label.font = UIFont.preferredFont(forTextStyle: .title2)
        label.numberOfLines = 0
        label.adjustsFontSizeToFitWidth = false
        label.lineBreakMode = .byTruncatingTail

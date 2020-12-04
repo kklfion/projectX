@@ -192,25 +192,25 @@ extension StationViewController: UITableViewDelegate, UITableViewDataSource{
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch posts[indexPath.row].imageURL {
-        case nil:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.indexPath = indexPath
-                cell.delegate = self
-                cell.selectionStyle = .none
-                return cell
-            }
-        default:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
-                cell.postUIImageView.image = nil
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.indexPath = indexPath
-                cell.delegate = self
-                cell.selectionStyle = .none
-                return cell
-            }
-        }
+//        switch posts[indexPath.row].imageURL {
+//        case nil:
+//            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
+//                addData(toCell: cell, withIndex: indexPath.row)
+//                cell.indexPath = indexPath
+//                cell.delegate = self
+//                cell.selectionStyle = .none
+//                return cell
+//            }
+//        default:
+//            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
+//                cell.postUIImageView.image = nil
+//                addData(toCell: cell, withIndex: indexPath.row)
+//                cell.indexPath = indexPath
+//                cell.delegate = self
+//                cell.selectionStyle = .none
+//                return cell
+//            }
+//        }
         return UITableViewCell()
     }
     private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
@@ -282,7 +282,7 @@ extension StationViewController: PostCellDidTapDelegate{
     }
     private func presentAuthorFor(indexPath: IndexPath){
         let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
-        //vc.user = posts[indexPath.row].userInfo
+        vc.user = posts[indexPath.row].userInfo
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

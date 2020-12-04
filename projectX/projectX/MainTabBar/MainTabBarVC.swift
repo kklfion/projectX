@@ -18,8 +18,6 @@ class MainTabBarVC: UITabBarController {
     /// has to be global, bc I need to set sidebars delegate = homeview
     /// so that homeview can present selected station
     let home = HomeTableVC()
-    ///adds a shadow to the tabbar
-    let tabBarShadowView = ShadowLayerView()
     ///tabbaritems configuration
     let tabBarSymbolsConfiguration = UIImage.SymbolConfiguration(weight: .semibold)
     
@@ -30,11 +28,6 @@ class MainTabBarVC: UITabBarController {
         setupSideBarItems()
         setupTabBarAppearance()
     }
-
-    override func viewDidLayoutSubviews() {
-        //sets a shade for tabbar
-        tabBarShadowView.frame = tabBar.frame
-    }
     private func setupSideBarItems(){
         let sidebar = createViewController(tabBarItemImageName: "sidebar.left", title: "Sidebar", controller: SidebarViewController())
         let newPost = createViewController(tabBarItemImageName: "pencil", title: "New Post", controller: NewPostVC())
@@ -43,7 +36,7 @@ class MainTabBarVC: UITabBarController {
         let profile = createViewController(tabBarItemImageName: "person", title: "Profile", controller: OtherProfileViewController())
         
         let homeNav = UINavigationController(rootViewController: home)
-        homeNav.navigationBar.barTintColor = Constants.yellowColor
+        homeNav.navigationBar.barTintColor = .white//Constants.yellowColor
         let notigicationsNav = UINavigationController(rootViewController: notifications)
         let profileNav = UINavigationController(rootViewController: profile)
     
@@ -64,20 +57,31 @@ class MainTabBarVC: UITabBarController {
         UINavigationBar.appearance().shadowImage = UIImage()
     }
     private func setupTabBarAppearance(){
-        tabBar.layer.masksToBounds = true
-        tabBar.layer.cornerRadius = 15
+        //remove colors from tabbar
+        tabBar.backgroundImage = UIImage()
+        tabBar.shadowImage = UIImage()
+        
+        //create a rounded layer with shadow and add it to the transparent tabar
+        let layer = CAShapeLayer()
+        layer.path = UIBezierPath(roundedRect: CGRect(x: 0,
+                                                      y: self.view.bounds.minY,
+                                                      width: self.tabBar.bounds.width,
+                                                      height: self.tabBar.bounds.height + 100),
+                                  cornerRadius: (20)).cgPath
+        layer.shadowColor = UIColor.lightGray.cgColor
+        layer.shadowOffset = CGSize(width: 5.0, height: 5.0)
+        layer.shadowRadius = 25.0
+        layer.shadowOpacity = 0.3
+        layer.borderWidth = 1.0
+        layer.opacity = 1.0
+        layer.isHidden = false
+        layer.masksToBounds = false
+        layer.fillColor = UIColor.white.cgColor
+        self.tabBar.layer.insertSublayer(layer, at: 0)
 
         tabBar.barTintColor = Constants.backgroundColor
         tabBar.unselectedItemTintColor = Constants.brownColor
         tabBar.tintColor = Constants.yellowColor
-        
-        view.insertSubview(tabBarShadowView, belowSubview: tabBar)
-        tabBarShadowView.addAnchors(top: view.safeAreaLayoutGuide.bottomAnchor,
-                          leading: view.leadingAnchor,
-                          bottom: view.bottomAnchor,
-                          trailing: view.trailingAnchor,
-                          padding: .init(top: 0, left: 0, bottom: 0, right: 0),
-                          size: .init(width: 0, height:  0))
     }
 }
 //MARK: handling special cases of tabbar items

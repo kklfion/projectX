@@ -201,32 +201,32 @@ extension ParentStationViewController: UITableViewDelegate, UITableViewDataSourc
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if tableView == stationView.tableViewAndTableView?.listTableView{
-            let cell = tableView.dequeueReusableCell(withIdentifier: listTableViewCellID, for: indexPath)
-            addData(toCell: cell, withIndex: indexPath.row)
-            cell.selectionStyle = .none
-            return cell
-        }else {
-            switch posts[indexPath.row].imageURL {
-            case nil:
-                if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
-                    addData(toCell: cell, withIndex: indexPath.row)
-                    cell.indexPath = indexPath
-                    cell.delegate = self
-                    cell.selectionStyle = .none
-                    return cell
-                }
-            default:
-                if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
-                    cell.postUIImageView.image = nil
-                    addData(toCell: cell, withIndex: indexPath.row)
-                    cell.indexPath = indexPath
-                    cell.delegate = self
-                    cell.selectionStyle = .none
-                    return cell
-                }
-            }
-        }
+//        if tableView == stationView.tableViewAndTableView?.listTableView{
+//            let cell = tableView.dequeueReusableCell(withIdentifier: listTableViewCellID, for: indexPath)
+//            addData(toCell: cell, withIndex: indexPath.row)
+//            cell.selectionStyle = .none
+//            return cell
+//        }else {
+//            switch posts[indexPath.row].imageURL {
+//            case nil:
+//                if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
+//                    addData(toCell: cell, withIndex: indexPath.row)
+//                    cell.indexPath = indexPath
+//                    cell.delegate = self
+//                    //cell.selectionStyle = .none
+//                    return cell
+//                }
+//            default:
+//                if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
+//                    cell.postUIImageView.image = nil
+//                    addData(toCell: cell, withIndex: indexPath.row)
+//                    cell.indexPath = indexPath
+//                    cell.delegate = self
+//                    cell.selectionStyle = .none
+//                    return cell
+//                }
+//            }
+//        }
         return UITableViewCell()
     }
     private func addData(toCell cell: UITableViewCell, withIndex index: Int ){

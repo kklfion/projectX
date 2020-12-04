@@ -33,6 +33,7 @@
 		804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A624980E4B00825150 /* ProfileTableVC.swift */; };
 		8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62C24A6CEC0002A9E16 /* HomeView.swift */; };
 		8066D62F24AACAF8002A9E16 /* PostCellWithImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */; };
+		8067F0BE257AD70800CED98F /* RoundShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F0BD257AD70800CED98F /* RoundShadowView.swift */; };
 		8068E7CE2541029C00A85B33 /* CellProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E7CD2541029C00A85B33 /* CellProtocols.swift */; };
 		8068E7D3254107BD00A85B33 /* ParentStationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E7D2254107BD00A85B33 /* ParentStationViewController.swift */; };
 		8068E80225410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */; };
@@ -105,6 +106,7 @@
 		804E61A624980E4B00825150 /* ProfileTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableVC.swift; sourceTree = "<group>"; };
 		8066D62C24A6CEC0002A9E16 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCellWithImage.swift; sourceTree = "<group>"; };
+		8067F0BD257AD70800CED98F /* RoundShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundShadowView.swift; sourceTree = "<group>"; };
 		8068E7CD2541029C00A85B33 /* CellProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellProtocols.swift; sourceTree = "<group>"; };
 		8068E7D2254107BD00A85B33 /* ParentStationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentStationViewController.swift; sourceTree = "<group>"; };
 		8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlWithTwoTableViews.swift; sourceTree = "<group>"; };
@@ -371,6 +373,7 @@
 			isa = PBXGroup;
 			children = (
 				80AF6F0E2579A2B5006A6C57 /* ShadowLayerView.swift */,
+				8067F0BD257AD70800CED98F /* RoundShadowView.swift */,
 				80A0DC15253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift */,
 				8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */,
 			);
@@ -544,6 +547,7 @@
 				8068E7CE2541029C00A85B33 /* CellProtocols.swift in Sources */,
 				80A0DC1D253B780300474541 /* BoardCell.swift in Sources */,
 				8068E7D3254107BD00A85B33 /* ParentStationViewController.swift in Sources */,
+				8067F0BE257AD70800CED98F /* RoundShadowView.swift in Sources */,
 				80A0DC16253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift in Sources */,
 				90C178CD25439A5200200222 /* AcceptedMission.swift in Sources */,
 				90C178D325439A9000200222 /* Follower.swift in Sources */,
