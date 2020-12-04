@@ -20,6 +20,25 @@ class PostView: UIView {
         super.init(coder: coder)
         setupViews()
     }
+    //shadow is added to the container
+    let shadowLayerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 5
+        view.layer.shadowColor = UIColor.lightGray.cgColor
+        view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
+        view.layer.shadowRadius = 5
+        view.layer.shadowOpacity = 0.2
+        return view
+    }()
+    //container contains all the stacks
+    let containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white//Constants.backgroundColor //
+        view.layer.cornerRadius = 5
+        view.layer.masksToBounds = true
+        return view
+    }()
     //MARK: top view
     //holds view above the comment section
     let topViewContainer: UIView = {
@@ -29,7 +48,7 @@ class PostView: UIView {
     }()
      let authorUILabel: UILabel = {
        let label = UILabel()
-      label.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        label.font = Constants.smallerTextFont
        label.textColor = .lightGray
        label.numberOfLines = 1
        label.translatesAutoresizingMaskIntoConstraints = false
@@ -38,7 +57,7 @@ class PostView: UIView {
      let dateUILabel: UILabel = {
        let label = UILabel()
        label.text = "1h"
-       label.font = UIFont.preferredFont(forTextStyle: .subheadline)
+       label.font = Constants.smallerTextFont
        label.textAlignment = .right
        label.textColor = .lightGray
        label.translatesAutoresizingMaskIntoConstraints = false
@@ -46,7 +65,7 @@ class PostView: UIView {
     }()
      let titleUILabel: UILabel = {
        let label = UILabel()
-       label.font = UIFont.preferredFont(forTextStyle: .title2)
+        label.font = Constants.headlineTextFont
        label.numberOfLines = 0
        label.adjustsFontSizeToFitWidth = false
        label.lineBreakMode = .byTruncatingTail
@@ -63,7 +82,7 @@ class PostView: UIView {
     }()
      let bodyUILabel: UILabel = {
        let text = UILabel()
-       text.font = UIFont.preferredFont(forTextStyle: .callout)
+        text.font = Constants.bodyTextFont
        text.numberOfLines = 0
        text.adjustsFontSizeToFitWidth = false
        text.lineBreakMode = .byTruncatingTail
@@ -71,47 +90,52 @@ class PostView: UIView {
        text.translatesAutoresizingMaskIntoConstraints = false
        return text
     }()
-    //MARK: bottom comments labels/buttons
-    private let likesStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.backgroundColor = .black
-        stack.alpha = 0.5
-        stack.spacing = 10
-        stack.layer.borderWidth = 0.5
-        stack.layer.borderColor = UIColor.black.cgColor
-        stack.layer.cornerRadius = 10
-        stack.layoutMargins = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 5)
-        stack.isLayoutMarginsRelativeArrangement = true
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
+    let authorImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: "sslug")
+        
+        imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        imageView.layer.cornerRadius = 15
+        
+        return imageView
     }()
-     let likeButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "chevron.up"), for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(likeButtonTouched), for: .touchUpInside)
-        return button
-    }()
-     let likesLabel: UILabel = {
+    let authorLabel: UILabel = {
         let label = UILabel()
-        label.text = "0"
-        label.textColor = .white
-        label.textAlignment = .center
-        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        label.text = "u/Sammy"
+        label.font = Constants.smallerTextFont
+        label.textColor = .lightGray
         label.numberOfLines = 1
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-     let dislikeButton: UIButton = {
+    let likeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(dislikeButtonTouched), for: .touchUpInside)
+        button.setImage(UIImage(systemName: "heart")?.withTintColor(Constants.redColor, renderingMode: .alwaysOriginal), for: .normal)
         return button
+    }()
+    let likesLabel: UILabel = {
+        let label = UILabel()
+        label.text = "0"
+        label.textColor = .black
+        label.textAlignment = .left
+        label.font = Constants.smallerTextFont
+        label.numberOfLines = 1
+        return label
+    }()
+    let commentsButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(systemName: "bubble.right.fill")?.withTintColor(Constants.redColor, renderingMode: .alwaysOriginal), for: .normal)
+        return button
+    }()
+    let commentsLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .left
+        label.text = "1"
+        label.font = Constants.smallerTextFont
+        label.textColor = .black
+        label.numberOfLines = 1
+        return label
     }()
     //MARK: button handlers
     @objc func dislikeButtonTouched(){
@@ -130,18 +154,33 @@ class PostView: UIView {
         self.backgroundColor = .white
         self.widthAnchor.constraint(equalToConstant: size.width).isActive = true
         
-        [likeButton,likesLabel,dislikeButton].forEach({likesStackView.addArrangedSubview($0)})
-        [authorUILabel, dateUILabel, titleUILabel, postImageView, bodyUILabel, likesStackView].forEach {self.addSubview($0)}
+        let authorStack = UIStackView(arrangedSubviews: [authorImageView, authorLabel])
+        authorStack.axis = .horizontal
+        authorStack.spacing = 10
+        //authorStack.backgroundColor = .yellow
+        
+        let likesCommentsStack = UIStackView(arrangedSubviews: [likeButton, likesLabel, commentsButton, commentsLabel])
+        likesCommentsStack.axis = .horizontal
+        likesCommentsStack.spacing = 10
+        likesCommentsStack.distribution = .fillEqually
+        //likesCommentsStack.backgroundColor = .green
+        
+        let bottomStack = UIStackView(arrangedSubviews: [authorStack, likesCommentsStack])
+        bottomStack.axis = .horizontal
+        bottomStack.distribution = .fillEqually
+        bottomStack.spacing = 10
+        
+        [authorUILabel, dateUILabel, titleUILabel, postImageView, bodyUILabel, bottomStack].forEach {containerView.addSubview($0)}
         
 
-        authorUILabel.addAnchors(top: self.topAnchor,
-                                 leading: self.leadingAnchor,
+        authorUILabel.addAnchors(top: containerView.topAnchor,
+                                 leading: containerView.leadingAnchor,
                                  bottom: nil,
                                  trailing: nil,
                                  padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: 0),
                                  size: .init(width: 0, height: 0))
         dateUILabel.addAnchors(
-                                top: self.topAnchor,
+                                top: containerView.topAnchor,
                                 leading: authorUILabel.trailingAnchor,
                                 bottom: nil,
                                 trailing: nil,
@@ -150,12 +189,12 @@ class PostView: UIView {
         
         
         titleUILabel.addAnchors(top: authorUILabel.bottomAnchor,
-                                leading: self.leadingAnchor,
+                                leading: containerView.leadingAnchor,
                                 bottom: nil,
-                                trailing: self.trailingAnchor,
+                                trailing: containerView.trailingAnchor,
                                 padding: .init(top: 0, left: Constants.standardPadding, bottom: 0, right: Constants.standardPadding ))
         
-        postImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        postImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
         postImageView.addAnchors(top: titleUILabel.bottomAnchor,
                                 leading: nil,
                                 bottom: nil,
@@ -166,14 +205,30 @@ class PostView: UIView {
         imageHeightConstaint.isActive = true
         
         bodyUILabel.addAnchors(top: postImageView.bottomAnchor,
-                               leading: self.leadingAnchor,
+                               leading: containerView.leadingAnchor,
                                bottom: nil,
-                               trailing: self.trailingAnchor,
+                               trailing: containerView.trailingAnchor,
                                padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: Constants.standardPadding))
-        likesStackView.addAnchors(top: bodyUILabel.bottomAnchor,
-                                  leading: self.leadingAnchor,
-                                  bottom: self.bottomAnchor,
-                                  trailing: nil,
+        bottomStack.addAnchors(top: bodyUILabel.bottomAnchor,
+                                  leading: containerView.leadingAnchor,
+                                  bottom: containerView.bottomAnchor,
+                                  trailing: containerView.trailingAnchor,
                                   padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: 0))
+        
+        
+        ///finish up by adding views to the content view
+        [shadowLayerView,containerView].forEach({self.addSubview($0)})
+        containerView.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
+                          leading: self.safeAreaLayoutGuide.leadingAnchor,
+                          bottom: self.safeAreaLayoutGuide.bottomAnchor,
+                          trailing: self.safeAreaLayoutGuide.trailingAnchor,
+                          padding: .init(top: 10, left: 10, bottom: 10, right: 10),
+                          size: .init(width: 0, height: 0))
+        shadowLayerView.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
+                          leading: self.safeAreaLayoutGuide.leadingAnchor,
+                          bottom: self.safeAreaLayoutGuide.bottomAnchor,
+                          trailing: self.safeAreaLayoutGuide.trailingAnchor,
+                          padding: .init(top: 10, left: 10, bottom: 10, right: 10),
+                          size: .init(width: 0, height: 0))
     }
 }

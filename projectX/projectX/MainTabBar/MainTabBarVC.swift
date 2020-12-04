@@ -36,8 +36,8 @@ class MainTabBarVC: UITabBarController {
         let profile = createViewController(tabBarItemImageName: "person", title: "Profile", controller: OtherProfileViewController())
         
         let homeNav = UINavigationController(rootViewController: home)
-        homeNav.navigationBar.barTintColor = .white//Constants.yellowColor
-        homeNav.navigationBar.backgroundColor = .white
+        homeNav.navigationBar.barTintColor = UIColor.white.withAlphaComponent(0.4)//Constants.yellowColor
+        homeNav.navigationBar.backgroundColor = UIColor.white.withAlphaComponent(0.4)
         let notigicationsNav = UINavigationController(rootViewController: notifications)
         let profileNav = UINavigationController(rootViewController: profile)
     
@@ -54,7 +54,7 @@ class MainTabBarVC: UITabBarController {
     }
     private func setupNavigationBarAppearance(){
         UINavigationBar.appearance().tintColor = .systemBlue
-        UINavigationBar.appearance().barTintColor = .white
+        UINavigationBar.appearance().barTintColor = UIColor.white.withAlphaComponent(0.4)
         UINavigationBar.appearance().shadowImage = UIImage()
     }
     private func setupTabBarAppearance(){
