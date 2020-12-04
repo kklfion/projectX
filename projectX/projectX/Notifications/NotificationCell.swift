@@ -37,14 +37,14 @@ class NotificationCell: UICollectionViewCell {
     
     let dateLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 10)
+        label.font = Constants.smallerTextFont
         label.textAlignment = .left
         label.textColor = .lightGray
         return label
     }()
     let textLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = Constants.bodyTextFont
         label.textAlignment = .left
         label.textColor = .black
         label.numberOfLines = 0

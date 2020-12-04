@@ -37,7 +37,8 @@ class PostViewController: UIViewController {
     private var commentsTableView: UITableView = {
         let tableview = UITableView()
         tableview.tableFooterView = UIView()
-        tableview.backgroundColor = UIColor.init(red: 223/255.0, green: 230/255.0, blue: 233/255.0, alpha: 1.0)
+        tableview.backgroundColor = .white
+        tableview.separatorStyle = .none
         return tableview
     }()
     
@@ -285,7 +286,7 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.cellID, for: indexPath) as! CommentCell
         let comment = comments[indexPath.row]
-        cell.authorTitleLable.text = comment.userInfo.name
+        //cell.authorTitleLable.text = comment.userInfo.name
         cell.commentLabel.text = comment.text
         let date = comment.date
         let formatter = DateFormatter()
@@ -293,8 +294,8 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
         cell.dateTimeLabel.text = "\(formatter.string(from: date))"
         let likes = comment.likes
         cell.likesLabel.text  = "\(likes)"
-        cell.extraTitleImageView.image = UIImage(systemName: comment.userInfo.titleImage ?? "")
-        cell.optionalAuthorExtraTitle.text = comment.userInfo.title
+        //cell.extraTitleImageView.image = UIImage(systemName: comment.userInfo.titleImage ?? "")
+//cell.optionalAuthorExtraTitle.text = comment.userInfo.title
         return cell
     }
 }
