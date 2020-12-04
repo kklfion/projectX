@@ -48,7 +48,9 @@ class LoginView: UIView {
         let imageView = UIImageView(image: UIImage(systemName: "envelope"))
         field.setLeftIcon(UIImage(systemName: "envelope")!, width: 25, height: 18)
         field.textColor = Constants.Colors.darkBrown
+        field.tintColor = Constants.Colors.darkBrown
         field.borderStyle = .none
+        field.heightAnchor.constraint(equalToConstant: 30).isActive = true
         return field
     }()
     let topSpacingButton: UIButton = {
@@ -63,7 +65,9 @@ class LoginView: UIView {
         field.setLeftIcon(UIImage(systemName: "lock")!)
         field.isSecureTextEntry = true
         field.textColor = Constants.Colors.darkBrown
+        field.tintColor = Constants.Colors.darkBrown
         field.borderStyle = .none
+        field.heightAnchor.constraint(equalToConstant: 30).isActive = true
         return field
     }()
     let errorButton: UIButton = {
@@ -241,7 +245,7 @@ class LoginView: UIView {
         path.addCurve(to: CGPoint(x: 90, y: yPoint + 35),
                       controlPoint1: CGPoint(x: 60, y: yPoint - 10),
                       controlPoint2: CGPoint(x: 70, y: yPoint + 20))
-        path.addLine(to: CGPoint(x: 80, y: -5))
+        path.addLine(to: CGPoint(x: 90, y: -5))
         path.addLine(to: CGPoint(x: -5, y: -5))
         path.close()
         return path

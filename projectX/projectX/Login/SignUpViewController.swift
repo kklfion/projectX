@@ -15,6 +15,7 @@ class SignUpViewController: UIViewController {
     lazy var signUpView = createSignUpView()
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "Sign Up"
         view.backgroundColor = .white
         setupView()
     }
@@ -28,6 +29,9 @@ class SignUpViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         addBottomLine()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        view.setNeedsLayout()
+    }
     func createSignUpView()-> SignUpView{
         let view = SignUpView(frame: self.view.frame)
         view.signUpButton.addTarget(self, action: #selector(newUserSignUp), for: .touchUpInside)
@@ -35,39 +39,42 @@ class SignUpViewController: UIViewController {
         view.emailTextField.delegate = self
         view.passwordTextField.delegate = self
         view.nameTextField.delegate = self
-        view.lastTextField  .delegate = self
 
         return view
         
     }
     func setupView(){
         view.addSubview(signUpView)
-        
+        setupNavBar()
+        self.addKeyboardTapOutGesture(target: self)
+    }
+    func setupNavBar()
+    {
+        let navBar = self.navigationController?.navigationBar
+        navBar?.barTintColor = Constants.Colors.mainYellow
+        navBar?.tintColor = Constants.Colors.darkBrown
+        navBar?.isTranslucent = false
+
     }
     func addBottomLine(){
         var bottomLine = CALayer()
         bottomLine.frame = CGRect(x: 0.0, y: signUpView.emailTextField.frame.height - 1, width: signUpView.emailTextField.frame.width, height: 1.0)
-        bottomLine.backgroundColor = UIColor.systemGreen.cgColor
+        bottomLine.backgroundColor = Constants.Colors.darkBrown.cgColor
         signUpView.emailTextField.borderStyle = .none
         signUpView.emailTextField.layer.addSublayer(bottomLine)
         
+        
         bottomLine = CALayer()
         bottomLine.frame = CGRect(x: 0.0, y: signUpView.passwordTextField.frame.height - 1, width: signUpView.passwordTextField.frame.width, height: 1.0)
-        bottomLine.backgroundColor = UIColor.systemGreen.cgColor
+        bottomLine.backgroundColor = Constants.Colors.darkBrown.cgColor
         signUpView.passwordTextField.borderStyle = .none
         signUpView.passwordTextField.layer.addSublayer(bottomLine)
         
         bottomLine = CALayer()
         bottomLine.frame = CGRect(x: 0.0, y: signUpView.nameTextField.frame.height - 1, width: signUpView.nameTextField.frame.width, height: 1.0)
-        bottomLine.backgroundColor = UIColor.systemGreen.cgColor
+        bottomLine.backgroundColor = Constants.Colors.darkBrown.cgColor
         signUpView.nameTextField.borderStyle = .none
         signUpView.nameTextField.layer.addSublayer(bottomLine)
-        
-        bottomLine = CALayer()
-        bottomLine.frame = CGRect(x: 0.0, y: signUpView.lastTextField.frame.height - 1, width: signUpView.lastTextField.frame.width, height: 1.0)
-        bottomLine.backgroundColor = UIColor.systemGreen.cgColor
-        signUpView.lastTextField.borderStyle = .none
-        signUpView.lastTextField.layer.addSublayer(bottomLine)
     }
 
     @objc func newUserSignUp(){
@@ -75,7 +82,6 @@ class SignUpViewController: UIViewController {
         guard let email = signUpView.emailTextField.text else{return}
         guard let password = signUpView.passwordTextField.text else{return}
         guard let name = signUpView.nameTextField.text else{return}
-        guard let lastname = signUpView.lastTextField.text else{return}
         //check data in the fields
         let loginError = isEmailPasswordValid(rawEmail: email, rawPassword: password)
         if let loginError = loginError {
@@ -91,7 +97,7 @@ class SignUpViewController: UIViewController {
                 self.displayLoginErrorMessage(message: "Failed creating a new account.")
                 return
             }else if let authResult = authResult{
-                let newUser = User(name: name + " " + lastname,
+                let newUser = User(name: name,
                                    photoURL: nil,
                                    email: email,
                                    uid: String(authResult.user.uid))
