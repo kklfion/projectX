@@ -22,8 +22,21 @@ class OtherProfileViewController: UIViewController {
     ///custom view
     private var profileView: ProfileView?
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+        self.navigationController?.navigationBar.shadowImage = nil
+        self.navigationController?.navigationBar.isTranslucent = false
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
+        extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         setupView()
         setupTableViews()
@@ -37,6 +50,7 @@ class OtherProfileViewController: UIViewController {
                                leading: view.leadingAnchor,
                                bottom: view.bottomAnchor,
                                 trailing: view.trailingAnchor)
+        //setupNavBar()
     }
     private func setupTableViews(){
         profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
@@ -56,11 +70,29 @@ class OtherProfileViewController: UIViewController {
         NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
+                    guard self.profileView?.profileImageViewContainer != nil else {return}
                     self.profileView?.profileImageView.image = image
+                    print("in here")
+                    if let shadowRect = self.profileView?.profileImageViewContainer.layer.bounds
+                    {
+                        self.profileView?.profileImageViewContainer.layer.masksToBounds = false
+                        self.profileView?.profileImageViewContainer.layer.shadowColor = UIColor.black.cgColor//Constants.Colors.mainYellow.cgColor
+                        self.profileView?.profileImageViewContainer.layer.shadowOpacity = 0.2
+                        self.profileView?.profileImageViewContainer.layer.shadowOffset = CGSize(width: -1, height: 1)
+                        self.profileView?.profileImageViewContainer.layer.shadowRadius = 10
+                        self.profileView?.profileImageViewContainer.layer.cornerRadius = 50
+                        self.profileView?.profileImageViewContainer.layer.shadowPath = UIBezierPath(roundedRect: shadowRect, cornerRadius: shadowRect.height / 2).cgPath
+                        //self.profileView?.profileImageViewContainer.layer.shadowPath = UIBezierPath(rect: (self.profileView?.profileImageViewContainer.layer.bounds)!).cgPath
+                        self.profileView?.profileImageViewContainer.layer.shouldRasterize = true
+                        self.profileView?.profileImageViewContainer.layer.rasterizationScale = UIScreen.main.scale
+                    }
+
                 }
             }
         }
         profileView?.usernameLabel.text = user.name
+        profileView?.useridLabel.attributedText = "@rad48 w/ 54 followers".withBoldText(text: "54")
+        profileView?.schoolLabel.text = "University of California, Santa Cruz"
         //fetch posts
         //wtf is this id "4UYdlUuclzgQb5cbCq6F"
         var query = NetworkManager.shared.db.posts.whereField(FirestoreFields.userInfoUserID.rawValue, isEqualTo: user.userID)
@@ -138,9 +170,7 @@ extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource
     }
 }
 extension OtherProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.width/2.2, height: self.view.frame.width*0.6)
-        }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return missions.count / 2
     }
@@ -155,7 +185,7 @@ extension OtherProfileViewController: UICollectionViewDelegate, UICollectionView
             return UICollectionViewCell()
         }
         
-        cell.descriptionLabel.text = missions[indexPath.row].text
+        cell.descriptionLabel.text = missions[indexPath.row].title
         NetworkManager.shared.getAsynchImage(withURL: missions[indexPath.row].imageURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
@@ -164,6 +194,21 @@ extension OtherProfileViewController: UICollectionViewDelegate, UICollectionView
             }
         }
         return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        return CGSize(width: (self.view.frame.width/2) - 13, height: self.view.frame.width*0.6)
+    }
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 1.0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout
+                            collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 1.0
     }
 }
 extension OtherProfileViewController: PostCellDidTapDelegate{

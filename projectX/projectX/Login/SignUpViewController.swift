@@ -45,16 +45,7 @@ class SignUpViewController: UIViewController {
     }
     func setupView(){
         view.addSubview(signUpView)
-        setupNavBar()
         self.addKeyboardTapOutGesture(target: self)
-    }
-    func setupNavBar()
-    {
-        let navBar = self.navigationController?.navigationBar
-        navBar?.barTintColor = Constants.Colors.mainYellow
-        navBar?.tintColor = Constants.Colors.darkBrown
-        navBar?.isTranslucent = false
-
     }
     func addBottomLine(){
         var bottomLine = CALayer()

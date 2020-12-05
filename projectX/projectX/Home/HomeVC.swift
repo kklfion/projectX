@@ -23,6 +23,7 @@ class HomeTableVC: UIViewController{
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
+        extendedLayoutIncludesOpaqueBars = true
         setupView()
         setupTableViewsDelegates()
         setupSearchController()
@@ -74,7 +75,6 @@ class HomeTableVC: UIViewController{
                              trailing: self.view.trailingAnchor)
         self.addKeyboardTapOutGesture(target: self)
     }
-
     private func setupTableViewsDelegates(){
         homeView?.loungeTableView.delegate = self
         homeView?.busStopTableView.delegate = self

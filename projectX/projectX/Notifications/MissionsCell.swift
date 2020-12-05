@@ -67,9 +67,9 @@ class MissionsCell: UITableViewCell {
         return label
     }()
     let notifimage: UIImageView = {
-        let label = UIImageView()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+        let image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        return image
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
