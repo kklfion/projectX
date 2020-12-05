@@ -24,10 +24,6 @@ class HomeTableVC: UICollectionViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         extendedLayoutIncludesOpaqueBars = true
-        setupView()
-        setupTableViewsDelegates()
-        setupSearchController()
-        addRefreshControl()
 
         signInUserIfNeeded()
         setupCollectionView()
@@ -72,50 +68,6 @@ class HomeTableVC: UICollectionViewController{
             self.tabBarController?.present(navvc, animated: true)
         }
     }
-    func addRefreshControl(){
-        refreshControl = UIRefreshControl()
-        refreshControl?.tintColor = UIColor.white
-        refreshControl?.addTarget(self, action: #selector(refreshList), for: .valueChanged)
-        homeView?.loungeTableView.addSubview(refreshControl!)
-
-    }
-    @objc func refreshList(){
-        //update data in refreshlist ... somehow, when new data appears
-        refreshControl?.endRefreshing()
-        homeView?.loungeTableView.reloadData()
-    }
-    private func setupView(){
-        self.view.backgroundColor = .white
-        homeView = HomeView(frame: self.view.frame)
-        homeView?.backgroundColor = .white
-        view.addSubview(homeView!)
-        homeView?.addAnchors(top: self.view.topAnchor,
-                             leading: self.view.leadingAnchor,
-                             bottom: self.view.bottomAnchor,
-                             trailing: self.view.trailingAnchor)
-        self.addKeyboardTapOutGesture(target: self)
-    }
-    private func setupTableViewsDelegates(){
-        homeView?.loungeTableView.delegate = self
-        homeView?.busStopTableView.delegate = self
-        homeView?.loungeTableView.dataSource = self
-        homeView?.busStopTableView.dataSource = self
-
-        homeView?.loungeTableView.rowHeight = UITableView.automaticDimension
-        homeView?.loungeTableView.estimatedRowHeight = 100
-        homeView?.busStopTableView.rowHeight = UITableView.automaticDimension
-        homeView?.busStopTableView.estimatedRowHeight = 100
-
-        homeView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
-        homeView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
-        homeView?.busStopTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
-        homeView?.busStopTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
-    }
-    /// setup top seatchBar to seatch for particular posts
-    private func setupSearchController(){
-        navigationItem.titleView = seachView
-    }
-
 }
 extension HomeTableVC: SideBarStationSelectionDelegate{
     func didTapSidebar(station: Station) {

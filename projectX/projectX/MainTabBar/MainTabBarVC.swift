@@ -35,8 +35,6 @@ class MainTabBarVC: UITabBarController {
         let profile = createViewController(tabBarItemImageName: "person", title: "Profile", controller: OtherProfileViewController())
         
         let homeNav = UINavigationController(rootViewController: home)
-        //homeNav.navigationBar.barTintColor = Constants.yellowColor
-        //homeNav.navigationBar.backgroundColor = Constants.yellowColor
         let notigicationsNav = UINavigationController(rootViewController: notifications)
         let profileNav = UINavigationController(rootViewController: profile)
     
@@ -57,15 +55,15 @@ class MainTabBarVC: UITabBarController {
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().shadowImage = UIImage()
     }
-    private func setupTabBarAppearance(){
-        tabBar.layer.masksToBounds = true
-        tabBar.isTranslucent = true
-        tabBar.tintColor = Constants.Colors.darkBrown
-        tabBar.barStyle = .default
-        tabBar.layer.cornerRadius = 20
-
-        UINavigationBar.appearance().shadowImage = UIImage()
-    }
+//    private func setupTabBarAppearance(){
+//        tabBar.layer.masksToBounds = true
+//        tabBar.isTranslucent = truer
+//        tabBar.tintColor = Constants.Colors.darkBrown
+//        tabBar.barStyle = .default
+//        tabBar.layer.cornerRadius = 20
+//
+//        UINavigationBar.appearance().shadowImage = UIImage()
+//    }
     private func setupTabBarAppearance(){
         //remove colors from tabbar
         tabBar.backgroundImage = UIImage()

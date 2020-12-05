@@ -100,7 +100,6 @@ class OtherProfileViewController: UIViewController {
                 DispatchQueue.main.async {
                     guard self.profileView?.profileImageViewContainer != nil else {return}
                     self.profileView?.profileImageView.image = image
-                    print("in here")
                     if let shadowRect = self.profileView?.profileImageViewContainer.layer.bounds
                     {
                         self.profileView?.profileImageViewContainer.layer.masksToBounds = false
