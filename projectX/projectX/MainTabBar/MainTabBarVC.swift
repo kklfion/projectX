@@ -52,13 +52,18 @@ class MainTabBarVC: UITabBarController {
         return controller
     }
     private func setupNavigationBarAppearance(){
-//        let navBarAppearance = UINavigationBarAppearance()
-//        navBarAppearance.configureWithOpaqueBackground()
-//        navBarAppearance.backgroundColor = .red
-//        navigationController?.navigationBar.standardAppearance = navBarAppearance
-//        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
-        UINavigationBar.appearance().tintColor = .systemBlue
-        UINavigationBar.appearance().barTintColor = UIColor.white
+        UINavigationBar.appearance().tintColor = Constants.Colors.darkBrown
+        UINavigationBar.appearance().barTintColor = Constants.Colors.mainYellow
+        UINavigationBar.appearance().isTranslucent = false
+        UINavigationBar.appearance().shadowImage = UIImage()
+    }
+    private func setupTabBarAppearance(){
+        tabBar.layer.masksToBounds = true
+        tabBar.isTranslucent = true
+        tabBar.tintColor = Constants.Colors.darkBrown
+        tabBar.barStyle = .default
+        tabBar.layer.cornerRadius = 20
+
         UINavigationBar.appearance().shadowImage = UIImage()
     }
     private func setupTabBarAppearance(){

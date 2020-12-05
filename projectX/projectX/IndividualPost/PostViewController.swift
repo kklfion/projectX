@@ -54,6 +54,7 @@ class PostViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         self.navigationItem.title = post.stationName
         

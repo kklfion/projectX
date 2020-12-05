@@ -17,7 +17,7 @@ class SegmentedControlWithTableViewAndCollectionView: UIView{
         fatalError("init(coder:) has not been implemented")
     }
     let segmentedControl: UISegmentedControl = {
-        let sc = UISegmentedControl(items: ["Lounge", "Bulletin Board"])
+        let sc = UISegmentedControl(items: ["Posts", "Missions"])
         sc.selectedSegmentIndex = 0
         sc.selectedSegmentTintColor = .white
         sc.layer.backgroundColor = UIColor.white.cgColor
@@ -43,6 +43,7 @@ class SegmentedControlWithTableViewAndCollectionView: UIView{
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        layout.minimumInteritemSpacing = 1
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .white
         return collectionView
@@ -61,8 +62,8 @@ class SegmentedControlWithTableViewAndCollectionView: UIView{
         stackView.addAnchors(top: segmentedControl.bottomAnchor,
                                             leading: self.leadingAnchor,
                                             bottom: self.bottomAnchor,
-                                            trailing: nil, padding: .init(top: 10, left: 0, bottom: 0, right: 0),
-                                            size: .init(width: self.frame.width * 2, height: 0))
+                                            trailing: nil, padding: .init(top: 10, left: 0, bottom: 0, right: 10),
+                                            size: .init(width: (self.frame.width * 2), height: 0))
     }
     /// Animation for switching between two tableViewControllers
     private var toggle: Bool = true

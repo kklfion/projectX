@@ -35,6 +35,7 @@ import UIKit
 
     override func viewDidLoad() {
         view.backgroundColor = .white
+        extendedLayoutIncludesOpaqueBars = true
         setupView()
         setupHeights()
         setupTableView(tableView: stationView.tableViewAndCollectionView?.loungeTableView ?? nil)
