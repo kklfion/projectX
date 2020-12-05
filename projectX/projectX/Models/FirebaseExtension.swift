@@ -34,4 +34,7 @@ extension Firestore{
     var followedStations: CollectionReference{
         return self.collection("followedStations")
     }
+    var notifications: CollectionReference{
+        return self.collection("notifications")
+    }
 }

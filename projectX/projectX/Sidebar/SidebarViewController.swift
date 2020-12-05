@@ -127,6 +127,13 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
         }
         
     }
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        if tableView == sideBarView?.stationsTableView{
+//            return "Stations:"
+//        } else {
+//            return nil
+//        }
+//    }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SideBarView.menuCellID, for: indexPath)
@@ -141,7 +148,7 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
         else{ //stations
             let text = dbstations?[indexPath.row].stationName
             cell.textLabel?.text = text
-            cell.textLabel?.textAlignment = .center
+            cell.textLabel?.textAlignment = .left
             cell.imageView?.image = nil
             cell.selectionStyle = .none
         }

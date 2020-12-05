@@ -18,72 +18,38 @@ class MainTabBarVC: UITabBarController {
     /// has to be global, bc I need to set sidebars delegate = homeview
     /// so that homeview can present selected station
     let home = HomeTableVC()
-    
+    ///tabbaritems configuration
+    let tabBarSymbolsConfiguration = UIImage.SymbolConfiguration(weight: .semibold)
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
         setupNavigationBarAppearance()
         setupSideBarItems()
         setupTabBarAppearance()
-
-        ///test
-        tempQueries()
-    }
-    private func tempQueries(){
-//        let user = User(name: "Radomyr Bezghin",
-//                        photoURL: URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/defaultUserIcon.png?alt=media&token=2e6edb8e-ac03-47fb-b58c-31bd6f3598e8"),
-//                        email: "radomirbezgin@gmail.com", uid: "59qIdPL8uAfltJryIrAWfQNFcuN2")
-//
-//        let mission = Mission(stationID: "vpuu9oIPMkkxxRh3qINU",
-//                              stationName: "UC Santa Cruz",
-//                              likes: 0,
-//                              userInfo: user,
-//                              title: "Fix my brain",
-//                              text: "test mission #2",
-//                              date: Date(),
-//                              imageURL: nil)
-
-//        let acceptedMission = AcceptedMissions(userID: "59qIdPL8uAfltJryIrAWfQNFcuN2", missionID: "jbq6fTixiEoQn6LhyAIL", date: Date())
-        
-//        NetworkManager.shared.writeDocumentsWith(collectionType: .missions, documents: [mission]) { (error) in
-//            if error != nil {
-//                print(error)
-//            }
-//        }
-        
     }
     private func setupSideBarItems(){
-        let sidebarItem = UITabBarItem()
-        sidebarItem.image = UIImage(systemName: "sidebar.left")
-        sidebarItem.title = "Sidebar"
-        let newPostItem = UITabBarItem()
-        newPostItem.image = UIImage(systemName: "pencil")
-        newPostItem.title = "New Post"
-        let homeItem = UITabBarItem()
-        homeItem.image = UIImage(systemName: "house")
-        homeItem.title = "Home"
-        let notificationsItem = UITabBarItem()
-        notificationsItem.image = UIImage(systemName: "envelope")
-        notificationsItem.title = "Mailroom"
-        let profileItem = UITabBarItem()
-        profileItem.image = UIImage(systemName: "person")
-        profileItem.title = "Profile"
+        let sidebar = createViewController(tabBarItemImageName: "sidebar.left", title: "Sidebar", controller: SidebarViewController())
+        let newPost = createViewController(tabBarItemImageName: "pencil", title: "New Post", controller: NewPostVC())
+        _ = createViewController(tabBarItemImageName: "house", title: "Home", controller: home)
+        let notifications = createViewController(tabBarItemImageName: "envelope", title: "Mailroom", controller: NotificationsTableVC())
+        let profile = createViewController(tabBarItemImageName: "person", title: "Profile", controller: OtherProfileViewController())
         
-        let sidebar = SidebarViewController()
-        sidebar.tabBarItem = sidebarItem
-        let newPost = NewPostVC()
-        newPost.tabBarItem = newPostItem
-        home.tabBarItem = homeItem
         let homeNav = UINavigationController(rootViewController: home)
-        let notifications = NotificationsTableVC()
-        notifications.tabBarItem = notificationsItem
+        //homeNav.navigationBar.barTintColor = Constants.yellowColor
+        //homeNav.navigationBar.backgroundColor = Constants.yellowColor
         let notigicationsNav = UINavigationController(rootViewController: notifications)
-        let profile = ProfileTableVC()
-        profile.tabBarItem = profileItem
         let profileNav = UINavigationController(rootViewController: profile)
     
-        self.viewControllers = [sidebar,homeNav,newPost,notigicationsNav,profileNav]
-        self.selectedIndex = 1
+        self.viewControllers = [sidebar, newPost, homeNav, notigicationsNav, profileNav]
+        self.selectedIndex = 2
+    }
+    ///creates tabbarItems and assigns them to the viewControllers
+    private func createViewController(tabBarItemImageName: String, title: String, controller: UIViewController) -> UIViewController{
+        let item = UITabBarItem()
+        item.image = UIImage(systemName: tabBarItemImageName)?.withConfiguration(tabBarSymbolsConfiguration)
+        item.title = title
+        controller.tabBarItem = item
+        return controller
     }
     private func setupNavigationBarAppearance(){
         UINavigationBar.appearance().tintColor = Constants.Colors.darkBrown
@@ -97,6 +63,35 @@ class MainTabBarVC: UITabBarController {
         tabBar.tintColor = Constants.Colors.darkBrown
         tabBar.barStyle = .default
         tabBar.layer.cornerRadius = 20
+
+        UINavigationBar.appearance().shadowImage = UIImage()
+    }
+    private func setupTabBarAppearance(){
+        //remove colors from tabbar
+        tabBar.backgroundImage = UIImage()
+        tabBar.shadowImage = UIImage()
+        
+        //create a rounded layer with shadow and add it to the transparent tabar
+        let layer = CAShapeLayer()
+        layer.path = UIBezierPath(roundedRect: CGRect(x: 0,
+                                                      y: self.view.bounds.minY,
+                                                      width: self.tabBar.bounds.width,
+                                                      height: self.tabBar.bounds.height + 100),
+                                  cornerRadius: (20)).cgPath
+        layer.shadowColor = UIColor.lightGray.cgColor
+        layer.shadowOffset = CGSize(width: 5.0, height: 5.0)
+        layer.shadowRadius = 25.0
+        layer.shadowOpacity = 0.3
+        layer.borderWidth = 1.0
+        layer.opacity = 1.0
+        layer.isHidden = false
+        layer.masksToBounds = false
+        layer.fillColor = UIColor.white.cgColor
+        self.tabBar.layer.insertSublayer(layer, at: 0)
+
+        tabBar.barTintColor = Constants.backgroundColor
+        //tabBar.unselectedItemTintColor = Constants.brownColor
+        tabBar.tintColor = Constants.brownColor//Constants.yellowColor
     }
 }
 //MARK: handling special cases of tabbar items
@@ -127,7 +122,7 @@ extension MainTabBarVC: UITabBarControllerDelegate{
             self.transitionToNew(menuType)
         }
         vc.didTapSideBarStationType = { 
-            tabBarController.selectedIndex = 1
+            tabBarController.selectedIndex = 2
         }()
         vc.modalPresentationStyle = .overCurrentContext
         self.present(vc, animated: true)

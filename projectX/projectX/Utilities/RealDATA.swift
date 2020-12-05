@@ -116,3 +116,24 @@ class queryData {
 }//class end
 
 
+//    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        let position = scrollView.contentOffset.y
+//        if position > (collectionView.contentSize.height-100-scrollView.frame.size.height){
+//            guard !queryPosts.isPaginating else{
+//                //we fetching data
+//                return
+//            }
+//            queryPosts.queryPost(pagination: true) { result in
+//                switch result {
+//                    case .success(let moreData):
+//                        self.postData.append(contentsOf: moreData)
+//                    DispatchQueue.main.async {
+//                        self.collectionView.reloadData()
+//                    }
+//                    case .failure(_):
+//                        break
+//                }
+//
+//            }
+//        }
+//    }

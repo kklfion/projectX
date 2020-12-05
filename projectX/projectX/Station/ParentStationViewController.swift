@@ -207,27 +207,14 @@ extension ParentStationViewController: UITableViewDelegate, UITableViewDataSourc
             cell.selectionStyle = .none
             return cell
         }else {
-            switch posts[indexPath.row].imageURL {
-            case nil:
-                if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
-                    addData(toCell: cell, withIndex: indexPath.row)
-                    cell.indexPath = indexPath
-                    cell.delegate = self
-                    cell.selectionStyle = .none
-                    return cell
-                }
-            default:
-                if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
-                    cell.postUIImageView.image = nil
-                    addData(toCell: cell, withIndex: indexPath.row)
-                    cell.indexPath = indexPath
-                    cell.delegate = self
-                    cell.selectionStyle = .none
-                    return cell
-                }
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage else {return UITableViewCell()}
+            addData(toCell: cell, withIndex: indexPath.row)
+            cell.indexPath = indexPath
+            cell.delegate = self
+            cell.selectionStyle = .none
+            return cell
         }
-        return UITableViewCell()
+
     }
     private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
         cell.textLabel?.text = "\(subStations[index].stationName)"
@@ -240,30 +227,26 @@ extension ParentStationViewController: UITableViewDelegate, UITableViewDataSourc
         }
     }
     private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
-        cell.titleUILabel.text =  posts[index].title
-        cell.titleUILabel.text =  posts[index].title
-        cell.previewUILabel.text =  posts[index].text
-        cell.authorUILabel.text =  posts[index].userInfo.name
-        cell.likesLabel.text = "\(posts[index].likes)"
-        cell.commentsUILabel.text = "0"
-        cell.dateUILabel.text = "\(index)h"
+        cell.postImageView.image = nil
+        cell.titleLabel.text =  posts[index].title
+        cell.messageLabel.text =  posts[index].text
+        cell.authorLabel.text =  posts[index].userInfo.name
+        cell.likesLabel.text =  String(posts[index].likes)
+        cell.commentsLabel.text =  String(posts[index].commentCount)
         cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-        
-    }
-    private func addData(toCell cell: PostCellWithImage, withIndex index: Int ){
-        cell.titleUILabel.text =  posts[index].title
-        cell.titleUILabel.text =  posts[index].title
-        cell.previewUILabel.text =  posts[index].text
-        cell.authorUILabel.text =  posts[index].userInfo.name
-        cell.likesLabel.text = "\(posts[index].likes)"
-        cell.commentsUILabel.text = "0"
-        cell.dateUILabel.text = "\(index)h"
-        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-        NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
-            DispatchQueue.main.async {
-                cell.postUIImageView.image = image
-                cell.layoutSubviews()
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        let dateString = formatter.string(from: posts[index].date)
+        cell.dateLabel.text = "\(dateString)"
+        if posts[index].imageURL != nil {
+            cell.postImageView.isHidden = false
+            NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
+                DispatchQueue.main.async {
+                    cell.postImageView.image = image
+                }
             }
+        } else{
+            cell.postImageView.isHidden = true
         }
     }
 }
@@ -308,8 +291,8 @@ extension ParentStationViewController: PostCellDidTapDelegate{
         }
     }
     private func presentAuthorFor(indexPath: IndexPath){
-        let vc = OtherProfileViewController()
-        vc.user = posts[indexPath.row].userInfo
+        let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
+        //vc.user = posts[indexPath.row].userInfo
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

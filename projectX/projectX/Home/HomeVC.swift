@@ -9,18 +9,18 @@
 import UIKit
 import FirebaseAuth
 
-class HomeTableVC: UIViewController{
+class HomeTableVC: UICollectionViewController{
+    
+    let searchController = UISearchController(searchResultsController: nil)
+    
+    private var posts = [Post]()
 
-    private var homeView: HomeView?
-    var refreshControl: UIRefreshControl?
-    private var postData = [Post]()
-    private let queryPosts = queryData()
-
-    private let seachView: UISearchBar = {
-        let sb = UISearchBar()
-        sb.showsCancelButton = true
-        return sb
-    }()
+    init(){
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         extendedLayoutIncludesOpaqueBars = true
@@ -28,21 +28,41 @@ class HomeTableVC: UIViewController{
         setupTableViewsDelegates()
         setupSearchController()
         addRefreshControl()
+
         signInUserIfNeeded()
+        setupCollectionView()
+        getData()
     }
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        queryPosts.queryPost(pagination: false, completion: {[weak self] result in
-            switch result {
-            case .success(let data):
-                self?.postData.append(contentsOf: data)
-                DispatchQueue.main.async {
-                    self?.homeView?.loungeTableView.reloadData()
-                }
-            case .failure(_):
-                break
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.configureWithOpaqueBackground()
+        navBarAppearance.backgroundColor = Constants.yellowColor
+        navigationController?.navigationBar.standardAppearance = navBarAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+        //navigationController?.navigationBar.layer.cornerRadius = 25
+        //navigationController?.navigationBar.clipsToBounds = true
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    private func setupCollectionView(){
+        collectionView.backgroundColor = .white
+        collectionView.isPrefetchingEnabled = false
+        self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.cellID)
+        self.navigationItem.title = "Home"
+        navigationItem.searchController = searchController
+    }
+    private func getData(){
+        let query = NetworkManager.shared.db.posts
+        NetworkManager.shared.getDocumentsForQuery(query: query) { (posts: [Post]? , error) in
+            if error != nil{
+                print("Error loading posts for home \(String(describing: error?.localizedDescription))")
+            }else if posts != nil{
+                self.posts = posts!
+                self.collectionView.reloadData()
             }
-        })
+        }
     }
     private func signInUserIfNeeded(){
         if Auth.auth().currentUser == nil {
@@ -95,6 +115,7 @@ class HomeTableVC: UIViewController{
     private func setupSearchController(){
         navigationItem.titleView = seachView
     }
+
 }
 extension HomeTableVC: SideBarStationSelectionDelegate{
     func didTapSidebar(station: Station) {
@@ -110,88 +131,49 @@ extension HomeTableVC: SideBarStationSelectionDelegate{
         }
     }
 }
-extension HomeTableVC: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-
+// MARK: UICollectionViewDataSource & UICollectionViewDelegateFlowLayout
+extension HomeTableVC: UICollectionViewDelegateFlowLayout{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        .init(width: view.frame.width, height: 200)
     }
-}
-extension HomeTableVC: UITableViewDelegate, UITableViewDataSource{
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        guard let cell = cell as? PostCell else {return}
-//        let radius = cell.shadowLayerView.layer.cornerRadius
-//        cell.shadowLayerView.layer.shadowPath = UIBezierPath(roundedRect: cell.shadowLayerView.bounds, cornerRadius: radius).cgPath
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
     }
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        postData.count
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return posts.count
     }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         presentPostFor(indexPath: indexPath)
     }
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.cellID, for: indexPath) as? PostCollectionViewCell else {return UICollectionViewCell()}
+        addData(toCell: cell, withIndex: indexPath.row)
+        cell.delegate = self
+        cell.indexPath = indexPath
+        return cell
+    }
 
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let position = scrollView.contentOffset.y
-        if position > (homeView!.loungeTableView.contentSize.height-100-scrollView.frame.size.height){
-            guard !queryPosts.isPaginating else{
-                //we fetching data chill the fuck out
-                return
-            }
-            queryPosts.queryPost(pagination: true) { result in
-                switch result {
-                    case .success(let moreData):
-                        self.postData.append(contentsOf: moreData)
-                    DispatchQueue.main.async {
-                        self.homeView?.loungeTableView.reloadData()
-                    }
-                    case .failure(_):
-                        break
+    private func addData(toCell cell: PostCollectionViewCell, withIndex index: Int ){
+        cell.postImageView.image = nil
+        cell.titleLabel.text =  posts[index].title
+        cell.messageLabel.text =  posts[index].text
+        cell.authorLabel.text =  posts[index].userInfo.name
+        cell.likesLabel.text =  String(posts[index].likes)
+        cell.commentsLabel.text =  String(posts[index].commentCount)
+        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        let dateString = formatter.string(from: posts[index].date)
+        cell.dateLabel.text = "\(dateString)"
+        if posts[index].imageURL != nil {
+            cell.postImageView.isHidden = false
+            NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
+                DispatchQueue.main.async {
+                    cell.postImageView.image = image
                 }
-
             }
-            //print("Fetch more data")
-        }
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch postData[indexPath.row].imageURL {
-        case nil:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.selectionStyle = .none
-                cell.indexPath = indexPath
-                cell.delegate = self
-                return cell
-            }
-        default:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.indexPath = indexPath
-                cell.delegate = self
-                cell.selectionStyle = .none
-                return cell
-            }
-        }
-        return UITableViewCell()
-    }
-    private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
-        if let cell = cell as? PostCellWithImage{
-            cell.titleUILabel.text =  postData[index].title
-            cell.previewUILabel.text =  postData[index].text
-            cell.authorUILabel.text =  postData[index].userInfo.name
-            cell.likesLabel.text =  String(postData[index].likes)
-            cell.commentsUILabel.text =  String(postData[index].commentCount)
-            cell.dateUILabel.text = "\(index)h"
-            cell.stationButton.setTitle(postData[index].stationName, for: .normal)
-
-            let temp = UIImageView()
-            temp.load(url: postData[index].imageURL!)
-            cell.postUIImageView.image = temp.image
-        }else if let cell = cell as? PostCellWithoutImage {
-            cell.titleUILabel.text =  postData[index].title
-            cell.previewUILabel.text =  postData[index].text
-            cell.authorUILabel.text =  postData[index].userInfo.name
-            cell.likesLabel.text =  String(postData[index].likes)
-            cell.commentsUILabel.text =  String(postData[index].commentCount)
-            cell.stationButton.setTitle(postData[index].stationName, for: .normal)
-            cell.dateUILabel.text = "\(index)h"
+        } else{
+            cell.postImageView.isHidden = true
         }
     }
 }
@@ -214,12 +196,12 @@ extension HomeTableVC: PostCellDidTapDelegate{
     }
     
     private func presentPostFor(indexPath: IndexPath){
-        let postvc = PostViewController(post: postData[indexPath.row])
+        let postvc = PostViewController(post: posts[indexPath.row])
         postvc.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(postvc, animated: true)
     }
     private func presentStationFor(indexPath: IndexPath){
-        NetworkManager.shared.getDocumentForID(collection: .stations, uid: postData[indexPath.row].stationID) { (document: Station?, error) in
+        NetworkManager.shared.getDocumentForID(collection: .stations, uid: posts[indexPath.row].stationID) { (document: Station?, error) in
             if error != nil {
                 print("error receiving station")
             }else if document != nil {
@@ -231,8 +213,7 @@ extension HomeTableVC: PostCellDidTapDelegate{
         }
     }
     private func presentAuthorFor(indexPath: IndexPath){
-        let vc = OtherProfileViewController()
-        vc.user = postData[indexPath.row].userInfo
+        let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

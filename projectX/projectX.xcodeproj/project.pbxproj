@@ -33,6 +33,8 @@
 		804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A624980E4B00825150 /* ProfileTableVC.swift */; };
 		8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62C24A6CEC0002A9E16 /* HomeView.swift */; };
 		8066D62F24AACAF8002A9E16 /* PostCellWithImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */; };
+		8067F0BE257AD70800CED98F /* RoundShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F0BD257AD70800CED98F /* RoundShadowView.swift */; };
+		8067F0C1257ADC3B00CED98F /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F0C0257ADC3B00CED98F /* PostCollectionViewCell.swift */; };
 		8068E7CE2541029C00A85B33 /* CellProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E7CD2541029C00A85B33 /* CellProtocols.swift */; };
 		8068E7D3254107BD00A85B33 /* ParentStationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E7D2254107BD00A85B33 /* ParentStationViewController.swift */; };
 		8068E80225410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */; };
@@ -50,6 +52,8 @@
 		808361CB2529215700DEF0DE /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361CA2529215700DEF0DE /* NetworkManager.swift */; };
 		80A0DC16253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC15253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift */; };
 		80A0DC1D253B780300474541 /* BoardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC1C253B780300474541 /* BoardCell.swift */; };
+		80AF6F0C2577285F006A6C57 /* RoundedNavBarProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AF6F0B2577285F006A6C57 /* RoundedNavBarProtocol.swift */; };
+		80AF6F0F2579A2B5006A6C57 /* ShadowLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AF6F0E2579A2B5006A6C57 /* ShadowLayerView.swift */; };
 		80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */; };
 		80B2C6A92516E3220025F9EE /* SideBarSlidingTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */; };
 		80BB37B024D7ACCB00B12253 /* StationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BB37AF24D7ACCB00B12253 /* StationView.swift */; };
@@ -103,6 +107,8 @@
 		804E61A624980E4B00825150 /* ProfileTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableVC.swift; sourceTree = "<group>"; };
 		8066D62C24A6CEC0002A9E16 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCellWithImage.swift; sourceTree = "<group>"; };
+		8067F0BD257AD70800CED98F /* RoundShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundShadowView.swift; sourceTree = "<group>"; };
+		8067F0C0257ADC3B00CED98F /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
 		8068E7CD2541029C00A85B33 /* CellProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellProtocols.swift; sourceTree = "<group>"; };
 		8068E7D2254107BD00A85B33 /* ParentStationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentStationViewController.swift; sourceTree = "<group>"; };
 		8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlWithTwoTableViews.swift; sourceTree = "<group>"; };
@@ -120,6 +126,8 @@
 		808361CA2529215700DEF0DE /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		80A0DC15253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlWithTableViewAndCollectionView.swift; sourceTree = "<group>"; };
 		80A0DC1C253B780300474541 /* BoardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCell.swift; sourceTree = "<group>"; };
+		80AF6F0B2577285F006A6C57 /* RoundedNavBarProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedNavBarProtocol.swift; sourceTree = "<group>"; };
+		80AF6F0E2579A2B5006A6C57 /* ShadowLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowLayerView.swift; sourceTree = "<group>"; };
 		80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarSlidingTransition.swift; sourceTree = "<group>"; };
 		80BB37AF24D7ACCB00B12253 /* StationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationView.swift; sourceTree = "<group>"; };
@@ -217,6 +225,7 @@
 			children = (
 				8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */,
 				808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */,
+				8067F0C0257ADC3B00CED98F /* PostCollectionViewCell.swift */,
 				803D759F250AD3E0003F569D /* CommentCell.swift */,
 				80A0DC1C253B780300474541 /* BoardCell.swift */,
 				8068E7CD2541029C00A85B33 /* CellProtocols.swift */,
@@ -338,6 +347,7 @@
 				806E777924C9255F00A95B89 /* DataTest.swift */,
 				806E777724C9076200A95B89 /* Extensions.swift */,
 				90C178B625319EE800200222 /* RealDATA.swift */,
+				80AF6F0B2577285F006A6C57 /* RoundedNavBarProtocol.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -365,6 +375,8 @@
 		80A0DC19253B5BB600474541 /* ReusableUIElements */ = {
 			isa = PBXGroup;
 			children = (
+				80AF6F0E2579A2B5006A6C57 /* ShadowLayerView.swift */,
+				8067F0BD257AD70800CED98F /* RoundShadowView.swift */,
 				80A0DC15253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift */,
 				8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */,
 			);
@@ -489,6 +501,7 @@
 			files = (
 				8081185424C2626C0032D46D /* LoginViewController.swift in Sources */,
 				803D75B5250B079E003F569D /* FirebaseExtension.swift in Sources */,
+				80AF6F0F2579A2B5006A6C57 /* ShadowLayerView.swift in Sources */,
 				804E618B24957D0C00825150 /* ViewController.swift in Sources */,
 				804E619D24980C9400825150 /* NotificationsTableVC.swift in Sources */,
 				80D97BAC251D819C00825BBB /* MissionDeadlineCell.swift in Sources */,
@@ -522,6 +535,7 @@
 				ED4E056E2533C3CF007ED4FA /* Notification.swift in Sources */,
 				803D75A5250AD3E0003F569D /* PostViewController.swift in Sources */,
 				803D75A2250AD3E0003F569D /* NewCommentView.swift in Sources */,
+				80AF6F0C2577285F006A6C57 /* RoundedNavBarProtocol.swift in Sources */,
 				803D75AC250AD75F003F569D /* User.swift in Sources */,
 				801A37A62514024800F22A11 /* NotificationCell.swift in Sources */,
 				804E61A524980DFD00825150 /* HomeVC.swift in Sources */,
@@ -536,10 +550,12 @@
 				8068E7CE2541029C00A85B33 /* CellProtocols.swift in Sources */,
 				80A0DC1D253B780300474541 /* BoardCell.swift in Sources */,
 				8068E7D3254107BD00A85B33 /* ParentStationViewController.swift in Sources */,
+				8067F0BE257AD70800CED98F /* RoundShadowView.swift in Sources */,
 				80A0DC16253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift in Sources */,
 				90C178CD25439A5200200222 /* AcceptedMission.swift in Sources */,
 				90C178D325439A9000200222 /* Follower.swift in Sources */,
 				806E777624C9074700A95B89 /* Constants.swift in Sources */,
+				8067F0C1257ADC3B00CED98F /* PostCollectionViewCell.swift in Sources */,
 				90C178CF25439A6300200222 /* LikedPost.swift in Sources */,
 				803972D52519780D002695EC /* SideBarView.swift in Sources */,
 				80BB37B224D8C50700B12253 /* StationViewController.swift in Sources */,

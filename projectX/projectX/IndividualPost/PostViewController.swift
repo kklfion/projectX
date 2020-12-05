@@ -25,8 +25,8 @@ class PostViewController: UIViewController {
     private var newCommentView: NewCommentView = {
         let view = NewCommentView()
         view.commentTextView.isScrollEnabled = true
-        view.isHidden = true
-        view.isUserInteractionEnabled = false
+        view.isUserInteractionEnabled = true
+        view.commentTextView.isUserInteractionEnabled = true
         return view
     }()
     
@@ -37,7 +37,8 @@ class PostViewController: UIViewController {
     private var commentsTableView: UITableView = {
         let tableview = UITableView()
         tableview.tableFooterView = UIView()
-        tableview.backgroundColor = UIColor.init(red: 223/255.0, green: 230/255.0, blue: 233/255.0, alpha: 1.0)
+        tableview.backgroundColor = .white
+        tableview.separatorStyle = .none
         return tableview
     }()
     
@@ -60,14 +61,14 @@ class PostViewController: UIViewController {
         //only this order works, some bug that makes newcommentview invisible if this is changed
         setupTableViewAndHeader()
         populatePostViewWithPost()
-        setupToolbar()
+        //setupToolbar()
         setupNewCommentView()
         setupKeyboardnotifications()
         loadCommentsForPost()
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        self.navigationController?.isToolbarHidden = true
+        //self.navigationController?.isToolbarHidden = true
     }
     private func setupNewCommentView(){
         newCommentView.commentTextView.delegate = self
@@ -75,8 +76,9 @@ class PostViewController: UIViewController {
         newCommentView.addAnchors( top: nil,
                                 leading: view.leadingAnchor,
                                 bottom: nil,
-                                trailing: view.trailingAnchor)
-        newCommentViewBottomConstraint = newCommentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+                                trailing: view.trailingAnchor,
+                                size: .init(width: 0, height: 0))
+        newCommentViewBottomConstraint = newCommentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 30)
         newCommentViewBottomConstraint?.isActive = true
         //to get current size
         textViewDidChange(newCommentView.commentTextView)
@@ -116,23 +118,10 @@ class PostViewController: UIViewController {
         postHeaderView?.layoutIfNeeded()
         
     }
-    //TODO: this will be replaced in the update
-    private func setupToolbar(){
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
-        let shareButton = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up")?.withTintColor(.black, renderingMode: .alwaysOriginal), style: .plain, target: self, action: #selector(shareButtonPushed))
-        let commentButton = UIBarButtonItem(image: UIImage(systemName: "text.bubble")?.withTintColor(.black, renderingMode: .alwaysOriginal), style: .plain, target: self, action: #selector(createCommentButtonPushed))
-        let writeButton = UIBarButtonItem(image: UIImage(systemName: "pencil")?.withTintColor(.black, renderingMode: .alwaysOriginal), style: .plain, target: self, action: #selector(writeButtonPushed))
-        let bookmarkButton = UIBarButtonItem(image: UIImage(systemName: "bookmark")?.withTintColor(.black, renderingMode: .alwaysOriginal), style: .plain, target: self, action: #selector(bookmarkButtonPushed))
-        let closeButton = UIBarButtonItem(image: UIImage(systemName: "xmark")?.withTintColor(.black, renderingMode: .alwaysOriginal), style: .plain, target: self, action: #selector(closeButtonPushed))
-        self.toolbarItems = [shareButton,flexibleSpace,commentButton,flexibleSpace,writeButton,flexibleSpace,bookmarkButton, flexibleSpace ,closeButton]
-        navigationController?.setToolbarHidden(false, animated: true)
-    }
 }
 //MARK: Handlers
 extension PostViewController{
     @objc private func keyboardWillShow(notification: NSNotification) {
-        newCommentView.isHidden = false
-        newCommentView.isUserInteractionEnabled = true
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
             let keyboardHeight = keyboardRectangle.height
@@ -143,13 +132,12 @@ extension PostViewController{
         }
     }
     @objc private func keyboardWillHide(notification: NSNotification) {
-        newCommentView.isHidden = true
-        newCommentView.isUserInteractionEnabled = false
-        newCommentViewBottomConstraint?.constant = 0
+        newCommentViewBottomConstraint?.constant = -30
 
     }
     @objc func didTapDissmissNewComment(){
         newCommentView.commentTextView.endEditing(true)
+        
     }
     @objc func didTapSendButton(){
         if let user = Auth.auth().currentUser{
@@ -286,7 +274,7 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.cellID, for: indexPath) as! CommentCell
         let comment = comments[indexPath.row]
-        cell.authorTitleLable.text = comment.userInfo.name
+        //cell.authorTitleLable.text = comment.userInfo.name
         cell.commentLabel.text = comment.text
         let date = comment.date
         let formatter = DateFormatter()
@@ -294,8 +282,8 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
         cell.dateTimeLabel.text = "\(formatter.string(from: date))"
         let likes = comment.likes
         cell.likesLabel.text  = "\(likes)"
-        cell.extraTitleImageView.image = UIImage(systemName: comment.userInfo.titleImage ?? "")
-        cell.optionalAuthorExtraTitle.text = comment.userInfo.title
+        //cell.extraTitleImageView.image = UIImage(systemName: comment.userInfo.titleImage ?? "")
+//cell.optionalAuthorExtraTitle.text = comment.userInfo.title
         return cell
     }
 }

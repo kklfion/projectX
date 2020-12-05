@@ -7,11 +7,12 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class OtherProfileViewController: UIViewController {
     
     ///user displayed by the controller
-    var user: User?
+    var user: User
     
     ///posts that were created by user
     private var posts = [Post]()
@@ -34,6 +35,34 @@ class OtherProfileViewController: UIViewController {
         self.navigationController?.navigationBar.shadowImage = nil
         self.navigationController?.navigationBar.isTranslucent = false
     }
+    ///initialize profileviewcontroller with user data (to display other user profile)
+    init(user: User){
+        self.user = user
+        super.init(nibName: nil, bundle: nil)
+    }
+    ///user to display current user
+    init(){
+        //must wait for usermanager to complete and update self
+        user = User(email: "1", uid: "1")
+        super.init(nibName: nil, bundle: nil)
+        let user = Auth.auth().currentUser
+        guard let id = user?.uid else {return}
+        NetworkManager.shared.getDataForUser(id) { [weak self] (user, error) in
+            if error != nil {
+                print(error)
+            }else if user != nil {
+                self?.user = user!
+                self?.updateProfileInformation()
+            }
+        }
+        
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         extendedLayoutIncludesOpaqueBars = true
@@ -61,12 +90,11 @@ class OtherProfileViewController: UIViewController {
         profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
         profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
         
-        profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
         profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
-        guard let user = user else{return}
+        //guard let user = user else{return}
         NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
@@ -105,7 +133,7 @@ class OtherProfileViewController: UIViewController {
             }
         }
         //fetch missions
-        print(user.userID)
+        //print(user.userID)
         query = NetworkManager.shared.db.missions.whereField(FirestoreFields.userInfoUserID.rawValue, isEqualTo: user.userID)
         NetworkManager.shared.getDocumentsForQuery(query: query) { (missions: [Mission]?, error) in
             if error != nil{
@@ -125,47 +153,34 @@ extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource
         presentPostFor(indexPath: indexPath)
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch posts[indexPath.row].imageURL {
-        case nil:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage{
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.selectionStyle = .none
-                cell.indexPath = indexPath
-                cell.delegate = self
-                return cell
-            }
-        default:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithImage.cellID, for: indexPath) as? PostCellWithImage{
-                addData(toCell: cell, withIndex: indexPath.row)
-                cell.indexPath = indexPath
-                cell.delegate = self
-                cell.selectionStyle = .none
-                return cell
-            }
-        }
-        return UITableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage else {return UITableViewCell()}
+        addData(toCell: cell, withIndex: indexPath.row)
+        cell.indexPath = indexPath
+        cell.delegate = self
+        cell.selectionStyle = .none
+        return cell
     }
-    private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
-        if let cell = cell as? PostCellWithImage{
-            cell.titleUILabel.text =  posts[index].title
-            cell.previewUILabel.text =  posts[index].text
-            cell.authorUILabel.text =  posts[index].userInfo.name
-            cell.likesLabel.text =  String(posts[index].likes)
-            cell.commentsUILabel.text =  String(posts[index].commentCount)
-            cell.dateUILabel.text = "\(index)h"
-            cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-
-            let temp = UIImageView()
-            temp.load(url: posts[index].imageURL!)
-            cell.postUIImageView.image = temp.image
-        }else if let cell = cell as? PostCellWithoutImage {
-            cell.titleUILabel.text =  posts[index].title
-            cell.previewUILabel.text =  posts[index].text
-            cell.authorUILabel.text =  posts[index].userInfo.name
-            cell.likesLabel.text =  String(posts[index].likes)
-            cell.commentsUILabel.text =  String(posts[index].commentCount)
-            cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-            cell.dateUILabel.text = "\(index)h"
+    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
+        cell.postImageView.image = nil
+        cell.titleLabel.text =  posts[index].title
+        cell.messageLabel.text =  posts[index].text
+        cell.authorLabel.text =  posts[index].userInfo.name
+        cell.likesLabel.text =  String(posts[index].likes)
+        cell.commentsLabel.text =  String(posts[index].commentCount)
+        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        let dateString = formatter.string(from: posts[index].date)
+        cell.dateLabel.text = "\(dateString)"
+        if posts[index].imageURL != nil {
+            cell.postImageView.isHidden = false
+            NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
+                DispatchQueue.main.async {
+                    cell.postImageView.image = image
+                }
+            }
+        } else{
+            cell.postImageView.isHidden = true
         }
     }
 }
@@ -247,8 +262,8 @@ extension OtherProfileViewController: PostCellDidTapDelegate{
         }
     }
     private func presentAuthorFor(indexPath: IndexPath){
-        let vc = OtherProfileViewController()
-        vc.user = posts[indexPath.row].userInfo
+        let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
+        //vc.user = posts[indexPath.row].userInfo
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }
