@@ -205,11 +205,7 @@ class LoginView: UIView {
     
     func setupBackgroundView() {
         
-        let screenSize = UIScreen.main.bounds
-        let screenWidth = screenSize.width
-        let screenHeight = screenSize.height
         
-        print(screenSize, screenWidth, screenHeight)
         // Create a CAShapeLayer
         let shapeLayer = CAShapeLayer()
         // The Bezier path thatneeds to be converted to a CGPath before it can be used on a layer.

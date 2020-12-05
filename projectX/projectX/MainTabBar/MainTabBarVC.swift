@@ -86,13 +86,15 @@ class MainTabBarVC: UITabBarController {
         self.selectedIndex = 1
     }
     private func setupNavigationBarAppearance(){
-        UINavigationBar.appearance().tintColor = .systemBlue
-        UINavigationBar.appearance().barTintColor = .white
+        UINavigationBar.appearance().tintColor = Constants.Colors.darkBrown
+        UINavigationBar.appearance().barTintColor = Constants.Colors.mainYellow
+        UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().shadowImage = UIImage()
     }
     private func setupTabBarAppearance(){
         tabBar.layer.masksToBounds = true
         tabBar.isTranslucent = true
+        tabBar.tintColor = Constants.Colors.darkBrown
         tabBar.barStyle = .default
         tabBar.layer.cornerRadius = 20
     }
