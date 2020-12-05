@@ -20,18 +20,28 @@ class NewCommentView: UIView {
         super.init(coder: coder)
         setupViews()
     }
+    //shadow is added to the container
+    let shadowLayerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 5
+        view.layer.shadowColor = UIColor.lightGray.cgColor
+        view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
+        view.layer.shadowRadius = 5
+        view.layer.shadowOpacity = 0.2
+        return view
+    }()
+    //container contains all the stacks
+    let containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white//Constants.backgroundColor //
+        view.layer.cornerRadius = 5
+        view.layer.masksToBounds = true
+        return view
+    }()
     let commentTextView: UITextView = {
        let text = UITextView()
        return text
-    }()
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "REPLY TICKET"
-        label.textColor = .black
-        label.textAlignment = .center
-        label.font = UIFont.preferredFont(forTextStyle: .headline)
-        label.numberOfLines = 1
-        return label
     }()
      lazy var closeButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -48,49 +58,28 @@ class NewCommentView: UIView {
         sw.transform = CGAffineTransform(scaleX: 0.75, y: 0.75);
         return sw
     }()
-    private lazy var attachButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "paperclip")?.withConfiguration(symbolsConfig).withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
-        return button
-    }()
-    private lazy var addImageButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "photo")?.withConfiguration(symbolsConfig).withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
-        return button
-    }()
     let sendButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle(" SEND ", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.clipsToBounds = true
+        button.setImage(UIImage(systemName: "paperplane"), for: .normal)
         return button
     }()
     private func setupViews(){
-        self.backgroundColor = .white
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOpacity = 0.3
-        self.layer.shadowOffset = .zero
-        self.layer.shadowRadius = 5
-        [titleLabel,closeButton,commentTextView, authorView, anonimousSwitch, attachButton, addImageButton, sendButton].forEach {self.addSubview($0)}
-        self.addSubview(commentTextView)
-        
-        titleLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        titleLabel.addAnchors(top: self.topAnchor,
-                                 leading: nil,
-                                 bottom: nil,
-                                 trailing: nil,
-                                 padding: .init(top: Constants.standardPadding, left: 0, bottom: 0, right: 0))
-        
-        closeButton.addAnchors(top: self.topAnchor,
-                                 leading: self.leadingAnchor,
+//        self.backgroundColor = .white
+//        self.layer.shadowColor = UIColor.black.cgColor
+//        self.layer.shadowOpacity = 0.3
+//        self.layer.shadowOffset = .zero
+//        self.layer.shadowRadius = 5
+        [closeButton,commentTextView, authorView, anonimousSwitch, sendButton].forEach {containerView.addSubview($0)}
+        closeButton.addAnchors(top: containerView.topAnchor,
+                                 leading: containerView.leadingAnchor,
                                  bottom: nil,
                                  trailing: nil,
                                  padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: 0))
  
         commentTextView.addAnchors(top: closeButton.bottomAnchor,
-                                 leading: self.leadingAnchor,
+                                 leading: containerView.leadingAnchor,
                                  bottom: anonimousSwitch.topAnchor,
-                                 trailing: self.trailingAnchor,
+                                 trailing: containerView.trailingAnchor,
                                  padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: Constants.standardPadding),
                                  size: .init(width: 0, height: 0))
 
@@ -98,36 +87,38 @@ class NewCommentView: UIView {
         commentTextViewHeightConstraint?.isActive = true
         
         authorView.addAnchors(top: nil,
-                                 leading: self.leadingAnchor,
+                                 leading: containerView.leadingAnchor,
                                  bottom: nil,
                                  trailing: nil,
                                  padding: .init(top: 0, left: Constants.standardPadding, bottom: 0, right: 0))
         authorView.centerYAnchor.constraint(equalTo: anonimousSwitch.centerYAnchor).isActive = true
         anonimousSwitch.addAnchors(top: nil,
                                  leading: authorView.trailingAnchor,
-                                 bottom: self.bottomAnchor,
+                                 bottom: containerView.bottomAnchor,
                                  trailing: nil,
                                  padding: .init(top: 0, left: Constants.standardPadding, bottom: Constants.standardPadding/2, right: 0))
-        
-        attachButton.addAnchors(top: nil,
-                                 leading: nil,
-                                 bottom: nil,
-                                 trailing: addImageButton.leadingAnchor,
-                                 padding: .init(top: 0, left: 0, bottom: 0, right: Constants.standardPadding),
-                                 size: .init(width: 0, height: anonimousSwitch.frame.height))
-        attachButton.centerYAnchor.constraint(equalTo: anonimousSwitch.centerYAnchor).isActive = true
-        addImageButton.addAnchors(top: nil,
-                                 leading: nil,
-                                 bottom: nil,
-                                 trailing: sendButton.leadingAnchor,
-                                 padding: .init(top: 0, left: 0, bottom: 0, right: Constants.standardPadding))
-        addImageButton.centerYAnchor.constraint(equalTo: anonimousSwitch.centerYAnchor).isActive = true
         sendButton.addAnchors(top: nil,
                                  leading: nil,
                                  bottom: nil,
-                                 trailing: self.trailingAnchor,
+                                 trailing: containerView.trailingAnchor,
                                  padding: .init(top: 0, left: 0, bottom: 0, right: Constants.standardPadding))
         sendButton.centerYAnchor.constraint(equalTo: anonimousSwitch.centerYAnchor).isActive = true
+        
+        
+        ///finish up by adding views to the content view
+        [shadowLayerView,containerView].forEach({self.addSubview($0)})
+        containerView.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
+                          leading: self.safeAreaLayoutGuide.leadingAnchor,
+                          bottom: self.safeAreaLayoutGuide.bottomAnchor,
+                          trailing: self.safeAreaLayoutGuide.trailingAnchor,
+                          padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+                          size: .init(width: 0, height: 0))
+        shadowLayerView.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
+                          leading: self.safeAreaLayoutGuide.leadingAnchor,
+                          bottom: self.safeAreaLayoutGuide.bottomAnchor,
+                          trailing: self.safeAreaLayoutGuide.trailingAnchor,
+                          padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+                          size: .init(width: 0, height: 0))
 
     }
 }

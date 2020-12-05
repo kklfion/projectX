@@ -29,6 +29,13 @@ class HomeTableVC: UICollectionViewController{
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.configureWithOpaqueBackground()
+        navBarAppearance.backgroundColor = Constants.yellowColor
+        navigationController?.navigationBar.standardAppearance = navBarAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+        //navigationController?.navigationBar.layer.cornerRadius = 25
+        //navigationController?.navigationBar.clipsToBounds = true
     }
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -38,7 +45,6 @@ class HomeTableVC: UICollectionViewController{
         collectionView.isPrefetchingEnabled = false
         self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.cellID)
         self.navigationItem.title = "Home"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.searchController = searchController
     }
     private func getData(){

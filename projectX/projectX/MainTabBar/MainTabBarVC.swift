@@ -20,7 +20,6 @@ class MainTabBarVC: UITabBarController {
     let home = HomeTableVC()
     ///tabbaritems configuration
     let tabBarSymbolsConfiguration = UIImage.SymbolConfiguration(weight: .semibold)
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
@@ -36,8 +35,8 @@ class MainTabBarVC: UITabBarController {
         let profile = createViewController(tabBarItemImageName: "person", title: "Profile", controller: OtherProfileViewController())
         
         let homeNav = UINavigationController(rootViewController: home)
-        homeNav.navigationBar.barTintColor = UIColor.white.withAlphaComponent(0.4)//Constants.yellowColor
-        homeNav.navigationBar.backgroundColor = UIColor.white.withAlphaComponent(0.4)
+        //homeNav.navigationBar.barTintColor = Constants.yellowColor
+        //homeNav.navigationBar.backgroundColor = Constants.yellowColor
         let notigicationsNav = UINavigationController(rootViewController: notifications)
         let profileNav = UINavigationController(rootViewController: profile)
     
@@ -53,8 +52,13 @@ class MainTabBarVC: UITabBarController {
         return controller
     }
     private func setupNavigationBarAppearance(){
+//        let navBarAppearance = UINavigationBarAppearance()
+//        navBarAppearance.configureWithOpaqueBackground()
+//        navBarAppearance.backgroundColor = .red
+//        navigationController?.navigationBar.standardAppearance = navBarAppearance
+//        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
         UINavigationBar.appearance().tintColor = .systemBlue
-        UINavigationBar.appearance().barTintColor = UIColor.white.withAlphaComponent(0.4)
+        UINavigationBar.appearance().barTintColor = UIColor.white
         UINavigationBar.appearance().shadowImage = UIImage()
     }
     private func setupTabBarAppearance(){
