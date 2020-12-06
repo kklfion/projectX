@@ -20,14 +20,14 @@ class LoginView: UIView {
     let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "iconFinal")
+        imageView.image = UIImage(named: "iconFinalFinal")
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Necto"
+        //label.text = //"Necto"
         label.textColor = Constants.Colors.darkBrown
         label.font = UIFont.boldSystemFont(ofSize: Constants.Login.logoFontSize)
         label.textAlignment = .center

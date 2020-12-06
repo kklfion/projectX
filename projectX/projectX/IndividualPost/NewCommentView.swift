@@ -24,18 +24,18 @@ class NewCommentView: UIView {
     let shadowLayerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = 15
         view.layer.shadowColor = UIColor.lightGray.cgColor
         view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
         view.layer.shadowRadius = 5
-        view.layer.shadowOpacity = 0.2
+        view.layer.shadowOpacity = 0.4
         return view
     }()
     //container contains all the stacks
     let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white//Constants.backgroundColor //
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = 15
         view.layer.masksToBounds = true
         return view
     }()
@@ -96,7 +96,7 @@ class NewCommentView: UIView {
                                  leading: authorView.trailingAnchor,
                                  bottom: containerView.bottomAnchor,
                                  trailing: nil,
-                                 padding: .init(top: 0, left: Constants.standardPadding, bottom: Constants.standardPadding/2, right: 0))
+                                 padding: .init(top: 0, left: Constants.standardPadding, bottom: 30, right: 0))
         sendButton.addAnchors(top: nil,
                                  leading: nil,
                                  bottom: nil,

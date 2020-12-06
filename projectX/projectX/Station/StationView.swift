@@ -42,8 +42,9 @@ class StationView: UIView {
         //iv.backgroundColor = .yellow
         iv.clipsToBounds = true
         //iv.image = UIImage(named: "sslug")
-        iv.layer.borderWidth = 1
-        iv.layer.borderColor = UIColor.black.cgColor
+        iv.contentMode = .scaleAspectFill
+        //iv.layer.borderWidth = 1
+        //iv.layer.borderColor = UIColor.black.cgColor
         return iv
     }()
     let stationNameLabel: UILabel = {

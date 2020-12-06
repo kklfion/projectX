@@ -26,6 +26,11 @@ class MainTabBarVC: UITabBarController {
         setupNavigationBarAppearance()
         setupSideBarItems()
         setupTabBarAppearance()
+        write()
+    }
+    func write(){
+
+
     }
     private func setupSideBarItems(){
         let sidebar = createViewController(tabBarItemImageName: "sidebar.left", title: "Sidebar", controller: SidebarViewController())

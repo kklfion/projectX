@@ -97,8 +97,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     let authorImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "sslug")
-        
+        imageView.clipsToBounds = true
         imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
         imageView.layer.cornerRadius = 15

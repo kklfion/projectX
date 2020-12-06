@@ -93,8 +93,8 @@ class PostView: UIView {
     let authorImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "sslug")
-        
+        //imageView.image = UIImage(named: "sslug")
+        imageView.clipsToBounds = true
         imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
         imageView.layer.cornerRadius = 15
@@ -213,7 +213,7 @@ class PostView: UIView {
                                   leading: containerView.leadingAnchor,
                                   bottom: containerView.bottomAnchor,
                                   trailing: containerView.trailingAnchor,
-                                  padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: 0))
+                                  padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 10, right: 0))
         
         
         ///finish up by adding views to the content view

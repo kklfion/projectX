@@ -44,8 +44,7 @@ class ProfileView: UIView {
     }()
     let profileImageView: UIImageView = {
         let imageview = UIImageView()
-        //imageview.layer.borderWidth = 0.5
-        //imageview.layer.borderColor = UIColor.black.cgColor
+        imageview.backgroundColor = .white
         imageview.clipsToBounds = true
         
         return imageview

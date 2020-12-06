@@ -106,6 +106,11 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
     }
 
     private func addData(toCell cell: PostCollectionViewCell, withIndex index: Int ){
+        NetworkManager.shared.getAsynchImage(withURL: posts[index].userInfo.photoURL) { (image, error) in
+            DispatchQueue.main.async {
+                cell.authorImageView.image = image
+            }
+        }
         cell.postImageView.image = nil
         cell.titleLabel.text =  posts[index].title
         cell.messageLabel.text =  posts[index].text

@@ -44,8 +44,8 @@ class CommentCell: UITableViewCell {
     let authorImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "sslug")
-        
+        //imageView.image = UIImage(named: "sslug")
+        imageView.clipsToBounds = true
         imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
         imageView.layer.cornerRadius = 15
@@ -111,8 +111,8 @@ class CommentCell: UITableViewCell {
         bottomStack.spacing = 10
    
         //MAIN stack, all stacks come in this stack
-        let stack = UIStackView(arrangedSubviews: [dateTimeLabel, commentLabel, bottomStack])
-        stack.spacing = 0
+        let stack = UIStackView(arrangedSubviews: [commentLabel, bottomStack])
+        stack.spacing = 10
         stack.axis = .vertical
         //stack.alignment = .center
         

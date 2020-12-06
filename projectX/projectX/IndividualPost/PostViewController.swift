@@ -105,6 +105,13 @@ class PostViewController: UIViewController {
         formatter.dateStyle = .short
         postHeaderView?.dateUILabel.text = "\(formatter.string(from: date))"
         postHeaderView?.titleUILabel.text = post.title
+        postHeaderView?.authorLabel.text = post.userInfo.name
+        NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
+            DispatchQueue.main.async {
+                self.postHeaderView?.authorImageView.image = image
+            }
+        }
+        
         if post.imageURL != nil {
             let data = try? Data(contentsOf: post.imageURL!)
             if let imageData = data {
@@ -274,6 +281,11 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.cellID, for: indexPath) as! CommentCell
         let comment = comments[indexPath.row]
+        NetworkManager.shared.getAsynchImage(withURL: comments[indexPath.row].userInfo.photoURL) { (image, error) in
+            DispatchQueue.main.async {
+                cell.authorImageView.image = image
+            }
+        }
         //cell.authorTitleLable.text = comment.userInfo.name
         cell.commentLabel.text = comment.text
         let date = comment.date
@@ -282,8 +294,7 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
         cell.dateTimeLabel.text = "\(formatter.string(from: date))"
         let likes = comment.likes
         cell.likesLabel.text  = "\(likes)"
-        //cell.extraTitleImageView.image = UIImage(systemName: comment.userInfo.titleImage ?? "")
-//cell.optionalAuthorExtraTitle.text = comment.userInfo.title
+        cell.authorLabel.text = comment.userInfo.name
         return cell
     }
 }
