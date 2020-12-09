@@ -111,7 +111,7 @@ class PostView: UIView {
     }()
     let likeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "heart")?.withTintColor(Constants.redColor, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let likesLabel: UILabel = {
@@ -125,7 +125,7 @@ class PostView: UIView {
     }()
     let commentsButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "bubble.right.fill")?.withTintColor(Constants.redColor, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "bubble.right.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let commentsLabel: UILabel = {

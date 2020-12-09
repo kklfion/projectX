@@ -29,7 +29,7 @@ extension RoundedCornerNavigationBar where Self: UIViewController{
         shapeLayer.shadowOffset = CGSize(width: 0, height: 4.0)
         shapeLayer.shadowOpacity = 0.2
         shapeLayer.shadowRadius = 2
-        shapeLayer.fillColor = Constants.yellowColor.cgColor
+        shapeLayer.fillColor = Constants.Colors.mainYellow.cgColor
         customView.layer.insertSublayer(shapeLayer, at: 0)
     }
 }
@@ -55,7 +55,7 @@ extension RoundedCornerNavigationBar where Self: UIViewController{
         shapeLayer.shadowOffset = CGSize(width: 0, height: 4.0)
         shapeLayer.shadowOpacity = 0.2
         shapeLayer.shadowRadius = 2
-        shapeLayer.fillColor = Constants.yellowColor.cgColor
+        shapeLayer.fillColor = Constants.Colors.mainYellow.cgColor
         customView.layer.insertSublayer(shapeLayer, at: 0)
     }
 }

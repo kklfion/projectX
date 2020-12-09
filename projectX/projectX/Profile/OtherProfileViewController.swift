@@ -49,7 +49,7 @@ class OtherProfileViewController: UIViewController {
         guard let id = user?.uid else {return}
         NetworkManager.shared.getDataForUser(id) { [weak self] (user, error) in
             if error != nil {
-                print(error)
+                print(error!)
             }else if user != nil {
                 self?.user = user!
                 self?.updateProfileInformation()

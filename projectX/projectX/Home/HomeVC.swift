@@ -33,7 +33,8 @@ class HomeTableVC: UICollectionViewController{
         navigationController?.navigationBar.prefersLargeTitles = true
         let navBarAppearance = UINavigationBarAppearance()
         navBarAppearance.configureWithOpaqueBackground()
-        navBarAppearance.backgroundColor = Constants.yellowColor
+        navBarAppearance.shadowColor = .none
+        navBarAppearance.backgroundColor = Constants.Colors.mainYellow
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
         //navigationController?.navigationBar.layer.cornerRadius = 25

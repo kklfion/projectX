@@ -31,7 +31,7 @@ struct StaticStationData{
         }
         
         NetworkManager.shared.writeDocumentsWith(collectionType: .stations, documents: stations) { (error) in
-            print(error)
+            print(error!)
         }
     }
 

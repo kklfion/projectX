@@ -32,7 +32,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if queryStations.loaded == false {
-            queryStations.queryStations(completion: {[weak self] result in
+            queryStations.queryStations(completion: {result in
                 switch result {
                 case .success(let data):
                     JakeStations.append(contentsOf: data)
@@ -417,7 +417,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
             let ac1 = UIAlertController(title: "Title is missing", message: "Please fill out this fields before posting", preferredStyle: .alert)
             ac1.addAction(UIAlertAction(title: "Ok", style: .default))
                            return present(ac1, animated: true)
-            return present(ac1, animated: true)
+            //return present(ac1, animated: true)
         }
         else if body == "2"{
              let ac1 = UIAlertController(title: "Body is missing", message: "Please fill out this fields before posting", preferredStyle: .alert)
@@ -502,19 +502,19 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificat
     
     var loadPhoto = UIButton()
     func displayUploadImageDialog(btnSelected: UIButton) {
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        picker.allowsEditing = true
-        if UI_USER_INTERFACE_IDIOM() == .pad {
-            OperationQueue.main.addOperation({() -> Void in
-                picker.sourceType = .photoLibrary
-                self.present(picker, animated: true) {() -> Void in }
-            })
-        }
-        else {
-            picker.sourceType = .photoLibrary
-            self.present(picker, animated: true) {() -> Void in }
-        }
+//        let picker = UIImagePickerController()
+//        picker.delegate = self
+//        picker.allowsEditing = true
+//        if UI_USER_INTERFACE_IDIOM() == .pad {
+//            OperationQueue.main.addOperation({() -> Void in
+//                picker.sourceType = .photoLibrary
+//                self.present(picker, animated: true) {() -> Void in }
+//            })
+//        }
+//        else {
+//            picker.sourceType = .photoLibrary
+//            self.present(picker, animated: true) {() -> Void in }
+//        }
     }
     private func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         let image = info[UIImagePickerController.InfoKey.originalImage.rawValue] as! UIImage

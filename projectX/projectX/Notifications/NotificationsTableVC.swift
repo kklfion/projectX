@@ -47,7 +47,7 @@ class NotificationsTableVC: UICollectionViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         let navBarAppearance = UINavigationBarAppearance()
         navBarAppearance.configureWithOpaqueBackground()
-        navBarAppearance.backgroundColor = Constants.yellowColor
+        navBarAppearance.backgroundColor = Constants.Colors.mainYellow
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
     }

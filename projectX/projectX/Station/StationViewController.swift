@@ -47,7 +47,7 @@ import UIKit
     ///if user is signed in station can be followed/not followed
     private func checkIfStationFollowed(){
         switch UserManager.shared().state{
-        case .signedIn(let user):
+        case .signedIn(_):
             stationView.followedButton()
         case .signedOut:
             stationView.notFollowedButton()
