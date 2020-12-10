@@ -9,9 +9,9 @@
 import UIKit
 import FirebaseAuth
 
-class HomeTableVC: UICollectionViewController{
+class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
     
-    let searchController = UISearchController(searchResultsController: nil)
+    private let searchController = UISearchController(searchResultsController: nil)
     
     private var posts = [Post]()
 
@@ -23,32 +23,34 @@ class HomeTableVC: UICollectionViewController{
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        extendedLayoutIncludesOpaqueBars = true
-
-        signInUserIfNeeded()
+        showLoginScreenIfNeeded()
         setupCollectionView()
+        setupNavigationBar()
         getData()
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    private func setupNavigationBar(){
+        self.navigationItem.title = "Home"
+        navigationItem.searchController = searchController
+        //navigationItem.hidesSearchBarWhenScrolling = false
+        searchController.searchBar.delegate = self
         let navBarAppearance = UINavigationBarAppearance()
         navBarAppearance.configureWithOpaqueBackground()
         navBarAppearance.shadowColor = .none
         navBarAppearance.backgroundColor = Constants.Colors.mainYellow
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
-        //navigationController?.navigationBar.layer.cornerRadius = 25
-        //navigationController?.navigationBar.clipsToBounds = true
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.navigationBar.prefersLargeTitles = false
+//        navigationController?.navigationBar.layer.cornerRadius = 25
+//        navigationController?.navigationBar.clipsToBounds = true
     }
     private func setupCollectionView(){
         collectionView.backgroundColor = .white
-        collectionView.isPrefetchingEnabled = false
         self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.cellID)
-        self.navigationItem.title = "Home"
-        navigationItem.searchController = searchController
     }
     private func getData(){
         let query = NetworkManager.shared.db.posts
@@ -61,7 +63,7 @@ class HomeTableVC: UICollectionViewController{
             }
         }
     }
-    private func signInUserIfNeeded(){
+    private func showLoginScreenIfNeeded(){
         if Auth.auth().currentUser == nil {
             let vc = LoginViewController()
             let navvc = UINavigationController(rootViewController: vc)
@@ -112,6 +114,7 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
                 cell.authorImageView.image = image
             }
         }
+        cell.isLiked = false
         cell.postImageView.image = nil
         cell.titleLabel.text =  posts[index].title
         cell.messageLabel.text =  posts[index].text
@@ -135,7 +138,7 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
         }
     }
 }
-extension HomeTableVC: PostCellDidTapDelegate{
+extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
     func didTapAuthorLabel(_ indexPath: IndexPath) {
         presentAuthorFor(indexPath: indexPath)
     }
@@ -143,8 +146,10 @@ extension HomeTableVC: PostCellDidTapDelegate{
     func didTapStationButton(_ indexPath: IndexPath) {
         presentStationFor(indexPath: indexPath)
     }
-    func didTapLikeButton(_ indexPath: IndexPath) {
-
+    func didTapLikeButton(_ cell: PostCollectionViewCell) {
+        cell.switchLikeButtonAppearance()
+        
+        //write like for user&post
     }
     func didTapDislikeButton(_ indexPath: IndexPath) {
 

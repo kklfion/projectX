@@ -11,8 +11,10 @@ import UIKit
 class PostCollectionViewCell: UICollectionViewCell {
     static let cellID = "PostCollectionViewCell"
     
+    var  isLiked = false
+    
     ///to add actions to cell buttons
-    weak var delegate: PostCellDidTapDelegate?
+    weak var delegate: PostCollectionViewCellDidTapDelegate?
     
     ///indexpath to track which cell was tapped
     var indexPath: IndexPath?
@@ -239,8 +241,6 @@ class PostCollectionViewCell: UICollectionViewCell {
                           trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
                           padding: .init(top: 10, left: 10, bottom: 10, right: 10),
                           size: .init(width: 0, height: 0))
-
-    
     }
 }
 extension PostCollectionViewCell{
@@ -253,11 +253,20 @@ extension PostCollectionViewCell{
         self.delegate?.didTapStationButton(indexPath)
     }
     @objc func didTapLikeButton() {
-        guard let indexPath = indexPath else{return}
-        self.delegate?.didTapLikeButton(indexPath)
+        self.delegate?.didTapLikeButton(self)
     }
     @objc func didTapCommentsButton() {
         guard let indexPath = indexPath else{return}
         self.delegate?.didTapCommentsButton(indexPath)
     }
+    
+    func switchLikeButtonAppearance(){
+        isLiked.toggle()
+        if isLiked{
+            likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        } else{
+            likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        }
+    }
 }
+

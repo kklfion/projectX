@@ -6,7 +6,6 @@
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
 
-import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
@@ -14,17 +13,25 @@ struct LikedPost: Identifiable, Codable{
     
     @DocumentID var id: String?
     
-    /// ID of the liked post
+    ///userid of the user that liked a post
+    var userID: String
+    
+    ///postsid of a post that was liked
     var postID: String
     
-    //TODO: Probably have some more varaibles and implement the firebase increment funcion here
+    ///post title
+    var postTitle: String
     
-
+    ///date when user liked that post
+    var date: Date
     
 }
 extension LikedPost{
     /// returns a new post object
-    public init(postID: String) {
+    public init(userID: String, postID: String, postTitle: String){
+        self.userID = userID
         self.postID = postID
+        self.postTitle = postTitle
+        self.date = Date()
     }
 }
