@@ -62,6 +62,7 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
                 self.collectionView.reloadData()
             }
         }
+        
     }
     private func showLoginScreenIfNeeded(){
         if Auth.auth().currentUser == nil {
@@ -146,10 +147,40 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
     func didTapStationButton(_ indexPath: IndexPath) {
         presentStationFor(indexPath: indexPath)
     }
-    func didTapLikeButton(_ cell: PostCollectionViewCell) {
+    func didTapLikeButton(_ indexPath: IndexPath, _ cell: PostCollectionViewCell) {
+        //change UI
         cell.switchLikeButtonAppearance()
-        
-        //write like for user&post
+        //change posts data
+        //if cell is now isLiked = true then we need to increment likes count
+        if cell.isLiked{
+            posts[indexPath.item].likes += 1
+        } else{//else we need to decrement it
+            posts[indexPath.item].likes -= 1
+        }
+        //write like for user&post, incerement likes in db
+        if cell.isLiked{
+            writeLikeToTheFirestore(with: indexPath)
+        } else{ //delete that like, decrement liks for post
+            deleteLikeFromFirestore(with: indexPath)
+        }
+    }
+    private func writeLikeToTheFirestore(with indexPath: IndexPath) {
+        guard  let userID = UserManager.shared().user?.userID else {return}
+        guard let postID = posts[indexPath.item].id else {return}
+        let document = LikedPost(userID: userID, postID: postID)
+        NetworkManager.shared.writeDocumentsWith(collectionType: .likedPosts, documents: [document]) { (error) in
+            if let err = error{
+                print("Error creating like \(err)")
+            } else{ //need to increment likes in the post
+                NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
+                                                             documentID: postID,
+                                                             value: Double(1),
+                                                             field: .likes)
+            }
+        }
+    }
+    private func deleteLikeFromFirestore(with indexPath: IndexPath){
+
     }
     func didTapDislikeButton(_ indexPath: IndexPath) {
 

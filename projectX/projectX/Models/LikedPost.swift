@@ -19,19 +19,15 @@ struct LikedPost: Identifiable, Codable{
     ///postsid of a post that was liked
     var postID: String
     
-    ///post title
-    var postTitle: String
-    
     ///date when user liked that post
     var date: Date
     
 }
 extension LikedPost{
     /// returns a new post object
-    public init(userID: String, postID: String, postTitle: String){
+    public init(userID: String, postID: String){
         self.userID = userID
         self.postID = postID
-        self.postTitle = postTitle
         self.date = Date()
     }
 }

@@ -40,6 +40,8 @@ enum FirestoreFields: String {
     
     case followers
     
+    case likes
+    
     case postID
     
     case missionID

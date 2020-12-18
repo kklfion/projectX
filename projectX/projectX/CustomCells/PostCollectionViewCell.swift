@@ -253,7 +253,8 @@ extension PostCollectionViewCell{
         self.delegate?.didTapStationButton(indexPath)
     }
     @objc func didTapLikeButton() {
-        self.delegate?.didTapLikeButton(self)
+        guard let indexPath = indexPath else{return}
+        self.delegate?.didTapLikeButton(indexPath, self)
     }
     @objc func didTapCommentsButton() {
         guard let indexPath = indexPath else{return}
@@ -261,10 +262,13 @@ extension PostCollectionViewCell{
     }
     
     func switchLikeButtonAppearance(){
+        guard let likesCount = Int(likesLabel.text ?? "") else {return}
         isLiked.toggle()
         if isLiked{
+            likesLabel.text = "\(likesCount + 1)"
             likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
         } else{
+            likesLabel.text = "\(likesCount - 1)"
             likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
         }
     }

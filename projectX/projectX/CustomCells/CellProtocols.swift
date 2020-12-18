@@ -24,7 +24,7 @@ protocol PostCollectionViewCellDidTapDelegate: class{
     /// returns index of a cell that was tapped
     func didTapStationButton(_ indexPath: IndexPath)
     /// returns index of a cell that was tapped
-    func didTapLikeButton(_ cell: PostCollectionViewCell)
+    func didTapLikeButton(_ indexPath: IndexPath, _ cell: PostCollectionViewCell)
     /// returns index of a cell that was tapped
     func didTapDislikeButton(_ indexPath: IndexPath)
     /// returns index of a cell that was tapped
