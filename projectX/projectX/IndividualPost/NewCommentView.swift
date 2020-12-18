@@ -9,16 +9,16 @@
 import UIKit
 
 class NewCommentView: UIView {
-    var commentTextViewHeightConstraint: NSLayoutConstraint? // used to make textview's height adjustable accoring to how much text there is
+    //var commentTextViewHeightConstraint: NSLayoutConstraint? // used to make textview's height adjustable accoring to how much text there is
     private let symbolsConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .light, scale: .default)
     
     override init(frame: CGRect) {
-        super.init(frame: CGRect(x: 0.0, y: 0.0, width: frame.width, height: 0.0))
+        //super.init(frame: CGRect(x: 0.0, y: 0.0, width: frame.width, height: 0.0))
+        super.init(frame: frame)
         setupViews()
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupViews()
     }
     //shadow is added to the container
     let shadowLayerView: UIView = {
@@ -36,12 +36,14 @@ class NewCommentView: UIView {
         let view = UIView()
         view.backgroundColor = .white//Constants.backgroundColor //
         view.layer.cornerRadius = 15
-        view.layer.masksToBounds = true
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         return view
     }()
     let commentTextView: UITextView = {
-       let text = UITextView()
-       return text
+        let text = UITextView()
+        text.text = "Add Comment ..."
+        text.sizeToFit()
+        return text
     }()
      lazy var closeButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -64,17 +66,13 @@ class NewCommentView: UIView {
         return button
     }()
     private func setupViews(){
-//        self.backgroundColor = .white
-//        self.layer.shadowColor = UIColor.black.cgColor
-//        self.layer.shadowOpacity = 0.3
-//        self.layer.shadowOffset = .zero
-//        self.layer.shadowRadius = 5
         [closeButton,commentTextView, authorView, anonimousSwitch, sendButton].forEach {containerView.addSubview($0)}
         closeButton.addAnchors(top: containerView.topAnchor,
                                  leading: containerView.leadingAnchor,
                                  bottom: nil,
                                  trailing: nil,
-                                 padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: 0))
+                                 padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: 0),
+                                 size: .init(width: 0, height: 30))
  
         commentTextView.addAnchors(top: closeButton.bottomAnchor,
                                  leading: containerView.leadingAnchor,
@@ -83,8 +81,8 @@ class NewCommentView: UIView {
                                  padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: Constants.standardPadding),
                                  size: .init(width: 0, height: 0))
 
-        commentTextViewHeightConstraint = commentTextView.heightAnchor.constraint(equalToConstant: 0)
-        commentTextViewHeightConstraint?.isActive = true
+//        commentTextViewHeightConstraint = commentTextView.heightAnchor.constraint(equalToConstant: 0)
+//        commentTextViewHeightConstraint?.isActive = true
         
         authorView.addAnchors(top: nil,
                                  leading: containerView.leadingAnchor,
@@ -107,16 +105,16 @@ class NewCommentView: UIView {
         
         ///finish up by adding views to the content view
         [shadowLayerView,containerView].forEach({self.addSubview($0)})
-        containerView.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
-                          leading: self.safeAreaLayoutGuide.leadingAnchor,
-                          bottom: self.safeAreaLayoutGuide.bottomAnchor,
-                          trailing: self.safeAreaLayoutGuide.trailingAnchor,
+        containerView.addAnchors(top: self.topAnchor,
+                          leading: self.leadingAnchor,
+                          bottom: self.bottomAnchor,
+                          trailing: self.trailingAnchor,
                           padding: .init(top: 0, left: 0, bottom: 0, right: 0),
                           size: .init(width: 0, height: 0))
-        shadowLayerView.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
-                          leading: self.safeAreaLayoutGuide.leadingAnchor,
-                          bottom: self.safeAreaLayoutGuide.bottomAnchor,
-                          trailing: self.safeAreaLayoutGuide.trailingAnchor,
+        shadowLayerView.addAnchors(top: self.topAnchor,
+                          leading: self.leadingAnchor,
+                          bottom: self.bottomAnchor,
+                          trailing: self.trailingAnchor,
                           padding: .init(top: 0, left: 0, bottom: 0, right: 0),
                           size: .init(width: 0, height: 0))
 

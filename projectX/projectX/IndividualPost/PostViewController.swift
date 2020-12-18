@@ -24,14 +24,16 @@ class PostViewController: UIViewController {
     ///view for adding a new comment, is hidden by default and is shown when keyboard appears
     private var newCommentView: NewCommentView = {
         let view = NewCommentView()
-        view.commentTextView.isScrollEnabled = true
-        view.isUserInteractionEnabled = true
-        view.commentTextView.isUserInteractionEnabled = true
+        //view.commentTextView.isScrollEnabled = true
+        //view.commentTextView.isUserInteractionEnabled = true
         return view
     }()
     
     ///bottom constaint is used for commentView to hide/slideout with the keyboard
     private var newCommentViewBottomConstraint: NSLayoutConstraint?
+    
+    ///height constaint is used for commentView to change height with the keyboard
+    private var newCommentViewHeightConstraint: NSLayoutConstraint?
     
     ///tableview that will be populated with comments for current post
     private var commentsTableView: UITableView = {
@@ -54,22 +56,18 @@ class PostViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        extendedLayoutIncludesOpaqueBars = true
+        //extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         self.navigationItem.title = post.stationName
         
         //only this order works, some bug that makes newcommentview invisible if this is changed
         setupTableViewAndHeader()
         populatePostViewWithPost()
-        //setupToolbar()
         setupNewCommentView()
         setupKeyboardnotifications()
         loadCommentsForPost()
     }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        //self.navigationController?.isToolbarHidden = true
-    }
+
     private func setupNewCommentView(){
         newCommentView.commentTextView.delegate = self
         view.addSubview(newCommentView)
@@ -78,11 +76,12 @@ class PostViewController: UIViewController {
                                 bottom: nil,
                                 trailing: view.trailingAnchor,
                                 size: .init(width: 0, height: 0))
-        newCommentViewBottomConstraint = newCommentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 30)
+        
+        newCommentViewHeightConstraint = newCommentView.heightAnchor.constraint(equalToConstant: 140)
+        newCommentViewHeightConstraint?.isActive = true
+        newCommentViewBottomConstraint = newCommentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
         newCommentViewBottomConstraint?.isActive = true
-        //to get current size
-        textViewDidChange(newCommentView.commentTextView)
-        //linking buttons
+
         newCommentView.closeButton.addTarget(self, action: #selector(didTapDissmissNewComment), for: .touchUpInside)
         newCommentView.sendButton.addTarget(self, action: #selector(didTapSendButton), for: .touchUpInside)
     }
@@ -133,13 +132,18 @@ extension PostViewController{
             let keyboardRectangle = keyboardFrame.cgRectValue
             let keyboardHeight = keyboardRectangle.height
             newCommentViewBottomConstraint?.constant = -keyboardHeight
+            newCommentViewHeightConstraint?.constant = 300
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseInOut, animations: {
                 self.view.layoutIfNeeded()
             }, completion: nil)
         }
     }
     @objc private func keyboardWillHide(notification: NSNotification) {
-        newCommentViewBottomConstraint?.constant = -30
+        newCommentViewBottomConstraint?.constant = 0
+        newCommentViewHeightConstraint?.constant = 140
+        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseInOut, animations: {
+            self.view.layoutIfNeeded()
+        }, completion: nil)
 
     }
     @objc func didTapDissmissNewComment(){
@@ -301,13 +305,13 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
 extension PostViewController: UITextViewDelegate{
     /// Handles resizing of the input text view.
     func textViewDidChange(_ textView: UITextView) {
-        let size = CGSize(width: newCommentView.commentTextView.frame.width, height: .infinity)
-        let estimatedSize = newCommentView.commentTextView.sizeThatFits(size)
-        if (estimatedSize.height > (self.view.frame.height * 0.3)){
-            newCommentView.commentTextViewHeightConstraint?.constant = self.view.frame.height * 0.3
-        } else{
-            newCommentView.commentTextViewHeightConstraint?.constant = estimatedSize.height
-        }
+//        let size = CGSize(width: newCommentView.commentTextView.frame.width, height: .infinity)
+//        let estimatedSize = newCommentView.commentTextView.sizeThatFits(size)
+//        if (estimatedSize.height > (self.view.frame.height * 0.3)){
+//            newCommentView.commentTextViewHeightConstraint?.constant = self.view.frame.height * 0.3
+//        } else{
+//            newCommentView.commentTextViewHeightConstraint?.constant = estimatedSize.height
+//        }
 
     }
 }
