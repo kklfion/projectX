@@ -16,7 +16,7 @@ struct Constants{
     static let smallerTextFont = UIFont.preferredFont(forTextStyle: .footnote)
     
     struct Colors {
-        static let mainYellow = UIColor(rgb: 0xf6e58f)
+        static let mainYellow = UIColor.white//UIColor(rgb: 0xf6e58f)
         static let darkBrown = UIColor(rgb: 0x434239)
         static let subText = UIColor(rgb: 0x817e6e)
         static let profileBlue = UIColor(rgb: 0xdff9ff)

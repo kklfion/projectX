@@ -46,6 +46,7 @@ enum FirestoreFields: String {
     
     case missionID
 
+
 }
 class NetworkManager {
 

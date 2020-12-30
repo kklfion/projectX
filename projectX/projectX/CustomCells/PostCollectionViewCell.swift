@@ -9,9 +9,19 @@
 import UIKit
 
 class PostCollectionViewCell: UICollectionViewCell {
+    
     static let cellID = "PostCollectionViewCell"
     
-    var  isLiked = false
+    ///when cell is liked vs disliked UI should be changed as well as likes count
+    var isLiked = false {
+        didSet{
+            if isLiked{
+                changeCellToLiked()
+            }else{
+                changeCellToDisliked()
+            }
+        }
+    }
     
     ///to add actions to cell buttons
     weak var delegate: PostCollectionViewCellDidTapDelegate?
@@ -260,17 +270,15 @@ extension PostCollectionViewCell{
         guard let indexPath = indexPath else{return}
         self.delegate?.didTapCommentsButton(indexPath)
     }
-    
-    func switchLikeButtonAppearance(){
+    private func changeCellToLiked(){
         guard let likesCount = Int(likesLabel.text ?? "") else {return}
-        isLiked.toggle()
-        if isLiked{
-            likesLabel.text = "\(likesCount + 1)"
-            likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
-        } else{
-            likesLabel.text = "\(likesCount - 1)"
-            likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
-        }
+        likesLabel.text = "\(likesCount + 1)"
+        likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+    }
+    private func changeCellToDisliked(){
+        guard let likesCount = Int(likesLabel.text ?? "") else {return}
+        likesLabel.text = "\(likesCount - 1)"
+        likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
     }
 }
 

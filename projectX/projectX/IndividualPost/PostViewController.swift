@@ -100,7 +100,7 @@ class PostViewController: UIViewController {
         newCommentViewHeightConstraint?.isActive = true
         newCommentViewBottomConstraint = newCommentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         newCommentViewBottomConstraint?.isActive = true
-
+   
         newCommentView.closeButton.addTarget(self, action: #selector(didTapDissmissNewComment), for: .touchUpInside)
         newCommentView.sendButton.addTarget(self, action: #selector(didTapSendButton), for: .touchUpInside)
     }
@@ -180,22 +180,6 @@ extension PostViewController{
             }
             presenter.present(in: self)
         }
-    }
-    //TODO: this will be replaced in the update
-    @objc private func shareButtonPushed(){
-        
-    }
-    @objc private func createCommentButtonPushed(){
-        newCommentView.commentTextView.becomeFirstResponder()
-    }
-    @objc private func writeButtonPushed(){
-        
-    }
-    @objc private func bookmarkButtonPushed(){
-        
-    }
-    @objc private func closeButtonPushed(){
-        
     }
 }
 //MARK: Networking
@@ -306,15 +290,25 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
 //MARK: comment text view delegate
 extension PostViewController: UITextViewDelegate{
     func textViewDidBeginEditing(_ textView: UITextView) {
+        slideOutNewCommentView(textView)
+    }
+    func textViewDidEndEditing(_ textView: UITextView) {
+        foldInNewCommentView(textView)
+    }
+    func textViewDidChange(_ textView: UITextView) {
+        
+    }
+    private func slideOutNewCommentView(_ textView: UITextView){
         if textView.textColor == UIColor.lightGray {
             textView.text = nil
             textView.textColor = UIColor.black
             textView.textAlignment = .left
         }
+        newCommentView.commentTextView.becomeFirstResponder()
         newCommentView.bottomStack.isHidden = false
         newCommentView.topStack.isHidden = false
     }
-    func textViewDidEndEditing(_ textView: UITextView) {
+    private func foldInNewCommentView(_ textView: UITextView){
         if textView.text.isEmpty {
             textView.text = newCommentView.commentPlaceholderMessage
             textView.textColor = UIColor.lightGray
@@ -322,9 +316,8 @@ extension PostViewController: UITextViewDelegate{
         }
         newCommentView.bottomStack.isHidden = true
         newCommentView.topStack.isHidden = true
-    }
-    func textViewDidChange(_ textView: UITextView) {
         
+        newCommentView.commentTextView.endEditing(true)
     }
 }
 

@@ -13,7 +13,11 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
     
     private let searchController = UISearchController(searchResultsController: nil)
     
+    ///posts displayed in the feed
     private var posts = [Post]()
+    
+    ///likes for the posts in the feed
+    private var likes = [LikedPost]()
 
     init(){
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
@@ -26,7 +30,10 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         showLoginScreenIfNeeded()
         setupCollectionView()
         setupNavigationBar()
-        getData()
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.getData()
+        }
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -53,15 +60,55 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.cellID)
     }
     private func getData(){
+        
+        var documentsPosts = [Post]()
+        
+        let group = DispatchGroup()
+        
+        group.enter()
         let query = NetworkManager.shared.db.posts
         NetworkManager.shared.getDocumentsForQuery(query: query) { (posts: [Post]? , error) in
             if error != nil{
                 print("Error loading posts for home \(String(describing: error?.localizedDescription))")
             }else if posts != nil{
-                self.posts = posts!
-                self.collectionView.reloadData()
+                documentsPosts = posts!
+            }
+            group.leave()
+        }
+        
+        group.wait()
+        for doc in documentsPosts {
+            group.enter()
+            guard let id = doc.id else {continue}
+            //FIXME: use current user ID instead of the static one !!
+            let userid = "59qIdPL8uAfltJryIrAWfQNFcuN2"//UserManager.shared().user?.id else {continue}
+            let query = NetworkManager.shared.db.likedPosts
+                .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
+                .whereField(FirestoreFields.userID.rawValue, isEqualTo: userid)
+            NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [LikedPost]?, error) in
+                if error != nil {
+                    print("error loading liked post", error!)
+                }else if likedPosts != nil {
+                    self.likes.append(contentsOf: likedPosts!)
+                    print("received a like")
+                }
+                group.leave()
             }
         }
+        group.wait()
+        
+        print("restart collection")
+        self.posts.append(contentsOf: documentsPosts)
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+        
+        
+        //1. get posts
+        
+        //2. get likes
+        
+        //3. reload tableview
         
     }
     private func showLoginScreenIfNeeded(){
@@ -110,12 +157,7 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
     }
 
     private func addData(toCell cell: PostCollectionViewCell, withIndex index: Int ){
-        NetworkManager.shared.getAsynchImage(withURL: posts[index].userInfo.photoURL) { (image, error) in
-            DispatchQueue.main.async {
-                cell.authorImageView.image = image
-            }
-        }
-        cell.isLiked = false
+        //cell.isLiked = false
         cell.postImageView.image = nil
         cell.titleLabel.text =  posts[index].title
         cell.messageLabel.text =  posts[index].text
@@ -127,6 +169,11 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
         formatter.timeStyle = .short
         let dateString = formatter.string(from: posts[index].date)
         cell.dateLabel.text = "\(dateString)"
+        NetworkManager.shared.getAsynchImage(withURL: posts[index].userInfo.photoURL) { (image, error) in
+            DispatchQueue.main.async {
+                cell.authorImageView.image = image
+            }
+        }
         if posts[index].imageURL != nil {
             cell.postImageView.isHidden = false
             NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
@@ -136,6 +183,10 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
             }
         } else{
             cell.postImageView.isHidden = true
+        }
+        
+        if likes.contains(where: { $0.postID == posts[index].id }) {
+            cell.isLiked = true
         }
     }
 }
@@ -148,19 +199,17 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
         presentStationFor(indexPath: indexPath)
     }
     func didTapLikeButton(_ indexPath: IndexPath, _ cell: PostCollectionViewCell) {
-        //change UI
-        cell.switchLikeButtonAppearance()
-        //change posts data
-        //if cell is now isLiked = true then we need to increment likes count
+        //1. change UI
+        cell.isLiked.toggle()
         if cell.isLiked{
+            //2. change locally
             posts[indexPath.item].likes += 1
-        } else{//else we need to decrement it
-            posts[indexPath.item].likes -= 1
-        }
-        //write like for user&post, incerement likes in db
-        if cell.isLiked{
+            //3. change in the DB
             writeLikeToTheFirestore(with: indexPath)
-        } else{ //delete that like, decrement liks for post
+        } else{
+            //2. change locally
+            posts[indexPath.item].likes -= 1
+            //3. change in the DB
             deleteLikeFromFirestore(with: indexPath)
         }
     }
@@ -176,11 +225,21 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
                                                              documentID: postID,
                                                              value: Double(1),
                                                              field: .likes)
+                print("like written!)")
             }
         }
     }
     private func deleteLikeFromFirestore(with indexPath: IndexPath){
-
+        let likedPost = LikedPost(id: "", userID: "", postID: "", date: Date())
+        guard  let docID = likedPost.id else {return}
+        NetworkManager.shared.deleteDocumentsWith(collectionType: .likedPosts,
+                                                  documentID: docID) { (error) in
+            if error != nil{
+                print("error disliking", error!)
+            }else{
+                print("success disliking")
+            }
+        }
     }
     func didTapDislikeButton(_ indexPath: IndexPath) {
 
