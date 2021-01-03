@@ -52,8 +52,6 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         navBarAppearance.backgroundColor = Constants.Colors.mainYellow
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
-//        navigationController?.navigationBar.layer.cornerRadius = 25
-//        navigationController?.navigationBar.clipsToBounds = true
     }
     private func setupCollectionView(){
         collectionView.backgroundColor = .white
@@ -102,14 +100,6 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         DispatchQueue.main.async {
             self.collectionView.reloadData()
         }
-        
-        
-        //1. get posts
-        
-        //2. get likes
-        
-        //3. reload tableview
-        
     }
     private func showLoginScreenIfNeeded(){
         if Auth.auth().currentUser == nil {
@@ -199,14 +189,17 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
         presentStationFor(indexPath: indexPath)
     }
     func didTapLikeButton(_ indexPath: IndexPath, _ cell: PostCollectionViewCell) {
-        //1. change UI
         cell.isLiked.toggle()
         if cell.isLiked{
+            //1. change UI
+            cell.changeCellToLiked()
             //2. change locally
             posts[indexPath.item].likes += 1
             //3. change in the DB
             writeLikeToTheFirestore(with: indexPath)
         } else{
+            //1. change UI
+            cell.changeCellToDisliked()
             //2. change locally
             posts[indexPath.item].likes -= 1
             //3. change in the DB
@@ -216,28 +209,41 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
     private func writeLikeToTheFirestore(with indexPath: IndexPath) {
         guard  let userID = UserManager.shared().user?.userID else {return}
         guard let postID = posts[indexPath.item].id else {return}
-        let document = LikedPost(userID: userID, postID: postID)
-        NetworkManager.shared.writeDocumentsWith(collectionType: .likedPosts, documents: [document]) { (error) in
+        var document = LikedPost(userID: userID, postID: postID)
+        NetworkManager.shared.writeDocumentReturnReference(collectionType: .likedPosts, document: document  ) { (ref, error) in
             if let err = error{
                 print("Error creating like \(err)")
-            } else{ //need to increment likes in the post
+            } else { //need to increment likes in the post
                 NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
                                                              documentID: postID,
                                                              value: Double(1),
                                                              field: .likes)
-                print("like written!)")
+                document.id = ref
+                self.likes.append(document)
+                self.posts[indexPath.item].likes += 1
             }
         }
     }
+    
     private func deleteLikeFromFirestore(with indexPath: IndexPath){
-        let likedPost = LikedPost(id: "", userID: "", postID: "", date: Date())
-        guard  let docID = likedPost.id else {return}
+        let likedPosts = likes.filter { $0.postID == posts[indexPath.item].id }
+        guard let likedPost = likedPosts.first else {return}
+        guard let docID = likedPost.id else {return}
+        guard let postID = posts[indexPath.item].id else {return}
         NetworkManager.shared.deleteDocumentsWith(collectionType: .likedPosts,
                                                   documentID: docID) { (error) in
             if error != nil{
                 print("error disliking", error!)
             }else{
                 print("success disliking")
+                NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
+                                                             documentID: postID,
+                                                             value: Double(-1),
+                                                             field: .likes)
+                self.posts[indexPath.item].likes -= 1
+                guard let indexToRemove = self.likes.firstIndex(where: { $0.id == docID }) else {return}
+                self.likes.remove(at: indexToRemove)
+                
             }
         }
     }

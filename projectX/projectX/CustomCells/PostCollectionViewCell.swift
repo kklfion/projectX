@@ -16,9 +16,9 @@ class PostCollectionViewCell: UICollectionViewCell {
     var isLiked = false {
         didSet{
             if isLiked{
-                changeCellToLiked()
+                likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
             }else{
-                changeCellToDisliked()
+                likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
             }
         }
     }
@@ -270,15 +270,13 @@ extension PostCollectionViewCell{
         guard let indexPath = indexPath else{return}
         self.delegate?.didTapCommentsButton(indexPath)
     }
-    private func changeCellToLiked(){
+    func changeCellToLiked(){
         guard let likesCount = Int(likesLabel.text ?? "") else {return}
         likesLabel.text = "\(likesCount + 1)"
-        likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
     }
-    private func changeCellToDisliked(){
+    func changeCellToDisliked(){
         guard let likesCount = Int(likesLabel.text ?? "") else {return}
         likesLabel.text = "\(likesCount - 1)"
-        likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
     }
 }
 
