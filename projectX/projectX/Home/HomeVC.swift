@@ -13,6 +13,8 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
     
     private let searchController = UISearchController(searchResultsController: nil)
     
+    private var postPaginator = PostPaginator()
+    
     ///posts displayed in the feed
     private var posts = [Post]()
     
@@ -99,6 +101,25 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         self.posts.append(contentsOf: documentsPosts)
         DispatchQueue.main.async {
             self.collectionView.reloadData()
+        }
+    }
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let position = scrollView.contentOffset.y
+        if position > (collectionView.contentSize.height-100-scrollView.frame.size.height){
+            if postPaginator.isFetchingMore {return}//we fetching data, no need to fetch more'
+            print("get more data")
+            postPaginator.queryPostWith(pagination: true) { [weak self] result in
+                switch result {
+                    case .success(let data):
+                        self?.posts.append(contentsOf: data)
+                    DispatchQueue.main.async {
+                        self?.collectionView.reloadData()
+                    }
+                    case .failure(_):
+                        break
+                }
+
+            }
         }
     }
     private func showLoginScreenIfNeeded(){

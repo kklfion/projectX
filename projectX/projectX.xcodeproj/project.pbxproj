@@ -63,6 +63,7 @@
 		80D97BA9251D819000825BBB /* MissionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D97BA8251D819000825BBB /* MissionsCell.swift */; };
 		80D97BAC251D819C00825BBB /* MissionDeadlineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D97BAB251D819C00825BBB /* MissionDeadlineCell.swift */; };
 		80F52F8B251C1AA400076825 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F52F8A251C1AA400076825 /* ProfileView.swift */; };
+		80F57E0425A4F7A100CDF5C3 /* PostPaginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */; };
 		80FDD6A924A188BF00304007 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 80FDD6A824A188BF00304007 /* GoogleService-Info.plist */; };
 		90C178B725319EE800200222 /* RealDATA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178B625319EE800200222 /* RealDATA.swift */; };
 		90C178CD25439A5200200222 /* AcceptedMission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178CC25439A5200200222 /* AcceptedMission.swift */; };
@@ -137,6 +138,7 @@
 		80D97BA8251D819000825BBB /* MissionsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissionsCell.swift; sourceTree = "<group>"; };
 		80D97BAB251D819C00825BBB /* MissionDeadlineCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissionDeadlineCell.swift; sourceTree = "<group>"; };
 		80F52F8A251C1AA400076825 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostPaginator.swift; sourceTree = "<group>"; };
 		80FDD6A824A188BF00304007 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		90C178B625319EE800200222 /* RealDATA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealDATA.swift; sourceTree = "<group>"; };
 		90C178CC25439A5200200222 /* AcceptedMission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptedMission.swift; sourceTree = "<group>"; };
@@ -348,6 +350,7 @@
 				806E777924C9255F00A95B89 /* DataTest.swift */,
 				806E777724C9076200A95B89 /* Extensions.swift */,
 				90C178B625319EE800200222 /* RealDATA.swift */,
+				80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -510,6 +513,7 @@
 				80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */,
 				804E618724957D0C00825150 /* AppDelegate.swift in Sources */,
 				8068E81C2542329300A85B33 /* OtherProfileViewController.swift in Sources */,
+				80F57E0425A4F7A100CDF5C3 /* PostPaginator.swift in Sources */,
 				803D75AE250AD786003F569D /* Station.swift in Sources */,
 				80D97BA9251D819000825BBB /* MissionsCell.swift in Sources */,
 				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,
