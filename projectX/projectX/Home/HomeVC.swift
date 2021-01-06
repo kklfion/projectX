@@ -93,7 +93,6 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
                     print("error loading liked post", error!)
                 }else if likedPosts != nil {
                     self.likes.append(contentsOf: likedPosts!)
-                    print("received a like")
                 }
                 group.leave()
             }
@@ -201,7 +200,6 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
             cell.changeCellToLiked()
             //2. change locally
             posts[indexPath.item].likes += 1
-            print(posts[indexPath.item])
             //3. change in the DB
             writeLikeToTheFirestore(with: indexPath)
         } else{
@@ -241,7 +239,6 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
             if error != nil{
                 print("error disliking", error!)
             }else{
-                print("success disliking")
                 NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
                                                              documentID: postID,
                                                              value: Double(-1),
