@@ -201,6 +201,7 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
             cell.changeCellToLiked()
             //2. change locally
             posts[indexPath.item].likes += 1
+            print(posts[indexPath.item])
             //3. change in the DB
             writeLikeToTheFirestore(with: indexPath)
         } else{
@@ -226,7 +227,6 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
                                                              field: .likes)
                 document.id = ref
                 self.likes.append(document)
-                self.posts[indexPath.item].likes += 1
             }
         }
     }
@@ -246,7 +246,6 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
                                                              documentID: postID,
                                                              value: Double(-1),
                                                              field: .likes)
-                self.posts[indexPath.item].likes -= 1
                 guard let indexToRemove = self.likes.firstIndex(where: { $0.id == docID }) else {return}
                 self.likes.remove(at: indexToRemove)
                 

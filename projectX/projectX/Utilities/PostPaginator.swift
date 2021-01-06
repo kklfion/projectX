@@ -21,11 +21,9 @@ class PostPaginator {
         if pagination {
             isFetching = true
             guard let  lastDocumentSnapshot = lastDocumentSnapshot else { return }
-            query = db.posts.order(by: "date").start(afterDocument: lastDocumentSnapshot).limit(to: documentsPerQuery)
-            print("Next \(documentsPerQuery) posts loaded")
+            query = db.posts.order(by: "date", descending: true).start(afterDocument: lastDocumentSnapshot).limit(to: documentsPerQuery)
         }else {
-            query = db.posts.order(by: "date").limit(to: documentsPerQuery)
-            print("First \(documentsPerQuery) posts loaded")
+            query = db.posts.order(by: "date", descending: true).limit(to: documentsPerQuery)
         }
         query?.getDocuments { (snapshot, error) in
             if let error = error {
