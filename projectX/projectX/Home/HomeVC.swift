@@ -32,10 +32,7 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         showLoginScreenIfNeeded()
         setupCollectionView()
         setupNavigationBar()
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.getData()
-        }
-        
+        fetchDataWith()
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -59,25 +56,28 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         collectionView.backgroundColor = .white
         self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.cellID)
     }
-    private func getData(){
-        
-        var documentsPosts = [Post]()
-        
-        let group = DispatchGroup()
-        
-        group.enter()
-        let query = NetworkManager.shared.db.posts
-        NetworkManager.shared.getDocumentsForQuery(query: query) { (posts: [Post]? , error) in
-            if error != nil{
-                print("Error loading posts for home \(String(describing: error?.localizedDescription))")
-            }else if posts != nil{
-                documentsPosts = posts!
+    private func fetchDataWith(pagination: Bool = false){
+        postPaginator.queryPostWith(pagination: pagination) { [weak self] result in
+            switch result {
+                case .success(let data):
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        self?.updatePostsAndLikesWith(posts: data)
+                    }
+                case .failure(_):
+                    break
             }
-            group.leave()
         }
-        
-        group.wait()
-        for doc in documentsPosts {
+    }
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let position = scrollView.contentOffset.y
+        if position > (collectionView.contentSize.height-100-scrollView.frame.size.height){
+            if postPaginator.isFetching {return}//we fetching data, no need to fetch more
+            fetchDataWith(pagination: true)
+        }
+    }
+    private func updatePostsAndLikesWith(posts: [Post]){
+        let group = DispatchGroup()
+        for doc in posts {
             group.enter()
             guard let id = doc.id else {continue}
             //FIXME: use current user ID instead of the static one !!
@@ -97,31 +97,12 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         }
         group.wait()
         
-        print("restart collection")
-        self.posts.append(contentsOf: documentsPosts)
+        self.posts.append(contentsOf: posts)
         DispatchQueue.main.async {
             self.collectionView.reloadData()
         }
     }
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let position = scrollView.contentOffset.y
-        if position > (collectionView.contentSize.height-100-scrollView.frame.size.height){
-            if postPaginator.isFetchingMore {return}//we fetching data, no need to fetch more'
-            print("get more data")
-            postPaginator.queryPostWith(pagination: true) { [weak self] result in
-                switch result {
-                    case .success(let data):
-                        self?.posts.append(contentsOf: data)
-                    DispatchQueue.main.async {
-                        self?.collectionView.reloadData()
-                    }
-                    case .failure(_):
-                        break
-                }
 
-            }
-        }
-    }
     private func showLoginScreenIfNeeded(){
         if Auth.auth().currentUser == nil {
             let vc = LoginViewController()

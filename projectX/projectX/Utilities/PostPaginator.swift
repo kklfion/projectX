@@ -10,31 +10,24 @@ import FirebaseFirestore
 
 class PostPaginator {
     
-    private var query: Query!
-    private var lastDocumentSnapshot: DocumentSnapshot!
+    private var query: Query?
+    private var lastDocumentSnapshot: DocumentSnapshot?
     private var db = Firestore.firestore()
+    private let documentsPerQuery = 6
     
-    var isFetchingMore = false
+    var isFetching = false
     
-    func queryPostWith(pagination: Bool = false, completion: @escaping (Result<[Post], Error>) -> Void){
-        
-        let posts = [Post]()
-        
+    func queryPostWith(pagination: Bool, completion: @escaping (Result<[Post], Error>) -> Void){
         if pagination {
-            isFetchingMore = true
+            isFetching = true
+            guard let  lastDocumentSnapshot = lastDocumentSnapshot else { return }
+            query = db.posts.order(by: "date").start(afterDocument: lastDocumentSnapshot).limit(to: documentsPerQuery)
+            print("Next \(documentsPerQuery) posts loaded")
+        }else {
+            query = db.posts.order(by: "date").limit(to: documentsPerQuery)
+            print("First \(documentsPerQuery) posts loaded")
         }
-        
-        if !pagination { //first call
-            query = db.posts.order(by: "date").limit(to: 10)
-            print("First 10 posts loaded")
-        } else {
-            //FIXME: use lastdocsnapshot
-            //query = db.posts.order(by: "date").start(afterDocument: lastDocumentSnapshot).limit(to: 10)
-            query = db.posts.order(by: "date").limit(to: 10)
-            print("Next 10 posts loaded")
-        }
-        
-        query.getDocuments { (snapshot, error) in
+        query?.getDocuments { (snapshot, error) in
             if let error = error {
                 completion(.failure(error))
             } else {
@@ -43,10 +36,9 @@ class PostPaginator {
                     return try? querySnapshot.data(as: Post.self)
                 }
                 completion(.success(genericDocs))
-                //self.lastDocumentSnapshot = snapshot!.documents.last
+                self.lastDocumentSnapshot = snapshot!.documents.last
             }
-            self.isFetchingMore = false
+            self.isFetching = false
         }
-
     }
 }
