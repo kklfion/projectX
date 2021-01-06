@@ -28,7 +28,7 @@ class PostPaginator {
             query = db.posts.order(by: "date").limit(to: 10)
             print("First 10 posts loaded")
         } else {
-            //FIXME: user lastdocsnapshot
+            //FIXME: use lastdocsnapshot
             //query = db.posts.order(by: "date").start(afterDocument: lastDocumentSnapshot).limit(to: 10)
             query = db.posts.order(by: "date").limit(to: 10)
             print("Next 10 posts loaded")
