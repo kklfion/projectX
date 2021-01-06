@@ -32,7 +32,7 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         showLoginScreenIfNeeded()
         setupCollectionView()
         setupNavigationBar()
-        fetchDataWith()
+        fetchDataWith(pagination: false)
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -56,18 +56,20 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         collectionView.backgroundColor = .white
         self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.cellID)
     }
-    private func fetchDataWith(pagination: Bool = false){
+    ///Initial fetch should be done with pagination false, all other calls with pagination true
+    private func fetchDataWith(pagination: Bool){
         postPaginator.queryPostWith(pagination: pagination) { [weak self] result in
             switch result {
                 case .success(let data):
-                    DispatchQueue.global(qos: .userInitiated).async {
+                    DispatchQueue.global(qos: .userInitiated).async { //global queue to prevent app from freezing while waiting
                         self?.updatePostsAndLikesWith(posts: data)
                     }
-                case .failure(_):
-                    break
+                case .failure(let error):
+                    print("HomeVC Failed loading data ", error)
             }
         }
     }
+    ///when users scrolls to the bottom of the loaded data, more data is fetched
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let position = scrollView.contentOffset.y
         if position > (collectionView.contentSize.height-100-scrollView.frame.size.height){
@@ -75,6 +77,7 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
             fetchDataWith(pagination: true)
         }
     }
+    ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
     private func updatePostsAndLikesWith(posts: [Post]){
         let group = DispatchGroup()
         for doc in posts {
@@ -96,13 +99,12 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
             }
         }
         group.wait()
-        
         self.posts.append(contentsOf: posts)
         DispatchQueue.main.async {
             self.collectionView.reloadData()
         }
     }
-
+    ///when app is loaded and user isnt signed in, login screen is presented
     private func showLoginScreenIfNeeded(){
         if Auth.auth().currentUser == nil {
             let vc = LoginViewController()
@@ -179,6 +181,8 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
         
         if likes.contains(where: { $0.postID == posts[index].id }) {
             cell.isLiked = true
+        } else{
+            cell.isLiked = false
         }
     }
 }
