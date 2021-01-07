@@ -12,8 +12,11 @@ import FirebaseAuth
 class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
     
     private let searchController = UISearchController(searchResultsController: nil)
-    
     private var postPaginator = PostPaginator()
+    
+    //var isLoading = false
+    var loadingFooterView: LoadingFooterView?
+    let footerViewReuseIdentifier = "LoadingFooterView"
     
     ///posts displayed in the feed
     private var posts = [Post]()
@@ -55,9 +58,11 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
     private func setupCollectionView(){
         collectionView.backgroundColor = .white
         self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.cellID)
+        self.collectionView.register(LoadingFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: footerViewReuseIdentifier)
     }
     ///Initial fetch should be done with pagination false, all other calls with pagination true
     private func fetchDataWith(pagination: Bool){
+        loadingFooterView?.startAnimating()
         postPaginator.queryPostWith(pagination: pagination) { [weak self] result in
             switch result {
                 case .success(let data):
@@ -100,6 +105,7 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         group.wait()
         self.posts.append(contentsOf: posts)
         DispatchQueue.main.async {
+            self.loadingFooterView?.stopAnimating()
             self.collectionView.reloadData()
         }
     }
@@ -184,6 +190,37 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
             cell.isLiked = false
         }
     }
+    //footer stuff
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionFooter {
+            let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerViewReuseIdentifier, for: indexPath) as! LoadingFooterView
+            self.loadingFooterView = view
+            self.loadingFooterView?.backgroundColor = UIColor.clear
+            return view
+            
+        }else {
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerViewReuseIdentifier, for: indexPath)
+            return headerView
+        }
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.bounds.size.width, height: 55)
+//        if isLoading {
+//            return CGSize.zero
+//        } else {
+//            return CGSize(width: collectionView.bounds.size.width, height: 55)
+//        }
+    }
+//    override func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+//        if elementKind == UICollectionView.elementKindSectionFooter {
+//            self.loadingFooterView?.startAnimating()
+//        }
+//    }
+//    override func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
+//        if elementKind == UICollectionView.elementKindSectionFooter {
+//            self.loadingFooterView?.stopAnimating()
+//        }
+//    }
 }
 extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
     func didTapAuthorLabel(_ indexPath: IndexPath) {

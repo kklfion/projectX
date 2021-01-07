@@ -40,6 +40,7 @@
 		8068E7D3254107BD00A85B33 /* ParentStationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E7D2254107BD00A85B33 /* ParentStationViewController.swift */; };
 		8068E80225410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */; };
 		8068E81C2542329300A85B33 /* OtherProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E81B2542329300A85B33 /* OtherProfileViewController.swift */; };
+		80699C9C25A7CA480037FF0F /* LoadingFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80699C9B25A7CA480037FF0F /* LoadingFooterView.swift */; };
 		806B790524B817AD002B45BD /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806B790424B817AD002B45BD /* PostModel.swift */; };
 		806E777624C9074700A95B89 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806E777524C9074700A95B89 /* Constants.swift */; };
 		806E777824C9076200A95B89 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806E777724C9076200A95B89 /* Extensions.swift */; };
@@ -115,6 +116,7 @@
 		8068E7D2254107BD00A85B33 /* ParentStationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentStationViewController.swift; sourceTree = "<group>"; };
 		8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlWithTwoTableViews.swift; sourceTree = "<group>"; };
 		8068E81B2542329300A85B33 /* OtherProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherProfileViewController.swift; sourceTree = "<group>"; };
+		80699C9B25A7CA480037FF0F /* LoadingFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingFooterView.swift; sourceTree = "<group>"; };
 		806B790424B817AD002B45BD /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		806E777524C9074700A95B89 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		806E777724C9076200A95B89 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -324,6 +326,7 @@
 			children = (
 				8066D62C24A6CEC0002A9E16 /* HomeView.swift */,
 				804E61A424980DFD00825150 /* HomeVC.swift */,
+				80699C9B25A7CA480037FF0F /* LoadingFooterView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -560,6 +563,7 @@
 				90C178D325439A9000200222 /* Follower.swift in Sources */,
 				806E777624C9074700A95B89 /* Constants.swift in Sources */,
 				8067F0C1257ADC3B00CED98F /* PostCollectionViewCell.swift in Sources */,
+				80699C9C25A7CA480037FF0F /* LoadingFooterView.swift in Sources */,
 				90C178CF25439A6300200222 /* LikedPost.swift in Sources */,
 				803972D52519780D002695EC /* SideBarView.swift in Sources */,
 				80BB37B224D8C50700B12253 /* StationViewController.swift in Sources */,

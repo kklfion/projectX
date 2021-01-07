@@ -25,18 +25,22 @@ class PostPaginator {
         }else {
             query = db.posts.order(by: "date", descending: false).limit(to: documentsPerQuery)
         }
-        query?.getDocuments { (snapshot, error) in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                guard let documents = snapshot?.documents else { return }
-                let genericDocs = documents.compactMap { (querySnapshot) -> Post? in
-                    return try? querySnapshot.data(as: Post.self)
+        //FIXME: delay added to show spinner
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.query?.getDocuments { (snapshot, error) in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    guard let documents = snapshot?.documents else { return }
+                    let genericDocs = documents.compactMap { (querySnapshot) -> Post? in
+                        return try? querySnapshot.data(as: Post.self)
+                    }
+                    completion(.success(genericDocs))
+                    self.lastDocumentSnapshot = snapshot!.documents.last
                 }
-                completion(.success(genericDocs))
-                self.lastDocumentSnapshot = snapshot!.documents.last
+                self.isFetching = false
             }
-            self.isFetching = false
         }
+
     }
 }
