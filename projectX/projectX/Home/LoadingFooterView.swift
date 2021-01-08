@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+///This view is used to show loading of additional data when users scrolls the collectionView. It works together with pagination.
 class LoadingFooterView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,11 +21,7 @@ class LoadingFooterView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     var isAnimating = false
-    var activityIndicator: UIActivityIndicatorView = {
-        let ai = UIActivityIndicatorView()
-        
-        return ai
-    }()
+    let activityIndicator = UIActivityIndicatorView()
     func startAnimating(){
         isAnimating = true
         activityIndicator.startAnimating()

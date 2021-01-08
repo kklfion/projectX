@@ -9,14 +9,26 @@
 import UIKit
 import FirebaseAuth
 
+enum Section {
+    case main
+}
+
 class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
     
+    var dataSource: UICollectionViewDiffableDataSource<Section, Post>!
+    
+    //TODO: not implemented (searching isn't straightforward with firestore)
     private let searchController = UISearchController(searchResultsController: nil)
+    
+    ///used to perform data fetching
     private var postPaginator = PostPaginator()
     
-    //var isLoading = false
+    ///to keep reference to the footerView to start/stop animation
     var loadingFooterView: LoadingFooterView?
-    let footerViewReuseIdentifier = "LoadingFooterView"
+    
+    ///reuse identifiers
+    let footerViewReuseIdentifier = "footerViewReuseIdentifier"
+    let cellReuseIdentifier = "cellReuseIdentifier"
     
     ///posts displayed in the feed
     private var posts = [Post]()
@@ -36,7 +48,54 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         setupCollectionView()
         setupNavigationBar()
         fetchDataWith(pagination: false)
+        setupDiffableDatasource()
     }
+    private func setupDiffableDatasource(){
+        //layout
+        collectionView.collectionViewLayout = createLayout()
+        //configure datasource
+        dataSource = .init(collectionView: collectionView, cellProvider: { (collectionView, indexPath, post) -> UICollectionViewCell? in
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellReuseIdentifier, for: indexPath) as! PostCollectionViewCell
+            cell.titleLabel.text = post.title
+            self.addData(toCell: cell, withPost: post)
+            return cell
+        })
+        dataSource.supplementaryViewProvider = .some({ (collectionView, kind, indexPath) -> UICollectionReusableView? in
+            if kind == UICollectionView.elementKindSectionFooter {
+                let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.footerViewReuseIdentifier, for: indexPath) as! LoadingFooterView
+                self.loadingFooterView = view
+                self.loadingFooterView?.backgroundColor = UIColor.clear
+                return view
+
+            }else {
+                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.footerViewReuseIdentifier, for: indexPath)
+                return headerView
+            }
+        })
+        collectionView.dataSource = dataSource
+
+    }
+    private func createLayout() -> UICollectionViewLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                             heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                               heightDimension: .fractionalHeight(0.25))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
+                                                         subitems: [item])
+
+        let section = NSCollectionLayoutSection(group: group)
+        
+        let kind = UICollectionView.elementKindSectionFooter
+        section.boundarySupplementaryItems = [
+            .init(layoutSize: .init(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(80)), elementKind: kind, alignment: .bottom)
+        ]
+        
+        let layout = UICollectionViewCompositionalLayout(section: section)
+        return layout
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
     }
@@ -57,8 +116,8 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
     }
     private func setupCollectionView(){
         collectionView.backgroundColor = .white
-        self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.cellID)
-        self.collectionView.register(LoadingFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: footerViewReuseIdentifier)
+        self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: self.cellReuseIdentifier)
+        self.collectionView.register(LoadingFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: self.footerViewReuseIdentifier)
     }
     ///Initial fetch should be done with pagination false, all other calls with pagination true
     private func fetchDataWith(pagination: Bool){
@@ -106,7 +165,12 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         self.posts.append(contentsOf: posts)
         DispatchQueue.main.async {
             self.loadingFooterView?.stopAnimating()
-            self.collectionView.reloadData()
+//            self.collectionView.reloadData()
+            //APPLY snapshot
+            var initialSnapshot = NSDiffableDataSourceSnapshot<Section, Post>()
+            initialSnapshot.appendSections([.main])
+            initialSnapshot.appendItems(self.posts)
+            self.dataSource.apply(initialSnapshot, animatingDifferences: true)
         }
     }
     ///when app is loaded and user isnt signed in, login screen is presented
@@ -132,50 +196,28 @@ extension HomeTableVC: SideBarStationSelectionDelegate{
             navigationController?.pushViewController(vc, animated: true)
         }
     }
-}
-// MARK: UICollectionViewDataSource & UICollectionViewDelegateFlowLayout
-extension HomeTableVC: UICollectionViewDelegateFlowLayout{
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        .init(width: view.frame.width, height: 200)
-    }
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return posts.count
-    }
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presentPostFor(indexPath: indexPath)
-    }
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.cellID, for: indexPath) as? PostCollectionViewCell else {return UICollectionViewCell()}
-        addData(toCell: cell, withIndex: indexPath.row)
-        cell.delegate = self
-        cell.indexPath = indexPath
-        return cell
-    }
-
-    private func addData(toCell cell: PostCollectionViewCell, withIndex index: Int ){
+    //TODO: move to cell
+    private func addData(toCell cell: PostCollectionViewCell, withPost post: Post ){
         //cell.isLiked = false
         cell.postImageView.image = nil
-        cell.titleLabel.text =  posts[index].title
-        cell.messageLabel.text =  posts[index].text
-        cell.authorLabel.text =  posts[index].userInfo.name
-        cell.likesLabel.text =  String(posts[index].likes)
-        cell.commentsLabel.text =  String(posts[index].commentCount)
-        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
+        cell.titleLabel.text =  post.title
+        cell.messageLabel.text =  post.text
+        cell.authorLabel.text =  post.userInfo.name
+        cell.likesLabel.text =  String(post.likes)
+        cell.commentsLabel.text =  String(post.commentCount)
+        cell.stationButton.setTitle(post.stationName, for: .normal)
         let formatter = DateFormatter()
         formatter.timeStyle = .short
-        let dateString = formatter.string(from: posts[index].date)
+        let dateString = formatter.string(from: post.date)
         cell.dateLabel.text = "\(dateString)"
-        NetworkManager.shared.getAsynchImage(withURL: posts[index].userInfo.photoURL) { (image, error) in
+        NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
             DispatchQueue.main.async {
                 cell.authorImageView.image = image
             }
         }
-        if posts[index].imageURL != nil {
+        if post.imageURL != nil {
             cell.postImageView.isHidden = false
-            NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
+            NetworkManager.shared.getAsynchImage(withURL: post.imageURL) { (image, error) in
                 DispatchQueue.main.async {
                     cell.postImageView.image = image
                 }
@@ -184,27 +226,11 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
             cell.postImageView.isHidden = true
         }
         
-        if likes.contains(where: { $0.postID == posts[index].id }) {
+        if likes.contains(where: { $0.postID == post.id }) {
             cell.isLiked = true
         } else{
             cell.isLiked = false
         }
-    }
-    //footer stuff
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if kind == UICollectionView.elementKindSectionFooter {
-            let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerViewReuseIdentifier, for: indexPath) as! LoadingFooterView
-            self.loadingFooterView = view
-            self.loadingFooterView?.backgroundColor = UIColor.clear
-            return view
-            
-        }else {
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerViewReuseIdentifier, for: indexPath)
-            return headerView
-        }
-    }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.bounds.size.width, height: 80)
     }
 }
 extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
@@ -300,3 +326,4 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }
+
