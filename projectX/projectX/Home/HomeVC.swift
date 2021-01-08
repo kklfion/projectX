@@ -204,23 +204,8 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
         }
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.bounds.size.width, height: 55)
-//        if isLoading {
-//            return CGSize.zero
-//        } else {
-//            return CGSize(width: collectionView.bounds.size.width, height: 55)
-//        }
+        return CGSize(width: collectionView.bounds.size.width, height: 80)
     }
-//    override func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-//        if elementKind == UICollectionView.elementKindSectionFooter {
-//            self.loadingFooterView?.startAnimating()
-//        }
-//    }
-//    override func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
-//        if elementKind == UICollectionView.elementKindSectionFooter {
-//            self.loadingFooterView?.stopAnimating()
-//        }
-//    }
 }
 extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
     func didTapAuthorLabel(_ indexPath: IndexPath) {

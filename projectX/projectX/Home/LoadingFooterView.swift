@@ -12,7 +12,6 @@ class LoadingFooterView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(activityIndicator)
-        self.backgroundColor = .red
         activityIndicator.addAnchors(top: self.topAnchor,
                                      leading: self.leadingAnchor,
                                      bottom: self.bottomAnchor,
