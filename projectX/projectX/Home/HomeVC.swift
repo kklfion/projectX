@@ -46,34 +46,41 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         super.viewDidLoad()
         showLoginScreenIfNeeded()
         setupCollectionView()
+        setupDiffableDatasource()
         setupNavigationBar()
         fetchDataWith(pagination: false)
-        setupDiffableDatasource()
+  
+    }
+    //MARK: CollectionView setup
+    private func setupCollectionView(){
+        collectionView.backgroundColor = .white
+        self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: self.cellReuseIdentifier)
+        self.collectionView.register(LoadingFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: self.footerViewReuseIdentifier)
     }
     private func setupDiffableDatasource(){
-        //layout
+        //configure layout for cell and footer
         collectionView.collectionViewLayout = createLayout()
-        //configure datasource
+        //configure datasource for cells
         dataSource = .init(collectionView: collectionView, cellProvider: { (collectionView, indexPath, post) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellReuseIdentifier, for: indexPath) as! PostCollectionViewCell
-            cell.titleLabel.text = post.title
             self.addData(toCell: cell, withPost: post)
+            cell.delegate = self
+            cell.indexPath = indexPath
             return cell
         })
+        //configure datasource for footer view
         dataSource.supplementaryViewProvider = .some({ (collectionView, kind, indexPath) -> UICollectionReusableView? in
             if kind == UICollectionView.elementKindSectionFooter {
                 let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.footerViewReuseIdentifier, for: indexPath) as! LoadingFooterView
                 self.loadingFooterView = view
-                self.loadingFooterView?.backgroundColor = UIColor.clear
+                self.loadingFooterView?.backgroundColor = .clear
+                self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
                 return view
-
             }else {
-                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.footerViewReuseIdentifier, for: indexPath)
-                return headerView
+                return nil
             }
         })
         collectionView.dataSource = dataSource
-
     }
     private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
@@ -89,7 +96,9 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         
         let kind = UICollectionView.elementKindSectionFooter
         section.boundarySupplementaryItems = [
-            .init(layoutSize: .init(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(80)), elementKind: kind, alignment: .bottom)
+            .init(layoutSize: .init(widthDimension: .fractionalWidth(1.0),
+                                    heightDimension: .absolute(80)),
+                  elementKind: kind, alignment: .bottom)
         ]
         
         let layout = UICollectionViewCompositionalLayout(section: section)
@@ -114,14 +123,8 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
     }
-    private func setupCollectionView(){
-        collectionView.backgroundColor = .white
-        self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: self.cellReuseIdentifier)
-        self.collectionView.register(LoadingFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: self.footerViewReuseIdentifier)
-    }
     ///Initial fetch should be done with pagination false, all other calls with pagination true
     private func fetchDataWith(pagination: Bool){
-        loadingFooterView?.startAnimating()
         postPaginator.queryPostWith(pagination: pagination) { [weak self] result in
             switch result {
                 case .success(let data):
@@ -162,16 +165,18 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
             }
         }
         group.wait()
-        self.posts.append(contentsOf: posts)
         DispatchQueue.main.async {
-            self.loadingFooterView?.stopAnimating()
-//            self.collectionView.reloadData()
-            //APPLY snapshot
-            var initialSnapshot = NSDiffableDataSourceSnapshot<Section, Post>()
-            initialSnapshot.appendSections([.main])
-            initialSnapshot.appendItems(self.posts)
-            self.dataSource.apply(initialSnapshot, animatingDifferences: true)
+            self.applyFetchedDataOnCollectionView(with: posts)
         }
+    }
+    private func applyFetchedDataOnCollectionView(with posts: [Post]){
+        self.posts.append(contentsOf: posts)
+        self.loadingFooterView?.stopAnimating()
+        //APPLY snapshot
+        var initialSnapshot = NSDiffableDataSourceSnapshot<Section, Post>()
+        initialSnapshot.appendSections([.main])
+        initialSnapshot.appendItems(self.posts)
+        self.dataSource.apply(initialSnapshot, animatingDifferences: true)
     }
     ///when app is loaded and user isnt signed in, login screen is presented
     private func showLoginScreenIfNeeded(){
