@@ -18,7 +18,7 @@ import FirebaseFirestore
 
 
 
-class queryData {
+class QueryData {
     
     //Firestore related items
     private var query: Query!
