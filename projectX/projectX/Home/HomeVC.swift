@@ -9,6 +9,7 @@
 import UIKit
 import FirebaseAuth
 
+//Only one section in collectionView
 enum Section {
     case main
 }
@@ -48,8 +49,30 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         setupCollectionView()
         setupDiffableDatasource()
         setupNavigationBar()
+        setupRefreshControl()
         fetchDataWith(pagination: false)
   
+    }
+    func setupRefreshControl () {
+        // Add the refresh control to your UIScrollView object.
+        collectionView.refreshControl = UIRefreshControl()
+        collectionView.refreshControl?.addTarget(self, action:
+                                          #selector(handleRefreshControl),
+                                          for: .valueChanged)
+    }
+        
+    @objc func handleRefreshControl() {
+        // Update your content…
+        var initialSnapshot = NSDiffableDataSourceSnapshot<Section, Post>()
+        initialSnapshot.deleteAllItems()
+        dataSource.apply(initialSnapshot, animatingDifferences: true)
+        posts.removeAll()
+        likes.removeAll()
+        fetchDataWith(pagination: false)
+        // Dismiss the refresh control.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+          self.collectionView.refreshControl?.endRefreshing()
+        }
     }
     //MARK: CollectionView setup
     private func setupCollectionView(){
@@ -82,13 +105,14 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         })
         collectionView.dataSource = dataSource
     }
+    //TODO: add estimatedHeight to make cells dynamically sized
     private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                              heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .fractionalHeight(0.25))
+                                               heightDimension: .absolute(200))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
                                                          subitems: [item])
 
@@ -128,8 +152,9 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         postPaginator.queryPostWith(pagination: pagination) { [weak self] result in
             switch result {
                 case .success(let data):
+                    self?.posts.append(contentsOf: data)
                     DispatchQueue.global(qos: .userInitiated).async { //global queue to prevent app from freezing while waiting
-                        self?.updatePostsAndLikesWith(posts: data)
+                        self?.updatePostsAndLikesWith(data: data)
                     }
                 case .failure(let error):
                     print("HomeVC Failed loading data ", error)
@@ -139,15 +164,19 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
     ///when users scrolls to the bottom of the loaded data, more data is fetched
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let position = scrollView.contentOffset.y
-        if position > (collectionView.contentSize.height-100-scrollView.frame.size.height){
+        if position > (collectionView.contentSize.height-100-scrollView.frame.size.height) && collectionView.contentSize.height > 0{
+//            print("Position", position)
+//            print("Scrollview height ", scrollView.frame.size.height)
+//            print("content size ", collectionView.contentSize.height)
+//            print(collectionView.contentSize.height-100-scrollView.frame.size.height)
             if postPaginator.isFetching {return}//we fetching data, no need to fetch more
             fetchDataWith(pagination: true)
         }
     }
     ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
-    private func updatePostsAndLikesWith(posts: [Post]){
+    private func updatePostsAndLikesWith(data: [Post]){
         let group = DispatchGroup()
-        for doc in posts {
+        for doc in data {
             group.enter()
             guard let id = doc.id else {continue}
             //FIXME: use current user ID instead of the static one !!
@@ -166,16 +195,14 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         }
         group.wait()
         DispatchQueue.main.async {
-            self.applyFetchedDataOnCollectionView(with: posts)
+            self.applyFetchedDataOnCollectionView(data: data)
         }
     }
-    private func applyFetchedDataOnCollectionView(with posts: [Post]){
-        self.posts.append(contentsOf: posts)
+    private func applyFetchedDataOnCollectionView(data: [Post]){
         self.loadingFooterView?.stopAnimating()
-        //APPLY snapshot
         var initialSnapshot = NSDiffableDataSourceSnapshot<Section, Post>()
         initialSnapshot.appendSections([.main])
-        initialSnapshot.appendItems(self.posts)
+        initialSnapshot.appendItems(self.posts, toSection: .main)
         self.dataSource.apply(initialSnapshot, animatingDifferences: true)
     }
     ///when app is loaded and user isnt signed in, login screen is presented

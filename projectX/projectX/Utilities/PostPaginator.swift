@@ -18,8 +18,8 @@ class PostPaginator {
     var isFetching = false
     
     func queryPostWith(pagination: Bool, completion: @escaping (Result<[Post], Error>) -> Void){
+        isFetching = true
         if pagination {
-            isFetching = true
             guard let  lastDocumentSnapshot = lastDocumentSnapshot else { return }
             query = db.posts.order(by: "date", descending: false).start(afterDocument: lastDocumentSnapshot).limit(to: documentsPerQuery)
         }else {
