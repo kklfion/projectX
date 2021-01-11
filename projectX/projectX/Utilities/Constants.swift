@@ -21,6 +21,8 @@ struct Constants{
         static let subText = UIColor(rgb: 0x817e6e)
         static let profileBlue = UIColor(rgb: 0xdff9ff)
         static let profileYellow = UIColor(rgb: 0xfef8d3)
+        static let placeholderTextColor = UIColor.lightGray
+        static let textColor = Colors.darkBrown
     }
     
     struct Screen {
@@ -50,6 +52,9 @@ struct Constants{
         static let layerBorderWidth: CGFloat = 0.5
         static let cornerRadius: CGFloat = 4
 
+    }
+    struct NewPost {
+        static let placeholderText = "What are you thinking?"
     }
 }
     
