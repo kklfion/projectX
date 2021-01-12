@@ -14,7 +14,6 @@ import FirebaseFirestore
 let userIconButton = UIButton()
 var postBodyText = UITextView()
 var postTitle = UITextField()
-var postData = [String: Any]()
 var anonymousSwitch = UISwitch()
 var pickerview = UIPickerView()
 var Anonymity = false
@@ -24,7 +23,8 @@ var label1 = UILabel()
 var fullname = String()
 var queryStations = QueryData()
 var stations = [Station]()
-var stationNames = [String]()
+var selectedStationIndex: Int?
+//var stationNames = [String]()
 
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate,
                  UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificationCenterDelegate
@@ -37,8 +37,9 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
                 switch result {
                 case .success(let data):
                     stations.append(contentsOf: data)
+                    
                     for station in stations{
-                        stationNames.append(station.stationName)
+                        //stationNames.append(station.stationName)
                     }
                 case .failure(_):
                     break
@@ -76,27 +77,27 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         //label.font = UIFont (name: "ChalkboardSE-Regular" , size: 30)
         self.view.addSubview(label)
         
-        // MARK: - Choose Channel
+        // MARK: - Choose Station
         
-        let chooseChannel = UIButton(type: .system)
-        chooseChannel.frame = CGRect(x: 0.0, y: 75.0, width: UIScreen.main.bounds.size.width, height: 40) //was 155
-        chooseChannel.setTitle("  Choose a channel >", for: .normal)
-        chooseChannel.contentHorizontalAlignment = .left
-        chooseChannel.tintColor = UIColor.black
-        chooseChannel.backgroundColor = UIColor.white
-        chooseChannel.layer.borderWidth = 0.3
-        chooseChannel.layer.borderColor = (UIColor( red: 0, green: 0, blue:0, alpha: 0.5)).cgColor
-        chooseChannel.titleLabel?.font = UIFont.systemFont(ofSize: 15,weight: .regular)
+        let chooseStation = UIButton(type: .system)
+        chooseStation.frame = CGRect(x: 0.0, y: 75.0, width: UIScreen.main.bounds.size.width, height: 40) //was 155
+        chooseStation.setTitle("  Choose a station >", for: .normal)
+        chooseStation.contentHorizontalAlignment = .left
+        chooseStation.tintColor = UIColor.black
+        chooseStation.backgroundColor = UIColor.white
+        chooseStation.layer.borderWidth = 0.3
+        chooseStation.layer.borderColor = (UIColor( red: 0, green: 0, blue:0, alpha: 0.5)).cgColor
+        chooseStation.titleLabel?.font = UIFont.systemFont(ofSize: 15,weight: .regular)
         //chooseChannel.titleLabel?.font =  UIFont(name: "ChalkboardSE-Regular", size: 15) // Delete if custom font
-        chooseChannel.addTarget(self, action: #selector(channelAction), for: .touchUpInside)
-        self.view.addSubview(chooseChannel)
+        chooseStation.addTarget(self, action: #selector(stationAction), for: .touchUpInside)
+        self.view.addSubview(chooseStation)
         
         // MARK: - TextField & TextView
         
         // MARK: Post Title
         postTitle = UITextField(frame: CGRect(x: 10.0, y: 120.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 40.0))//was 200
         //postTitle.backgroundColor = .white
-        postTitle.attributedPlaceholder = NSAttributedString(string: "Enter your title...", attributes: [NSAttributedString.Key.foregroundColor: Constants.Colors.darkBrown])
+        postTitle.attributedPlaceholder = NSAttributedString(string: Constants.NewPost.placeholderTitleText, attributes: [NSAttributedString.Key.foregroundColor: Constants.Colors.darkBrown])
         postTitle.font = UIFont.systemFont(ofSize: 19,weight: .bold)
         //postTitle.font = UIFont (name: "ChalkboardSE-Regular" , size: 20.0)
         postTitle.tintColor = UIColor.black
@@ -112,7 +113,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         postBodyText.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         //postBodyText.font = UIFont (name: "ChalkboardSE-Regular" , size: 15)
         postBodyText.textAlignment = .left
-        postBodyText.text = Constants.NewPost.placeholderText
+        postBodyText.text = Constants.NewPost.placeholderBodyText
         postBodyText.textColor = Constants.Colors.placeholderTextColor
         postBodyText.tintColor = Constants.Colors.textColor
         
@@ -214,20 +215,22 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     
     
     
-    // MARK: - Channel Picker View
+    // MARK: - Station Picker View
     
-    var selectedchannel = String()
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return stationNames[row]
+        return stations[row].stationName
+        //return stationNames[row]
     }
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return stationNames.count
+        return stations.count
+        //return stationNames.count
     }
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        selectedchannel = stationNames[row]
+        selectedStationIndex = row
+        //selectedchannel = stationNames[row]
         doneButton()
     }
     
@@ -235,7 +238,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     var picker  = UIPickerView()
     var label1 = UILabel()
     var counter = 1
-    @IBAction func channelAction(sender: UIButton!) {
+    @IBAction func stationAction(sender: UIButton!) {
         self.view.endEditing(true)
         picker = UIPickerView.init()
         picker.delegate = self
@@ -254,19 +257,23 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     @objc func doneButton() {
         toolBar.removeFromSuperview()
         picker.removeFromSuperview()
-        if counter == 1{
-            label1 = UILabel(frame: CGRect(x: 10, y: 75, width:UIScreen.main.bounds.size.width - 20.0, height: 40)) //was 155
-            
-            label1.textAlignment = .center
-            label1.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-            //label1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
-            label1.text = selectedchannel
-            self.view.addSubview(label1)
-            counter += 1
+        if let stationIndex = selectedStationIndex
+        {
+            if counter == 1{
+                label1 = UILabel(frame: CGRect(x: 10, y: 75, width:UIScreen.main.bounds.size.width - 20.0, height: 40)) //was 155
+                
+                label1.textAlignment = .center
+                label1.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+                //label1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
+                label1.text = stations[stationIndex].stationName
+                self.view.addSubview(label1)
+                counter += 1
+            }
+            else {
+                label1.text = stations[stationIndex].stationName
+            }
         }
-        else {
-            label1.text = selectedchannel
-        }
+        
     }
     // END OF CHANNEL PICKER VIEW
     
@@ -291,7 +298,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     }
     func textViewDidBeginEditing (_ textView: UITextView) {
         picker.removeFromSuperview()
-        if postBodyText.text == Constants.NewPost.placeholderText  {
+        if postBodyText.text == Constants.NewPost.placeholderBodyText  {
             postBodyText.text = ""
             postBodyText.textColor = Constants.Colors.textColor
         }
@@ -301,7 +308,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     func textViewDidEndEditing (_ textView: UITextView) {
         if postBodyText.text.isEmpty || postBodyText.text == "" {
             postBodyText.textColor = Constants.Colors.placeholderTextColor
-            postBodyText.text = Constants.NewPost.placeholderText
+            postBodyText.text = Constants.NewPost.placeholderBodyText
         }
         postBodyText.resignFirstResponder()
     }
@@ -344,7 +351,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     }
     func discardaction(action: UIAlertAction) {
         //when discared, clear out channel and deload station options
-        stationNames.removeAll()
+        //stationNames.removeAll()
         queryStations.loaded = false
         dismiss(animated: true, completion: nil)
     }
@@ -353,7 +360,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     
     
     let notequal = [nil, "", "Title", "Enter your thoughts here..."]
-    func title(title: String) -> String {
+    /*func title(title: String) -> String {
         if notequal.contains(title) {
             return "1"
         }
@@ -370,7 +377,8 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
             return "3"
         }
         return channel
-    }
+    }*/
+    /*
     func assertions(title: String, body: String, channel: String){
         
         if (title == "1" && body == "2" && channel == "3") {
@@ -468,13 +476,43 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
             //Removing all
             return
         }
-    }
+    }*/
     // post button
     @objc func postAction(sender: UIButton!) {
-        let check1 = title(title: postTitle.text!)
-        let check2 = body(body: postBodyText.text!)
-        let check3 = channel(channel: selectedchannel)
-        assertions(title: check1, body: check2, channel: check3)
+        
+        //let check1 = title(title: postTitle.text!)
+        //let check2 = body(body: postBodyText.text!)
+        //let check3 = channel(channel: selectedchannel)
+       // assertions(title: check1, body: check2, channel: check3)
+        
+        // MARK: Check Post requirements
+        guard let user = UserManager.shared().getCurrentUserData().0, let _ = Auth.auth().currentUser
+        else
+        {
+            let errorPopup = UIAlertController(title: "User isn't signed in", message: "Please sign in before posting", preferredStyle: .alert)
+            errorPopup.addAction(UIAlertAction(title: "Ok", style: .default))
+            return present(errorPopup, animated: true)
+        }
+        guard postTitle.text != nil, postTitle.text != "", selectedStationIndex != nil, let selectedStationIndex = selectedStationIndex, let title = postTitle.text, var bodyText = postBodyText.text
+        else {
+            let errorPopup = UIAlertController(title: "Station and Title can not be Empty!", message: "Please fill out these fields before posting", preferredStyle: .alert)
+            errorPopup.addAction(UIAlertAction(title: "Ok", style: .default))
+            return present(errorPopup, animated: true)
+        }
+        if bodyText == Constants.NewPost.placeholderBodyText
+        {
+            bodyText = ""
+        }
+
+        let stationID = stations[selectedStationIndex].id!
+        let postData = Post(stationID: stationID, stationName: stations[selectedStationIndex].stationName, likes: 0, commentCount: 0, userInfo: user, title: title, text: bodyText, date: Date(), isAnonymous: !anonymousSwitch.isOn)
+        let db = Firestore.firestore()
+        do{
+            try db.collection("posts").document().setData(from: postData)
+        }
+        catch let error{
+            print("Error writing to Firestore: \(error)")
+        }
     }
     
     
