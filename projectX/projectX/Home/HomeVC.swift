@@ -9,27 +9,28 @@
 import UIKit
 import FirebaseAuth
 
-//Only one section in collectionView
+///Only one section in collectionView
 enum FeedSection {
+    ///Section that displays posts
     case main
 }
+///Loading footer reuse identifier
+let footerViewReuseIdentifier = "footerViewReuseIdentifier"
+///Post ceell reuse identifiers
+let cellReuseIdentifier = "cellReuseIdentifier"
 
-class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
+class HomeTableVC: FeedCollectionViewController, UISearchBarDelegate{
     
-    var dataSource: UICollectionViewDiffableDataSource<FeedSection, Post>!
+//    var dataSource: UICollectionViewDiffableDataSource<FeedSection, Post>!
     
     //TODO: not implemented (searching isn't straightforward with firestore)
     private let searchController = UISearchController(searchResultsController: nil)
     
     ///used to perform data fetching
-    private var postPaginator = PostPaginator()
+    private var postPaginator = PostPaginator(type: .userPosts, userID: "59qIdPL8uAfltJryIrAWfQNFcuN2")
     
     ///to keep reference to the footerView to start/stop animation
     var loadingFooterView: LoadingFooterView?
-    
-    ///reuse identifiers
-    let footerViewReuseIdentifier = "footerViewReuseIdentifier"
-    let cellReuseIdentifier = "cellReuseIdentifier"
     
     ///posts displayed in the feed
     private var posts = [Post]()
@@ -37,13 +38,14 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
     ///likes for the posts in the feed
     private var likes = [LikedPost]()
 
-    init(){
-        super.init(collectionViewLayout: UICollectionViewFlowLayout())
-    }
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    init(){
+//        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+//    }
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     override func viewDidLoad() {
+        print("here")
         super.viewDidLoad()
         presentLoginIfNeeded()
         setupCollectionView()
@@ -54,19 +56,19 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
   
     }
 }
-//MARK: CollectionView setup
+//MARK: - CollectionView setup
 extension HomeTableVC{
     private func setupCollectionView(){
         collectionView.backgroundColor = .white
-        self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: self.cellReuseIdentifier)
-        self.collectionView.register(LoadingFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: self.footerViewReuseIdentifier)
+        self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
+        self.collectionView.register(LoadingFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: footerViewReuseIdentifier)
     }
     private func setupDiffableDatasource(){
         //configure layout for cell and footer
         collectionView.collectionViewLayout = createLayout()
         //configure datasource for cells
         dataSource = .init(collectionView: collectionView, cellProvider: { (collectionView, indexPath, post) -> UICollectionViewCell? in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellReuseIdentifier, for: indexPath) as! PostCollectionViewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as! PostCollectionViewCell
             self.addData(toCell: cell, withPost: post)
             cell.delegate = self
             cell.indexPath = indexPath
@@ -75,7 +77,7 @@ extension HomeTableVC{
         //configure datasource for footer view
         dataSource.supplementaryViewProvider = .some({ (collectionView, kind, indexPath) -> UICollectionReusableView? in
             if kind == UICollectionView.elementKindSectionFooter {
-                let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.footerViewReuseIdentifier, for: indexPath) as! LoadingFooterView
+                let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerViewReuseIdentifier, for: indexPath) as! LoadingFooterView
                 self.loadingFooterView = view
                 self.loadingFooterView?.backgroundColor = .clear
                 self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
@@ -167,7 +169,7 @@ extension HomeTableVC{
         fetchDataWith(pagination: false)
     }
 }
-//MARK: post fetching & applying & scrollViewDidScroll
+//MARK: - Post fetching & applying & scrollViewDidScroll
 extension HomeTableVC {
     ///Initial fetch should be done with pagination false, all other calls with pagination true
     private func fetchDataWith(pagination: Bool){
@@ -225,7 +227,7 @@ extension HomeTableVC {
         self.dataSource.apply(initialSnapshot, animatingDifferences: true)
     }
 }
-//MARK: Navigation Bar setup
+//MARK: - Navigation Bar setup
 extension HomeTableVC{
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -246,7 +248,7 @@ extension HomeTableVC{
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
     }
 }
-//MARK: SideBarStationSelectionDelegate
+//MARK: - SideBarStationSelectionDelegate
 extension HomeTableVC: SideBarStationSelectionDelegate{
     func didTapSidebar(station: Station) {
         switch station.stationType {
@@ -261,7 +263,7 @@ extension HomeTableVC: SideBarStationSelectionDelegate{
         }
     }
 }
-//MARK: PostCollectionViewCellDidTapDelegate
+//MARK: - PostCollectionViewCellDidTapDelegate
 extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
     func didTapAuthorLabel(_ indexPath: IndexPath) {
         presentAuthorFor(indexPath: indexPath)
@@ -292,7 +294,7 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
         presentPostFor(indexPath: indexPath)
     }
 }
-//MARK: presenters / handlers
+//MARK: - Navigation
 extension HomeTableVC{
     ///when app is loaded and user isnt signed in, login screen is presented
     private func presentLoginIfNeeded(){
@@ -325,7 +327,7 @@ extension HomeTableVC{
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }
-//MARK: Networking calls like/dislike
+//MARK: - Networking calls like/dislike
 extension HomeTableVC {
     private func writeLikeToTheFirestore(with indexPath: IndexPath) {
         guard  let userID = UserManager.shared().user?.userID else {return}
