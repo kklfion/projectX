@@ -54,7 +54,8 @@ struct Constants{
 
     }
     struct NewPost {
-        static let placeholderText = "What are you thinking?"
+        static let placeholderTitleText = "Enter your title..."
+        static let placeholderBodyText = "What are you thinking?"
     }
 }
     
