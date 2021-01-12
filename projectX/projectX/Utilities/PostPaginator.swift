@@ -26,7 +26,7 @@ class PostPaginator {
             query = db.posts.order(by: "date", descending: false).limit(to: documentsPerQuery)
         }
         //FIXME: delay added to show spinner
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.query?.getDocuments { (snapshot, error) in
                 if let error = error {
                     completion(.failure(error))

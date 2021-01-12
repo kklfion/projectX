@@ -10,13 +10,13 @@ import UIKit
 import FirebaseAuth
 
 //Only one section in collectionView
-enum Section {
+enum FeedSection {
     case main
 }
 
 class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
     
-    var dataSource: UICollectionViewDiffableDataSource<Section, Post>!
+    var dataSource: UICollectionViewDiffableDataSource<FeedSection, Post>!
     
     //TODO: not implemented (searching isn't straightforward with firestore)
     private let searchController = UISearchController(searchResultsController: nil)
@@ -45,36 +45,17 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        showLoginScreenIfNeeded()
+        presentLoginIfNeeded()
         setupCollectionView()
         setupDiffableDatasource()
         setupNavigationBar()
         setupRefreshControl()
-        fetchDataWith(pagination: false)
+        fetchDataWith(pagination: false) //initial call
   
     }
-    func setupRefreshControl () {
-        // Add the refresh control to your UIScrollView object.
-        collectionView.refreshControl = UIRefreshControl()
-        collectionView.refreshControl?.addTarget(self, action:
-                                          #selector(handleRefreshControl),
-                                          for: .valueChanged)
-    }
-        
-    @objc func handleRefreshControl() {
-        // Update your content…
-        var initialSnapshot = NSDiffableDataSourceSnapshot<Section, Post>()
-        initialSnapshot.deleteAllItems()
-        dataSource.apply(initialSnapshot, animatingDifferences: true)
-        posts.removeAll()
-        likes.removeAll()
-        fetchDataWith(pagination: false)
-        // Dismiss the refresh control.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-          self.collectionView.refreshControl?.endRefreshing()
-        }
-    }
-    //MARK: CollectionView setup
+}
+//MARK: CollectionView setup
+extension HomeTableVC{
     private func setupCollectionView(){
         collectionView.backgroundColor = .white
         self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: self.cellReuseIdentifier)
@@ -128,105 +109,8 @@ class HomeTableVC: UICollectionViewController, UISearchBarDelegate{
         let layout = UICollectionViewCompositionalLayout(section: section)
         return layout
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        navigationController?.navigationBar.prefersLargeTitles = true
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.navigationBar.prefersLargeTitles = false
-    }
-    private func setupNavigationBar(){
-        self.navigationItem.title = "Home"
-        navigationItem.searchController = searchController
-        //navigationItem.hidesSearchBarWhenScrolling = false
-        searchController.searchBar.delegate = self
-        let navBarAppearance = UINavigationBarAppearance()
-        navBarAppearance.configureWithOpaqueBackground()
-        navBarAppearance.shadowColor = .none
-        navBarAppearance.backgroundColor = Constants.Colors.mainYellow
-        navigationController?.navigationBar.standardAppearance = navBarAppearance
-        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
-    }
-    ///Initial fetch should be done with pagination false, all other calls with pagination true
-    private func fetchDataWith(pagination: Bool){
-        postPaginator.queryPostWith(pagination: pagination) { [weak self] result in
-            switch result {
-                case .success(let data):
-                    self?.posts.append(contentsOf: data)
-                    DispatchQueue.global(qos: .userInitiated).async { //global queue to prevent app from freezing while waiting
-                        self?.updatePostsAndLikesWith(data: data)
-                    }
-                case .failure(let error):
-                    print("HomeVC Failed loading data ", error)
-            }
-        }
-    }
-    ///when users scrolls to the bottom of the loaded data, more data is fetched
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let position = scrollView.contentOffset.y
-        if position > (collectionView.contentSize.height-100-scrollView.frame.size.height) && collectionView.contentSize.height > 0{
-//            print("Position", position)
-//            print("Scrollview height ", scrollView.frame.size.height)
-//            print("content size ", collectionView.contentSize.height)
-//            print(collectionView.contentSize.height-100-scrollView.frame.size.height)
-            if postPaginator.isFetching {return}//we fetching data, no need to fetch more
-            fetchDataWith(pagination: true)
-        }
-    }
-    ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
-    private func updatePostsAndLikesWith(data: [Post]){
-        let group = DispatchGroup()
-        for doc in data {
-            group.enter()
-            guard let id = doc.id else {continue}
-            //FIXME: use current user ID instead of the static one !!
-            let userid = "59qIdPL8uAfltJryIrAWfQNFcuN2"//UserManager.shared().user?.id else {continue}
-            let query = NetworkManager.shared.db.likedPosts
-                .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
-                .whereField(FirestoreFields.userID.rawValue, isEqualTo: userid)
-            NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [LikedPost]?, error) in
-                if error != nil {
-                    print("error loading liked post", error!)
-                }else if likedPosts != nil {
-                    self.likes.append(contentsOf: likedPosts!)
-                }
-                group.leave()
-            }
-        }
-        group.wait()
-        DispatchQueue.main.async {
-            self.applyFetchedDataOnCollectionView(data: data)
-        }
-    }
-    private func applyFetchedDataOnCollectionView(data: [Post]){
-        self.loadingFooterView?.stopAnimating()
-        var initialSnapshot = NSDiffableDataSourceSnapshot<Section, Post>()
-        initialSnapshot.appendSections([.main])
-        initialSnapshot.appendItems(self.posts, toSection: .main)
-        self.dataSource.apply(initialSnapshot, animatingDifferences: true)
-    }
-    ///when app is loaded and user isnt signed in, login screen is presented
-    private func showLoginScreenIfNeeded(){
-        if Auth.auth().currentUser == nil {
-            let vc = LoginViewController()
-            let navvc = UINavigationController(rootViewController: vc)
-            navvc.modalPresentationStyle = .fullScreen
-            self.tabBarController?.present(navvc, animated: true)
-        }
-    }
-}
-extension HomeTableVC: SideBarStationSelectionDelegate{
-    func didTapSidebar(station: Station) {
-        switch station.stationType {
-        case .parentStation:
-            let vc = ParentStationViewController()
-            vc.station = station
-            navigationController?.pushViewController(vc, animated: true)
-        default:
-            let vc = StationViewController()
-            vc.station = station
-            navigationController?.pushViewController(vc, animated: true)
-        }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        presentPostFor(indexPath: indexPath)
     }
     //TODO: move to cell
     private func addData(toCell cell: PostCollectionViewCell, withPost post: Post ){
@@ -264,7 +148,120 @@ extension HomeTableVC: SideBarStationSelectionDelegate{
             cell.isLiked = false
         }
     }
+    func setupRefreshControl () {
+        // Add the refresh control to your UIScrollView object.
+        collectionView.refreshControl = UIRefreshControl()
+        collectionView.refreshControl?.addTarget(self, action:
+                                          #selector(handleRefreshControl),
+                                          for: .valueChanged)
+    }
+    @objc func handleRefreshControl() {
+        // Update your content…
+        var initialSnapshot = dataSource.snapshot()//NSDiffableDataSourceSnapshot<Section, Post>()
+        //delete old data
+        initialSnapshot.deleteAllItems()
+        posts.removeAll()
+        likes.removeAll()
+        dataSource.apply(initialSnapshot, animatingDifferences: false)
+        //fetch new data
+        fetchDataWith(pagination: false)
+    }
 }
+//MARK: post fetching & applying & scrollViewDidScroll
+extension HomeTableVC {
+    ///Initial fetch should be done with pagination false, all other calls with pagination true
+    private func fetchDataWith(pagination: Bool){
+        postPaginator.queryPostWith(pagination: pagination) { [weak self] result in
+            switch result {
+                case .success(let data):
+                    self?.posts.append(contentsOf: data)
+                    DispatchQueue.global(qos: .userInitiated).async { //global queue to prevent app from freezing while waiting
+                        self?.updatePostsAndLikesWith(data: data)
+                    }
+                case .failure(let error):
+                    print("HomeVC Failed loading data ", error)
+            }
+        }
+    }
+    ///when users scrolls to the bottom of the loaded data, more data is fetched
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let position = scrollView.contentOffset.y
+        if position > (collectionView.contentSize.height-100-scrollView.frame.size.height) && collectionView.contentSize.height > 0{
+            if postPaginator.isFetching {return}//we fetching data, no need to fetch more
+            fetchDataWith(pagination: true)
+        }
+    }
+    ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
+    private func updatePostsAndLikesWith(data: [Post]){
+        let group = DispatchGroup()
+        for doc in data {
+            group.enter()
+            guard let id = doc.id else {continue}
+            //FIXME: use current user ID instead of the static one !!
+            let userid = "59qIdPL8uAfltJryIrAWfQNFcuN2"//UserManager.shared().user?.id else {continue}
+            let query = NetworkManager.shared.db.likedPosts
+                .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
+                .whereField(FirestoreFields.userID.rawValue, isEqualTo: userid)
+            NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [LikedPost]?, error) in
+                if error != nil {
+                    print("error loading liked post", error!)
+                }else if likedPosts != nil {
+                    self.likes.append(contentsOf: likedPosts!)
+                }
+                group.leave()
+            }
+        }
+        group.wait()
+        DispatchQueue.main.async {
+            self.applyFetchedDataOnCollectionView(data: data)
+        }
+    }
+    private func applyFetchedDataOnCollectionView(data: [Post]){
+        self.loadingFooterView?.stopAnimating()
+        self.collectionView.refreshControl?.endRefreshing()
+        var initialSnapshot = NSDiffableDataSourceSnapshot<FeedSection, Post>()
+        initialSnapshot.appendSections([.main])
+        initialSnapshot.appendItems(self.posts, toSection: .main)
+        self.dataSource.apply(initialSnapshot, animatingDifferences: true)
+    }
+}
+//MARK: Navigation Bar setup
+extension HomeTableVC{
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    private func setupNavigationBar(){
+        self.navigationItem.title = "Home"
+        navigationItem.searchController = searchController
+        //navigationItem.hidesSearchBarWhenScrolling = false
+        searchController.searchBar.delegate = self
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.configureWithOpaqueBackground()
+        navBarAppearance.shadowColor = .none
+        navBarAppearance.backgroundColor = Constants.Colors.mainYellow
+        navigationController?.navigationBar.standardAppearance = navBarAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+    }
+}
+//MARK: SideBarStationSelectionDelegate
+extension HomeTableVC: SideBarStationSelectionDelegate{
+    func didTapSidebar(station: Station) {
+        switch station.stationType {
+        case .parentStation:
+            let vc = ParentStationViewController()
+            vc.station = station
+            navigationController?.pushViewController(vc, animated: true)
+        default:
+            let vc = StationViewController()
+            vc.station = station
+            navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+}
+//MARK: PostCollectionViewCellDidTapDelegate
 extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
     func didTapAuthorLabel(_ indexPath: IndexPath) {
         presentAuthorFor(indexPath: indexPath)
@@ -291,51 +288,21 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
             deleteLikeFromFirestore(with: indexPath)
         }
     }
-    private func writeLikeToTheFirestore(with indexPath: IndexPath) {
-        guard  let userID = UserManager.shared().user?.userID else {return}
-        guard let postID = posts[indexPath.item].id else {return}
-        var document = LikedPost(userID: userID, postID: postID)
-        NetworkManager.shared.writeDocumentReturnReference(collectionType: .likedPosts, document: document  ) { (ref, error) in
-            if let err = error{
-                print("Error creating like \(err)")
-            } else { //need to increment likes in the post
-                NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
-                                                             documentID: postID,
-                                                             value: Double(1),
-                                                             field: .likes)
-                document.id = ref
-                self.likes.append(document)
-            }
-        }
-    }
-    
-    private func deleteLikeFromFirestore(with indexPath: IndexPath){
-        let likedPosts = likes.filter { $0.postID == posts[indexPath.item].id }
-        guard let likedPost = likedPosts.first else {return}
-        guard let docID = likedPost.id else {return}
-        guard let postID = posts[indexPath.item].id else {return}
-        NetworkManager.shared.deleteDocumentsWith(collectionType: .likedPosts,
-                                                  documentID: docID) { (error) in
-            if error != nil{
-                print("error disliking", error!)
-            }else{
-                NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
-                                                             documentID: postID,
-                                                             value: Double(-1),
-                                                             field: .likes)
-                guard let indexToRemove = self.likes.firstIndex(where: { $0.id == docID }) else {return}
-                self.likes.remove(at: indexToRemove)
-                
-            }
-        }
-    }
-    func didTapDislikeButton(_ indexPath: IndexPath) {
-
-    }
     func didTapCommentsButton(_ indexPath: IndexPath) {
         presentPostFor(indexPath: indexPath)
     }
-    
+}
+//MARK: presenters / handlers
+extension HomeTableVC{
+    ///when app is loaded and user isnt signed in, login screen is presented
+    private func presentLoginIfNeeded(){
+        if Auth.auth().currentUser == nil {
+            let vc = LoginViewController()
+            let navvc = UINavigationController(rootViewController: vc)
+            navvc.modalPresentationStyle = .fullScreen
+            self.tabBarController?.present(navvc, animated: true)
+        }
+    }
     private func presentPostFor(indexPath: IndexPath){
         let postvc = PostViewController(post: posts[indexPath.row])
         postvc.hidesBottomBarWhenPushed = true
@@ -356,6 +323,46 @@ extension HomeTableVC: PostCollectionViewCellDidTapDelegate{
     private func presentAuthorFor(indexPath: IndexPath){
         let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+}
+//MARK: Networking calls like/dislike
+extension HomeTableVC {
+    private func writeLikeToTheFirestore(with indexPath: IndexPath) {
+        guard  let userID = UserManager.shared().user?.userID else {return}
+        guard let postID = posts[indexPath.item].id else {return}
+        var document = LikedPost(userID: userID, postID: postID)
+        NetworkManager.shared.writeDocumentReturnReference(collectionType: .likedPosts, document: document  ) { (ref, error) in
+            if let err = error{
+                print("Error creating like \(err)")
+            } else { //need to increment likes in the post
+                NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
+                                                             documentID: postID,
+                                                             value: Double(1),
+                                                             field: .likes)
+                document.id = ref
+                self.likes.append(document)
+            }
+        }
+    }
+    private func deleteLikeFromFirestore(with indexPath: IndexPath){
+        let likedPosts = likes.filter { $0.postID == posts[indexPath.item].id }
+        guard let likedPost = likedPosts.first else {return}
+        guard let docID = likedPost.id else {return}
+        guard let postID = posts[indexPath.item].id else {return}
+        NetworkManager.shared.deleteDocumentsWith(collectionType: .likedPosts,
+                                                  documentID: docID) { (error) in
+            if error != nil{
+                print("error disliking", error!)
+            }else{
+                NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
+                                                             documentID: postID,
+                                                             value: Double(-1),
+                                                             field: .likes)
+                guard let indexToRemove = self.likes.firstIndex(where: { $0.id == docID }) else {return}
+                self.likes.remove(at: indexToRemove)
+                
+            }
+        }
     }
 }
 
