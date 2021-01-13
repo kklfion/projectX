@@ -136,3 +136,10 @@ func withBoldText(text: String, font: UIFont? = nil) -> NSAttributedString {
   fullString.addAttributes(boldFontAttribute, range: range)
   return fullString
 }}
+extension UIViewController{
+    func add(_ child: UIViewController){
+        addChild(child)
+        view.addSubview(child.view)
+        child.didMove(toParent: self)
+    }
+}
