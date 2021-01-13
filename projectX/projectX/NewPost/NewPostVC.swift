@@ -50,6 +50,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        isModalInPresentation = true
         view.backgroundColor = .white
         
         // MARK: - X Button
@@ -341,13 +342,15 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     
     // cancel button
     @objc func dismissAction(_ sender:UIButton!) {
-        let ac = UIAlertController(title: "Are you sure you want to discard your post?", message: nil, preferredStyle: .alert)
-        
+        dismissAlert()
+    }
+    func dismissAlert()
+    {
+        let ac = UIAlertController(title: "Are you sure you want to discard your post?", message: nil, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "Keep Editing", style: .cancel))
         ac.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: discardaction))
         ac.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
         present(ac, animated: true)
-        
     }
     func discardaction(action: UIAlertAction) {
         //when discared, clear out channel and deload station options
@@ -480,11 +483,6 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     // post button
     @objc func postAction(sender: UIButton!) {
         
-        //let check1 = title(title: postTitle.text!)
-        //let check2 = body(body: postBodyText.text!)
-        //let check3 = channel(channel: selectedchannel)
-       // assertions(title: check1, body: check2, channel: check3)
-        
         // MARK: Check Post requirements
         guard let user = UserManager.shared().getCurrentUserData().0, let _ = Auth.auth().currentUser
         else
@@ -514,9 +512,6 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
             print("Error writing to Firestore: \(error)")
         }
     }
-    
-    
-    
     
     
     var loadPhoto = UIButton()
@@ -591,9 +586,15 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         checkLibrary()
         checkPermission()
     }
+    
 }
 
-
+extension NewPostVC: UIAdaptivePresentationControllerDelegate
+{
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        dismissAlert()
+    }
+}
 
 
 
