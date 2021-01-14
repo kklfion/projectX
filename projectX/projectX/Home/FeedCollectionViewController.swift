@@ -14,17 +14,26 @@ enum FeedSection {
     ///Section that displays posts
     case main
 }
+enum FeedType {
+    case userHistoryFeed
+    case generalFeed
+    case stationFeed
+    case parentStationFeed
+}
 ///Loading footer reuse identifier
 let footerViewReuseIdentifier = "footerViewReuseIdentifier"
 ///Post ceell reuse identifiers
 let cellReuseIdentifier = "cellReuseIdentifier"
 
-class FeedCollectionViewController: UICollectionViewController{
+class FeedCollectionViewController: UICollectionViewController, UICollectionViewDataSourcePrefetching{
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        //print(indexPaths)
+    }
     
-    var dataSource: UICollectionViewDiffableDataSource<FeedSection, Post>!
+    private var dataSource: UICollectionViewDiffableDataSource<FeedSection, Post>!
     
     ///used to perform data fetching
-    private var postPaginator = PostPaginator(userID: "59qIdPL8uAfltJryIrAWfQNFcuN2")
+    private var postPaginator: PostPaginator?
     
     ///to keep reference to the footerView to start/stop animation
     var loadingFooterView: LoadingFooterView?
@@ -35,19 +44,30 @@ class FeedCollectionViewController: UICollectionViewController{
     ///likes for the posts in the feed
     private var likes = [LikedPost]()
 
-    init(){
+    init(feedType: FeedType, id: String? = nil){
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
+        switch feedType {
+        case .generalFeed:
+            self.postPaginator = PostPaginator()
+        case .parentStationFeed:
+            self.postPaginator = PostPaginator(stationID: id ?? "")
+        case .stationFeed:
+            self.postPaginator = PostPaginator(stationID: id ?? "")
+        case .userHistoryFeed:
+            self.postPaginator = PostPaginator(userID: id ?? "")
+        }
     }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        collectionView.prefetchDataSource = self
         setupCollectionView()
         setupDiffableDatasource()
         setupRefreshControl()
-        fetchDataWith(pagination: false) //initial call
-  
+        fetchDataWith() //initial call
     }
 }
 //MARK: - CollectionView setup
@@ -73,8 +93,6 @@ extension FeedCollectionViewController{
             if kind == UICollectionView.elementKindSectionFooter {
                 let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerViewReuseIdentifier, for: indexPath) as! LoadingFooterView
                 self.loadingFooterView = view
-                self.loadingFooterView?.backgroundColor = .clear
-                self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
                 return view
             }else {
                 return nil
@@ -160,16 +178,19 @@ extension FeedCollectionViewController{
         likes.removeAll()
         dataSource.apply(initialSnapshot, animatingDifferences: false)
         //fetch new data
-        fetchDataWith(pagination: false)
+        postPaginator?.resetPaginator()
+        fetchDataWith()
     }
 }
 //MARK: - Post fetching & applying & scrollViewDidScroll
 extension FeedCollectionViewController {
     ///Initial fetch should be done with pagination false, all other calls with pagination true
-    private func fetchDataWith(pagination: Bool){
-        postPaginator.queryPostWith(pagination: pagination) { [weak self] result in
+    private func fetchDataWith(){
+        //print("fetch data with pagination")
+        postPaginator?.queryPostWith() { [weak self] result in
             switch result {
                 case .success(let data):
+                    //print("retrieved data", data)
                     self?.posts.append(contentsOf: data)
                     DispatchQueue.global(qos: .userInitiated).async { //global queue to prevent app from freezing while waiting
                         self?.updatePostsAndLikesWith(data: data)
@@ -181,10 +202,14 @@ extension FeedCollectionViewController {
     }
     ///when users scrolls to the bottom of the loaded data, more data is fetched
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        //FIXME: - figureout when its okay to call fetching ><
         let position = scrollView.contentOffset.y
+        if position < 0 {return}
         if position > (collectionView.contentSize.height-100-scrollView.frame.size.height) && collectionView.contentSize.height > 0{
-            if postPaginator.isFetching {return}//we fetching data, no need to fetch more
-            fetchDataWith(pagination: true)
+            guard let paginator = postPaginator else {return}
+            if (paginator.isFetching) {return}//we fetching data, no need to fetch more
+            self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
+            fetchDataWith()
         }
     }
     ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
@@ -208,11 +233,13 @@ extension FeedCollectionViewController {
             }
         }
         group.wait()
+        //print("updated Likes")
         DispatchQueue.main.async {
             self.applyFetchedDataOnCollectionView(data: data)
         }
     }
     private func applyFetchedDataOnCollectionView(data: [Post]){
+        //print("applying data onto the collectionView")
         self.loadingFooterView?.stopAnimating()
         self.collectionView.refreshControl?.endRefreshing()
         var initialSnapshot = NSDiffableDataSourceSnapshot<FeedSection, Post>()

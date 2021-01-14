@@ -16,7 +16,8 @@ import FirebaseAuth
 
 class HomeTableVC: UIViewController, UISearchBarDelegate{
     ///collectionViewController responsible for the feed.
-    private let feedCollectionViewController = FeedCollectionViewController()
+    //FIXME: static id
+    private let feedCollectionViewController = FeedCollectionViewController(feedType: .generalFeed)
     
     //TODO: not implemented (searching isn't straightforward with firestore)
     private let searchController = UISearchController(searchResultsController: nil)

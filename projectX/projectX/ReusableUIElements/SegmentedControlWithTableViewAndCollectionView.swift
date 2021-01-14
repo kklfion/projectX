@@ -32,13 +32,16 @@ class SegmentedControlWithTableViewAndCollectionView: UIView{
         stack.axis = .horizontal
         return stack
     }()
-    let loungeTableView: UITableView = {
-        let home = UITableView()
-        home.separatorStyle = .none
-        home.backgroundColor = .white
-        home.translatesAutoresizingMaskIntoConstraints = false
-        return home
-    }()
+    ///collectionViewController responsible for the feed.
+    //FIXME: - static id
+    var feedCollectionViewController = FeedCollectionViewController(feedType: .generalFeed)//(feedType: .stationFeed, id: "33UNobqNfPCxQBpyr3OT")
+//    let loungeTableView: UITableView = {
+//        let home = UITableView()
+//        home.separatorStyle = .none
+//        home.backgroundColor = .white
+//        home.translatesAutoresizingMaskIntoConstraints = false
+//        return home
+//    }()
     lazy var bulletinBoardCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -52,7 +55,7 @@ class SegmentedControlWithTableViewAndCollectionView: UIView{
     private func setupViews(){
         self.addSubview(segmentedControl)
         self.addSubview(stackView)
-        stackView.addArrangedSubview(loungeTableView)
+        stackView.addArrangedSubview(feedCollectionViewController.view )
         stackView.addArrangedSubview(bulletinBoardCollectionView)
         segmentedControl.addAnchors(top: self.layoutMarginsGuide.topAnchor,
                                      leading: self.layoutMarginsGuide.leadingAnchor,

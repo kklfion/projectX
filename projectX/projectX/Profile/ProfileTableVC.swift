@@ -18,7 +18,7 @@ class ProfileTableVC: UIViewController {
     
     private var posts: [Post]?{
         didSet{
-            profileView?.tableViewAndCollectionView?.loungeTableView.reloadData()
+            //profileView?.tableViewAndCollectionView?.loungeTableView.reloadData()
         }
     }
     
@@ -76,11 +76,11 @@ class ProfileTableVC: UIViewController {
         //profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
 
-        profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
-        profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
+        //profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
+        //profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
 
-        profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
-        profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
+        //profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
+        //profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){

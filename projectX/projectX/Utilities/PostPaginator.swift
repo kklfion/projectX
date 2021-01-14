@@ -9,6 +9,16 @@
 import FirebaseFirestore
 
 class PostPaginator {
+    ///initial first fetch should not have pagination enabled
+    var isInitialFetching = true {
+        didSet{
+            pagination = isInitialFetching ? false : true
+        }
+    }
+    var pagination = false
+    
+    var isFetching = false
+    
     ///set by viewController
     private let defaultQuery: Query
     ///used for pagianation
@@ -18,7 +28,7 @@ class PostPaginator {
 
     private let documentsPerQuery = 6
     
-    var isFetching = false
+    
     ///home feed
     init() {
         self.defaultQuery = NetworkManager.shared.db.posts.order(by: "date", descending: false)
@@ -31,8 +41,11 @@ class PostPaginator {
     init(userID id: String){
         self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.userInfoUserID.rawValue, isEqualTo: id)
     }
+    func resetPaginator(){
+        isInitialFetching = true
+    }
     
-    func queryPostWith(pagination: Bool, completion: @escaping (Result<[Post], Error>) -> Void){
+    func queryPostWith(completion: @escaping (Result<[Post], Error>) -> Void){
         isFetching = true
         if pagination {
             guard let  lastDocumentSnapshot = lastDocumentSnapshot else { return }
@@ -53,6 +66,7 @@ class PostPaginator {
                     completion(.success(genericDocs))
                     self.lastDocumentSnapshot = snapshot!.documents.last
                 }
+                self.isInitialFetching = false
                 self.isFetching = false
             }
         }

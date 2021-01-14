@@ -79,18 +79,19 @@ class OtherProfileViewController: UIViewController {
                                leading: view.leadingAnchor,
                                bottom: view.bottomAnchor,
                                 trailing: view.trailingAnchor)
+        profileView.tableViewAndCollectionView?.feedCollectionViewController = FeedCollectionViewController(feedType: .userHistoryFeed, id: "59qIdPL8uAfltJryIrAWfQNFcuN2")
         //setupNavBar()
     }
     private func setupTableViews(){
-        profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
+        //profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
-        profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
+        //profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
         
-        profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
-        profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
+        //profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
+        //profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
         
-        profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
+        //profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
         profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
@@ -128,7 +129,7 @@ class OtherProfileViewController: UIViewController {
                 print("Error loading posts for user \(String(describing: error?.localizedDescription))")
             }else if posts != nil{
                 self.posts = posts!
-                self.profileView?.tableViewAndCollectionView?.loungeTableView.reloadData()
+                 //self.profileView?.tableViewAndCollectionView?.loungeTableView.reloadData()
             }
         }
         //fetch missions
