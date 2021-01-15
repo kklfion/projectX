@@ -139,7 +139,6 @@ func withBoldText(text: String, font: UIFont? = nil) -> NSAttributedString {
 }}
 
 extension Date {
-    
  // Function in which calculates the time past since a post and returns time as a string
  func diff() -> String {
     
