@@ -139,43 +139,48 @@ func withBoldText(text: String, font: UIFont? = nil) -> NSAttributedString {
 }}
 
 extension Date {
+ // Function in which calculates the time past since a post and returns time as a string
+ func diff() -> String {
     
-  // Function in which calculates the time past on a particular post and returns
-  // this time as a string
-  func diff(date: Date) -> String {
-      
-  // To find the difference in time, we need make a variable to represent the current day
-  let today = Date()
+ // Timestamp of post
+ let date = self
     
-  // Here, we extract components from the Calender structure in which will help us
-  // calculate various units of time
-  let second = Calendar.current.dateComponents([.second], from: date, to: today).second
-  let minute = Calendar.current.dateComponents([.minute], from: date, to: today).minute
-  let hour = Calendar.current.dateComponents([.hour], from: date, to: today).hour
-  let day = Calendar.current.dateComponents([.day], from: date, to: today).day
-  let month = Calendar.current.dateComponents([.month], from: date, to: today).month
-  let year = Calendar.current.dateComponents([.year], from: date, to: today).year
+ // To find the difference, we need the current time
+ let currentTime = Date()
     
-  // In order to display the message, we use nested if statements to check how much time
-  // has past to ensure we return the correct amount of time
-  if year == 0 {
-     if month == 0 {
-         if day == 0 {
-             if hour == 0 {
-                 if minute == 0 {
-                     if second == 0 {
-                      return "0 seconds ago"
-                      }
-                  return String(second!) + " seconds ago"
-                  }
-              return String(minute!) + " minutes ago"
-              }
-          return String(hour!) + " hours ago"
-          }
-      return String(day!) + " days ago"
-      }
-     return String(month!) + " months ago"
-     }
-  return String(year!) + " years ago"
-  }
+ // Utilize components from Calender structure to calculate various units of time
+ let second = Calendar.current.dateComponents([.second], from: date, to: currentTime).second
+ let minute = Calendar.current.dateComponents([.minute], from: date, to: currentTime).minute
+ let hour = Calendar.current.dateComponents([.hour], from: date, to: currentTime).hour
+ let day = Calendar.current.dateComponents([.day], from: date, to: currentTime).day
+ let month = Calendar.current.dateComponents([.month], from: date, to: currentTime).month
+ let year = Calendar.current.dateComponents([.year], from: date, to: currentTime).year
+    
+ // Display message depending on time difference
+ if year != 0 {
+    if year == 1 {return String(year ?? 0) + " year ago"}
+    return String(year ?? 0) + " years ago"
+ }
+ if month != 0 {
+    if month == 1 {return String(month ?? 0) + " month ago"}
+    return String(month ?? 0) + " months ago"
+ }
+ if day != 0 {
+    if day == 1 {return String(day ?? 0) + " day ago"}
+    return String(day ?? 0) + " days ago"
+ }
+ if hour != 0 {
+    if hour == 1 {return String(hour ?? 0) + " hour ago"}
+    return String(hour ?? 0) + " hours ago"
+ }
+ if minute != 0 {
+    if minute == 1 {return String(minute ?? 0) + " minute ago"}
+    return String(minute ?? 0) + " minutes ago"
+ }
+ if second != 0 {
+    if second == 1 {return String(second ?? 0) + " second ago"}
+    return String(second ?? 0) + " seconds ago"
+ }
+ return "0 seconds ago"
+ }
 }

@@ -121,7 +121,7 @@ extension HomeTableVC: UICollectionViewDelegateFlowLayout{
         cell.stationButton.setTitle(posts[index].stationName, for: .normal)
         let formatter = DateFormatter()
         formatter.timeStyle = .short
-        let dateString = formatter.string(from: posts[index].date)
+        let dateString = posts[index].date.diff()
         cell.dateLabel.text = "\(dateString)"
         if posts[index].imageURL != nil {
             cell.postImageView.isHidden = false
