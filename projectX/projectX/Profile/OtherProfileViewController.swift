@@ -72,7 +72,7 @@ class OtherProfileViewController: UIViewController {
         updateProfileInformation()
     }
     private func setupView(){
-        profileView = ProfileView(frame: self.view.frame)
+        profileView = ProfileView(frame: self.view.frame, userID: "59qIdPL8uAfltJryIrAWfQNFcuN2")
         guard let profileView = profileView else {return}
         view.addSubview(profileView)
         profileView.addAnchors(top: view.topAnchor,

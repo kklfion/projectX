@@ -9,6 +9,10 @@
 import UIKit
 import FirebaseAuth
 
+protocol DidScrollFeedDelegate {
+    func didScrollFeed(_ scrollView: UIScrollView)
+}
+
 ///The Only one section in collectionView
 enum FeedSection {
     ///Section that displays posts
@@ -25,12 +29,11 @@ let footerViewReuseIdentifier = "footerViewReuseIdentifier"
 ///Post ceell reuse identifiers
 let cellReuseIdentifier = "cellReuseIdentifier"
 
-class FeedCollectionViewController: UICollectionViewController, UICollectionViewDataSourcePrefetching{
-    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        //print(indexPaths)
-    }
+class FeedCollectionViewController: UICollectionViewController{
     
     private var dataSource: UICollectionViewDiffableDataSource<FeedSection, Post>!
+    
+    var didScrollFeedDelegate: DidScrollFeedDelegate?
     
     ///used to perform data fetching
     private var postPaginator: PostPaginator?
@@ -63,7 +66,6 @@ class FeedCollectionViewController: UICollectionViewController, UICollectionView
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.prefetchDataSource = self
         setupCollectionView()
         setupDiffableDatasource()
         setupRefreshControl()
@@ -202,6 +204,7 @@ extension FeedCollectionViewController {
     }
     ///when users scrolls to the bottom of the loaded data, more data is fetched
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        didScrollFeedDelegate?.didScrollFeed(scrollView)
         //FIXME: - figureout when its okay to call fetching ><
         let position = scrollView.contentOffset.y
         if position < 0 {return}

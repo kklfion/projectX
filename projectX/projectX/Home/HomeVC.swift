@@ -42,12 +42,12 @@ extension HomeTableVC{
         navigationItem.searchController = searchController
         //navigationItem.hidesSearchBarWhenScrolling = false
         searchController.searchBar.delegate = self
-        let navBarAppearance = UINavigationBarAppearance()
-        navBarAppearance.configureWithOpaqueBackground()
-        navBarAppearance.shadowColor = .none
-        navBarAppearance.backgroundColor = Constants.Colors.mainYellow
-        navigationController?.navigationBar.standardAppearance = navBarAppearance
-        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+//        let navBarAppearance = UINavigationBarAppearance()
+//        navBarAppearance.configureWithOpaqueBackground()
+//        navBarAppearance.shadowColor = .none
+//        navBarAppearance.backgroundColor = Constants.Colors.mainYellow
+//        navigationController?.navigationBar.standardAppearance = navBarAppearance
+//        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
     }
 }
 //MARK: - SideBarStationSelectionDelegate

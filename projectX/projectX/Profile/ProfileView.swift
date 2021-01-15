@@ -16,6 +16,10 @@ class ProfileView: UIView {
         super.init(frame: frame)
         setupViews(frame: frame)
     }
+    convenience init(frame: CGRect, userID: String? = nil) {
+        self.init(frame: frame)
+        setupViews(frame: frame)
+    }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }

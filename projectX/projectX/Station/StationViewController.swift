@@ -7,8 +7,11 @@
 //
 import UIKit
 
-class StationViewController: UIViewController, UIScrollViewDelegate {
-    
+class StationViewController: UIViewController, DidScrollFeedDelegate {
+    func didScrollFeed(_ scrollView: UIScrollView) {
+        adjustHeaderPosition(scrollView)
+        //self.scrollViewDidScroll(scrollView)
+    }
     ///presented Station, either a substation or a regular station
     var station: Station?
     
@@ -39,6 +42,7 @@ class StationViewController: UIViewController, UIScrollViewDelegate {
         setupView()
         setupHeights()
         self.addChild(stationView.tableViewAndCollectionView?.feedCollectionViewController ?? UIViewController())
+        stationView.tableViewAndCollectionView?.feedCollectionViewController.didScrollFeedDelegate = self
         //setupTableView(tableView: stationView.tableViewAndCollectionView?.loungeTableView ?? nil)
         //setupBulletinBoardTableView()
         setupStationHeaderWithStation()
@@ -49,7 +53,7 @@ class StationViewController: UIViewController, UIScrollViewDelegate {
 //        print(indexPath)
 //        //stationView.tableViewAndCollectionView?.feedCollectionViewController.presentPos
 //        //stationView.tableViewAndCollectionView?.feedCollectionViewController.navigationController?.navigationController = self.navigationController?.navigationController
-//        
+//
 //    }
     ///if user is signed in station can be followed/not followed
     private func checkIfStationFollowed(){
@@ -136,8 +140,27 @@ class StationViewController: UIViewController, UIScrollViewDelegate {
     // offset starts at 0.0
     // goes negative if scroll up(tableview goes down), goes positive if scrolls down(tableView goes up)
     // offet can either be too high(keep maximum offset), to little(keep minimum offstet) or inbetween(can be adjusted)
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        stationView.tableViewAndCollectionView?.feedCollectionViewController.scrollViewDidScroll(scrollView)
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        print("station")
+//        stationView.tableViewAndCollectionView?.feedCollectionViewController.scrollViewDidScroll(scrollView)
+//        let y_offset: CGFloat = scrollView.contentOffset.y
+//        guard  let headerViewTopConstraint = stationView.topViewContainerTopConstraint else {return}
+//        let newConstant = headerViewTopConstraint.constant - y_offset
+//
+//        //when scrolling up
+//        if newConstant <= -headerMaxHeight {
+//            headerViewTopConstraint.constant = -headerMaxHeight
+//        //when scrolling down
+//        }else if newConstant >= 0{
+//            headerViewTopConstraint.constant = 0
+//        }else{//inbetween we want to adjust the position of the header
+//            headerViewTopConstraint.constant = newConstant
+//            scrollView.contentOffset.y = 0 //to smooth out scrolling
+//        }
+//    }
+    private func adjustHeaderPosition(_ scrollView: UIScrollView){
+        
+        //stationView.tableViewAndCollectionView?.feedCollectionViewController.scrollViewDidScroll(scrollView)
         let y_offset: CGFloat = scrollView.contentOffset.y
         guard  let headerViewTopConstraint = stationView.topViewContainerTopConstraint else {return}
         let newConstant = headerViewTopConstraint.constant - y_offset
