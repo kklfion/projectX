@@ -34,7 +34,7 @@ class SegmentedControlWithTableViewAndCollectionView: UIView{
     }()
     ///collectionViewController responsible for the feed.
     //FIXME: - static id
-    var feedCollectionViewController = FeedCollectionViewController(feedType: .generalFeed)//(feedType: .stationFeed, id: "33UNobqNfPCxQBpyr3OT")
+    var feedCollectionViewController = FeedCollectionViewController()//(feedType: .stationFeed, id: "33UNobqNfPCxQBpyr3OT")
 //    let loungeTableView: UITableView = {
 //        let home = UITableView()
 //        home.separatorStyle = .none

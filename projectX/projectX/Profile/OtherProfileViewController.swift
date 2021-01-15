@@ -9,8 +9,10 @@
 import UIKit
 import FirebaseAuth
 
-class OtherProfileViewController: UIViewController {
-    
+class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
+    func didScrollFeed(_ scrollView: UIScrollView) {
+        
+    }    
     ///user displayed by the controller
     var user: User
     
@@ -80,6 +82,8 @@ class OtherProfileViewController: UIViewController {
                                bottom: view.bottomAnchor,
                                 trailing: view.trailingAnchor)
         //profileView.tableViewAndCollectionView?.feedCollectionViewController = FeedCollectionViewController(feedType: .userHistoryFeed, id: "59qIdPL8uAfltJryIrAWfQNFcuN2")
+        profileView.tableViewAndCollectionView?.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, id: self.user.id)
+        profileView.tableViewAndCollectionView?.feedCollectionViewController.didScrollFeedDelegate = self
         self.addChild(profileView.tableViewAndCollectionView?.feedCollectionViewController ?? UIViewController())
         //setupNavBar()
     }

@@ -40,6 +40,8 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
         extendedLayoutIncludesOpaqueBars = true
         setupView()
         setupHeights()
+        //stationView.tableViewAndCollectionView?.feedCollectionViewController = FeedCollectionViewController(feedType: .stationFeed, id: self.station?.id)
+        stationView.tableViewAndCollectionView?.feedCollectionViewController.setupFeed(feedType: .stationFeed, id: self.station?.id)
         self.addChild(stationView.tableViewAndCollectionView?.feedCollectionViewController ?? UIViewController())
         stationView.tableViewAndCollectionView?.feedCollectionViewController.didScrollFeedDelegate = self
         //setupTableView(tableView: stationView.tableViewAndCollectionView?.loungeTableView ?? nil)
