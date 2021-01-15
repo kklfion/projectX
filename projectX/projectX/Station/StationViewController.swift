@@ -7,7 +7,7 @@
 //
 import UIKit
 
-class StationViewController: UIViewController, UIScrollViewDelegate, UICollectionViewDelegate {
+class StationViewController: UIViewController, UIScrollViewDelegate {
     
     ///presented Station, either a substation or a regular station
     var station: Station?
@@ -38,17 +38,19 @@ class StationViewController: UIViewController, UIScrollViewDelegate, UICollectio
         extendedLayoutIncludesOpaqueBars = true
         setupView()
         setupHeights()
+        self.addChild(stationView.tableViewAndCollectionView?.feedCollectionViewController ?? UIViewController())
         //setupTableView(tableView: stationView.tableViewAndCollectionView?.loungeTableView ?? nil)
         //setupBulletinBoardTableView()
         setupStationHeaderWithStation()
         //loadDataForStation()
         checkIfStationFollowed()
-        
-        stationView.tableViewAndCollectionView?.feedCollectionViewController.collectionView.delegate = self
     }
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath)
-    }
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        print(indexPath)
+//        //stationView.tableViewAndCollectionView?.feedCollectionViewController.presentPos
+//        //stationView.tableViewAndCollectionView?.feedCollectionViewController.navigationController?.navigationController = self.navigationController?.navigationController
+//        
+//    }
     ///if user is signed in station can be followed/not followed
     private func checkIfStationFollowed(){
         switch UserManager.shared().state{
@@ -120,10 +122,6 @@ class StationViewController: UIViewController, UIScrollViewDelegate, UICollectio
                            leading: view.safeAreaLayoutGuide.leadingAnchor,
                            bottom: view.bottomAnchor,
                            trailing: view.safeAreaLayoutGuide.trailingAnchor)
-        
-        //self.addChild(feedCollectionViewController)
-        //view.addSubview(feedCollectionViewController.view)
-        
     }
     private func setupHeights(){
         if #available(iOS 13.0, *) {

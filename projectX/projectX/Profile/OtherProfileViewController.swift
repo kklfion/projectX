@@ -79,7 +79,8 @@ class OtherProfileViewController: UIViewController {
                                leading: view.leadingAnchor,
                                bottom: view.bottomAnchor,
                                 trailing: view.trailingAnchor)
-        profileView.tableViewAndCollectionView?.feedCollectionViewController = FeedCollectionViewController(feedType: .userHistoryFeed, id: "59qIdPL8uAfltJryIrAWfQNFcuN2")
+        //profileView.tableViewAndCollectionView?.feedCollectionViewController = FeedCollectionViewController(feedType: .userHistoryFeed, id: "59qIdPL8uAfltJryIrAWfQNFcuN2")
+        self.addChild(profileView.tableViewAndCollectionView?.feedCollectionViewController ?? UIViewController())
         //setupNavBar()
     }
     private func setupTableViews(){
