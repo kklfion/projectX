@@ -29,31 +29,25 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
         let view = StationView(frame: frame, type: .subStation)
         return view
     }()
-    let seachView: UISearchBar = {
-        let sb = UISearchBar()
-        sb.showsCancelButton = true
-        return sb
-    }()
 
     override func viewDidLoad() {
         view.backgroundColor = .white
-        extendedLayoutIncludesOpaqueBars = true
         setupView()
         setupHeights()
-        //stationView.tableViewAndCollectionView?.feedCollectionViewController = FeedCollectionViewController(feedType: .stationFeed, id: self.station?.id)
         stationView.tableViewAndCollectionView?.feedCollectionViewController.setupFeed(feedType: .stationFeed, id: self.station?.id)
         self.addChild(stationView.tableViewAndCollectionView?.feedCollectionViewController ?? UIViewController())
         stationView.tableViewAndCollectionView?.feedCollectionViewController.didScrollFeedDelegate = self
-        //setupTableView(tableView: stationView.tableViewAndCollectionView?.loungeTableView ?? nil)
-        //setupBulletinBoardTableView()
         setupStationHeaderWithStation()
-        //loadDataForStation()
         checkIfStationFollowed()
-        
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default) //UIImage.init(named: "transparent.png")
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationController?.view.backgroundColor = .clear
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.backgroundColor = Constants.Colors.gamingBackground
+        navBarAppearance.shadowImage = UIImage()
+        navBarAppearance.shadowColor = .clear
+        navigationController?.navigationBar.standardAppearance = navBarAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     ///if user is signed in station can be followed/not followed
     private func checkIfStationFollowed(){
@@ -118,8 +112,6 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
 
     }
     private func setupView(){
-        navigationItem.titleView = UISearchBar()
-        //navigationItem.searchController = UISearchController(searchResultsController: nil)
         view.addSubview(stationView)
         stationView.followButton.addTarget(self, action: #selector(didTapFollowButton), for: .touchUpInside)
         stationView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,

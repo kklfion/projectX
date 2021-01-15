@@ -29,26 +29,26 @@ class HomeTableVC: UIViewController, UISearchBarDelegate{
         presentLoginIfNeeded()
         setupNavigationBar()
     }
+    
 }
 //MARK: - Navigation Bar setup
 extension HomeTableVC{
     override func viewWillAppear(_ animated: Bool) {
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.backgroundColor = Constants.Colors.mainYellow
+        navBarAppearance.shadowImage = UIImage()
+        navBarAppearance.shadowColor = .clear
+        navigationController?.navigationBar.standardAppearance = navBarAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
         navigationController?.navigationBar.prefersLargeTitles = true
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.navigationBar.prefersLargeTitles = false
+        
+        
     }
     private func setupNavigationBar(){
         self.navigationItem.title = "Home"
         navigationItem.searchController = searchController
         //navigationItem.hidesSearchBarWhenScrolling = false
         searchController.searchBar.delegate = self
-//        let navBarAppearance = UINavigationBarAppearance()
-//        navBarAppearance.configureWithOpaqueBackground()
-//        navBarAppearance.shadowColor = .none
-//        navBarAppearance.backgroundColor = Constants.Colors.mainYellow
-//        navigationController?.navigationBar.standardAppearance = navBarAppearance
-//        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
     }
 }
 //MARK: - SideBarStationSelectionDelegate

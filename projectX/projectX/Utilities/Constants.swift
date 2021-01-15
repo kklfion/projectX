@@ -22,6 +22,8 @@ struct Constants{
         static let profileBlue = UIColor(rgb: 0xdff9ff)
         static let profileYellow = UIColor(rgb: 0xfef8d3)
         static let buttonsRed = UIColor(rgb: 0xf2aba7)
+        
+        static let gamingBackground = UIColor(rgb: 0x2A886D)
     }
     
     struct Screen {
