@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Foundation
 
 extension UIView {
     func addAnchors(top: NSLayoutYAxisAnchor?,
@@ -142,4 +143,45 @@ extension UIViewController{
         view.addSubview(child.view)
         child.didMove(toParent: self)
     }
+
+extension Date {
+    
+  // Function in which calculates the time past on a particular post and returns
+  // this time as a string
+  func diff(date: Date) -> String {
+      
+  // To find the difference in time, we need make a variable to represent the current day
+  let today = Date()
+    
+  // Here, we extract components from the Calender structure in which will help us
+  // calculate various units of time
+  let second = Calendar.current.dateComponents([.second], from: date, to: today).second
+  let minute = Calendar.current.dateComponents([.minute], from: date, to: today).minute
+  let hour = Calendar.current.dateComponents([.hour], from: date, to: today).hour
+  let day = Calendar.current.dateComponents([.day], from: date, to: today).day
+  let month = Calendar.current.dateComponents([.month], from: date, to: today).month
+  let year = Calendar.current.dateComponents([.year], from: date, to: today).year
+    
+  // In order to display the message, we use nested if statements to check how much time
+  // has past to ensure we return the correct amount of time
+  if year == 0 {
+     if month == 0 {
+         if day == 0 {
+             if hour == 0 {
+                 if minute == 0 {
+                     if second == 0 {
+                      return "0 seconds ago"
+                      }
+                  return String(second!) + " seconds ago"
+                  }
+              return String(minute!) + " minutes ago"
+              }
+          return String(hour!) + " hours ago"
+          }
+      return String(day!) + " days ago"
+      }
+     return String(month!) + " months ago"
+     }
+  return String(year!) + " years ago"
+  }
 }
