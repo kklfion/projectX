@@ -81,23 +81,24 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
                                leading: view.leadingAnchor,
                                bottom: view.bottomAnchor,
                                 trailing: view.trailingAnchor)
+        //FIXME: enable this calls
         //profileView.tableViewAndCollectionView?.feedCollectionViewController = FeedCollectionViewController(feedType: .userHistoryFeed, id: "59qIdPL8uAfltJryIrAWfQNFcuN2")
-        profileView.tableViewAndCollectionView?.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, id: self.user.id)
-        profileView.tableViewAndCollectionView?.feedCollectionViewController.didScrollFeedDelegate = self
-        self.addChild(profileView.tableViewAndCollectionView?.feedCollectionViewController ?? UIViewController())
+        //profileView.tableViewAndCollectionView?.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, id: self.user.id)
+        //profileView.tableViewAndCollectionView?.feedCollectionViewController.didScrollFeedDelegate = self
+        //self.addChild(profileView.tableViewAndCollectionView?.feedCollectionViewController ?? UIViewController())
         //setupNavBar()
     }
     private func setupTableViews(){
         //profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
-        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
+        //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
         //profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
-        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
+        //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
         
         //profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
         //profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
         
         //profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
-        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
+        //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
         //guard let user = user else{return}
@@ -145,7 +146,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
                 print("Error loading missions for user \(String(describing: error?.localizedDescription))")
             }else if missions != nil{
                 self.missions = missions!
-                self.profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
+                //self.profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
             }
         }
     }

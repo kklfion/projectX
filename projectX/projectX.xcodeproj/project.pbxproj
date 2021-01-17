@@ -53,7 +53,7 @@
 		808361C425290DEC00DEF0DE /* PostCellWithoutImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */; };
 		808361C8252920F900DEF0DE /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361C7252920F900DEF0DE /* UserManager.swift */; };
 		808361CB2529215700DEF0DE /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361CA2529215700DEF0DE /* NetworkManager.swift */; };
-		80A0DC16253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC15253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift */; };
+		80A0DC16253B56A500474541 /* SegmentedControlWithStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC15253B56A500474541 /* SegmentedControlWithStackView.swift */; };
 		80A0DC1D253B780300474541 /* BoardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC1C253B780300474541 /* BoardCell.swift */; };
 		80AF6F0F2579A2B5006A6C57 /* ShadowLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AF6F0E2579A2B5006A6C57 /* ShadowLayerView.swift */; };
 		80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */; };
@@ -130,7 +130,7 @@
 		808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCellWithoutImage.swift; sourceTree = "<group>"; };
 		808361C7252920F900DEF0DE /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		808361CA2529215700DEF0DE /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		80A0DC15253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlWithTableViewAndCollectionView.swift; sourceTree = "<group>"; };
+		80A0DC15253B56A500474541 /* SegmentedControlWithStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlWithStackView.swift; sourceTree = "<group>"; };
 		80A0DC1C253B780300474541 /* BoardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCell.swift; sourceTree = "<group>"; };
 		80AF6F0E2579A2B5006A6C57 /* ShadowLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowLayerView.swift; sourceTree = "<group>"; };
 		80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
@@ -386,7 +386,7 @@
 			children = (
 				80AF6F0E2579A2B5006A6C57 /* ShadowLayerView.swift */,
 				8067F0BD257AD70800CED98F /* RoundShadowView.swift */,
-				80A0DC15253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift */,
+				80A0DC15253B56A500474541 /* SegmentedControlWithStackView.swift */,
 				8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */,
 			);
 			path = ReusableUIElements;
@@ -562,7 +562,7 @@
 				80A0DC1D253B780300474541 /* BoardCell.swift in Sources */,
 				8068E7D3254107BD00A85B33 /* ParentStationViewController.swift in Sources */,
 				8067F0BE257AD70800CED98F /* RoundShadowView.swift in Sources */,
-				80A0DC16253B56A500474541 /* SegmentedControlWithTableViewAndCollectionView.swift in Sources */,
+				80A0DC16253B56A500474541 /* SegmentedControlWithStackView.swift in Sources */,
 				90C178CD25439A5200200222 /* AcceptedMission.swift in Sources */,
 				90C178D325439A9000200222 /* Follower.swift in Sources */,
 				806E777624C9074700A95B89 /* Constants.swift in Sources */,

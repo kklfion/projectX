@@ -19,6 +19,9 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
     
     ///missions for Station are loaded after viewcontroller was loaded
     private var missions = [Mission]()
+    
+    ///collectionViewController responsible for the feed.
+    private var feedCollectionViewController: FeedCollectionViewController!
 
     ///used for calculating sliding up/down header when scrolling
     var headerMaxHeight: CGFloat!
@@ -34,9 +37,18 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
         view.backgroundColor = .white
         setupView()
         setupHeights()
-        stationView.tableViewAndCollectionView?.feedCollectionViewController.setupFeed(feedType: .stationFeed, id: self.station?.id)
-        self.addChild(stationView.tableViewAndCollectionView?.feedCollectionViewController ?? UIViewController())
-        stationView.tableViewAndCollectionView?.feedCollectionViewController.didScrollFeedDelegate = self
+        //setup feed
+        let vc = UIViewController()
+        vc.view.backgroundColor  = .blue
+        feedCollectionViewController = FeedCollectionViewController()
+        feedCollectionViewController.setupFeed(feedType: .stationFeed, id: self.station?.id)
+        self.addChild(feedCollectionViewController)
+        feedCollectionViewController.didScrollFeedDelegate = self
+        stationView.tableViewAndCollectionView?.stackView.addArrangedSubview(feedCollectionViewController.view)
+        stationView.tableViewAndCollectionView?.stackView.addArrangedSubview(vc.view)
+        //stackView.addArrangedSubview(feedCollectionViewController.view )
+        //stackView.addArrangedSubview(bulletinBoardCollectionView)
+        
         setupStationHeaderWithStation()
         checkIfStationFollowed()
     }
