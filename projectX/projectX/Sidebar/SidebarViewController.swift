@@ -21,13 +21,6 @@ enum SideBarMenuType{
     case settings
 }
 class SidebarViewController: UIViewController {
-    private let stations =
-    [
-        "University","Travel", "Art", "Drama", "Gaming", "Meme", "Makeup", "Politics","Music",
-        "Sports","Food", "Abroad", "Writing","Financial", "Pets", "Job", "Astrology", "Horror",
-        "Anime", "LGBTQ+", "Film", "Relationship", "Photography", "International", "Development",
-        "Relationship", "Photography", "International", "Development"
-    ]
     
     private var dbstations: [Station]? = nil{
         didSet{

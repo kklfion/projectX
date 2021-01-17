@@ -24,14 +24,18 @@ class PostViewController: UIViewController {
     ///view for adding a new comment, is hidden by default and is shown when keyboard appears
     private var newCommentView: NewCommentView = {
         let view = NewCommentView()
-        view.commentTextView.isScrollEnabled = true
-        view.isUserInteractionEnabled = true
-        view.commentTextView.isUserInteractionEnabled = true
         return view
     }()
+    /// height of a comment view when in its default position
+    let defaultCommentViewHeight = CGFloat(75)
+    /// height of the comment view when editing
+    let maxCommentViewHeight = CGFloat(300)
     
     ///bottom constaint is used for commentView to hide/slideout with the keyboard
     private var newCommentViewBottomConstraint: NSLayoutConstraint?
+    
+    ///height constaint is used for commentView to change height with the keyboard
+    private var newCommentViewHeightConstraint: NSLayoutConstraint?
     
     ///tableview that will be populated with comments for current post
     private var commentsTableView: UITableView = {
@@ -54,21 +58,34 @@ class PostViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        extendedLayoutIncludesOpaqueBars = true
+        //extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         self.navigationItem.title = post.stationName
         
         //only this order works, some bug that makes newcommentview invisible if this is changed
         setupTableViewAndHeader()
         populatePostViewWithPost()
-        //setupToolbar()
         setupNewCommentView()
         setupKeyboardnotifications()
         loadCommentsForPost()
     }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        //self.navigationController?.isToolbarHidden = true
+    private func setupTableViewAndHeader(){
+        commentsTableView.delegate = self
+        commentsTableView.dataSource = self
+        commentsTableView.register(CommentCell.self, forCellReuseIdentifier: CommentCell.cellID)
+        commentsTableView.rowHeight = UITableView.automaticDimension
+        commentsTableView.estimatedRowHeight = 150
+        view.addSubview(commentsTableView)
+
+        commentsTableView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
+                                     leading: view.leadingAnchor,
+                                     bottom: view.safeAreaLayoutGuide.bottomAnchor,
+                                     trailing: view.trailingAnchor)
+        
+        postHeaderView = PostView(frame: view.frame)
+        postHeaderView?.translatesAutoresizingMaskIntoConstraints = false
+        commentsTableView.tableHeaderView = postHeaderView
+        commentsTableView.tableHeaderView?.layoutIfNeeded() //Without this autolayout doesnt update the custom view layout
     }
     private func setupNewCommentView(){
         newCommentView.commentTextView.delegate = self
@@ -78,11 +95,12 @@ class PostViewController: UIViewController {
                                 bottom: nil,
                                 trailing: view.trailingAnchor,
                                 size: .init(width: 0, height: 0))
-        newCommentViewBottomConstraint = newCommentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 30)
+        
+        newCommentViewHeightConstraint = newCommentView.heightAnchor.constraint(equalToConstant: defaultCommentViewHeight)
+        newCommentViewHeightConstraint?.isActive = true
+        newCommentViewBottomConstraint = newCommentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         newCommentViewBottomConstraint?.isActive = true
-        //to get current size
-        textViewDidChange(newCommentView.commentTextView)
-        //linking buttons
+   
         newCommentView.closeButton.addTarget(self, action: #selector(didTapDissmissNewComment), for: .touchUpInside)
         newCommentView.sendButton.addTarget(self, action: #selector(didTapSendButton), for: .touchUpInside)
     }
@@ -133,13 +151,18 @@ extension PostViewController{
             let keyboardRectangle = keyboardFrame.cgRectValue
             let keyboardHeight = keyboardRectangle.height
             newCommentViewBottomConstraint?.constant = -keyboardHeight
+            newCommentViewHeightConstraint?.constant = maxCommentViewHeight
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseInOut, animations: {
                 self.view.layoutIfNeeded()
             }, completion: nil)
         }
     }
     @objc private func keyboardWillHide(notification: NSNotification) {
-        newCommentViewBottomConstraint?.constant = -30
+        newCommentViewBottomConstraint?.constant = 0
+        newCommentViewHeightConstraint?.constant = defaultCommentViewHeight
+        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseInOut, animations: {
+            self.view.layoutIfNeeded()
+        }, completion: nil)
 
     }
     @objc func didTapDissmissNewComment(){
@@ -157,22 +180,6 @@ extension PostViewController{
             }
             presenter.present(in: self)
         }
-    }
-    //TODO: this will be replaced in the update
-    @objc private func shareButtonPushed(){
-        
-    }
-    @objc private func createCommentButtonPushed(){
-        newCommentView.commentTextView.becomeFirstResponder()
-    }
-    @objc private func writeButtonPushed(){
-        
-    }
-    @objc private func bookmarkButtonPushed(){
-        
-    }
-    @objc private func closeButtonPushed(){
-        
     }
 }
 //MARK: Networking
@@ -250,26 +257,8 @@ extension PostViewController{
         }
     }
 }
-//MARK: TableView setup, delegates, layout
+//MARK: TableView datasource, delegate
 extension PostViewController: UITableViewDelegate, UITableViewDataSource{
-    private func setupTableViewAndHeader(){
-        commentsTableView.delegate = self
-        commentsTableView.dataSource = self
-        commentsTableView.register(CommentCell.self, forCellReuseIdentifier: CommentCell.cellID)
-        commentsTableView.rowHeight = UITableView.automaticDimension
-        commentsTableView.estimatedRowHeight = 150
-        view.addSubview(commentsTableView)
-
-        commentsTableView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
-                                     leading: view.leadingAnchor,
-                                     bottom: view.safeAreaLayoutGuide.bottomAnchor,
-                                     trailing: view.trailingAnchor)
-        
-        postHeaderView = PostView(frame: view.frame)
-        postHeaderView?.translatesAutoresizingMaskIntoConstraints = false
-        commentsTableView.tableHeaderView = postHeaderView
-        commentsTableView.tableHeaderView?.layoutIfNeeded() //Without this autolayout doesnt update the custom view layout
-    }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         newCommentView.commentTextView.endEditing(true)
     }
@@ -298,17 +287,37 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
         return cell
     }
 }
+//MARK: comment text view delegate
 extension PostViewController: UITextViewDelegate{
-    /// Handles resizing of the input text view.
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        slideOutNewCommentView(textView)
+    }
+    func textViewDidEndEditing(_ textView: UITextView) {
+        foldInNewCommentView(textView)
+    }
     func textViewDidChange(_ textView: UITextView) {
-        let size = CGSize(width: newCommentView.commentTextView.frame.width, height: .infinity)
-        let estimatedSize = newCommentView.commentTextView.sizeThatFits(size)
-        if (estimatedSize.height > (self.view.frame.height * 0.3)){
-            newCommentView.commentTextViewHeightConstraint?.constant = self.view.frame.height * 0.3
-        } else{
-            newCommentView.commentTextViewHeightConstraint?.constant = estimatedSize.height
+        
+    }
+    private func slideOutNewCommentView(_ textView: UITextView){
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+            textView.textAlignment = .left
         }
-
+        newCommentView.commentTextView.becomeFirstResponder()
+        newCommentView.bottomStack.isHidden = false
+        newCommentView.topStack.isHidden = false
+    }
+    private func foldInNewCommentView(_ textView: UITextView){
+        if textView.text.isEmpty {
+            textView.text = newCommentView.commentPlaceholderMessage
+            textView.textColor = UIColor.lightGray
+            textView.textAlignment = .center
+        }
+        newCommentView.bottomStack.isHidden = true
+        newCommentView.topStack.isHidden = true
+        
+        newCommentView.commentTextView.endEditing(true)
     }
 }
 

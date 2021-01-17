@@ -9,8 +9,10 @@
 import UIKit
 import FirebaseAuth
 
-class OtherProfileViewController: UIViewController {
-    
+class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
+    func didScrollFeed(_ scrollView: UIScrollView) {
+        
+    }    
     ///user displayed by the controller
     var user: User
     
@@ -72,26 +74,31 @@ class OtherProfileViewController: UIViewController {
         updateProfileInformation()
     }
     private func setupView(){
-        profileView = ProfileView(frame: self.view.frame)
+        profileView = ProfileView(frame: self.view.frame, userID: "59qIdPL8uAfltJryIrAWfQNFcuN2")
         guard let profileView = profileView else {return}
         view.addSubview(profileView)
         profileView.addAnchors(top: view.topAnchor,
                                leading: view.leadingAnchor,
                                bottom: view.bottomAnchor,
                                 trailing: view.trailingAnchor)
+        //FIXME: enable this calls
+        //profileView.tableViewAndCollectionView?.feedCollectionViewController = FeedCollectionViewController(feedType: .userHistoryFeed, id: "59qIdPL8uAfltJryIrAWfQNFcuN2")
+        //profileView.tableViewAndCollectionView?.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, id: self.user.id)
+        //profileView.tableViewAndCollectionView?.feedCollectionViewController.didScrollFeedDelegate = self
+        //self.addChild(profileView.tableViewAndCollectionView?.feedCollectionViewController ?? UIViewController())
         //setupNavBar()
     }
     private func setupTableViews(){
-        profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
-        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
-        profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
-        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
+        //profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
+        //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
+        //profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
+        //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
         
-        profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
-        profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
+        //profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
+        //profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
         
-        profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
-        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
+        //profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
+        //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
         //guard let user = user else{return}
@@ -128,7 +135,7 @@ class OtherProfileViewController: UIViewController {
                 print("Error loading posts for user \(String(describing: error?.localizedDescription))")
             }else if posts != nil{
                 self.posts = posts!
-                self.profileView?.tableViewAndCollectionView?.loungeTableView.reloadData()
+                 //self.profileView?.tableViewAndCollectionView?.loungeTableView.reloadData()
             }
         }
         //fetch missions
@@ -139,7 +146,7 @@ class OtherProfileViewController: UIViewController {
                 print("Error loading missions for user \(String(describing: error?.localizedDescription))")
             }else if missions != nil{
                 self.missions = missions!
-                self.profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
+                //self.profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
             }
         }
     }

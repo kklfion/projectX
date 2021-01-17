@@ -18,7 +18,7 @@ class ProfileTableVC: UIViewController {
     
     private var posts: [Post]?{
         didSet{
-            profileView?.tableViewAndCollectionView?.loungeTableView.reloadData()
+            //profileView?.tableViewAndCollectionView?.loungeTableView.reloadData()
         }
     }
     
@@ -27,7 +27,7 @@ class ProfileTableVC: UIViewController {
     //for now using posts data to create cells
     private var boards: [Post]?{
         didSet{
-            profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
+            //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.reloadData()
         }
     }
     override func viewDidLoad() {
@@ -72,16 +72,16 @@ class ProfileTableVC: UIViewController {
     }
     private func setupTableViews(){
         //profileView?.tableViewAndCollectionView?.loungeTableView.delegate = self
-        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
+        //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.delegate = self
         //profileView?.tableViewAndCollectionView?.loungeTableView.dataSource = self
-        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
+        //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.dataSource = self
 
-        profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
-        profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
+        //profileView?.tableViewAndCollectionView?.loungeTableView.rowHeight = UITableView.automaticDimension
+        //profileView?.tableViewAndCollectionView?.loungeTableView.estimatedRowHeight = 100
 
-        profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
-        profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
-        profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
+        //profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
+        //profileView?.tableViewAndCollectionView?.loungeTableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
+        //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
         let (user, image, state) = UserManager.shared().getCurrentUserData()
