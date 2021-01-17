@@ -37,18 +37,7 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
         view.backgroundColor = .white
         setupView()
         setupHeights()
-        //setup feed
-        let vc = UIViewController()
-        vc.view.backgroundColor  = .blue
-        feedCollectionViewController = FeedCollectionViewController()
-        feedCollectionViewController.setupFeed(feedType: .stationFeed, id: self.station?.id)
-        self.addChild(feedCollectionViewController)
-        feedCollectionViewController.didScrollFeedDelegate = self
-        stationView.tableViewAndCollectionView?.stackView.addArrangedSubview(feedCollectionViewController.view)
-        stationView.tableViewAndCollectionView?.stackView.addArrangedSubview(vc.view)
-        //stackView.addArrangedSubview(feedCollectionViewController.view )
-        //stackView.addArrangedSubview(bulletinBoardCollectionView)
-        
+        setupFeedVCs()
         setupStationHeaderWithStation()
         checkIfStationFollowed()
     }
@@ -60,6 +49,16 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
         navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    private func setupFeedVCs(){
+        let vc = UIViewController() //instead of the missions vc
+        vc.view.backgroundColor  = .white
+        feedCollectionViewController = FeedCollectionViewController()
+        feedCollectionViewController.setupFeed(feedType: .stationFeed, id: self.station?.id)
+        self.addChild(feedCollectionViewController)
+        feedCollectionViewController.didScrollFeedDelegate = self
+        stationView.tableViewAndCollectionView?.stackView.addArrangedSubview(feedCollectionViewController.view)
+        stationView.tableViewAndCollectionView?.stackView.addArrangedSubview(vc.view)
     }
     ///if user is signed in station can be followed/not followed
     private func checkIfStationFollowed(){

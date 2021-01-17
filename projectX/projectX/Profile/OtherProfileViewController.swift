@@ -25,6 +25,10 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
     ///custom view
     private var profileView: ProfileView?
     
+    ///feed vc
+    private var feedCollectionViewController: FeedCollectionViewController!
+
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -70,8 +74,19 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         setupView()
+        setupFeedVCs()
         setupTableViews()
         updateProfileInformation()
+    }
+    private func setupFeedVCs(){
+        let vc = UIViewController() //instead of the missions vc
+        vc.view.backgroundColor  = .white
+        feedCollectionViewController = FeedCollectionViewController()
+        feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, id: self.user.id)
+        self.addChild(feedCollectionViewController)
+        feedCollectionViewController.didScrollFeedDelegate = self
+        profileView?.tableViewAndCollectionView?.stackView.addArrangedSubview(feedCollectionViewController.view)
+        profileView?.tableViewAndCollectionView?.stackView.addArrangedSubview(vc.view)
     }
     private func setupView(){
         profileView = ProfileView(frame: self.view.frame, userID: "59qIdPL8uAfltJryIrAWfQNFcuN2")

@@ -9,15 +9,16 @@
 import UIKit
 import FirebaseAuth
 
+///sends scrollView updates to the parent viewcontroller
 protocol DidScrollFeedDelegate {
     func didScrollFeed(_ scrollView: UIScrollView)
 }
-
 ///The Only one section in collectionView
 enum FeedSection {
     ///Section that displays posts
     case main
 }
+///Feed types to init feed
 enum FeedType {
     case userHistoryFeed
     case generalFeed
@@ -46,25 +47,12 @@ class FeedCollectionViewController: UICollectionViewController{
     
     ///likes for the posts in the feed
     private var likes = [LikedPost]()
+    
+    private var userID = "59qIdPL8uAfltJryIrAWfQNFcuN2"//UserManager.shared().user?.id
+    
     init(){
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
-
-    init(feedType: FeedType, id: String? = nil){
-        super.init(collectionViewLayout: UICollectionViewFlowLayout())
-//        switch feedType {
-//        case .generalFeed:
-//            self.postPaginator = PostPaginator()
-//        case .parentStationFeed:
-//            self.postPaginator = PostPaginator(stationID: id ?? "")
-//        case .stationFeed:
-//            self.postPaginator = PostPaginator(stationID: id ?? "")
-//        case .userHistoryFeed:
-//            self.postPaginator = PostPaginator(userID: id ?? "")
-//        }
-        //fetchDataWith()
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -73,8 +61,22 @@ class FeedCollectionViewController: UICollectionViewController{
         setupCollectionView()
         setupDiffableDatasource()
         setupRefreshControl()
-        //fetchDataWith() //initial call
+        setupUserListener()
     }
+    private func setupUserListener(){
+//        if Auth.auth().currentUser != nil {
+//            userID = Auth.auth().currentUser?.uid
+//        }
+//        Auth.auth().addStateDidChangeListener { (auth, user) in
+//            if user == nil {
+//                self.userID = user?.uid
+//            } else {
+//                self.userID = nil
+//            }
+//        }
+    }
+
+    ///parent view controller must call this function to setup appropriate feed
     func setupFeed(feedType: FeedType, id: String? = nil){
         switch feedType {
         case .generalFeed:
@@ -84,7 +86,7 @@ class FeedCollectionViewController: UICollectionViewController{
         case .userHistoryFeed:
             self.postPaginator = PostPaginator(userID: id ?? "")
         }
-        fetchDataWith()
+        fetchDataWith() //initial fetching
     }
 }
 //MARK: - CollectionView setup
@@ -145,7 +147,6 @@ extension FeedCollectionViewController{
     }
     //TODO: move to cell
     private func addData(toCell cell: PostCollectionViewCell, withPost post: Post ){
-        //cell.isLiked = false
         cell.postImageView.image = nil
         cell.titleLabel.text =  post.title
         cell.messageLabel.text =  post.text
@@ -186,7 +187,7 @@ extension FeedCollectionViewController{
     }
     @objc func handleRefreshControl() {
         // Update your content…
-        var initialSnapshot = dataSource.snapshot()//NSDiffableDataSourceSnapshot<Section, Post>()
+        var initialSnapshot = dataSource.snapshot()
         //delete old data
         initialSnapshot.deleteAllItems()
         posts.removeAll()
@@ -231,12 +232,10 @@ extension FeedCollectionViewController {
         let group = DispatchGroup()
         for doc in data {
             group.enter()
-            guard let id = doc.id else {continue}
-            //FIXME: use current user ID instead of the static one !!
-            let userid = "59qIdPL8uAfltJryIrAWfQNFcuN2"//UserManager.shared().user?.id else {continue}
+            guard let  id = doc.id else {continue}
             let query = NetworkManager.shared.db.likedPosts
                 .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
-                .whereField(FirestoreFields.userID.rawValue, isEqualTo: userid)
+                .whereField(FirestoreFields.userID.rawValue, isEqualTo: userID)
             NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [LikedPost]?, error) in
                 if error != nil {
                     print("error loading liked post", error!)
@@ -247,13 +246,11 @@ extension FeedCollectionViewController {
             }
         }
         group.wait()
-        //print("updated Likes")
         DispatchQueue.main.async {
             self.applyFetchedDataOnCollectionView(data: data)
         }
     }
     private func applyFetchedDataOnCollectionView(data: [Post]){
-        //print("applying data onto the collectionView")
         self.loadingFooterView?.stopAnimating()
         self.collectionView.refreshControl?.endRefreshing()
         var initialSnapshot = NSDiffableDataSourceSnapshot<FeedSection, Post>()
