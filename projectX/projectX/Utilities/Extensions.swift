@@ -153,34 +153,24 @@ extension Date {
  let minute = Calendar.current.dateComponents([.minute], from: date, to: currentTime).minute
  let hour = Calendar.current.dateComponents([.hour], from: date, to: currentTime).hour
  let day = Calendar.current.dateComponents([.day], from: date, to: currentTime).day
- let month = Calendar.current.dateComponents([.month], from: date, to: currentTime).month
  let year = Calendar.current.dateComponents([.year], from: date, to: currentTime).year
     
  // Display message depending on time difference
  if year != 0 {
-    if year == 1 {return String(year ?? 0) + " year ago"}
-    return String(year ?? 0) + " years ago"
- }
- if month != 0 {
-    if month == 1 {return String(month ?? 0) + " month ago"}
-    return String(month ?? 0) + " months ago"
+    return String(year ?? 0) + "y"
  }
  if day != 0 {
-    if day == 1 {return String(day ?? 0) + " day ago"}
-    return String(day ?? 0) + " days ago"
+    return String(day ?? 0) + "d"
  }
  if hour != 0 {
-    if hour == 1 {return String(hour ?? 0) + " hour ago"}
-    return String(hour ?? 0) + " hours ago"
+    return String(hour ?? 0) + "h"
  }
  if minute != 0 {
-    if minute == 1 {return String(minute ?? 0) + " minute ago"}
-    return String(minute ?? 0) + " minutes ago"
+    return String(minute ?? 0) + "m"
  }
  if second != 0 {
-    if second == 1 {return String(second ?? 0) + " second ago"}
-    return String(second ?? 0) + " seconds ago"
+    return String(second ?? 0) + "s"
  }
- return "0 seconds ago"
+ return "0s"
  }
 }
