@@ -9,12 +9,8 @@
 import UIKit
 import FirebaseAuth
 
-/////Loading footer reuse identifier
-//let footerViewReuseIdentifier = "footerViewReuseIdentifier"
-/////Post ceell reuse identifiers
-//let cellReuseIdentifier = "cellReuseIdentifier"
-
 class HomeTableVC: UIViewController, UISearchBarDelegate{
+    
     ///collectionViewController responsible for the feed.
     private var feedCollectionViewController: FeedCollectionViewController!
     
