@@ -67,7 +67,7 @@
 		80F52F8B251C1AA400076825 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F52F8A251C1AA400076825 /* ProfileView.swift */; };
 		80F57E0425A4F7A100CDF5C3 /* PostPaginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */; };
 		80FDD6A924A188BF00304007 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 80FDD6A824A188BF00304007 /* GoogleService-Info.plist */; };
-		90C178B725319EE800200222 /* RealDATA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178B625319EE800200222 /* RealDATA.swift */; };
+		90C178B725319EE800200222 /* QueryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178B625319EE800200222 /* QueryData.swift */; };
 		90C178CD25439A5200200222 /* AcceptedMission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178CC25439A5200200222 /* AcceptedMission.swift */; };
 		90C178CF25439A6300200222 /* LikedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178CE25439A6300200222 /* LikedPost.swift */; };
 		90C178D125439A7C00200222 /* LikedComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178D025439A7C00200222 /* LikedComment.swift */; };
@@ -144,7 +144,7 @@
 		80F52F8A251C1AA400076825 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostPaginator.swift; sourceTree = "<group>"; };
 		80FDD6A824A188BF00304007 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		90C178B625319EE800200222 /* RealDATA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealDATA.swift; sourceTree = "<group>"; };
+		90C178B625319EE800200222 /* QueryData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryData.swift; sourceTree = "<group>"; };
 		90C178CC25439A5200200222 /* AcceptedMission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptedMission.swift; sourceTree = "<group>"; };
 		90C178CE25439A6300200222 /* LikedPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedPost.swift; sourceTree = "<group>"; };
 		90C178D025439A7C00200222 /* LikedComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedComment.swift; sourceTree = "<group>"; };
@@ -355,8 +355,9 @@
 				806E777524C9074700A95B89 /* Constants.swift */,
 				806E777924C9255F00A95B89 /* DataTest.swift */,
 				806E777724C9076200A95B89 /* Extensions.swift */,
-				90C178B625319EE800200222 /* RealDATA.swift */,
 				80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */,
+				90C178B625319EE800200222 /* QueryData.swift */,
+				80AF6F0B2577285F006A6C57 /* RoundedNavBarProtocol.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -534,7 +535,7 @@
 				808361CB2529215700DEF0DE /* NetworkManager.swift in Sources */,
 				808361C8252920F900DEF0DE /* UserManager.swift in Sources */,
 				801A37A82514025D00F22A11 /* NotificationView.swift in Sources */,
-				90C178B725319EE800200222 /* RealDATA.swift in Sources */,
+				90C178B725319EE800200222 /* QueryData.swift in Sources */,
 				90C178D125439A7C00200222 /* LikedComment.swift in Sources */,
 				ED4E05722533C7C2007ED4FA /* Mission.swift in Sources */,
 				8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */,
@@ -720,7 +721,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3S8Y6C28BB;
+				DEVELOPMENT_TEAM = 5NP79EB7TF;
 				INFOPLIST_FILE = projectX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -739,7 +740,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3S8Y6C28BB;
+				DEVELOPMENT_TEAM = 5NP79EB7TF;
 				INFOPLIST_FILE = projectX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

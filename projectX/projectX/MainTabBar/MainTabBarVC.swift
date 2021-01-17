@@ -106,7 +106,11 @@ extension MainTabBarVC: UITabBarControllerDelegate{
     }
     private func setupNewPostVC(_ tabBarController: UITabBarController){
         let vc = NewPostVC()
-        self.present(vc, animated: true)
+        let navigationController = UINavigationController(rootViewController: vc)
+        navigationController.navigationBar.isHidden = true
+        navigationController.presentationController?.delegate = vc
+        
+        self.present(navigationController, animated: true)
     }
     private func setupSideBarVC(_ tabBarController: UITabBarController){
         let vc = SidebarViewController()

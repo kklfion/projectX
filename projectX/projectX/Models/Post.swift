@@ -31,7 +31,7 @@ struct Post:Identifiable, Codable, Hashable{
     var title: String
     
     /// The body text of the post.
-    var text: String
+    var text: String?
 
     /// The date the review was posted.
     var date: Date
@@ -58,17 +58,23 @@ extension Post{
                 likes: Int,
                 userInfo: User,
                 title: String,
-                text: String,
+                text: String?,
                 date: Date,
                 imageURL: URL?,
                 commentCount: Int,
                 isAnonymous: Bool? = false) {
+        print(text)
+        if text != nil && text != Constants.NewPost.placeholderBodyText
+        {
+            print(text)
+            print("not that")
+            self.text = text
+        }
         self.stationID = stationID
         self.stationName = stationName
         self.likes = likes
         self.userInfo = userInfo
         self.title = title
-        self.text = text
         self.date = date
         self.imageURL = imageURL
         self.commentCount = commentCount
