@@ -153,9 +153,7 @@ extension FeedCollectionViewController{
         cell.likesLabel.text =  String(post.likes)
         cell.commentsLabel.text =  String(post.commentCount)
         cell.stationButton.setTitle(post.stationName, for: .normal)
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        let dateString = formatter.string(from: post.date)
+        let dateString = post.date.diff()
         cell.dateLabel.text = "\(dateString)"
         NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
             DispatchQueue.main.async {

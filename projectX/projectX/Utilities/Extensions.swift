@@ -164,29 +164,29 @@ extension Date {
         
      // Display message depending on time difference
      if year != 0 {
-        if year == 1 {return String(year ?? 0) + " year ago"}
-        return String(year ?? 0) + " years ago"
+        if year == 1 {return String(year ?? 0) + "y"}
+        return String(year ?? 0) + "y"
      }
      if month != 0 {
-        if month == 1 {return String(month ?? 0) + " month ago"}
-        return String(month ?? 0) + " months ago"
+        if month == 1 {return String(month ?? 0) + "m"}
+        return String(month ?? 0) + "m"
      }
      if day != 0 {
-        if day == 1 {return String(day ?? 0) + " day ago"}
-        return String(day ?? 0) + " days ago"
+        if day == 1 {return String(day ?? 0) + "d"}
+        return String(day ?? 0) + "d"
      }
      if hour != 0 {
-        if hour == 1 {return String(hour ?? 0) + " hour ago"}
-        return String(hour ?? 0) + " hours ago"
+        if hour == 1 {return String(hour ?? 0) + "h"}
+        return String(hour ?? 0) + " h"
      }
      if minute != 0 {
-        if minute == 1 {return String(minute ?? 0) + " minute ago"}
-        return String(minute ?? 0) + " minutes ago"
+        if minute == 1 {return String(minute ?? 0) + "min"}
+        return String(minute ?? 0) + "min"
      }
      if second != 0 {
-        if second == 1 {return String(second ?? 0) + " second ago"}
-        return String(second ?? 0) + " seconds ago"
+        if second == 1 {return String(second ?? 0) + "s"}
+        return String(second ?? 0) + "s"
      }
-     return "0 seconds ago"
+     return "0s"
      }
 }
