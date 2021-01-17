@@ -145,48 +145,38 @@ extension UIViewController{
     }
 }
 extension Date {
-     // Function in which calculates the time past since a post and returns time as a string
-     func diff() -> String {
-        
-     // Timestamp of post
-     let date = self
-        
-     // To find the difference, we need the current time
-     let currentTime = Date()
-        
-     // Utilize components from Calender structure to calculate various units of time
-     let second = Calendar.current.dateComponents([.second], from: date, to: currentTime).second
-     let minute = Calendar.current.dateComponents([.minute], from: date, to: currentTime).minute
-     let hour = Calendar.current.dateComponents([.hour], from: date, to: currentTime).hour
-     let day = Calendar.current.dateComponents([.day], from: date, to: currentTime).day
-     let month = Calendar.current.dateComponents([.month], from: date, to: currentTime).month
-     let year = Calendar.current.dateComponents([.year], from: date, to: currentTime).year
-        
-     // Display message depending on time difference
-     if year != 0 {
-        if year == 1 {return String(year ?? 0) + "y"}
-        return String(year ?? 0) + "y"
-     }
-     if month != 0 {
-        if month == 1 {return String(month ?? 0) + "m"}
-        return String(month ?? 0) + "m"
-     }
-     if day != 0 {
-        if day == 1 {return String(day ?? 0) + "d"}
-        return String(day ?? 0) + "d"
-     }
-     if hour != 0 {
-        if hour == 1 {return String(hour ?? 0) + "h"}
-        return String(hour ?? 0) + " h"
-     }
-     if minute != 0 {
-        if minute == 1 {return String(minute ?? 0) + "min"}
-        return String(minute ?? 0) + "min"
-     }
-     if second != 0 {
-        if second == 1 {return String(second ?? 0) + "s"}
-        return String(second ?? 0) + "s"
-     }
-     return "0s"
-     }
+ // Function in which calculates the time past since a post and returns time as a string
+ func diff() -> String {
+    
+ // Timestamp of post
+ let date = self
+    
+ // To find the difference, we need the current time
+ let currentTime = Date()
+    
+ // Utilize components from Calender structure to calculate various units of time
+ let second = Calendar.current.dateComponents([.second], from: date, to: currentTime).second
+ let minute = Calendar.current.dateComponents([.minute], from: date, to: currentTime).minute
+ let hour = Calendar.current.dateComponents([.hour], from: date, to: currentTime).hour
+ let day = Calendar.current.dateComponents([.day], from: date, to: currentTime).day
+ let year = Calendar.current.dateComponents([.year], from: date, to: currentTime).year
+    
+ // Display message depending on time difference
+ if year != 0 {
+    return String(year ?? 0) + "y"
+ }
+ if day != 0 {
+    return String(day ?? 0) + "d"
+ }
+ if hour != 0 {
+    return String(hour ?? 0) + "h"
+ }
+ if minute != 0 {
+    return String(minute ?? 0) + "m"
+ }
+ if second != 0 {
+    return String(second ?? 0) + "s"
+ }
+ return "0s"
+ }
 }
