@@ -15,7 +15,12 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         
     }    
     ///user displayed by the controller
-    var user: User?
+    lazy var user: User? = nil {
+        didSet{
+            updateProfileInformation()
+            setupFeedVCs()
+        }
+    }
     
     ///posts that were created by user
     private var posts = [Post]()
@@ -42,28 +47,16 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         self.navigationController?.navigationBar.shadowImage = nil
         self.navigationController?.navigationBar.isTranslucent = false
     }
+    ///to initialize your profile
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        print("called personal profile")
+    }
     ///initialize profileviewcontroller with user data (to display other user profile)
     init(user: User){
+        super.init(nibName: nil, bundle: nil)
+        print("called other profile")
         self.user = user
-        super.init(nibName: nil, bundle: nil)
-    }
-    ///user to display current user
-    init(){
-        //must wait for usermanager to complete and update self
-        user = User(email: "1", uid: "1")
-        super.init(nibName: nil, bundle: nil)
-        let user = Auth.auth().currentUser
-        guard let id = user?.uid else {return}
-        NetworkManager.shared.getDataForUser(id) { [weak self] (user, error) in
-            if error != nil {
-                print(error!)
-            }else if user != nil {
-                self?.user = user!
-                self?.updateProfileInformation()
-            }
-        }
-        
-        
     }
     
     required init?(coder: NSCoder) {
@@ -75,11 +68,37 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         setupView()
-        setupFeedVCs()
+        //setupFeedVCs()
         setupTableViews()
-        updateProfileInformation()
+        if user == nil { //means showing personal profile
+            subscribeToUpdates()
+        }else{
+            updateProfileInformation() //dispalying other person profile
+            setupFeedVCs()
+        }
+
+    }
+    private func subscribeToUpdates(){
+        switch UserManager.shared().state {
+        case .loading:
+            //wait for update
+            print("user is loading ")
+        case .signedIn(let user):
+            self.user = user
+        case .signedOut:
+            //display default data
+            print("display nothing")
+        }
+        UserManager.shared().didResolveUserState = { user in
+            self.user = user
+        }
     }
     private func setupFeedVCs(){
+        if user == nil {
+            profileView?.tableViewAndCollectionView?.stackView.isHidden = true
+            return
+        }
+        profileView?.tableViewAndCollectionView?.stackView.isHidden = false
         let vc = UIViewController() //instead of the missions vc
         vc.view.backgroundColor  = .white
         feedCollectionViewController = FeedCollectionViewController()
@@ -117,7 +136,13 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
-        guard let user = user else{return}
+        guard let user = user else{
+            profileView?.usernameLabel.text = "log in"
+            profileView?.useridLabel.text = ""
+            profileView?.schoolLabel.text = ""
+            profileView?.profileImageView.image = nil
+            return
+        }
         NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
