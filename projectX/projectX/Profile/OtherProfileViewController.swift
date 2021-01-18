@@ -78,16 +78,16 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         case .signedIn(let user):
             self.user = user
             updateProfileInformation()
-            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user.id)
+            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user.id, userID: user.id)
         case .signedOut:
             print("display nothing")//display default data
             updateProfileInformation()
-            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id)
+            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id, userID: user?.id)
         }
         UserManager.shared().didResolveUserState = { user in
             self.user = user
             self.updateProfileInformation()
-            self.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id)
+            self.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id, userID: user?.id)
         }
     }
     private func setupFeedVCs(){
