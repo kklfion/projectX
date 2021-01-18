@@ -37,7 +37,7 @@ class FeedCollectionViewController: UICollectionViewController{
     var didScrollFeedDelegate: DidScrollFeedDelegate?
     
     ///used to perform data fetching
-    private var postPaginator: PostPaginator?
+    private var postPaginator: PostPaginator!
     
     ///to keep reference to the footerView to start/stop animation
     var loadingFooterView: LoadingFooterView?
@@ -48,6 +48,7 @@ class FeedCollectionViewController: UICollectionViewController{
     ///likes for the posts in the feed
     private var likes = [LikedPost]()
     
+    ///provided by
     private var userID: String?
     
     init(){
@@ -61,16 +62,20 @@ class FeedCollectionViewController: UICollectionViewController{
         setupCollectionView()
         setupDiffableDatasource()
         setupRefreshControl()
-        
-        if userID != nil {
-            self.fetchDataWithPagination()
+    }
+    ///parent view controller must call this function to setup appropriate feed.
+    func setupFeed(feedType: FeedType, paginatorId: String? = nil, userID: String? = nil){
+        switch feedType {
+        case .generalFeed:
+            self.postPaginator = PostPaginator()
+        case .stationFeed:
+            self.postPaginator = PostPaginator(stationID: paginatorId ?? "")
+        case .userHistoryFeed:
+            self.postPaginator = PostPaginator(userID: paginatorId ?? "")
         }
-        
-        UserManager.shared().didResolveUserState = { user in
-            self.userID = user?.userID
-            self.resetCollectionViewIfNeeded()
-            self.fetchDataWithPagination()
-        }
+        self.userID = userID
+        self.resetCollectionViewIfNeeded()
+        self.fetchDataWithPagination()
     }
     private func resetCollectionViewIfNeeded(){
         //delete old data
@@ -81,18 +86,6 @@ class FeedCollectionViewController: UICollectionViewController{
         self.dataSource.apply(initialSnapshot, animatingDifferences: false)
         //reset pagination
         postPaginator?.resetPaginator()
-    }
-
-    ///parent view controller must call this function to setup appropriate feed. Is called BEFORE viewDidLoad
-    func setupFeed(feedType: FeedType, id: String? = nil){
-        switch feedType {
-        case .generalFeed:
-            self.postPaginator = PostPaginator()
-        case .stationFeed:
-            self.postPaginator = PostPaginator(stationID: id ?? "")
-        case .userHistoryFeed:
-            self.postPaginator = PostPaginator(userID: id ?? "")
-        }
     }
 }
 //MARK: - CollectionView setup
@@ -199,7 +192,7 @@ extension FeedCollectionViewController{
 //MARK: - Post fetching & applying & scrollViewDidScroll
 extension FeedCollectionViewController {
     ///Initial fetch should be done with pagination false, all other calls with pagination true
-    private func fetchDataWithPagination(){
+    func fetchDataWithPagination(){
         postPaginator?.queryPostWith() { [weak self] result in
             switch result {
                 case .success(let data):

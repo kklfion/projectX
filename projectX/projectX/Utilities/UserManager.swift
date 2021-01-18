@@ -45,13 +45,13 @@ class UserManager {
             }
         }
     }
-    ///subscribe to receive user updates
+    ///subscribe to receive optional user updates
     var didResolveUserState: ((User?) -> Void)?
     
     ///users current state state
     private(set) var state: UserState = .signedOut
     
-    ///user that is fetched from db after login user id is avilable
+    ///optional user that is fetched from db after login user id is avilable
     private(set) var user: User? {
         didSet {
             didResolveUserState?(user)

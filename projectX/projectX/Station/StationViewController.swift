@@ -54,7 +54,7 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
         let vc = UIViewController() //instead of the missions vc
         vc.view.backgroundColor  = .white
         feedCollectionViewController = FeedCollectionViewController()
-        feedCollectionViewController.setupFeed(feedType: .stationFeed, id: self.station?.id)
+        feedCollectionViewController.setupFeed(feedType: .stationFeed, paginatorId: self.station?.id)
         self.addChild(feedCollectionViewController)
         feedCollectionViewController.didScrollFeedDelegate = self
         stationView.tableViewAndCollectionView?.stackView.addArrangedSubview(feedCollectionViewController.view)

@@ -15,12 +15,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         
     }    
     ///user displayed by the controller
-    lazy var user: User? = nil {
-        didSet{
-            updateProfileInformation()
-            setupFeedVCs()
-        }
-    }
+    var user: User?
     
     ///posts that were created by user
     private var posts = [Post]()
@@ -68,41 +63,37 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         setupView()
-        //setupFeedVCs()
-        setupTableViews()
+        setupFeedVCs()
         if user == nil { //means showing personal profile
-            subscribeToUpdates()
+            setUserAndSubscribeToUpdates()
         }else{
             updateProfileInformation() //dispalying other person profile
-            setupFeedVCs()
         }
 
     }
-    private func subscribeToUpdates(){
+    private func setUserAndSubscribeToUpdates(){
         switch UserManager.shared().state {
         case .loading:
-            //wait for update
-            print("user is loading ")
+            print("user is loading ")//wait for update
         case .signedIn(let user):
             self.user = user
+            updateProfileInformation()
+            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user.id)
         case .signedOut:
-            //display default data
-            print("display nothing")
+            print("display nothing")//display default data
+            updateProfileInformation()
+            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id)
         }
         UserManager.shared().didResolveUserState = { user in
             self.user = user
+            self.updateProfileInformation()
+            self.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id)
         }
     }
     private func setupFeedVCs(){
-        if user == nil {
-            profileView?.tableViewAndCollectionView?.stackView.isHidden = true
-            return
-        }
-        profileView?.tableViewAndCollectionView?.stackView.isHidden = false
         let vc = UIViewController() //instead of the missions vc
         vc.view.backgroundColor  = .white
         feedCollectionViewController = FeedCollectionViewController()
-        feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, id: self.user?.id)
         self.addChild(feedCollectionViewController)
         feedCollectionViewController.didScrollFeedDelegate = self
         profileView?.tableViewAndCollectionView?.stackView.addArrangedSubview(feedCollectionViewController.view)
