@@ -43,7 +43,8 @@ class HomeTableVC: UIViewController, UISearchBarDelegate{
         }
         UserManager.shared().didResolveUserState = { user in
             self.user = user
-            self.feedCollectionViewController.setupFeed(feedType: .generalFeed, userID: user?.id ?? nil)
+            print(user)
+            self.feedCollectionViewController.setupFeed(feedType: .generalFeed, userID: user?.id)
         }
     }
     
