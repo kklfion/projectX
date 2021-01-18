@@ -45,6 +45,7 @@ class UserManager {
             }
         }
     }
+    ///subscribe to receive user updates
     var didResolveUserState: ((User?) -> Void)?
     
     ///users current state state
@@ -100,17 +101,12 @@ extension UserManager{
     func removeFollowedStation(stationID: String){
         followedStations = followedStations.filter { $0.stationID != stationID }
     }
-
-    ///returns empty user
-    private func defaultUser()-> User{
-        return User(name: "", photoURL: nil, email: "", uid: "")
-    }
 }
 //MARK: networking
 extension UserManager{
     
     ///function that manages loading data for user id
-    func loadDataFor(userID: String){
+    private func loadDataFor(userID: String){
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let group = DispatchGroup()
             //1 load user data
@@ -128,7 +124,7 @@ extension UserManager{
     }
 
     ///after user is set tries loading the image
-    func loadUserImage(){
+    private func loadUserImage(){
         guard let url = user?.photoURL else {return}
         NetworkManager.shared.getAsynchImage(withURL: url) { [weak self] (image, error) in
             if error != nil {
@@ -143,7 +139,7 @@ extension UserManager{
     }
     ///uses the id of currently logged in used to get the data stored in the Firebstore
     /// user is either already signed in OR this function will be called after successful login
-    func loadCurrentUser(withId id: String, completion: @escaping () -> Void){
+    private func loadCurrentUser(withId id: String, completion: @escaping () -> Void){
         NetworkManager.shared.getDataForUser(id) { [weak self] (user, error) in
             if error != nil{
                 self?.state = .signedOut
@@ -153,7 +149,7 @@ extension UserManager{
                 guard  let user = user else {return}
                 self?.state = .signedIn(user: user)
                 self?.user = user
-                print("\(user.name) user loaded")
+
                 completion()
             }
         }
