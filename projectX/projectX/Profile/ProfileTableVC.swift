@@ -45,6 +45,8 @@ class ProfileTableVC: UIViewController {
             self.user = user
         case .signedOut:
             print("user isnt signed in")
+        case .loading:
+            print("loading")
         }
         
     }

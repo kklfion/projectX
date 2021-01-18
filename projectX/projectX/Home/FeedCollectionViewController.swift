@@ -48,7 +48,7 @@ class FeedCollectionViewController: UICollectionViewController{
     ///likes for the posts in the feed
     private var likes = [LikedPost]()
     
-    private var userID = "59qIdPL8uAfltJryIrAWfQNFcuN2"//UserManager.shared().user?.id
+    private var userID: String? //= "59qIdPL8uAfltJryIrAWfQNFcuN2"//UserManager.shared().user?.id
     
     init(){
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
@@ -61,22 +61,27 @@ class FeedCollectionViewController: UICollectionViewController{
         setupCollectionView()
         setupDiffableDatasource()
         setupRefreshControl()
-        setupUserListener()
+        
+        UserManager.shared().didResolveUserState = { user in
+            self.userID = user?.userID
+            self.resetCollectionViewIfNeeded()
+            self.fetchDataWithPagination()
+        }
     }
-    private func setupUserListener(){
-//        if Auth.auth().currentUser != nil {
-//            userID = Auth.auth().currentUser?.uid
-//        }
-//        Auth.auth().addStateDidChangeListener { (auth, user) in
-//            if user == nil {
-//                self.userID = user?.uid
-//            } else {
-//                self.userID = nil
-//            }
-//        }
+    private func resetCollectionViewIfNeeded(){
+        //delete old data
+        var initialSnapshot = dataSource.snapshot()
+        initialSnapshot.deleteAllItems()
+//        initialSnapshot.deleteItems(posts)
+//        initialSnapshot.deleteSections([.main])
+        posts.removeAll()
+        likes.removeAll()
+        self.dataSource.apply(initialSnapshot, animatingDifferences: false)
+        //reset pagination
+        postPaginator?.resetPaginator()
     }
 
-    ///parent view controller must call this function to setup appropriate feed
+    ///parent view controller must call this function to setup appropriate feed. Is called BEFORE viewDidLoad
     func setupFeed(feedType: FeedType, id: String? = nil){
         switch feedType {
         case .generalFeed:
@@ -86,7 +91,6 @@ class FeedCollectionViewController: UICollectionViewController{
         case .userHistoryFeed:
             self.postPaginator = PostPaginator(userID: id ?? "")
         }
-        fetchDataWith() //initial fetching
     }
 }
 //MARK: - CollectionView setup
@@ -186,22 +190,14 @@ extension FeedCollectionViewController{
                                           for: .valueChanged)
     }
     @objc func handleRefreshControl() {
-        // Update your content…
-        var initialSnapshot = dataSource.snapshot()
-        //delete old data
-        initialSnapshot.deleteAllItems()
-        posts.removeAll()
-        likes.removeAll()
-        dataSource.apply(initialSnapshot, animatingDifferences: false)
-        //fetch new data
-        postPaginator?.resetPaginator()
-        fetchDataWith()
+        resetCollectionViewIfNeeded()
+        fetchDataWithPagination()
     }
 }
 //MARK: - Post fetching & applying & scrollViewDidScroll
 extension FeedCollectionViewController {
     ///Initial fetch should be done with pagination false, all other calls with pagination true
-    private func fetchDataWith(){
+    private func fetchDataWithPagination(){
         postPaginator?.queryPostWith() { [weak self] result in
             switch result {
                 case .success(let data):
@@ -210,7 +206,7 @@ extension FeedCollectionViewController {
                         self?.updatePostsAndLikesWith(data: data)
                     }
                 case .failure(let error):
-                    print("HomeVC Failed loading data ", error)
+                    print("FeedVC Failed loading data ", error)
             }
         }
     }
@@ -224,7 +220,7 @@ extension FeedCollectionViewController {
             guard let paginator = postPaginator else {return}
             if (paginator.isFetching) {return}//we fetching data, no need to fetch more
             self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
-            fetchDataWith()
+            fetchDataWithPagination()
         }
     }
     ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
@@ -235,7 +231,7 @@ extension FeedCollectionViewController {
             guard let  id = doc.id else {continue}
             let query = NetworkManager.shared.db.likedPosts
                 .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
-                .whereField(FirestoreFields.userID.rawValue, isEqualTo: userID)
+                .whereField(FirestoreFields.userID.rawValue, isEqualTo: userID ?? "")
             NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [LikedPost]?, error) in
                 if error != nil {
                     print("error loading liked post", error!)

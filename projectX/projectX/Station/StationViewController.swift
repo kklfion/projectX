@@ -67,6 +67,8 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
             stationView.followedButton()
         case .signedOut:
             stationView.notFollowedButton()
+        case .loading:
+            print("loading")
         }
     }
 //    ///fetches posts and missions for station
