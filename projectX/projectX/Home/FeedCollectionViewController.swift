@@ -62,6 +62,10 @@ class FeedCollectionViewController: UICollectionViewController{
         setupDiffableDatasource()
         setupRefreshControl()
         
+        if userID != nil {
+            self.fetchDataWithPagination()
+        }
+        
         UserManager.shared().didResolveUserState = { user in
             self.userID = user?.userID
             self.resetCollectionViewIfNeeded()
