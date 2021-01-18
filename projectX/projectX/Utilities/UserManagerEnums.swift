@@ -28,13 +28,4 @@ extension UserError: LocalizedError{
         }
     }
 }
-/// Users state in the app
-enum UserState {
-    
-    ///when user was signedin, returns current user data
-    case signedIn(user: User)
-    
-    ///when user is signed out
-    case signedOut
 
-}

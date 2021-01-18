@@ -18,11 +18,14 @@ class PostPaginator {
     
     ///set by viewController
     private let defaultQuery: Query
+    
     ///used for pagianation
     private var query: Query?
     
+    ///to fetch documents that follow previously fetched documents
     private var lastDocumentSnapshot: DocumentSnapshot?
 
+    ///limit of docs fetched ech query
     private let documentsPerQuery = 6
     
     ///home feed

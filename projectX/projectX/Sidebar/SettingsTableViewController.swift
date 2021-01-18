@@ -36,6 +36,8 @@ class SettingsTableViewController: UITableViewController {
             self.user = user
         case .signedOut:
             print("user isnt signed in")
+        case .loading:
+            print("loading")
         }
 //        userSubscription = UserManager.shared.userPublisher.sink { (user) in
 //            print("received User in settings", user ?? "")
