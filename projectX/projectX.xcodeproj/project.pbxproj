@@ -30,7 +30,6 @@
 		804E61A124980DB000825150 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A024980DB000825150 /* SidebarViewController.swift */; };
 		804E61A324980DD500825150 /* NewPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A224980DD500825150 /* NewPostVC.swift */; };
 		804E61A524980DFD00825150 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A424980DFD00825150 /* HomeVC.swift */; };
-		804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A624980E4B00825150 /* ProfileTableVC.swift */; };
 		8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62C24A6CEC0002A9E16 /* HomeView.swift */; };
 		8066D62F24AACAF8002A9E16 /* PostCellWithImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */; };
 		8067F0BE257AD70800CED98F /* RoundShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F0BD257AD70800CED98F /* RoundShadowView.swift */; };
@@ -107,7 +106,6 @@
 		804E61A024980DB000825150 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
 		804E61A224980DD500825150 /* NewPostVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostVC.swift; sourceTree = "<group>"; };
 		804E61A424980DFD00825150 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
-		804E61A624980E4B00825150 /* ProfileTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableVC.swift; sourceTree = "<group>"; };
 		8066D62C24A6CEC0002A9E16 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCellWithImage.swift; sourceTree = "<group>"; };
 		8067F0BD257AD70800CED98F /* RoundShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundShadowView.swift; sourceTree = "<group>"; };
@@ -337,7 +335,6 @@
 		804E61AB24980E8400825150 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				804E61A624980E4B00825150 /* ProfileTableVC.swift */,
 				8068E81B2542329300A85B33 /* OtherProfileViewController.swift */,
 				80F52F8A251C1AA400076825 /* ProfileView.swift */,
 			);
@@ -357,7 +354,6 @@
 				806E777724C9076200A95B89 /* Extensions.swift */,
 				80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */,
 				90C178B625319EE800200222 /* QueryData.swift */,
-				80AF6F0B2577285F006A6C57 /* RoundedNavBarProtocol.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -526,7 +522,6 @@
 				80D97BA9251D819000825BBB /* MissionsCell.swift in Sources */,
 				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,
 				8067F123257C158300CED98F /* StaticStationData.swift in Sources */,
-				804E61A724980E4B00825150 /* ProfileTableVC.swift in Sources */,
 				808361C425290DEC00DEF0DE /* PostCellWithoutImage.swift in Sources */,
 				803D75B3250AE531003F569D /* Post.swift in Sources */,
 				803D75A4250AD3E0003F569D /* PostView.swift in Sources */,
