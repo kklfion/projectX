@@ -14,3 +14,4 @@ xcuserdata/
 # Podfiles
 Pods/
 ../.DS_Store
+Podfile.lock
