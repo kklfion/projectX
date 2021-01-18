@@ -48,7 +48,7 @@ class FeedCollectionViewController: UICollectionViewController{
     ///likes for the posts in the feed
     private var likes = [LikedPost]()
     
-    private var userID: String? //= "59qIdPL8uAfltJryIrAWfQNFcuN2"//UserManager.shared().user?.id
+    private var userID: String?
     
     init(){
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
@@ -72,8 +72,6 @@ class FeedCollectionViewController: UICollectionViewController{
         //delete old data
         var initialSnapshot = dataSource.snapshot()
         initialSnapshot.deleteAllItems()
-//        initialSnapshot.deleteItems(posts)
-//        initialSnapshot.deleteSections([.main])
         posts.removeAll()
         likes.removeAll()
         self.dataSource.apply(initialSnapshot, animatingDifferences: false)
@@ -322,7 +320,7 @@ extension FeedCollectionViewController{
 //MARK: - Networking calls like/dislike
 extension FeedCollectionViewController {
     private func writeLikeToTheFirestore(with indexPath: IndexPath) {
-        guard  let userID = UserManager.shared().user?.userID else {return}
+        guard  let userID = userID else {return}
         guard let postID = posts[indexPath.item].id else {return}
         var document = LikedPost(userID: userID, postID: postID)
         NetworkManager.shared.writeDocumentReturnReference(collectionType: .likedPosts, document: document  ) { (ref, error) in

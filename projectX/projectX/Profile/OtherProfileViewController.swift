@@ -10,11 +10,12 @@ import UIKit
 import FirebaseAuth
 
 class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
+    
     func didScrollFeed(_ scrollView: UIScrollView) {
         
     }    
     ///user displayed by the controller
-    var user: User
+    var user: User?
     
     ///posts that were created by user
     private var posts = [Post]()
@@ -82,7 +83,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         let vc = UIViewController() //instead of the missions vc
         vc.view.backgroundColor  = .white
         feedCollectionViewController = FeedCollectionViewController()
-        feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, id: self.user.id)
+        feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, id: self.user?.id)
         self.addChild(feedCollectionViewController)
         feedCollectionViewController.didScrollFeedDelegate = self
         profileView?.tableViewAndCollectionView?.stackView.addArrangedSubview(feedCollectionViewController.view)
@@ -116,7 +117,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
-        //guard let user = user else{return}
+        guard let user = user else{return}
         NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
