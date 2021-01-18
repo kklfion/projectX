@@ -40,9 +40,12 @@ enum FirestoreFields: String {
     
     case followers
     
+    case likes
+    
     case postID
     
     case missionID
+
 
 }
 class NetworkManager {
@@ -132,7 +135,7 @@ extension NetworkManager {
             ref = try db.collection(collectionType.rawValue).addDocument(from: document)
         }
         catch {
-            completion(nil, error)
+            completion(nil, error) 
         }
         completion(ref?.documentID, nil)
     }

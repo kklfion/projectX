@@ -16,6 +16,10 @@ class ProfileView: UIView {
         super.init(frame: frame)
         setupViews(frame: frame)
     }
+    convenience init(frame: CGRect, userID: String? = nil) {
+        self.init(frame: frame)
+        setupViews(frame: frame)
+    }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -98,7 +102,7 @@ class ProfileView: UIView {
         return view
     }()
 
-    var tableViewAndCollectionView: SegmentedControlWithTableViewAndCollectionView?
+    var tableViewAndCollectionView: SegmentedControlWithStackView?
     
     private func setupViews(frame: CGRect) {
         
@@ -148,7 +152,7 @@ class ProfileView: UIView {
                                 trailing: self.trailingAnchor,
                                 padding: .init(top: 10, left: 10, bottom: 0, right: 10),
                                 size: .init(width: 0, height: 2))
-        tableViewAndCollectionView = SegmentedControlWithTableViewAndCollectionView(frame: frame)
+        tableViewAndCollectionView = SegmentedControlWithStackView(frame: frame)
         self.addSubview(tableViewAndCollectionView!)
         tableViewAndCollectionView?.addAnchors(top: spacingView.bottomAnchor,
                                      leading: self.leadingAnchor,

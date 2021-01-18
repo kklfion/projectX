@@ -8,7 +8,7 @@
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Post:Identifiable, Codable{
+struct Post:Identifiable, Codable, Hashable{
     /// property wrapper that stores id of the document associated with data
     @DocumentID var id: String?
 
@@ -41,6 +41,15 @@ struct Post:Identifiable, Codable{
     
     /// If user wants his name to be anoynmous
     var isAnonymous: Bool?
+    
+    // MARK: - Hashable conformance
+    static func == (lhs: Post, rhs: Post) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 extension Post{
     /// returns a new post object 

@@ -8,23 +8,27 @@
 
 import UIKit
 struct Constants{
-    
+
     static let standardPadding: CGFloat = 10
-    
+
     static let headlineTextFont = UIFont.preferredFont(forTextStyle: .headline)
     static let bodyTextFont = UIFont.preferredFont(forTextStyle: .subheadline)
     static let smallerTextFont = UIFont.preferredFont(forTextStyle: .footnote)
-    
+
     struct Colors {
-        static let mainYellow = UIColor(rgb: 0xf6e58f)
+        static let mainYellow = UIColor.white//UIColor(rgb: 0xf6e58f)
         static let darkBrown = UIColor(rgb: 0x434239)
         static let subText = UIColor(rgb: 0x817e6e)
         static let profileBlue = UIColor(rgb: 0xdff9ff)
         static let profileYellow = UIColor(rgb: 0xfef8d3)
+        static let buttonsRed = UIColor(rgb: 0xf2aba7)
+
+        static let gamingBackground = UIColor(rgb: 0x2A886D)
+
         static let placeholderTextColor = UIColor.lightGray
         static let textColor = Colors.darkBrown
     }
-    
+
     struct Screen {
         static let screenSize = UIScreen.main.bounds
         static let width = screenSize.width
@@ -38,8 +42,8 @@ struct Constants{
         static let mainTextFontSize: CGFloat = 14
         static let otherTextFontSize: CGFloat = 12
         static let logoFontSize: CGFloat = 24
-        
-        
+
+
         //paddings
         static let stackViewLeftRightPadding: CGFloat = 60
         static let padding: CGFloat = 10
@@ -58,4 +62,3 @@ struct Constants{
         static let placeholderBodyText = "What are you thinking?"
     }
 }
-    
