@@ -9,36 +9,43 @@ import AVFoundation
 import UIKit
 import Firebase
 import FirebaseFirestore
+import ProgressHUD
 
 
-let userIconButton = UIButton()
-var postBodyText = UITextView()
-var postTitle = UITextField()
-var anonymousSwitch = UISwitch()
-var pickerview = UIPickerView()
-var Anonymity = false
-var success = "No Errors"
-var postImage = UIImage()
-var label1 = UILabel()
-var fullname = String()
-var queryStations = QueryData()
-var stations = [Station]()
-var selectedStationIndex: Int?
-//var stationNames = [String]()
 
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate,
                  UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificationCenterDelegate
 {
+    let userIconButton = UIButton()
+    var postBodyText = UITextView()
+    var postImageView = UIImageView()
+    let postImageXButton = UIButton()
+    var postImageData: UIImage?
+    var postTitle = UITextField()
+    var anonymousSwitch = UISwitch()
+    var pickerview = UIPickerView()
+    var Anonymity = false
+    var success = "No Errors"
+    var label1 = UILabel()
+    var fullname = String()
+    var queryStations = QueryData()
+    var stations = [Station]()
+    var selectedStationIndex: Int?
+    //var stationNames = [String]()
+
+    let chooseStation = UIButton(type: .system)
+
     var textHeightConstraint: NSLayoutConstraint!
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if queryStations.loaded == false {
             queryStations.queryStations(completion: {result in
                 switch result {
                 case .success(let data):
-                    stations.append(contentsOf: data)
+                    self.stations.append(contentsOf: data)
                     
-                    for station in stations{
+                    for station in self.stations{
                         //stationNames.append(station.stationName)
                     }
                 case .failure(_):
@@ -80,7 +87,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         
         // MARK: - Choose Station
         
-        let chooseStation = UIButton(type: .system)
+        
         chooseStation.frame = CGRect(x: 0.0, y: 75.0, width: UIScreen.main.bounds.size.width, height: 40) //was 155
         chooseStation.setTitle("  Choose a station >", for: .normal)
         chooseStation.contentHorizontalAlignment = .left
@@ -95,8 +102,19 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         
         // MARK: - TextField & TextView
         
+        // MARK: Post Image
+        self.view.addSubview(postImageView)
+        
+        // MARK: post image X button
+        
+        postImageXButton.setImage( UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        postImageXButton.tintColor = .lightGray//Constants.Colors.darkBrown
+        postImageXButton.addTarget(self, action: #selector(postImageXPressed), for: .touchUpInside)
+        self.view.addSubview(postImageXButton)
+        
+        
         // MARK: Post Title
-        postTitle = UITextField(frame: CGRect(x: 10.0, y: 120.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 40.0))//was 200
+        //postTitle = UITextField(frame: CGRect(x: 10.0, y: 120.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 40.0))//was 200
         //postTitle.backgroundColor = .white
         postTitle.attributedPlaceholder = NSAttributedString(string: Constants.NewPost.placeholderTitleText, attributes: [NSAttributedString.Key.foregroundColor: Constants.Colors.darkBrown])
         postTitle.font = UIFont.systemFont(ofSize: 19,weight: .bold)
@@ -120,7 +138,10 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         
         self.view.addSubview(postBodyText)
         
-        postBodyText.addAnchors(top: postTitle.bottomAnchor, leading: postTitle.leadingAnchor, bottom: nil, trailing: postTitle.trailingAnchor, padding: .init(top: 0, left: -4, bottom: 0, right: 0))
+        postImageView.addAnchors(top: chooseStation.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 10, left: 10, bottom: 0, right: 10))
+        postTitle.addAnchors(top: postImageView.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: chooseStation.trailingAnchor, padding: .init(top: 10, left: 10, bottom: 0, right: 10))
+        
+        postBodyText.addAnchors(top: postTitle.bottomAnchor, leading: postTitle.leadingAnchor, bottom: nil, trailing: postTitle.trailingAnchor, padding: .init(top: 5, left: -4, bottom: 0, right: 0))
         self.textHeightConstraint = postBodyText.heightAnchor.constraint(equalToConstant: 40)
         self.textHeightConstraint.isActive = true
         self.adjustTextViewHeight(postBodyText)
@@ -159,6 +180,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         // MARK: attach Button
         let attachButton = UIButton()
         attachButton.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        attachButton.isHidden = true
         let attachButtonContainer = UIView(frame: attachButton.frame)
         let sfConfiguration = UIImage.SymbolConfiguration(pointSize: 25)
         attachButton.setImage(UIImage(systemName: "paperclip", withConfiguration: sfConfiguration), for: .normal)
@@ -237,7 +259,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     
     var toolBar = UIToolbar()
     var picker  = UIPickerView()
-    var label1 = UILabel()
+    //var label1 = UILabel()
     var counter = 1
     @IBAction func stationAction(sender: UIButton!) {
         self.view.endEditing(true)
@@ -254,6 +276,20 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         toolBar.tintColor = Constants.Colors.darkBrown
         // hide toolbar
         //self.view.addSubview(toolBar)
+    }
+    @objc func postImageXPressed()
+    {
+        postImageView.image = nil
+        postImageData = nil
+        for const in postImageView.constraints
+        {
+            postImageView.removeConstraint(const)
+        }
+        for const in postImageXButton.constraints
+        {
+            postImageXButton.removeConstraint(const)
+        }
+       
     }
     @objc func doneButton() {
         toolBar.removeFromSuperview()
@@ -501,43 +537,110 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         {
             bodyText = ""
         }
-
-        let stationID = stations[selectedStationIndex].id!
-        let postData = Post(stationID: stationID, stationName: stations[selectedStationIndex].stationName, likes: 0, commentCount: 0, userInfo: user, title: title, text: bodyText, date: Date(), isAnonymous: !anonymousSwitch.isOn)
-        let db = Firestore.firestore()
-        do{
-            try db.collection("posts").document().setData(from: postData)
+        
+        // MARK: upload image if there is
+        if postImageData != nil
+        {
+            uploadImage(imageData: postImageData) { (downloadURL) in
+                let stationID = self.stations[selectedStationIndex].id!
+                let postData = Post(stationID: stationID, stationName: self.stations[selectedStationIndex].stationName, likes: 0, commentCount: 0, userInfo: user, title: title, text: bodyText, date: Date(), imageURL: downloadURL, isAnonymous: !self.anonymousSwitch.isOn)
+                let db = Firestore.firestore()
+                do{
+                    try db.collection("posts").document().setData(from: postData)
+                }
+                catch let error{
+                    print("Error writing to Firestore: \(error)")
+                }
+                ProgressHUD.showSuccess()
+                self.dismiss(animated: true, completion: nil)
+            }
         }
-        catch let error{
-            print("Error writing to Firestore: \(error)")
+        else
+        {
+            let stationID = stations[selectedStationIndex].id!
+            let postData = Post(stationID: stationID, stationName: stations[selectedStationIndex].stationName, likes: 0, commentCount: 0, userInfo: user, title: title, text: bodyText, date: Date(), isAnonymous: !anonymousSwitch.isOn)
+            let db = Firestore.firestore()
+            do{
+                try db.collection("posts").document().setData(from: postData)
+            }
+            catch let error{
+                print("Error writing to Firestore: \(error)")
+            }
+            ProgressHUD.showSuccess()
+            self.dismiss(animated: true, completion: nil)
         }
     }
     
     
     var loadPhoto = UIButton()
     func displayUploadImageDialog(btnSelected: UIButton) {
-        //        let picker = UIImagePickerController()
-        //        picker.delegate = self
-        //        picker.allowsEditing = true
-        //        if UI_USER_INTERFACE_IDIOM() == .pad {
-        //            OperationQueue.main.addOperation({() -> Void in
-        //                picker.sourceType = .photoLibrary
-        //                self.present(picker, animated: true) {() -> Void in }
-        //            })
-        //        }
-        //        else {
-        //            picker.sourceType = .photoLibrary
-        //            self.present(picker, animated: true) {() -> Void in }
-        //        }
+                let picker = UIImagePickerController()
+                picker.delegate = self
+                picker.allowsEditing = true
+                if UI_USER_INTERFACE_IDIOM() == .pad {
+                    OperationQueue.main.addOperation({() -> Void in
+                        picker.sourceType = .photoLibrary
+                        self.present(picker, animated: true) {() -> Void in }
+                    })
+                }
+                else {
+                    picker.sourceType = .photoLibrary
+                    self.present(picker, animated: true) {() -> Void in }
+                }
     }
-    private func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        let image = info[UIImagePickerController.InfoKey.originalImage.rawValue] as! UIImage
-        let postImage = image
-        _ = image.jpegData(compressionQuality: 0.05)
-        _ = UIImageView(image: postImage)
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        postImageData = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
+        //let postImage = image
+        
+        postImageView.addAnchors(top: chooseStation.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 10, left: 10, bottom: 0, right: 10), size: .init(width: 100, height: 100))
+        postImageXButton.addAnchors(top: postImageView.topAnchor, leading: postImageView.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: -10, left: -10, bottom: 0, right: 0), size: .init(width: 30, height: 30))
+        postImageView.image = postImageData
+        
         self.dismiss(animated: true, completion: nil)
     }
-    
+    func uploadImage(imageData: UIImage?, completionHandler: @escaping (_ downloadURL:URL) -> Void)
+    {
+        guard let postImageCompressed = imageData?.jpegData(compressionQuality: 0.05)
+        else
+        {
+            return
+        }
+        
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        
+        let imageRef = storageRef.child("postImages/\(UUID()).jpg")
+        let uploadTask = imageRef.putData(postImageCompressed, metadata: nil) { (metadata, error) in
+            if error != nil
+            {
+                ProgressHUD.showFailed()
+            }
+            else
+            {
+                ProgressHUD.showSuccess()
+            }
+            
+            imageRef.downloadURL { (url, error) in
+                guard let downloadURL = url else {
+                    // Uh-oh, an error occurred!
+                    return
+                }
+                print(downloadURL)
+                completionHandler(downloadURL)
+            }
+        }
+        
+        let observer = uploadTask.observe(.progress) { snapshot in
+            guard let progress = snapshot.progress
+            else {return}
+            ProgressHUD.animationType = .horizontalCirclesPulse
+            ProgressHUD.colorHUD = .systemGray
+            ProgressHUD.colorBackground = .clear
+            ProgressHUD.colorProgress = Constants.Colors.darkBrown
+            ProgressHUD.showProgress(CGFloat(progress.fractionCompleted))
+        }
+    }
+
     func checkPermission() {
         let authStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
         switch authStatus {

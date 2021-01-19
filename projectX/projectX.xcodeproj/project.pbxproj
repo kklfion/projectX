@@ -357,7 +357,6 @@
 				806E777724C9076200A95B89 /* Extensions.swift */,
 				80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */,
 				90C178B625319EE800200222 /* QueryData.swift */,
-				80AF6F0B2577285F006A6C57 /* RoundedNavBarProtocol.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
