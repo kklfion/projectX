@@ -45,8 +45,13 @@ class UserManager {
             }
         }
     }
-    ///subscribe to receive optional user updates
-    var didResolveUserState: ((User?) -> Void)?
+    
+    //public var userPublisher = CurrentValueSubject<User?, Never>(nil)
+    var userPublisher: AnyPublisher<User?, Never> {
+        userSubject.eraseToAnyPublisher()
+    }
+
+    private let userSubject = PassthroughSubject<User?, Never>()
     
     ///users current state state
     private(set) var state: UserState = .signedOut
@@ -54,7 +59,7 @@ class UserManager {
     ///optional user that is fetched from db after login user id is avilable
     private(set) var user: User? {
         didSet {
-            didResolveUserState?(user)
+            userSubject.send(self.user)
         }
     }
     
@@ -63,7 +68,6 @@ class UserManager {
     
     ///stations that user follows
     private var followedStations = [FollowedStation]()
-    
 
 }
 //MARK: helper functions

@@ -8,6 +8,7 @@
 //
 import UIKit
 import FirebaseAuth
+import Combine
 
 class HomeTableVC: UIViewController, UISearchBarDelegate{
     
@@ -18,6 +19,8 @@ class HomeTableVC: UIViewController, UISearchBarDelegate{
     private let searchController = UISearchController(searchResultsController: nil)
     
     private var user: User?
+    
+    private var userSubscription: AnyCancellable!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,13 +44,11 @@ class HomeTableVC: UIViewController, UISearchBarDelegate{
             print("display nothing")//display default data
             feedCollectionViewController.setupFeed(feedType: .generalFeed)
         }
-        UserManager.shared().didResolveUserState = { user in
+        userSubscription = UserManager.shared().userPublisher.sink { (user) in
             self.user = user
-            print(user)
             self.feedCollectionViewController.setupFeed(feedType: .generalFeed, userID: user?.id)
         }
     }
-    
 }
 //MARK: - Navigation Bar setup
 extension HomeTableVC{
