@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseAuth
+import Combine
 
 class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
     
@@ -28,8 +29,9 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
     
     ///feed vc
     private var feedCollectionViewController: FeedCollectionViewController!
-
     
+    private var userSubscription: AnyCancellable!
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -84,7 +86,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
             updateProfileInformation()
             feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id, userID: user?.id)
         }
-        UserManager.shared().didResolveUserState = { user in
+        userSubscription = UserManager.shared().userPublisher.sink { (user) in
             self.user = user
             self.updateProfileInformation()
             self.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id, userID: user?.id)
