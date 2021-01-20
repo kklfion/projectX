@@ -6,6 +6,7 @@
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
 import UIKit
+import Combine
 
 class StationViewController: UIViewController, DidScrollFeedDelegate {
     func didScrollFeed(_ scrollView: UIScrollView) {
@@ -22,6 +23,10 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
     
     ///collectionViewController responsible for the feed.
     private var feedCollectionViewController: FeedCollectionViewController!
+    
+    private var user: User?
+    
+    private var userSubscription: AnyCancellable!
 
     ///used for calculating sliding up/down header when scrolling
     var headerMaxHeight: CGFloat!
@@ -35,11 +40,13 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
 
     override func viewDidLoad() {
         view.backgroundColor = .white
+        setupFeedVCs()
+        setUserAndSubscribeToUpdates()
         setupView()
         setupHeights()
-        setupFeedVCs()
         setupStationHeaderWithStation()
         checkIfStationFollowed()
+       
     }
     override func viewWillAppear(_ animated: Bool) {
         let navBarAppearance = UINavigationBarAppearance()
@@ -50,11 +57,26 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
         navigationController?.navigationBar.prefersLargeTitles = false
     }
+    private func setUserAndSubscribeToUpdates(){
+        switch UserManager.shared().state {
+        case .loading:
+            print("user is loading ")//wait for update
+        case .signedIn(let user):
+            self.user = user
+            feedCollectionViewController.setupFeed(feedType: .stationFeed, paginatorId: station?.id, userID: user.id)
+        case .signedOut:
+            print("display nothing")//display default data
+            feedCollectionViewController.setupFeed(feedType: .stationFeed, paginatorId: station?.id, userID: user?.id)
+        }
+        userSubscription = UserManager.shared().userPublisher.sink { (user) in
+            self.user = user
+            self.feedCollectionViewController.setupFeed(feedType: .stationFeed, paginatorId: self.station?.id, userID: user?.id)
+        }
+    }
     private func setupFeedVCs(){
         let vc = UIViewController() //instead of the missions vc
         vc.view.backgroundColor  = .white
         feedCollectionViewController = FeedCollectionViewController()
-        feedCollectionViewController.setupFeed(feedType: .stationFeed, paginatorId: self.station?.id)
         self.addChild(feedCollectionViewController)
         feedCollectionViewController.didScrollFeedDelegate = self
         stationView.tableViewAndCollectionView?.stackView.addArrangedSubview(feedCollectionViewController.view)

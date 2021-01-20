@@ -103,7 +103,6 @@ class BoardCell: UICollectionViewCell {
                                   bottom: nil/*descriptionLabel.topAnchor*/,
                                   trailing: nil,
                                   size: .init(width: containerView.frame.width*0.2, height: containerView.frame.width*0.2))*/
-        print(containerView.frame.width)
         //boardImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
         //boardImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor, constant: -20).isActive = true
         

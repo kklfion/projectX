@@ -72,7 +72,8 @@ class LoginViewController: UIViewController {
             return
         }
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
-            if !Auth.auth().currentUser!.isEmailVerified{
+            guard let user = Auth.auth().currentUser else {return}
+            if !user.isEmailVerified{
                 self?.displayLoginErrorMessage(message: "Email not verified")
                 return
             }
