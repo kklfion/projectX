@@ -103,12 +103,14 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         // MARK: - TextField & TextView
         
         // MARK: Post Image
+        postImageView.layer.cornerRadius = 8.0
+        postImageView.clipsToBounds = true
         self.view.addSubview(postImageView)
         
         // MARK: post image X button
         
         postImageXButton.setImage( UIImage(systemName: "xmark.circle.fill"), for: .normal)
-        postImageXButton.tintColor = .lightGray//Constants.Colors.darkBrown
+        postImageXButton.tintColor = Constants.Colors.darkBrown //.lightGray
         postImageXButton.addTarget(self, action: #selector(postImageXPressed), for: .touchUpInside)
         self.view.addSubview(postImageXButton)
         
@@ -138,8 +140,8 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         
         self.view.addSubview(postBodyText)
         
-        postImageView.addAnchors(top: chooseStation.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 10, left: 10, bottom: 0, right: 10))
-        postTitle.addAnchors(top: postImageView.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: chooseStation.trailingAnchor, padding: .init(top: 10, left: 10, bottom: 0, right: 10))
+        postImageView.addAnchors(top: chooseStation.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 15, left: 15, bottom: 0, right: 10))
+        postTitle.addAnchors(top: postImageView.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: chooseStation.trailingAnchor, padding: .init(top: 5, left: 15, bottom: 0, right: 10))
         
         postBodyText.addAnchors(top: postTitle.bottomAnchor, leading: postTitle.leadingAnchor, bottom: nil, trailing: postTitle.trailingAnchor, padding: .init(top: 5, left: -4, bottom: 0, right: 0))
         self.textHeightConstraint = postBodyText.heightAnchor.constraint(equalToConstant: 40)
@@ -592,8 +594,8 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         postImageData = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
         //let postImage = image
         
-        postImageView.addAnchors(top: chooseStation.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 10, left: 10, bottom: 0, right: 10), size: .init(width: 100, height: 100))
-        postImageXButton.addAnchors(top: postImageView.topAnchor, leading: postImageView.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: -10, left: -10, bottom: 0, right: 0), size: .init(width: 30, height: 30))
+        postImageView.addAnchors(top: chooseStation.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 15, left: 15, bottom: 0, right: 10), size: .init(width: 100, height: 100))
+        postImageXButton.addAnchors(top: postImageView.topAnchor, leading: postImageView.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: -15, left: -15, bottom: 0, right: 0), size: .init(width: 30, height: 30))
         postImageView.image = postImageData
         
         self.dismiss(animated: true, completion: nil)
