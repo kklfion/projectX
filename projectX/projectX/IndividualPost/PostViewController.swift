@@ -58,9 +58,9 @@ class PostViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         self.navigationItem.title = post.stationName
+        print(post.id)
         
         //only this order works, some bug that makes newcommentview invisible if this is changed
         setupTableViewAndHeader()
@@ -140,6 +140,7 @@ class PostViewController: UIViewController {
         }
         postHeaderView?.bodyUILabel.text = post.text
         postHeaderView?.likesLabel.text = "\(post.likes)"
+        postHeaderView?.commentsLabel.text = "\(post.commentCount)"
         postHeaderView?.layoutIfNeeded()
         
     }
@@ -202,10 +203,11 @@ extension PostViewController{
             //load user
             group.enter()
             NetworkManager.shared.getDocumentForID(collection: .users, uid: userID) { (document: User?, error) in
-                if document != nil{
+                if let error = error {
+                    print(error)
+                }
+                else if document != nil{
                     user = document!
-                }else {
-                    print(error ?? "Error loading user")
                 }
                 group.leave()
             }
