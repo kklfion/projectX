@@ -82,7 +82,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
             updateProfileInformation()
             feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user.id, userID: user.id)
         case .signedOut:
-            print("display nothing")//display default data
+            //display default data
             updateProfileInformation()
             feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id, userID: user?.id)
         }
