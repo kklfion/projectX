@@ -95,7 +95,15 @@ class MainTabBarVC: UITabBarController {
 extension MainTabBarVC: UITabBarControllerDelegate{
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         if viewController.isKind(of: NewPostVC.self){
-            setupNewPostVC(tabBarController)
+            print("is loaded")
+            
+            let ac = UIAlertController(title: "Create A...", message: nil, preferredStyle: .actionSheet)
+            //ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            ac.addAction(UIAlertAction(title: "New Post", style: .default, handler: newPostAction))
+            ac.addAction(UIAlertAction(title: "New Mission", style: .default, handler: newMissionAction))
+            ac.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
+            present(ac, animated: true)
+            
             return false
         }
         else if viewController.isKind(of: SidebarViewController.self){
@@ -104,8 +112,15 @@ extension MainTabBarVC: UITabBarControllerDelegate{
         }
         return true
     }
-    private func setupNewPostVC(_ tabBarController: UITabBarController){
+    func newPostAction(action: UIAlertAction) {
+        setupNewPostVC(isMission: false)
+    }
+    func newMissionAction(action: UIAlertAction) {
+        setupNewPostVC(isMission: true)
+    }
+    private func setupNewPostVC(isMission: Bool){
         let vc = NewPostVC()
+        vc.isMission = isMission
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.navigationBar.isHidden = true
         navigationController.presentationController?.delegate = vc

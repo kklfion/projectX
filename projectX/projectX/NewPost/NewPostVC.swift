@@ -11,11 +11,11 @@ import Firebase
 import FirebaseFirestore
 import ProgressHUD
 
-
-
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate,
                  UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificationCenterDelegate
 {
+    // Init
+    var isMission = false
     // UI Element Declarations
     let userIconButton = UIButton()
     var postBodyText = UITextView()
@@ -32,6 +32,9 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     var queryStations = QueryData()
     var stations = [Station]()
     var selectedStationIndex: Int?
+    let postsCollection = "posts"
+    let missionsCollection = "missions"
+    var destinationCollection = "posts"
     
     // Other
     let sfConfiguration = UIImage.SymbolConfiguration(pointSize: 25)
@@ -57,6 +60,15 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         isModalInPresentation = true
         view.backgroundColor = .white
         
+        if isMission
+        {
+            destinationCollection = missionsCollection
+        }
+        else
+        {
+            destinationCollection = postsCollection
+        }
+        
         // MARK: - X Button
         let Xbutton = UIButton(type: .system)
         Xbutton.frame = CGRect(x: 10, y: 15, width: 60, height: 60)
@@ -73,6 +85,10 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         let newPostLabel = UILabel(frame: CGRect(x: 10, y: 10, width:UIScreen.main.bounds.size.width - 20.0, height: 35))
         newPostLabel.textAlignment = .center
         newPostLabel.text = "New Post"
+        if isMission
+        {
+            newPostLabel.text = "New Mission"
+        }
         newPostLabel.textColor = Constants.Colors.darkBrown
         newPostLabel.font = UIFont.systemFont(ofSize: 25,weight: .heavy)
         self.view.addSubview(newPostLabel)
@@ -389,25 +405,23 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         {
             uploadImage(imageData: postImageData) { (downloadURL) in
                 let stationID = self.stations[selectedStationIndex].id!
-                let postData = Post(stationID: stationID, stationName: self.stations[selectedStationIndex].stationName, likes: 0, commentCount: 0, userInfo: user, title: title, text: bodyText, date: Date(), imageURL: downloadURL, isAnonymous: !self.anonymousSwitch.isOn)
-                let db = Firestore.firestore()
-                do{
-                    try db.collection("posts").document().setData(from: postData)
-                }
-                catch let error{
-                    print("Error writing to Firestore: \(error)")
-                }
-                ProgressHUD.showSuccess()
-                self.dismiss(animated: true, completion: nil)
+                self.uploadData(ID: stationID, stationName: self.stations[selectedStationIndex].stationName, userInfo: user, title: title, bodyText: bodyText, imageURL: downloadURL)
             }
         }
         else
         {
             let stationID = stations[selectedStationIndex].id!
-            let postData = Post(stationID: stationID, stationName: stations[selectedStationIndex].stationName, likes: 0, commentCount: 0, userInfo: user, title: title, text: bodyText, date: Date(), isAnonymous: !anonymousSwitch.isOn)
-            let db = Firestore.firestore()
+            uploadData(ID: stationID, stationName: stations[selectedStationIndex].stationName, userInfo: user, title: title, bodyText: bodyText, imageURL: nil)
+        }
+    }
+    func uploadData(ID: String, stationName: String, userInfo: User, title: String, bodyText: String, imageURL: URL?)
+    {
+        let db = Firestore.firestore()
+        if isMission
+        {
+            let data = Mission(stationID: ID, stationName: stationName, likes: 0, userInfo: userInfo, title: title, text: bodyText, date: Date(), imageURL: imageURL)
             do{
-                try db.collection("posts").document().setData(from: postData)
+                try db.collection(self.destinationCollection).document().setData(from: data)
             }
             catch let error{
                 print("Error writing to Firestore: \(error)")
@@ -415,8 +429,20 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
             ProgressHUD.showSuccess()
             self.dismiss(animated: true, completion: nil)
         }
+        else
+        {
+            let data = Post(stationID: ID, stationName: stationName, likes: 0, commentCount: 0, userInfo: userInfo, title: title, text: bodyText, date: Date(),imageURL: imageURL, isAnonymous: !anonymousSwitch.isOn)
+            do{
+                try db.collection(self.destinationCollection).document().setData(from: data)
+            }
+            catch let error{
+                print("Error writing to Firestore: \(error)")
+            }
+            ProgressHUD.showSuccess()
+            self.dismiss(animated: true, completion: nil)
+        }
+        
     }
-    
     var loadPhoto = UIButton()
     func displayUploadImageDialog(btnSelected: UIButton) {
         let picker = UIImagePickerController()
