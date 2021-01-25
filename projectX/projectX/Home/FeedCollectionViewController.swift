@@ -142,7 +142,17 @@ extension FeedCollectionViewController{
         return layout
     }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presentPostFor(indexPath: indexPath)
+        guard let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
+        
+        guard var selectedPost = dataSource.itemIdentifier(for: indexPath) else {return}
+        
+        selectedPost.title = "lol"
+        
+        var snapshot = dataSource.snapshot()
+        snapshot.reloadItems([selectedPost])
+        dataSource.apply(snapshot)
+        
+        //presentPostFor(indexPath: indexPath, cell.isLiked)
     }
     //TODO: move to cell
     private func addData(toCell cell: PostCollectionViewCell, withPost post: Post ){
@@ -278,7 +288,8 @@ extension FeedCollectionViewController: PostCollectionViewCellDidTapDelegate{
         }
     }
     func didTapCommentsButton(_ indexPath: IndexPath) {
-        presentPostFor(indexPath: indexPath)
+        guard let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
+        presentPostFor(indexPath: indexPath, cell.isLiked)
     }
 }
 //MARK: - Navigation
@@ -292,9 +303,10 @@ extension FeedCollectionViewController{
             self.tabBarController?.present(navvc, animated: true)
         }
     }
-    private func presentPostFor(indexPath: IndexPath){
-        let postvc = PostViewController(post: posts[indexPath.row])
+    private func presentPostFor(indexPath: IndexPath,_ isLiked: Bool){
+        let postvc = PostViewController(post: posts[indexPath.row], isLiked: isLiked)
         postvc.hidesBottomBarWhenPushed = true
+        postvc.updatePostDelegate = self
         self.navigationController?.pushViewController(postvc, animated: true)
     }
     private func presentStationFor(indexPath: IndexPath){
@@ -353,5 +365,12 @@ extension FeedCollectionViewController {
             }
         }
     }
+}
+extension FeedCollectionViewController: DidUpdatePostAfterDissmissingDelegate {
+    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, isLiked: Bool) {
+        //reload cell and reload data for that cell
+    }
+    
+    
 }
 

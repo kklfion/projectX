@@ -274,9 +274,9 @@ extension ParentStationViewController: PostCellDidTapDelegate{
     }
     
     private func presentPostFor(indexPath: IndexPath){
-        let postvc = PostViewController(post: posts[indexPath.row])
-        postvc.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(postvc, animated: true)
+//        let postvc = PostViewController(post: posts[indexPath.row])
+//        postvc.hidesBottomBarWhenPushed = true
+//        self.navigationController?.pushViewController(postvc, animated: true)
     }
     private func presentStationFor(indexPath: IndexPath){
         NetworkManager.shared.getDocumentForID(collection: .stations,uid: posts[indexPath.row].stationID) { (document: Station?, error) in

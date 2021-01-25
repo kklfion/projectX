@@ -100,15 +100,17 @@ class CommentCell: UITableViewCell {
         authorStack.spacing = 10
         authorStack.alignment = .center
         
-        let likesCommentsStack = UIStackView(arrangedSubviews: [likeButton, likesLabel])
-        likesCommentsStack.axis = .horizontal
-        likesCommentsStack.spacing = 10
-        likesCommentsStack.distribution = .fillEqually
+//        let likesCommentsStack = UIStackView(arrangedSubviews: [likeButton, likesLabel])
+//        likesCommentsStack.axis = .horizontal
+//        likesCommentsStack.backgroundColor = .blue
+//        likesCommentsStack.spacing = 10
+//        //likesCommentsStack.distribution = .fillEqually
+//        likeButton.
         
-        let bottomStack = UIStackView(arrangedSubviews: [authorStack, likesCommentsStack])
+        let bottomStack = UIStackView(arrangedSubviews: [authorStack, likeButton, likesLabel]) //likesCommentsStack
         bottomStack.axis = .horizontal
-        bottomStack.distribution = .fillEqually
-        bottomStack.spacing = 10
+        //bottomStack.distribution = .fillEqually
+        bottomStack.spacing = 20
    
         //MAIN stack, all stacks come in this stack
         let stack = UIStackView(arrangedSubviews: [commentLabel, bottomStack])
@@ -121,7 +123,7 @@ class CommentCell: UITableViewCell {
                          leading: containerView.leadingAnchor,
                          bottom: containerView.bottomAnchor,
                          trailing: containerView.trailingAnchor,
-                         padding: .init(top: 0, left: 10, bottom: 10, right: 10),
+                         padding: .init(top: 10, left: 10, bottom: 10, right: 10),
                          size: .init(width: 0, height: 0))
         
         
