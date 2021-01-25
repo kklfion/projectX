@@ -185,50 +185,50 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         }
     }
 }
-extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        posts.count
-    }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        presentPostFor(indexPath: indexPath)
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage else {return UITableViewCell()}
-        addData(toCell: cell, withIndex: indexPath.row)
-        cell.indexPath = indexPath
-        cell.delegate = self
-        cell.selectionStyle = .none
-        return cell
-    }
-    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
-        NetworkManager.shared.getAsynchImage(withURL: posts[index].userInfo.photoURL) { (image, error) in
-            DispatchQueue.main.async {
-                cell.authorImageView.image = image
-            }
-        }
-        cell.postImageView.image = nil
-        cell.titleLabel.text =  posts[index].title
-        cell.messageLabel.text =  posts[index].text
-        cell.authorLabel.text =  posts[index].userInfo.name
-        cell.likesLabel.text =  String(posts[index].likes)
-        cell.commentsLabel.text =  String(posts[index].commentCount)
-        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        let dateString = formatter.string(from: posts[index].date)
-        cell.dateLabel.text = "\(dateString)"
-        if posts[index].imageURL != nil {
-            cell.postImageView.isHidden = false
-            NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
-                DispatchQueue.main.async {
-                    cell.postImageView.image = image
-                }
-            }
-        } else{
-            cell.postImageView.isHidden = true
-        }
-    }
-}
+//extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource{
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        posts.count
+//    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        presentPostFor(indexPath: indexPath)
+//    }
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage else {return UITableViewCell()}
+//        addData(toCell: cell, withIndex: indexPath.row)
+//        cell.indexPath = indexPath
+//        cell.delegate = self
+//        cell.selectionStyle = .none
+//        return cell
+//    }
+//    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
+//        NetworkManager.shared.getAsynchImage(withURL: posts[index].userInfo.photoURL) { (image, error) in
+//            DispatchQueue.main.async {
+//                cell.authorImageView.image = image
+//            }
+//        }
+//        cell.postImageView.image = nil
+//        cell.titleLabel.text =  posts[index].title
+//        cell.messageLabel.text =  posts[index].text
+//        cell.authorLabel.text =  posts[index].userInfo.name
+//        cell.likesLabel.text =  String(posts[index].likes)
+//        cell.commentsLabel.text =  String(posts[index].commentCount)
+//        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
+//        let formatter = DateFormatter()
+//        formatter.timeStyle = .short
+//        let dateString = formatter.string(from: posts[index].date)
+//        cell.dateLabel.text = "\(dateString)"
+//        if posts[index].imageURL != nil {
+//            cell.postImageView.isHidden = false
+//            NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
+//                DispatchQueue.main.async {
+//                    cell.postImageView.image = image
+//                }
+//            }
+//        } else{
+//            cell.postImageView.isHidden = true
+//        }
+//    }
+//}
 extension OtherProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -290,9 +290,9 @@ extension OtherProfileViewController: PostCellDidTapDelegate{
     }
     
     private func presentPostFor(indexPath: IndexPath){
-        let postvc = PostViewController(post: posts[indexPath.row])
-        postvc.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(postvc, animated: true)
+//        let postvc = PostViewController(post: posts[indexPath.row])
+//        postvc.hidesBottomBarWhenPushed = true
+//        self.navigationController?.pushViewController(postvc, animated: true)
     }
     private func presentStationFor(indexPath: IndexPath){
         NetworkManager.shared.getDocumentForID(collection: .stations ,uid: posts[indexPath.row].stationID) { (document: Station?, error) in

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PostCollectionViewCell: UICollectionViewCell {
+class PostCollectionViewCell: UICollectionViewCell, LikeableProtocol {
     
     static let cellID = "PostCollectionViewCell"
     

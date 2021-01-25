@@ -86,26 +86,26 @@ struct GetData {
     }
 }
 struct CommentsData{
-    static func createComments(){
-        var users = [User]()
-        var posts = [Post]()
-        // get posts
-        GetData.getPosts { (pst) in
-            posts = pst
-        }
-        // get users
-        GetData.getUsers { (usr) in
-            users = usr
-        }
-        // create comments
-        // send'em away to gulag
-        //QUICK FIX , waiting for requests to be completed
-        //TODO: this must be fixed
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            let comments = createCommentsWith(users: users, posts: posts)
-            sendComments(comments: comments)
-        }
-    }
+//    static func createComments(){
+//        var users = [User]()
+//        var posts = [Post]()
+//        // get posts
+//        GetData.getPosts { (pst) in
+//            posts = pst
+//        }
+//        // get users
+//        GetData.getUsers { (usr) in
+//            users = usr
+//        }
+//        // create comments
+//        // send'em away to gulag
+//        //QUICK FIX , waiting for requests to be completed
+//        //TODO: this must be fixed
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+//            let comments = createCommentsWith(users: users, posts: posts)
+//            sendComments(comments: comments)
+//        }
+//    }
     static func sendComments(comments: [Comment]){
         let db = Firestore.firestore()
         for comment in comments{
@@ -117,29 +117,29 @@ struct CommentsData{
             }
         }
     }
-    static func createCommentsWith(users: [User], posts: [Post])-> [Comment]{
-        var comments = [Comment]()
-        for n in 1...50 {
-            let post = posts.randomElement()!, user = users.randomElement()!
-            let comment = Comment(postID: post.id ?? "",
-                                  userInfo: user,
-                                  text: text.randomElement()!,
-                                  likes: n*4,
-                                  date: Date())
-            comments.append(comment)
-        }
-        for n in 1...50 {
-            let post = posts.randomElement()!, user = users.randomElement()!
-            let comment = Comment(postID: post.id ?? "",
-                                  userInfo: user,
-                                  text: text.randomElement()!,
-                                  likes: n*3,
-                                  date: Date())
-            comments.append(comment)
-        }
-        comments.shuffle()
-        return comments
-    }
+//    static func createCommentsWith(users: [User], posts: [Post])-> [Comment]{
+//        var comments = [Comment]()
+//        for n in 1...50 {
+//            let post = posts.randomElement()!, user = users.randomElement()!
+//            let comment = Comment(postID: post.id ?? "",
+//                                  userInfo: user,
+//                                  text: text.randomElement()!,
+//                                  likes: n*4,
+//                                  date: Date())
+//            comments.append(comment)
+//        }
+//        for n in 1...50 {
+//            let post = posts.randomElement()!, user = users.randomElement()!
+//            let comment = Comment(postID: post.id ?? "",
+//                                  userInfo: user,
+//                                  text: text.randomElement()!,
+//                                  likes: n*3,
+//                                  date: Date())
+//            comments.append(comment)
+//        }
+//        comments.shuffle()
+//        return comments
+//    }
 }
 struct PostsData{
     static func createPosts(){

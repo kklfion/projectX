@@ -8,12 +8,31 @@
 
 import UIKit
 
-class PostView: UIView {
+protocol PostViewButtonsDelegate {
+    func didTapLikeButton()
+    func didTapAuthorLabel()
+}
+
+class PostView: UIView, LikeableProtocol {
+    
+    var isLiked: Bool = false {
+        didSet{
+            if isLiked{
+                likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+            }else{
+                likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+            }
+        }
+    }
+    ///to add actions to postView buttons
+    var delegate: PostViewButtonsDelegate?
+    
     
     var imageHeightConstaint: NSLayoutConstraint! //if image is nil we want imageview to have height of zero
  
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: 0.0, y: 0.0, width: frame.width, height: 0.0))
+        setupButtons()
         setupViews(viewFrame: frame)
     }
     required init?(coder: NSCoder) {
@@ -137,17 +156,17 @@ class PostView: UIView {
         label.numberOfLines = 1
         return label
     }()
-    //MARK: button handlers
-    @objc func dislikeButtonTouched(){
-        if let likesCount = Int(likesLabel.text ?? "0"){
-            likesLabel.text = "\(likesCount - 1)"
-        }
+    
+    private func setupButtons(){
+        likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
+        let authorTap = UITapGestureRecognizer(target: self, action: #selector(didTapAuthorLabel))
+        let imageTap = UITapGestureRecognizer(target: self, action: #selector(didTapAuthorLabel))
+        authorImageView.isUserInteractionEnabled = true
+        authorLabel.isUserInteractionEnabled = true
+        authorLabel.addGestureRecognizer(authorTap)
+        authorImageView.addGestureRecognizer(imageTap)
     }
-    @objc func likeButtonTouched(){
-        if let likesCount = Int(likesLabel.text ?? "0"){
-            likesLabel.text = "\(likesCount + 1)"
-        }
-    }
+
     
     private func setupViews(viewFrame: CGRect? = nil){
         let size = viewFrame ?? CGRect(x: 0, y: 0, width: 0, height: 0)
@@ -230,5 +249,19 @@ class PostView: UIView {
                           trailing: self.safeAreaLayoutGuide.trailingAnchor,
                           padding: .init(top: 0, left: 0, bottom: 0, right: 0),
                           size: .init(width: 0, height: 0))
+    }
+    @objc func didTapAuthorLabel( ) {
+        self.delegate?.didTapAuthorLabel()
+    }
+    @objc func didTapLikeButton() {
+        self.delegate?.didTapLikeButton()
+    }
+    func changeCellToLiked(){
+        guard let likesCount = Int(likesLabel.text ?? "") else {return}
+        likesLabel.text = "\(likesCount + 1)"
+    }
+    func changeCellToDisliked(){
+        guard let likesCount = Int(likesLabel.text ?? "") else {return}
+        likesLabel.text = "\(likesCount - 1)"
     }
 }
