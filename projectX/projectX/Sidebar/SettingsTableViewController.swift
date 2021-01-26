@@ -20,7 +20,7 @@ class SettingsTableViewController: UITableViewController {
     let sections = ["User", "About", "Account"]
     var rows = [
         ["User ID", "Email Address", "Blacklisted"],
-        ["Terms of Service", "Privacy Policy", "Contact us"],
+        ["Terms of Service", "Privacy Policy", "Contact Us"],
         []
     ]
     let signedInRows = ["Sign Out", "Delete Account"]
@@ -114,6 +114,10 @@ class SettingsTableViewController: UITableViewController {
                 logMeIn()
             case "Terms of Service":
                 TOS()
+            case "Privacy Policy":
+               PrivacyPolicy()
+            case "Contact Us":
+                ContactUs()
             default:
                 print("not implemented")
         }
@@ -146,6 +150,18 @@ class SettingsTableViewController: UITableViewController {
     }
     private func TOS(){
         let vc = TermsOfServiceViewController()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: true)
+    }
+    private func PrivacyPolicy() {
+        let vc = PrivacyPolicyViewController()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: true)
+    }
+    private func ContactUs() {
+        let vc = ContactUsViewController()
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
         self.present(nav, animated: true)
