@@ -45,6 +45,7 @@ class TermsOfServiceViewController: UIViewController {
     }
     
     
+    ///scrollView<-contentView<-TOSView
     func setupView(){
         view.addSubview(scrollView)
         self.addKeyboardTapOutGesture(target: self)
