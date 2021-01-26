@@ -11,14 +11,31 @@
 import Foundation
 import UIKit
 
+
 class TermsOfServiceViewController: UIViewController {
     
     lazy var TOSView = createTOSView()
+    
+    lazy var contentView : UIView = {
+            let view = UIView()
+            view.translatesAutoresizingMaskIntoConstraints = false
+            return view
+        }()
+    
+    lazy var scrollView : UIScrollView = {
+         let scrollView = UIScrollView(frame: .zero)
+         scrollView.backgroundColor = .white
+         scrollView.bounces = true
+         scrollView.translatesAutoresizingMaskIntoConstraints = false
+         return scrollView
+     }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         self.navigationController?.navigationBar.isHidden = true
         setupView()
+        
     }
     func createTOSView()-> TermsOfServiceView{
         let view = TermsOfServiceView(frame: self.view.frame)
@@ -29,9 +46,16 @@ class TermsOfServiceViewController: UIViewController {
     
     
     func setupView(){
-        view.addSubview(TOSView)
+        view.addSubview(scrollView)
         self.addKeyboardTapOutGesture(target: self)
-        TOSView.addAnchors(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        scrollView.addAnchors(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+      
+        scrollView.addSubview(contentView)
+        contentView.addAnchors(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
+        contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+        
+        contentView.addSubview(TOSView)
+        TOSView.addAnchors(top: contentView.topAnchor, leading: contentView.leadingAnchor, bottom: contentView.bottomAnchor, trailing: contentView.trailingAnchor)
     }
     
     @objc func dismissAction(_ sender:UIButton!) {
