@@ -19,7 +19,7 @@ class SettingsTableViewController: UITableViewController {
     let sections = ["User", "About", "Account"]
     var rows = [
         ["User ID", "Email Address", "Blacklisted"],
-        ["Comminity Guidelines", "Terms of Service", "Privacy Policy", "Contact us"],
+        ["Terms of Service", "Privacy Policy", "Contact us"],
         []
     ]
     let signedInRows = ["Sign Out", "Delete Account"]
@@ -109,6 +109,8 @@ class SettingsTableViewController: UITableViewController {
                 deleteMe()
             case "Sign In":
                 logMeIn()
+            case "Terms of Service":
+                TOS()
             default:
                 print("not implemented")
         }
@@ -138,6 +140,12 @@ class SettingsTableViewController: UITableViewController {
         let navvc = UINavigationController(rootViewController: vc)
         navvc.modalPresentationStyle = .fullScreen
         self.present(navvc, animated: true)
+    }
+    private func TOS(){
+        let vc = TermsOfServiceViewController()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: true)
     }
 }
 class SectionHeaderView: UIView {
