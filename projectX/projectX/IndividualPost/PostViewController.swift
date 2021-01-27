@@ -13,7 +13,7 @@ import Combine
 
 ///user can like post inside the post vc and that should be updated in the feed, also comment count can change
 protocol DidUpdatePostAfterDissmissingDelegate {
-    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, isLiked: Bool)
+    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post?, like: LikedPost?)
 }
 
 class PostViewController: UIViewController {
@@ -26,7 +26,10 @@ class PostViewController: UIViewController {
     private var userSubscription: AnyCancellable!
     
     ///is post liked by the user
-    private var isLiked: Bool
+    private var like: LikedPost?
+    
+    ///used to update data in the feed when view is dissmissed
+    private var indexPath: IndexPath
     
     ///user can like post inside the post vc and that should be updated in the feed, also comment count can change
     var updatePostDelegate: DidUpdatePostAfterDissmissingDelegate?
@@ -66,10 +69,10 @@ class PostViewController: UIViewController {
     }()
     
     ///to create postViewController post MUST be initialized
-    init(post: Post, isLiked: Bool){
+    init(post: Post, like: LikedPost?, indexPath: IndexPath){
         self.post = post
-        self.isLiked = isLiked
-        print(isLiked)
+        self.like = like
+        self.indexPath = indexPath
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -102,6 +105,12 @@ class PostViewController: UIViewController {
         }
         
     }
+    
+    ///when dismissing the view, need to update data in the Feed
+    override func viewWillDisappear(_ animated: Bool) {
+        updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like)
+    }
+    
     private func setupTableViewAndHeader(){
         commentsTableView.delegate = self
         commentsTableView.dataSource = self
@@ -118,7 +127,7 @@ class PostViewController: UIViewController {
         postHeaderView = PostView(frame: view.frame)
         postHeaderView?.translatesAutoresizingMaskIntoConstraints = false
         postHeaderView?.delegate = self
-        postHeaderView?.isLiked = isLiked
+        postHeaderView?.isLiked = like != nil ? true : false
         commentsTableView.tableHeaderView = postHeaderView
         commentsTableView.tableHeaderView?.layoutIfNeeded() //Without this autolayout doesnt update the custom view layout
     }
@@ -300,8 +309,6 @@ extension PostViewController{
             group.leave()
         }
         group.wait()
-        print("data loaded")
-        print(usersToComments)
         DispatchQueue.main.async {
             self.commentsTableView.reloadData()
         }
@@ -404,14 +411,14 @@ extension PostViewController: PostViewButtonsDelegate{
             //1. change UI
             postHeaderView?.changeCellToLiked()
             //2. change locally
-            //posts[indexPath.item].likes += 1
+            post.likes += 1
             //3. change in the DB
             //writeLikeToTheFirestore(with: indexPath)
         } else{
             //1. change UI
             header.changeCellToDisliked()
             //2. change locally
-            //posts[indexPath.item].likes -= 1
+            post.likes -= 1
             //3. change in the DB
             //deleteLikeFromFirestore(with: indexPath)
         }

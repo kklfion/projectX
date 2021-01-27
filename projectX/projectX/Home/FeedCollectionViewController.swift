@@ -46,7 +46,8 @@ class FeedCollectionViewController: UICollectionViewController{
     private var posts = [Post]()
     
     ///likes for the posts in the feed
-    private var likes = [LikedPost]()
+    
+    private var likesDictionary = [Post: LikedPost]()
     
     ///provided by
     private var userID: String?
@@ -82,7 +83,8 @@ class FeedCollectionViewController: UICollectionViewController{
         var initialSnapshot = dataSource.snapshot()
         initialSnapshot.deleteAllItems()
         posts.removeAll()
-        likes.removeAll()
+        //likes.removeAll()
+        likesDictionary.removeAll()
         self.dataSource.apply(initialSnapshot, animatingDifferences: false)
         //reset pagination
         postPaginator?.resetPaginator()
@@ -101,7 +103,7 @@ extension FeedCollectionViewController{
         //configure datasource for cells
         dataSource = .init(collectionView: collectionView, cellProvider: { (collectionView, indexPath, post) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as! PostCollectionViewCell
-            self.addData(toCell: cell, withPost: post)
+            self.addData(toCell: cell, withPost: self.posts[indexPath.item])
             cell.delegate = self
             cell.indexPath = indexPath
             return cell
@@ -143,16 +145,7 @@ extension FeedCollectionViewController{
     }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
-        
-        guard var selectedPost = dataSource.itemIdentifier(for: indexPath) else {return}
-        
-        selectedPost.title = "lol"
-        
-        var snapshot = dataSource.snapshot()
-        snapshot.reloadItems([selectedPost])
-        dataSource.apply(snapshot)
-        
-        //presentPostFor(indexPath: indexPath, cell.isLiked)
+        presentPostFor(indexPath: indexPath, likesDictionary[posts[indexPath.row]])
     }
     //TODO: move to cell
     private func addData(toCell cell: PostCollectionViewCell, withPost post: Post ){
@@ -181,9 +174,9 @@ extension FeedCollectionViewController{
             cell.postImageView.isHidden = true
         }
         
-        if likes.contains(where: { $0.postID == post.id }) {
+        if likesDictionary[post] != nil {
             cell.isLiked = true
-        } else{
+        }else{
             cell.isLiked = false
         }
     }
@@ -241,7 +234,7 @@ extension FeedCollectionViewController {
                 if error != nil {
                     print("error loading liked post", error!)
                 }else if likedPosts != nil {
-                    self.likes.append(contentsOf: likedPosts!)
+                    self.likesDictionary[doc] = likedPosts![0]
                 }
                 group.leave()
             }
@@ -289,7 +282,7 @@ extension FeedCollectionViewController: PostCollectionViewCellDidTapDelegate{
     }
     func didTapCommentsButton(_ indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
-        presentPostFor(indexPath: indexPath, cell.isLiked)
+        presentPostFor(indexPath: indexPath, likesDictionary[posts[indexPath.row]])
     }
 }
 //MARK: - Navigation
@@ -303,8 +296,8 @@ extension FeedCollectionViewController{
             self.tabBarController?.present(navvc, animated: true)
         }
     }
-    private func presentPostFor(indexPath: IndexPath,_ isLiked: Bool){
-        let postvc = PostViewController(post: posts[indexPath.row], isLiked: isLiked)
+    private func presentPostFor(indexPath: IndexPath,_ like: LikedPost?){
+        let postvc = PostViewController(post: posts[indexPath.row], like: like, indexPath: indexPath)
         postvc.hidesBottomBarWhenPushed = true
         postvc.updatePostDelegate = self
         self.navigationController?.pushViewController(postvc, animated: true)
@@ -341,13 +334,12 @@ extension FeedCollectionViewController {
                                                              value: Double(1),
                                                              field: .likes)
                 document.id = ref
-                self.likes.append(document)
+                self.likesDictionary[self.posts[indexPath.item]] = document
             }
         }
     }
     private func deleteLikeFromFirestore(with indexPath: IndexPath){
-        let likedPosts = likes.filter { $0.postID == posts[indexPath.item].id }
-        guard let likedPost = likedPosts.first else {return}
+        guard let likedPost = likesDictionary[posts[indexPath.item]] else {return}
         guard let docID = likedPost.id else {return}
         guard let postID = posts[indexPath.item].id else {return}
         NetworkManager.shared.deleteDocumentsWith(collectionType: .likedPosts,
@@ -359,16 +351,25 @@ extension FeedCollectionViewController {
                                                              documentID: postID,
                                                              value: Double(-1),
                                                              field: .likes)
-                guard let indexToRemove = self.likes.firstIndex(where: { $0.id == docID }) else {return}
-                self.likes.remove(at: indexToRemove)
+                self.likesDictionary.removeValue(forKey: self.posts[indexPath.item])
                 
             }
         }
     }
 }
 extension FeedCollectionViewController: DidUpdatePostAfterDissmissingDelegate {
-    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, isLiked: Bool) {
-        //reload cell and reload data for that cell
+    //reload cell and reload data for that cell
+    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post?, like: LikedPost?) {
+        //1.get id
+        guard var selectedPost = dataSource.itemIdentifier(for: indexPath) else {return}
+        
+        //2.updateData (likes & post)
+        //posts[indexPath.item]
+        
+        //3.trigger reload
+        var snapshot = dataSource.snapshot()
+        snapshot.reloadItems([selectedPost])
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     

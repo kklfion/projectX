@@ -13,7 +13,7 @@ protocol PostViewButtonsDelegate {
     func didTapAuthorLabel()
 }
 
-class PostView: UIView, LikeableProtocol {
+class PostView: UIView, LikeableCellProtocol {
     
     var isLiked: Bool = false {
         didSet{
