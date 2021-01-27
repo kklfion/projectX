@@ -13,7 +13,13 @@ import Combine
 
 ///user can like post inside the post vc and that should be updated in the feed, also comment count can change
 protocol DidUpdatePostAfterDissmissingDelegate {
-    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post?, like: LikedPost?)
+    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post?, like: LikedPost?, status: LikeStatus)
+}
+///to help figure out whether like was changed inside of the post and if Feed will need to update like in the database
+enum LikeStatus{
+    case add
+    case delete
+    case unchanged
 }
 
 class PostViewController: UIViewController {
@@ -27,6 +33,8 @@ class PostViewController: UIViewController {
     
     ///is post liked by the user
     private var like: LikedPost?
+    
+    private var likeStatus: LikeStatus = .unchanged
     
     ///used to update data in the feed when view is dissmissed
     private var indexPath: IndexPath
@@ -108,7 +116,22 @@ class PostViewController: UIViewController {
     
     ///when dismissing the view, need to update data in the Feed
     override func viewWillDisappear(_ animated: Bool) {
-        updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like)
+        if let like = like {
+            switch likeStatus {
+            case .delete: //if we have like and status is to delete - need to delete it
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .delete)
+            default: //do nothing
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .unchanged)
+            }
+        } else { //if there is no like and status is to add it need to add a new like
+            switch likeStatus {
+            case .add: //if there was no like give from feed and we need to add a like
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .add)
+            default:
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .unchanged)
+            }
+        }
+        
     }
     
     private func setupTableViewAndHeader(){
@@ -412,15 +435,15 @@ extension PostViewController: PostViewButtonsDelegate{
             postHeaderView?.changeCellToLiked()
             //2. change locally
             post.likes += 1
-            //3. change in the DB
-            //writeLikeToTheFirestore(with: indexPath)
+            //3. set like status
+            likeStatus = .add
         } else{
             //1. change UI
             header.changeCellToDisliked()
             //2. change locally
             post.likes -= 1
-            //3. change in the DB
-            //deleteLikeFromFirestore(with: indexPath)
+            //3. set like status
+            likeStatus = .delete
         }
     }
     func didTapAuthorLabel() {
