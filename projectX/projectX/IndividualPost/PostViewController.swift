@@ -13,7 +13,7 @@ import Combine
 
 ///user can like post inside the post vc and that should be updated in the feed, also comment count can change
 protocol DidUpdatePostAfterDissmissingDelegate {
-    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post?, like: LikedPost?, status: LikeStatus)
+    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, like: LikedPost?, status: LikeStatus)
 }
 ///to help figure out whether like was changed inside of the post and if Feed will need to update like in the database
 enum LikeStatus{
@@ -111,11 +111,11 @@ class PostViewController: UIViewController {
                 self.user = user
             }
         }
-        
     }
     
     ///when dismissing the view, need to update data in the Feed
     override func viewWillDisappear(_ animated: Bool) {
+        post.commentCount = comments.count
         if let like = like {
             switch likeStatus {
             case .delete: //if we have like and status is to delete - need to delete it
@@ -144,8 +144,9 @@ class PostViewController: UIViewController {
 
         commentsTableView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
                                      leading: view.leadingAnchor,
-                                     bottom: view.safeAreaLayoutGuide.bottomAnchor,
-                                     trailing: view.trailingAnchor)
+                                     bottom: view.bottomAnchor,
+                                     trailing: view.trailingAnchor,
+                                     padding: .init(top: 0, left: 0, bottom: defaultCommentViewHeight, right: 0))
         
         postHeaderView = PostView(frame: view.frame)
         postHeaderView?.translatesAutoresizingMaskIntoConstraints = false
@@ -238,27 +239,25 @@ extension PostViewController{
         
     }
     @objc func didTapSendButton(){
-            switch UserManager.shared().state {
-            case .loading:
-                print("user is loading ")//wait for update
-            case .signedIn(let user):
-                guard let userID = user.id else {return}
-                writeCommentToDB(userID: userID,
-                                text: newCommentView.commentTextView.text ?? "",
-                                isAnonimous: newCommentView.anonimousSwitch.isOn)
-            case .signedOut:
-                let presenter = AlertPresenter(message: "You need to sign in") {
-                    self.dismiss(animated: true)
-                }
-                presenter.present(in: self)
+        switch UserManager.shared().state {
+        case .signedIn(let user):
+            guard let userID = user.id else {return}
+            writeCommentToDB(userID: userID,
+                            text: newCommentView.commentTextView.text ?? "",
+                            isAnonimous: newCommentView.anonimousSwitch.isOn)
+        default :
+            let presenter = AlertPresenter(message: "You need to sign in") {
+                self.dismiss(animated: true)
             }
+            presenter.present(in: self)
+        }
     }
 }
 //MARK: Networking
 extension PostViewController{
     ///send to the global queue to get user and waits for that data to create a comment.
     ///Comment is then sent to the db, upon success adds a comment to the tableview and refreshes it
-    private func writeCommentToDB(userID: String, text: String, isAnonimous: Bool? = false){
+    private func writeCommentToDB(userID: String, text: String, isAnonimous: Bool){
         if text.count < 1 {
             let presenter = AlertPresenter(message: "Your comment is empty!") {
                 self.dismiss(animated: true)
@@ -266,57 +265,66 @@ extension PostViewController{
             presenter.present(in: self)
             return
         }
-        //move it to global so that group.wait doesnt make thread stuck
-        DispatchQueue.global(qos: .userInitiated).async {
-            var user: User?
-            var comment: Comment?
-            let group = DispatchGroup()
-            //load user
-            group.enter()
-            NetworkManager.shared.getDocumentForID(collection: .users, uid: userID) { (document: User?, error) in
-                if let error = error {
-                    print(error)
-                }
-                else if document != nil{
-                    user = document!
-                }
-                group.leave()
-            }
-            let result = group.wait(timeout: .now() + 5.0)
-            switch result{
-            case .success:
-                guard let user = user else {return}
-                comment = Comment(postID: self.post.id ?? "", userID: userID, text: text, likes: 0, date: Date(), isAnonymous: isAnonimous)
-                NetworkManager.shared.writeDocumentsWith(collectionType: .comments, documents: [comment]) { (error) in
-                    if error != nil {
-                        print(error ?? "error sending comment")
-                        DispatchQueue.main.sync {
-                            let presenter = AlertPresenter(message: "Connectivity issues, maybe try again!") {
-                                self.dismiss(animated: true)
-                            }
-                            presenter.present(in: self)
-                        }
-                    }else{
-                        DispatchQueue.main.sync {
-                            self.comments.append(comment!)
-                            self.commentsTableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
-                        }
+        var comment = Comment(postID: self.post.id ?? "", userID: userID, text: text, likes: 0, date: Date(), isAnonymous: isAnonimous)
+        NetworkManager.shared.writeDocumentReturnReference(collectionType: .comments, document: comment) { (ref, error) in
+            if error != nil {
+                print(error ?? "error sending comment")
+                DispatchQueue.main.async {
+                    let presenter = AlertPresenter(message: "Connectivity issues, maybe try again!") {
+                        self.dismiss(animated: true)
                     }
-                    DispatchQueue.main.sync {
-                        self.didTapDissmissNewComment()
-                    }
-                }
-            case .timedOut:
-                let presenter = AlertPresenter(message: "Connectivity issues, maybe try again!") {
-                    self.dismiss(animated: true)
-                }
-                DispatchQueue.main.sync {
                     presenter.present(in: self)
-                    self.didTapDissmissNewComment()
                 }
+            }else if let ref = ref{
+                //increment the number of comments
+                NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
+                                                             documentID: self.post.id ?? "",
+                                                             value: Double(1),
+                                                             field: .commentCount)
+                comment.id = ref
+
+                self.post.commentCount += 1
+                self.postHeaderView?.commentsLabel.text = "\(self.post.commentCount)"
+                self.comments.insert(comment, at: 0)
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.loadUsers(for: [comment]) {
+                        DispatchQueue.main.async {
+                            self.commentsTableView.reloadData()
+                        }
+                    }
+                }
+
             }
-            
+            DispatchQueue.main.async {
+                self.didTapDissmissNewComment()
+            }
         }
+//        NetworkManager.shared.writeDocumentsWith(collectionType: .comments, documents: [comment]) { (error) in
+//            if error != nil {
+//                print(error ?? "error sending comment")
+//                DispatchQueue.main.async {
+//                    let presenter = AlertPresenter(message: "Connectivity issues, maybe try again!") {
+//                        self.dismiss(animated: true)
+//                    }
+//                    presenter.present(in: self)
+//                }
+//            }else{
+//                //increment the number of comments
+//                NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
+//                                                             documentID: self.post.id ?? "",
+//                                                             value: Double(1),
+//                                                             field: .commentCount)
+//                self.post.commentCount += 1
+//                self.postHeaderView?.commentsLabel.text = "\(self.post.commentCount)"
+//                self.comments.insert(comment, at: 0)
+//                DispatchQueue.main.async {
+//                    self.commentsTableView.reloadData()
+//                }
+//            }
+//            DispatchQueue.main.async {
+//                self.didTapDissmissNewComment()
+//            }
+//        }
     }
     private func loadAdditionalPostData(){
         let group = DispatchGroup()
@@ -328,7 +336,7 @@ extension PostViewController{
         group.wait()
         //2. for every comment load  user
         group.enter()
-        loadUsers {
+        loadUsers(for: comments) {
             group.leave()
         }
         group.wait()
@@ -337,7 +345,7 @@ extension PostViewController{
         }
     }
     private func loadComments(completion: @escaping () -> Void){
-        let basicQuery = NetworkManager.shared.db.comments.whereField(FirestoreFields.postID.rawValue, isEqualTo: post.id ?? "")
+        let basicQuery = NetworkManager.shared.db.comments.whereField(FirestoreFields.postID.rawValue, isEqualTo: post.id ?? "").order(by: "likes", descending: true)
         NetworkManager.shared.getDocumentsForQuery(query: basicQuery) { (comments: [Comment]?, error) in
             if comments != nil {
                 self.comments = comments!
@@ -348,7 +356,7 @@ extension PostViewController{
             completion()
         }
     }
-    private func loadUsers(completion: @escaping () -> Void){
+    private func loadUsers(for comments: [Comment], completion: @escaping () -> Void){
         let group = DispatchGroup()
         for comment in comments {
             group.enter()

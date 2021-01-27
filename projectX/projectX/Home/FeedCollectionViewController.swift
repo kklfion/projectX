@@ -358,21 +358,17 @@ extension FeedCollectionViewController {
 }
 extension FeedCollectionViewController: DidUpdatePostAfterDissmissingDelegate {
     //reload cell and reload data for that cell
-    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post?, like: LikedPost?, status: LikeStatus) {
+    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, like: LikedPost?, status: LikeStatus) {
         //1.get id
-        guard var selectedPost = dataSource.itemIdentifier(for: indexPath) else {return}
+        guard let selectedPost = dataSource.itemIdentifier(for: indexPath) else {return}
         guard  let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
-        
         //2.updateData (likes & post & database)
-    
-        //posts[indexPath.item] = post!
+        posts[indexPath.item].commentCount = post.commentCount
         switch status {
         case .add:
             didTapLikeButton(indexPath, cell)
-            //writeLikeToTheFirestore(with: indexPath)
         case .delete:
             didTapLikeButton(indexPath, cell)
-            //deleteLikeFromFirestore(with: indexPath)
         case .unchanged:
             print("unchanged")
         }
