@@ -342,6 +342,7 @@ extension FeedCollectionViewController {
         guard let likedPost = likesDictionary[posts[indexPath.item]] else {return}
         guard let docID = likedPost.id else {return}
         guard let postID = posts[indexPath.item].id else {return}
+        likesDictionary.removeValue(forKey: self.posts[indexPath.item])
         NetworkManager.shared.deleteDocumentsWith(collectionType: .likedPosts,
                                                   documentID: docID) { (error) in
             if error != nil{
@@ -351,20 +352,30 @@ extension FeedCollectionViewController {
                                                              documentID: postID,
                                                              value: Double(-1),
                                                              field: .likes)
-                self.likesDictionary.removeValue(forKey: self.posts[indexPath.item])
-                
             }
         }
     }
 }
 extension FeedCollectionViewController: DidUpdatePostAfterDissmissingDelegate {
     //reload cell and reload data for that cell
-    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post?, like: LikedPost?) {
+    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post?, like: LikedPost?, status: LikeStatus) {
         //1.get id
         guard var selectedPost = dataSource.itemIdentifier(for: indexPath) else {return}
+        guard  let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
         
-        //2.updateData (likes & post)
-        //posts[indexPath.item]
+        //2.updateData (likes & post & database)
+    
+        //posts[indexPath.item] = post!
+        switch status {
+        case .add:
+            didTapLikeButton(indexPath, cell)
+            //writeLikeToTheFirestore(with: indexPath)
+        case .delete:
+            didTapLikeButton(indexPath, cell)
+            //deleteLikeFromFirestore(with: indexPath)
+        case .unchanged:
+            print("unchanged")
+        }
         
         //3.trigger reload
         var snapshot = dataSource.snapshot()
