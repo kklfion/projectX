@@ -29,6 +29,15 @@ struct Comment: Identifiable, Codable, Hashable{
     
     /// If author of the comment wants to be Anonymous
     var isAnonymous: Bool?
+    
+    // MARK: - Hashable conformance
+    static func == (lhs: Comment, rhs: Comment) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 
 }
 extension Comment{

@@ -46,7 +46,6 @@ class FeedCollectionViewController: UICollectionViewController{
     private var posts = [Post]()
     
     ///likes for the posts in the feed
-    
     private var likesDictionary = [Post: LikedPost]()
     
     ///provided by
@@ -255,6 +254,7 @@ extension FeedCollectionViewController {
 }
 //MARK: - PostCollectionViewCellDidTapDelegate
 extension FeedCollectionViewController: PostCollectionViewCellDidTapDelegate{
+    
     func didTapAuthorLabel(_ indexPath: IndexPath) {
         presentAuthorFor(indexPath: indexPath)
     }

@@ -8,8 +8,29 @@
 
 import UIKit
 
-class CommentCell: UITableViewCell {
+protocol CommentCellTapableDelegate{
+    /// returns index of a cell that was tapped
+    func didTapLikeButton(_ indexPath: IndexPath, _ cell: CommentCell)
+    /// returns index of a cell that was tapped
+    func didTapAuthorLabel(_ indexPath: IndexPath)
+    /// returns index of a cell that was tapped
+}
+
+class CommentCell: UITableViewCell, LikeableCellProtocol {
     
+    var indexPath: IndexPath?
+    
+    var isLiked = false {
+        didSet{
+            if isLiked{
+                likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+            }else{
+                likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+            }
+        }
+    }
+    var delegate: CommentCellTapableDelegate?
+
     static let cellID = "CommentTableViewCell"
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -17,6 +38,7 @@ class CommentCell: UITableViewCell {
         contentView.backgroundColor = .white
         backgroundColor = .clear
         setupContentView()
+        setupButtons()
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -93,6 +115,16 @@ class CommentCell: UITableViewCell {
         return label
     }()
     
+    private func setupButtons(){
+        likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
+        let authorTap = UITapGestureRecognizer(target: self, action: #selector(didTapAuthorLabel))
+        let imageTap = UITapGestureRecognizer(target: self, action: #selector(didTapAuthorLabel))
+        authorImageView.isUserInteractionEnabled = true
+        authorLabel.isUserInteractionEnabled = true
+        authorLabel.addGestureRecognizer(authorTap)
+        authorImageView.addGestureRecognizer(imageTap)
+    }
+    
     private func  setupContentView(){
         
         let authorStack = UIStackView(arrangedSubviews: [authorImageView, authorLabel])
@@ -145,4 +177,22 @@ class CommentCell: UITableViewCell {
    
     }
 
+}
+extension CommentCell{
+    @objc func didTapAuthorLabel( ) {
+        guard let indexPath = indexPath else{return}
+        self.delegate?.didTapAuthorLabel(indexPath)
+    }
+    @objc func didTapLikeButton() {
+        guard let indexPath = indexPath else{return}
+        self.delegate?.didTapLikeButton(indexPath, self)
+    }
+    func changeCellToLiked(){
+        guard let likesCount = Int(likesLabel.text ?? "") else {return}
+        likesLabel.text = "\(likesCount + 1)"
+    }
+    func changeCellToDisliked(){
+        guard let likesCount = Int(likesLabel.text ?? "") else {return}
+        likesLabel.text = "\(likesCount - 1)"
+    }
 }
