@@ -41,6 +41,7 @@ enum FirestoreFields: String {
     case followers
     
     case likes
+    case commentCount
     
     case postID
     
