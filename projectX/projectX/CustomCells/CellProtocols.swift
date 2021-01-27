@@ -31,7 +31,7 @@ protocol PostCollectionViewCellDidTapDelegate: class{
     func didTapAuthorLabel(_ indexPath: IndexPath)
     /// returns index of a cell that was tapped
 }
-protocol LikeableProtocol {
+protocol LikeableCellProtocol {
     ///when changing isLiked should change UI of the view
     var isLiked: Bool { get set }
     func changeCellToLiked()
