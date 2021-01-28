@@ -101,6 +101,7 @@ extension MainTabBarVC: UITabBarControllerDelegate{
             //ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             ac.addAction(UIAlertAction(title: "New Post", style: .default, handler: newPostAction))
             ac.addAction(UIAlertAction(title: "New Mission", style: .default, handler: newMissionAction))
+            ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             ac.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
             present(ac, animated: true)
             

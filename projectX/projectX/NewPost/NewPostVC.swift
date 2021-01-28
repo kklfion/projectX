@@ -27,6 +27,11 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     var pickerview = UIPickerView()
     var selectedStationLabel = UILabel()
     let chooseStation = UIButton(type: .system)
+    var loadPhoto = UIButton()
+    var toolBar = UIToolbar()
+    var stationToolBar = UIToolbar()
+    var picker  = UIPickerView()
+    var counter = 1
 
     // Data
     var queryStations = QueryData()
@@ -146,14 +151,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         self.textHeightConstraint.isActive = true
         self.adjustTextViewHeight(postBodyText)
         
-        // MARK: - Toolbar
-        let toolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
-        toolbar.backgroundColor = .white
-        let toolbarFlexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let toolbarFixSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        toolbarFixSpace.width = 8
-        let toolbarFixSpace2 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        toolbarFixSpace2.width = 12
+        
         
         
         
@@ -167,14 +165,21 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         // MARK: Anon Switch
         anonymousSwitch.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
         anonymousSwitch.transform = CGAffineTransform(scaleX: 0.85, y: 0.85)
-        let anonymousSwitchView = UIView(frame: anonymousSwitch.frame)
+        let anonymousSwitchContainer = UIView(frame: anonymousSwitch.frame)
         anonymousSwitch.sizeToFit()
         anonymousSwitch.isOn = true
         anonymousSwitch.onTintColor = Constants.Colors.darkBrown
         anonymousSwitch.setOn(true, animated: false)
         anonymousSwitch.addTarget(self, action: #selector(switch2(_:)), for: .valueChanged)
-        anonymousSwitchView.sizeToFit()
-        anonymousSwitchView.addSubview(anonymousSwitch)
+        anonymousSwitchContainer.sizeToFit()
+        anonymousSwitchContainer.addSubview(anonymousSwitch)
+        
+        // MARK: Hide User Icon and Anonymous switch for mission posts
+        if isMission
+        {
+            userIconContainer.isHidden = true
+            anonymousSwitchContainer.isHidden = true
+        }
         
         // MARK: attach Button
         let attachButton = UIButton()
@@ -222,8 +227,16 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         toolSendButton.customView = sendButtonContainer
         
         let barSwitch = UIBarButtonItem()
-        barSwitch.customView = anonymousSwitchView
+        barSwitch.customView = anonymousSwitchContainer
         
+        // MARK: - Toolbar
+        let toolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        toolbar.backgroundColor = .white
+        let toolbarFlexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let toolbarFixSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        toolbarFixSpace.width = 8
+        let toolbarFixSpace2 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        toolbarFixSpace2.width = 12
         toolbar.barTintColor = .white
         toolbar.isTranslucent = false
         toolbar.clipsToBounds = true
@@ -231,6 +244,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         toolbar.sizeToFit()
         postTitle.inputAccessoryView = toolbar
         postBodyText.inputAccessoryView = toolbar
+        
     }
     
     
@@ -254,9 +268,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         doneButton()
     }
     
-    var toolBar = UIToolbar()
-    var picker  = UIPickerView()
-    var counter = 1
+    
     
     @IBAction func stationAction(sender: UIButton!) {
         self.view.endEditing(true)
@@ -268,9 +280,11 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         picker.contentMode = .center
         picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
         self.view.addSubview(picker)
-        toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 35))
-        toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(doneButton))]
-        toolBar.tintColor = Constants.Colors.darkBrown
+        stationToolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 35))
+        stationToolBar.items = [UIBarButtonItem.init(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil),UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(doneButton))]
+        stationToolBar.tintColor = Constants.Colors.darkBrown
+        //selectedStationLabel.inputAccessoryView = stationToolBar
+        //picker.addSubview(stationToolBar)
     }
     @objc func postImageXPressed()
     {
@@ -425,6 +439,8 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
             }
             catch let error{
                 print("Error writing to Firestore: \(error)")
+                showUploadError()
+                return
             }
             ProgressHUD.showSuccess()
             self.dismiss(animated: true, completion: nil)
@@ -437,13 +453,21 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
             }
             catch let error{
                 print("Error writing to Firestore: \(error)")
+                showUploadError()
+                return
             }
             ProgressHUD.showSuccess()
             self.dismiss(animated: true, completion: nil)
         }
         
     }
-    var loadPhoto = UIButton()
+    func showUploadError()
+    {
+        let ac = UIAlertController(title: "Post Error", message: "There was an error submitting your post. Please try again", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Ok", style: .cancel))
+        ac.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
+        present(ac, animated: true)
+    }
     func displayUploadImageDialog(btnSelected: UIButton) {
         let picker = UIImagePickerController()
         picker.delegate = self
@@ -491,6 +515,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
             
             imageRef.downloadURL { (url, error) in
                 guard let downloadURL = url else {
+                    self.showUploadError()
                     return
                 }
                 print(downloadURL)
