@@ -9,38 +9,50 @@ import AVFoundation
 import UIKit
 import Firebase
 import FirebaseFirestore
-
-
-let userIconButton = UIButton()
-var postBodyText = UITextView()
-var postTitle = UITextField()
-var anonymousSwitch = UISwitch()
-var pickerview = UIPickerView()
-var Anonymity = false
-var success = "No Errors"
-var postImage = UIImage()
-var label1 = UILabel()
-var fullname = String()
-var queryStations = QueryData()
-var stations = [Station]()
-var selectedStationIndex: Int?
-//var stationNames = [String]()
+import ProgressHUD
 
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate,
                  UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificationCenterDelegate
 {
+    // Init
+    var isMission = false
+    // UI Element Declarations
+    let userIconButton = UIButton()
+    var postBodyText = UITextView()
+    var postImageView = UIImageView()
+    let postImageXButton = UIButton()
+    var postImageData: UIImage?
+    var postTitle = UITextField()
+    var anonymousSwitch = UISwitch()
+    var pickerview = UIPickerView()
+    var selectedStationLabel = UILabel()
+    let chooseStation = UIButton(type: .system)
+    var loadPhoto = UIButton()
+    var toolBar = UIToolbar()
+    var stationToolBar = UIToolbar()
+    var picker  = UIPickerView()
+    var counter = 1
+
+    // Data
+    var queryStations = QueryData()
+    var stations = [Station]()
+    var selectedStationIndex: Int?
+    let postsCollection = "posts"
+    let missionsCollection = "missions"
+    var destinationCollection = "posts"
+    
+    // Other
+    let sfConfiguration = UIImage.SymbolConfiguration(pointSize: 25)
     var textHeightConstraint: NSLayoutConstraint!
+    
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if queryStations.loaded == false {
             queryStations.queryStations(completion: {result in
                 switch result {
                 case .success(let data):
-                    stations.append(contentsOf: data)
-                    
-                    for station in stations{
-                        //stationNames.append(station.stationName)
-                    }
+                    self.stations.append(contentsOf: data)
                 case .failure(_):
                     break
                 }
@@ -53,8 +65,16 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         isModalInPresentation = true
         view.backgroundColor = .white
         
-        // MARK: - X Button
+        if isMission
+        {
+            destinationCollection = missionsCollection
+        }
+        else
+        {
+            destinationCollection = postsCollection
+        }
         
+        // MARK: - X Button
         let Xbutton = UIButton(type: .system)
         Xbutton.frame = CGRect(x: 10, y: 15, width: 60, height: 60)
         Xbutton.setTitle("X", for: .normal)
@@ -63,24 +83,22 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         Xbutton.tintColor = UIColor.black
         Xbutton.backgroundColor = UIColor.white
         Xbutton.titleLabel?.font = UIFont.systemFont(ofSize: 18,weight: .bold)
-        //Xbutton.titleLabel?.font =  UIFont(name: "ChalkboardSE-Regular", size: 18)
         Xbutton.addTarget(self, action: #selector(dismissAction), for: .touchUpInside)
         self.view.addSubview(Xbutton)
         
         // MARK: - New Post Label
-        
-        let label = UILabel(frame: CGRect(x: 10, y: 10, width:UIScreen.main.bounds.size.width - 20.0, height: 35))
-        //label.center = CGPoint(x: 50, y: 50)
-        label.textAlignment = .center
-        label.text = "New Post"
-        label.textColor = Constants.Colors.darkBrown
-        label.font = UIFont.systemFont(ofSize: 25,weight: .heavy)
-        //label.font = UIFont (name: "ChalkboardSE-Regular" , size: 30)
-        self.view.addSubview(label)
+        let newPostLabel = UILabel(frame: CGRect(x: 10, y: 10, width:UIScreen.main.bounds.size.width - 20.0, height: 35))
+        newPostLabel.textAlignment = .center
+        newPostLabel.text = "New Post"
+        if isMission
+        {
+            newPostLabel.text = "New Mission"
+        }
+        newPostLabel.textColor = Constants.Colors.darkBrown
+        newPostLabel.font = UIFont.systemFont(ofSize: 25,weight: .heavy)
+        self.view.addSubview(newPostLabel)
         
         // MARK: - Choose Station
-        
-        let chooseStation = UIButton(type: .system)
         chooseStation.frame = CGRect(x: 0.0, y: 75.0, width: UIScreen.main.bounds.size.width, height: 40) //was 155
         chooseStation.setTitle("  Choose a station >", for: .normal)
         chooseStation.contentHorizontalAlignment = .left
@@ -89,15 +107,24 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         chooseStation.layer.borderWidth = 0.3
         chooseStation.layer.borderColor = (UIColor( red: 0, green: 0, blue:0, alpha: 0.5)).cgColor
         chooseStation.titleLabel?.font = UIFont.systemFont(ofSize: 15,weight: .regular)
-        //chooseChannel.titleLabel?.font =  UIFont(name: "ChalkboardSE-Regular", size: 15) // Delete if custom font
         chooseStation.addTarget(self, action: #selector(stationAction), for: .touchUpInside)
         self.view.addSubview(chooseStation)
         
         // MARK: - TextField & TextView
         
+        // MARK: Post Image
+        postImageView.layer.cornerRadius = 8.0
+        postImageView.clipsToBounds = true
+        self.view.addSubview(postImageView)
+        
+        // MARK: post image X button
+        postImageXButton.setImage( UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        postImageXButton.tintColor = Constants.Colors.darkBrown //.lightGray
+        postImageXButton.addTarget(self, action: #selector(postImageXPressed), for: .touchUpInside)
+        self.view.addSubview(postImageXButton)
+        
+        
         // MARK: Post Title
-        postTitle = UITextField(frame: CGRect(x: 10.0, y: 120.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 40.0))//was 200
-        //postTitle.backgroundColor = .white
         postTitle.attributedPlaceholder = NSAttributedString(string: Constants.NewPost.placeholderTitleText, attributes: [NSAttributedString.Key.foregroundColor: Constants.Colors.darkBrown])
         postTitle.font = UIFont.systemFont(ofSize: 19,weight: .bold)
         //postTitle.font = UIFont (name: "ChalkboardSE-Regular" , size: 20.0)
@@ -106,40 +133,31 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         self.view.addSubview(postTitle)
         
         // MARK: Post Body
-        //postBodyText.frame = CGRect(x: 10.0, y: 170.0, width:UIScreen.main.bounds.size.width - 20.0 , height: 400.0)
-        
         postBodyText.isScrollEnabled = true
-        //postBodyText.backgroundColor = .white
         postBodyText.delegate = self
         postBodyText.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-        //postBodyText.font = UIFont (name: "ChalkboardSE-Regular" , size: 15)
         postBodyText.textAlignment = .left
         postBodyText.text = Constants.NewPost.placeholderBodyText
         postBodyText.textColor = Constants.Colors.placeholderTextColor
         postBodyText.tintColor = Constants.Colors.textColor
-        
         self.view.addSubview(postBodyText)
         
-        postBodyText.addAnchors(top: postTitle.bottomAnchor, leading: postTitle.leadingAnchor, bottom: nil, trailing: postTitle.trailingAnchor, padding: .init(top: 0, left: -4, bottom: 0, right: 0))
+        // MARK: - ADD Constraints
+        postImageView.addAnchors(top: chooseStation.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 15, left: 15, bottom: 0, right: 10))
+        postTitle.addAnchors(top: postImageView.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: chooseStation.trailingAnchor, padding: .init(top: 5, left: 15, bottom: 0, right: 10))
+        
+        postBodyText.addAnchors(top: postTitle.bottomAnchor, leading: postTitle.leadingAnchor, bottom: nil, trailing: postTitle.trailingAnchor, padding: .init(top: 5, left: -4, bottom: 0, right: 0))
         self.textHeightConstraint = postBodyText.heightAnchor.constraint(equalToConstant: 40)
         self.textHeightConstraint.isActive = true
         self.adjustTextViewHeight(postBodyText)
-                
-        // MARK: - Toolbar
-        let tool = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
-        tool.backgroundColor = .white
-        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let fixSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        fixSpace.width = 8
-        let fixSpace1 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        fixSpace1.width = 12
+        
+        
         
         
         
         // MARK: User Icon
         userIconButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
         let userIconContainer = UIView(frame: userIconButton.frame)
-        //button.sizeToFit()
         userIconButton.setImage(UIImage(named: "sluglogoo"), for: .normal)
         userIconContainer.sizeToFit()
         userIconContainer.addSubview(userIconButton)
@@ -147,18 +165,26 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         // MARK: Anon Switch
         anonymousSwitch.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
         anonymousSwitch.transform = CGAffineTransform(scaleX: 0.85, y: 0.85)
-        let ButtonView = UIView(frame: anonymousSwitch.frame)
+        let anonymousSwitchContainer = UIView(frame: anonymousSwitch.frame)
         anonymousSwitch.sizeToFit()
         anonymousSwitch.isOn = true
         anonymousSwitch.onTintColor = Constants.Colors.darkBrown
         anonymousSwitch.setOn(true, animated: false)
         anonymousSwitch.addTarget(self, action: #selector(switch2(_:)), for: .valueChanged)
-        ButtonView.sizeToFit()
-        ButtonView.addSubview(anonymousSwitch)
+        anonymousSwitchContainer.sizeToFit()
+        anonymousSwitchContainer.addSubview(anonymousSwitch)
+        
+        // MARK: Hide User Icon and Anonymous switch for mission posts
+        if isMission
+        {
+            userIconContainer.isHidden = true
+            anonymousSwitchContainer.isHidden = true
+        }
         
         // MARK: attach Button
         let attachButton = UIButton()
         attachButton.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        attachButton.isHidden = true
         let attachButtonContainer = UIView(frame: attachButton.frame)
         let sfConfiguration = UIImage.SymbolConfiguration(pointSize: 25)
         attachButton.setImage(UIImage(systemName: "paperclip", withConfiguration: sfConfiguration), for: .normal)
@@ -201,23 +227,30 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         toolSendButton.customView = sendButtonContainer
         
         let barSwitch = UIBarButtonItem()
-        barSwitch.customView = ButtonView
+        barSwitch.customView = anonymousSwitchContainer
         
+        // MARK: - Toolbar
+        let toolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        toolbar.backgroundColor = .white
+        let toolbarFlexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let toolbarFixSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        toolbarFixSpace.width = 8
+        let toolbarFixSpace2 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        toolbarFixSpace2.width = 12
+        toolbar.barTintColor = .white
+        toolbar.isTranslucent = false
+        toolbar.clipsToBounds = true
+        toolbar.setItems([toolbarFixSpace2, toolUserIcon, toolbarFixSpace, barSwitch, toolbarFlexSpace,toolAttachButton,toolbarFixSpace,toolPhotoButton,toolbarFixSpace, toolSendButton, toolbarFixSpace2] , animated: true)
+        toolbar.sizeToFit()
+        postTitle.inputAccessoryView = toolbar
+        postBodyText.inputAccessoryView = toolbar
         
-        tool.barTintColor = .white
-        tool.isTranslucent = false
-        tool.clipsToBounds = true
-        tool.setItems([fixSpace1, toolUserIcon, fixSpace, barSwitch, flexSpace,toolAttachButton,fixSpace,toolPhotoButton,fixSpace, toolSendButton, fixSpace1] , animated: true)
-        tool.sizeToFit()
-        postTitle.inputAccessoryView = tool
-        postBodyText.inputAccessoryView = tool
     }
     
     
     
     
     // MARK: - Station Picker View
-    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -235,10 +268,8 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         doneButton()
     }
     
-    var toolBar = UIToolbar()
-    var picker  = UIPickerView()
-    var label1 = UILabel()
-    var counter = 1
+    
+    
     @IBAction func stationAction(sender: UIButton!) {
         self.view.endEditing(true)
         picker = UIPickerView.init()
@@ -249,11 +280,25 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         picker.contentMode = .center
         picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
         self.view.addSubview(picker)
-        toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 35))
-        toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(doneButton))]
-        toolBar.tintColor = Constants.Colors.darkBrown
-        // hide toolbar
-        //self.view.addSubview(toolBar)
+        stationToolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 35))
+        stationToolBar.items = [UIBarButtonItem.init(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil),UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(doneButton))]
+        stationToolBar.tintColor = Constants.Colors.darkBrown
+        //selectedStationLabel.inputAccessoryView = stationToolBar
+        //picker.addSubview(stationToolBar)
+    }
+    @objc func postImageXPressed()
+    {
+        postImageView.image = nil
+        postImageData = nil
+        for const in postImageView.constraints
+        {
+            postImageView.removeConstraint(const)
+        }
+        for const in postImageXButton.constraints
+        {
+            postImageXButton.removeConstraint(const)
+        }
+        
     }
     @objc func doneButton() {
         toolBar.removeFromSuperview()
@@ -261,23 +306,19 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         if let stationIndex = selectedStationIndex
         {
             if counter == 1{
-                label1 = UILabel(frame: CGRect(x: 10, y: 75, width:UIScreen.main.bounds.size.width - 20.0, height: 40)) //was 155
-                
-                label1.textAlignment = .center
-                label1.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-                //label1.font = UIFont (name: "ChalkboardSE-Regular" , size: 15) // Delete if custom font
-                label1.text = stations[stationIndex].stationName
-                self.view.addSubview(label1)
+                selectedStationLabel = UILabel(frame: CGRect(x: 10, y: 75, width:UIScreen.main.bounds.size.width - 20.0, height: 40)) //was 155
+                selectedStationLabel.textAlignment = .center
+                selectedStationLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+                selectedStationLabel.text = stations[stationIndex].stationName
+                self.view.addSubview(selectedStationLabel)
                 counter += 1
             }
             else {
-                label1.text = stations[stationIndex].stationName
+                selectedStationLabel.text = stations[stationIndex].stationName
             }
         }
         
     }
-    // END OF CHANNEL PICKER VIEW
-    
     
     func adjustTextViewHeight(_ textView: UITextView) {
         let fixedWidth = textView.frame.size.width
@@ -290,7 +331,6 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         {
             self.textHeightConstraint.constant = newSize.height
         }
-        //self.textHeightConstraint.constant = newSize.height
         self.view.layoutIfNeeded()
     }
     
@@ -315,20 +355,16 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     }
     
     
-    // How to exit textfield, clicking away
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
         picker.removeFromSuperview()
     }
     
-    // Function for setting return
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-    
-    //for profile to anonymous change with switchbar
     @objc func switch2(_ sender: UISwitch) {
         if sender.isOn {
             userIconButton.alpha = 1.0
@@ -340,7 +376,6 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         }
     }
     
-    // cancel button
     @objc func dismissAction(_ sender:UIButton!) {
         dismissAlert()
     }
@@ -353,137 +388,14 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         present(ac, animated: true)
     }
     func discardaction(action: UIAlertAction) {
-        //when discared, clear out channel and deload station options
-        //stationNames.removeAll()
         queryStations.loaded = false
         dismiss(animated: true, completion: nil)
     }
     
-    
-    
-    
-    let notequal = [nil, "", "Title", "Enter your thoughts here..."]
-    /*func title(title: String) -> String {
-        if notequal.contains(title) {
-            return "1"
-        }
-        return title
-    }
-    func body(body: String) -> String {
-        if notequal.contains(body) {
-            return "2"
-        }
-        return body
-    }
-    func channel(channel: String) -> String {
-        if notequal.contains(channel) {
-            return "3"
-        }
-        return channel
-    }*/
-    /*
-    func assertions(title: String, body: String, channel: String){
-        
-        if (title == "1" && body == "2" && channel == "3") {
-            let ac1 = UIAlertController(title: "Title, body, and channel are missing", message: "Please fill out these fields before posting", preferredStyle: .alert)
-            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
-            return present(ac1, animated: true)
-        }
-        else if title == "1" && body == "2" {
-            let ac1 = UIAlertController(title: "Title and body are missing", message: "Please fill out these fields before posting", preferredStyle: .alert)
-            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
-            return present(ac1, animated: true)
-        }
-        else if body == "2" && channel == "3" {
-            
-            let ac1 = UIAlertController(title: "Body and channel are missing", message: "Please fill out these fields before posting", preferredStyle: .alert)
-            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
-            return present(ac1, animated: true)
-        }
-        else if title == "1" && channel == "3" {
-            let ac1 = UIAlertController(title: "Title and channel are missing", message: "Please fill out these fields before posting", preferredStyle: .alert)
-            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
-            return present(ac1, animated: true)
-        }
-        else if title == "1"{
-            let ac1 = UIAlertController(title: "Title is missing", message: "Please fill out this fields before posting", preferredStyle: .alert)
-            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
-            return present(ac1, animated: true)
-            
-        }
-        else if body == "2"{
-            let ac1 = UIAlertController(title: "Body is missing", message: "Please fill out this fields before posting", preferredStyle: .alert)
-            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
-            return present(ac1, animated: true)
-        }
-        else if channel == "3"{
-            let ac1 = UIAlertController(title: "Channel is missing", message: "Please fill out this fields before posting", preferredStyle: .alert)
-            ac1.addAction(UIAlertAction(title: "Ok", style: .default))
-            return present(ac1, animated: true)
-        }
-        else {
-            if anonymousSwitch.isOn == false {
-                Anonymity = true
-            }
-            else if anonymousSwitch.isOn == true {
-                Anonymity = false
-            }
-            postData = [
-                "Author's Anonymity": Anonymity,
-                "title": postTitle.text!,
-                "body": postBodyText.text!,
-                "station": selectedchannel
-            ]
-            let db = Firestore.firestore()
-            guard let userID = Auth.auth().currentUser?.uid else{return}
-            //Recalling users data for post
-            let docRef = db.collection("users").document(userID)
-            
-            docRef.getDocument{ (document, error) in
-                let result = Result {
-                    try document?.data(as: User.self)
-                }
-                switch result {
-                case .success(let user):
-                    if let user = user{
-                        //A 'user' value was successfully initalized from the documentSnapshot
-                        fullname = user.name
-                        
-                        //FIXED - when post is made it assigns correct station ID
-                        var stationIden = String()
-                        for station in stations{
-                            if station.stationName == self.selectedchannel{
-                                stationIden = station.id!
-                            }
-                        }
-                        
-                        let newPost = Post(stationID: stationIden, stationName: self.selectedchannel, likes: 0, userInfo: user, title: postTitle.text!, text: postBodyText.text!, date: Date(), imageURL: nil, commentCount: 0)
-                        
-                        do{
-                            try db.collection("posts").document().setData(from: newPost)
-                        }catch let error{
-                            print("Error writing to Firestore: \(error)")
-                        }
-                        
-                        
-                    } else{
-                        //A stupid nil value was given, either from successful initlization or the snapShot was nil
-                        //print("Document not exsist")
-                    }
-                case .failure(let error):
-                    // A user value could not be initialized from DocumnetSnapshot
-                    print("Error decoding city: \(error)")
-                }
-            }
-            //print("Success")
-            //Removing all
-            return
-        }
-    }*/
-    // post button
+    // MARK: Post Action
     @objc func postAction(sender: UIButton!) {
         
-        // MARK: Check Post requirements
+        // Check Post requirements
         guard let user = UserManager.shared().getCurrentUserData().0, let _ = Auth.auth().currentUser
         else
         {
@@ -501,41 +413,125 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         {
             bodyText = ""
         }
-
-        let stationID = stations[selectedStationIndex].id!
-        let postData = Post(stationID: stationID, stationName: stations[selectedStationIndex].stationName, likes: 0, commentCount: 0, userInfo: user, title: title, text: bodyText, date: Date(), isAnonymous: !anonymousSwitch.isOn)
+        
+        // upload image if there is
+        if postImageData != nil
+        {
+            uploadImage(imageData: postImageData) { (downloadURL) in
+                let stationID = self.stations[selectedStationIndex].id!
+                self.uploadData(ID: stationID, stationName: self.stations[selectedStationIndex].stationName, userInfo: user, title: title, bodyText: bodyText, imageURL: downloadURL)
+            }
+        }
+        else
+        {
+            let stationID = stations[selectedStationIndex].id!
+            uploadData(ID: stationID, stationName: stations[selectedStationIndex].stationName, userInfo: user, title: title, bodyText: bodyText, imageURL: nil)
+        }
+    }
+    func uploadData(ID: String, stationName: String, userInfo: User, title: String, bodyText: String, imageURL: URL?)
+    {
         let db = Firestore.firestore()
-        do{
-            try db.collection("posts").document().setData(from: postData)
+        if isMission
+        {
+            let data = Mission(stationID: ID, stationName: stationName, likes: 0, userInfo: userInfo, title: title, text: bodyText, date: Date(), imageURL: imageURL)
+            do{
+                try db.collection(self.destinationCollection).document().setData(from: data)
+            }
+            catch let error{
+                print("Error writing to Firestore: \(error)")
+                showUploadError()
+                return
+            }
+            ProgressHUD.showSuccess()
+            self.dismiss(animated: true, completion: nil)
         }
-        catch let error{
-            print("Error writing to Firestore: \(error)")
+        else
+        {
+            let data = Post(stationID: ID, stationName: stationName, likes: 0, commentCount: 0, userInfo: userInfo, title: title, text: bodyText, date: Date(),imageURL: imageURL, isAnonymous: !anonymousSwitch.isOn)
+            do{
+                try db.collection(self.destinationCollection).document().setData(from: data)
+            }
+            catch let error{
+                print("Error writing to Firestore: \(error)")
+                showUploadError()
+                return
+            }
+            ProgressHUD.showSuccess()
+            self.dismiss(animated: true, completion: nil)
         }
+        
     }
-    
-    
-    var loadPhoto = UIButton()
+    func showUploadError()
+    {
+        let ac = UIAlertController(title: "Post Error", message: "There was an error submitting your post. Please try again", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Ok", style: .cancel))
+        ac.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
+        present(ac, animated: true)
+    }
     func displayUploadImageDialog(btnSelected: UIButton) {
-        //        let picker = UIImagePickerController()
-        //        picker.delegate = self
-        //        picker.allowsEditing = true
-        //        if UI_USER_INTERFACE_IDIOM() == .pad {
-        //            OperationQueue.main.addOperation({() -> Void in
-        //                picker.sourceType = .photoLibrary
-        //                self.present(picker, animated: true) {() -> Void in }
-        //            })
-        //        }
-        //        else {
-        //            picker.sourceType = .photoLibrary
-        //            self.present(picker, animated: true) {() -> Void in }
-        //        }
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        if UIScreen.main.traitCollection.userInterfaceIdiom == .pad {
+            OperationQueue.main.addOperation({() -> Void in
+                picker.sourceType = .photoLibrary
+                self.present(picker, animated: true) {() -> Void in }
+            })
+        }
+        else {
+            picker.sourceType = .photoLibrary
+            self.present(picker, animated: true) {() -> Void in }
+        }
     }
-    private func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        let image = info[UIImagePickerController.InfoKey.originalImage.rawValue] as! UIImage
-        let postImage = image
-        _ = image.jpegData(compressionQuality: 0.05)
-        _ = UIImageView(image: postImage)
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        postImageData = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
+        postImageView.addAnchors(top: chooseStation.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 15, left: 15, bottom: 0, right: 10), size: .init(width: 100, height: 100))
+        postImageXButton.addAnchors(top: postImageView.topAnchor, leading: postImageView.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: -15, left: -15, bottom: 0, right: 0), size: .init(width: 30, height: 30))
+        postImageView.image = postImageData
+        
         self.dismiss(animated: true, completion: nil)
+    }
+    func uploadImage(imageData: UIImage?, completionHandler: @escaping (_ downloadURL:URL) -> Void)
+    {
+        guard let postImageCompressed = imageData?.jpegData(compressionQuality: 0.05)
+        else
+        {
+            return
+        }
+        
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        
+        let imageRef = storageRef.child("postImages/\(UUID()).jpg")
+        let uploadTask = imageRef.putData(postImageCompressed, metadata: nil) { (metadata, error) in
+            if error != nil
+            {
+                ProgressHUD.showFailed()
+            }
+            else
+            {
+                ProgressHUD.showSuccess()
+            }
+            
+            imageRef.downloadURL { (url, error) in
+                guard let downloadURL = url else {
+                    self.showUploadError()
+                    return
+                }
+                print(downloadURL)
+                completionHandler(downloadURL)
+            }
+        }
+        
+        let _ = uploadTask.observe(.progress) { snapshot in
+            guard let progress = snapshot.progress
+            else {return}
+            ProgressHUD.animationType = .horizontalCirclesPulse
+            ProgressHUD.colorHUD = .systemGray
+            ProgressHUD.colorBackground = .clear
+            ProgressHUD.colorProgress = Constants.Colors.darkBrown
+            ProgressHUD.showProgress(CGFloat(progress.fractionCompleted))
+        }
     }
     
     func checkPermission() {
@@ -595,16 +591,3 @@ extension NewPostVC: UIAdaptivePresentationControllerDelegate
         dismissAlert()
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
