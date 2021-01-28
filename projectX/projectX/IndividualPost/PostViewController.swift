@@ -118,6 +118,9 @@ class PostViewController: UIViewController {
     }
     ///when dismissing the view, need to update data in the Feed
     override func viewWillDisappear(_ animated: Bool) {
+        updateFeed()
+    }
+    private func updateFeed(){
         post.commentCount = comments.count
         if let like = like {
             switch likeStatus {
@@ -134,9 +137,7 @@ class PostViewController: UIViewController {
                 updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .unchanged)
             }
         }
-        
     }
-    
     private func setupTableViewAndHeader(){
         commentsTableView.delegate = self
         commentsTableView.dataSource = self
@@ -238,7 +239,24 @@ extension PostViewController{
 
     }
     @objc func didTapDissmissNewComment(){
-        newCommentView.commentTextView.endEditing(true)
+        guard let text = newCommentView.commentTextView.text else {
+            newCommentView.commentTextView.endEditing(true)
+            return
+        }
+        if !text.isEmpty {
+            let alert = ConfirmationPresenter(question: "Discard uncommited comment?", acceptTitle: "Yes", rejectTitle: "No") { (choice) in
+                switch choice {
+                case .accepted:
+                    self.newCommentView.commentTextView.endEditing(true)
+                    self.newCommentView.setCommentViewDefaltMessage()
+                case .rejected:
+                    print("continue")
+                }
+            }
+            alert.present(in: self)
+        } else {
+            newCommentView.commentTextView.endEditing(true)
+        }
         
     }
     @objc func didTapSendButton(){
@@ -248,6 +266,7 @@ extension PostViewController{
             writeCommentToDB(userID: userID,
                             text: newCommentView.commentTextView.text ?? "",
                             isAnonimous: newCommentView.anonimousSwitch.isOn)
+            newCommentView.setCommentViewDefaltMessage()
         default :
             let presenter = AlertPresenter(message: "You need to sign in") {
                 self.dismiss(animated: true)
@@ -299,7 +318,7 @@ extension PostViewController{
 
             }
             DispatchQueue.main.async {
-                self.didTapDissmissNewComment()
+                self.newCommentView.commentTextView.endEditing(true)
             }
         }
     }
