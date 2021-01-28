@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		563A4ECB25B6028000FFEF66 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 563A4ECA25B6028000FFEF66 /* GoogleService-Info.plist */; };
 		801A37A62514024800F22A11 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A37A52514024800F22A11 /* NotificationCell.swift */; };
 		801A37A82514025D00F22A11 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A37A72514025D00F22A11 /* NotificationView.swift */; };
 		803972D52519780D002695EC /* SideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803972D42519780D002695EC /* SideBarView.swift */; };
@@ -65,7 +66,6 @@
 		80D97BAC251D819C00825BBB /* MissionDeadlineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D97BAB251D819C00825BBB /* MissionDeadlineCell.swift */; };
 		80F52F8B251C1AA400076825 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F52F8A251C1AA400076825 /* ProfileView.swift */; };
 		80F57E0425A4F7A100CDF5C3 /* PostPaginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */; };
-		80FDD6A924A188BF00304007 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 80FDD6A824A188BF00304007 /* GoogleService-Info.plist */; };
 		90C178B725319EE800200222 /* QueryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178B625319EE800200222 /* QueryData.swift */; };
 		90C178CD25439A5200200222 /* AcceptedMission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178CC25439A5200200222 /* AcceptedMission.swift */; };
 		90C178CF25439A6300200222 /* LikedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178CE25439A6300200222 /* LikedPost.swift */; };
@@ -80,6 +80,7 @@
 
 /* Begin PBXFileReference section */
 		4A216F81A4DD94A6239F9BAE /* Pods-projectX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-projectX.debug.xcconfig"; path = "Target Support Files/Pods-projectX/Pods-projectX.debug.xcconfig"; sourceTree = "<group>"; };
+		563A4ECA25B6028000FFEF66 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_projectX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		801A37A52514024800F22A11 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		801A37A72514025D00F22A11 /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
@@ -141,7 +142,6 @@
 		80D97BAB251D819C00825BBB /* MissionDeadlineCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissionDeadlineCell.swift; sourceTree = "<group>"; };
 		80F52F8A251C1AA400076825 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostPaginator.swift; sourceTree = "<group>"; };
-		80FDD6A824A188BF00304007 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		90C178B625319EE800200222 /* QueryData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryData.swift; sourceTree = "<group>"; };
 		90C178CC25439A5200200222 /* AcceptedMission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptedMission.swift; sourceTree = "<group>"; };
 		90C178CE25439A6300200222 /* LikedPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedPost.swift; sourceTree = "<group>"; };
@@ -274,7 +274,7 @@
 				804E618F24957D1000825150 /* Assets.xcassets */,
 				804E619F24980D7000825150 /* etc */,
 				804E619424957D1000825150 /* Info.plist */,
-				80FDD6A824A188BF00304007 /* GoogleService-Info.plist */,
+				563A4ECA25B6028000FFEF66 /* GoogleService-Info.plist */,
 			);
 			path = projectX;
 			sourceTree = "<group>";
@@ -450,7 +450,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				804E619324957D1000825150 /* LaunchScreen.storyboard in Resources */,
-				80FDD6A924A188BF00304007 /* GoogleService-Info.plist in Resources */,
+				563A4ECB25B6028000FFEF66 /* GoogleService-Info.plist in Resources */,
 				804E619024957D1000825150 /* Assets.xcassets in Resources */,
 				804E618E24957D0C00825150 /* Main.storyboard in Resources */,
 			);
@@ -716,13 +716,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5NP79EB7TF;
 				INFOPLIST_FILE = projectX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.rbezghin.projectX;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AdedejiToki.projectX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -735,13 +736,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5NP79EB7TF;
 				INFOPLIST_FILE = projectX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.rbezghin.projectX;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AdedejiToki.projectX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
