@@ -10,40 +10,64 @@ import Foundation
 import Firebase
 import Combine
 
-///UserManager stores all the data related to the sighned in user and
+/// Users state in the app
+enum UserState {
+    
+    ///when user was signedin, returns current user data
+    case signedIn(user: User)
+    
+    ///deafault state
+    case signedOut
+    
+    ///when user data is loading
+    case loading
+
+}
+
+///UserManager stores all the data related to the signedin user and
 ///it keeps user data in sync across the app
 class UserManager {
-    ///runs initialization, can be created once
-    private static var sharedUserManager: UserManager = {
-        var userID = String()
-        //user is currently logged in, initialize it right away.
-        if let user = Auth.auth().currentUser {
-            userID = user.uid
-        }
-        let manager = UserManager(userID: userID)
-        return manager
-    }()
     
-    ///fetches user data for userID obtained from firebase login
-    private init(userID: String){
-        state = .signedOut
-        if !userID.isEmpty{
-            loadDataFor(userID: userID)
+    ///runs initialization, can be created once
+    private static var sharedUserManager = UserManager()
+    
+    ///adds a listener
+    private init() {
+        state = .loading
+        _ = Auth.auth().addStateDidChangeListener { (auth, user) in
+            if let user = user {
+                // User is signed in
+                self.loadDataFor(userID: user.uid)
+            } else {
+                //User is signed out
+                self.state = .signedOut
+                self.user = nil
+            }
         }
     }
     
-    ///user that is fetched from db after login user id is avilable
-    private(set) var user: User?
+    //public var userPublisher = CurrentValueSubject<User?, Never>(nil)
+    var userPublisher: AnyPublisher<User?, Never> {
+        userSubject.eraseToAnyPublisher()
+    }
+
+    private let userSubject = PassthroughSubject<User?, Never>()
     
     ///users current state state
-    private(set) var state: UserState
+    private(set) var state: UserState = .signedOut
     
-    ///stations that user follows
-    private var followedStations = [FollowedStation]()
-    
+    ///optional user that is fetched from db after login user id is avilable
+    private(set) var user: User? {
+        didSet {
+            userSubject.send(self.user)
+        }
+    }
     
     ///is set after user was initialized, probably wont be used
     private(set) var userImage: UIImage?
+    
+    ///stations that user follows
+    private var followedStations = [FollowedStation]()
 
 }
 //MARK: helper functions
@@ -61,7 +85,7 @@ extension UserManager{
     ///empties the current user data
     func setUserToNil(){
         userImage = nil
-        user = User(name: "", photoURL: nil, email: "", uid: "")
+        user = nil
     }
     
     ///returns optinal followedStation if stationID is in the followedStations
@@ -81,17 +105,12 @@ extension UserManager{
     func removeFollowedStation(stationID: String){
         followedStations = followedStations.filter { $0.stationID != stationID }
     }
-
-    ///returns empty user
-    private func defaultUser()-> User{
-        return User(name: "", photoURL: nil, email: "", uid: "")
-    }
 }
 //MARK: networking
 extension UserManager{
     
     ///function that manages loading data for user id
-    func loadDataFor(userID: String){
+    private func loadDataFor(userID: String){
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let group = DispatchGroup()
             //1 load user data
@@ -109,7 +128,7 @@ extension UserManager{
     }
 
     ///after user is set tries loading the image
-    func loadUserImage(){
+    private func loadUserImage(){
         guard let url = user?.photoURL else {return}
         NetworkManager.shared.getAsynchImage(withURL: url) { [weak self] (image, error) in
             if error != nil {
@@ -124,7 +143,7 @@ extension UserManager{
     }
     ///uses the id of currently logged in used to get the data stored in the Firebstore
     /// user is either already signed in OR this function will be called after successful login
-    func loadCurrentUser(withId id: String, completion: @escaping () -> Void){
+    private func loadCurrentUser(withId id: String, completion: @escaping () -> Void){
         NetworkManager.shared.getDataForUser(id) { [weak self] (user, error) in
             if error != nil{
                 self?.state = .signedOut
@@ -134,7 +153,7 @@ extension UserManager{
                 guard  let user = user else {return}
                 self?.state = .signedIn(user: user)
                 self?.user = user
-                print("\(user.name) user loaded")
+
                 completion()
             }
         }
@@ -160,8 +179,6 @@ extension UserManager{
     func signOut(){
         do{
             try Auth.auth().signOut()
-            state = .signedOut
-            setUserToNil()
             print("Success signing out")
         }catch let error{
             print("error signing out: \(error)")

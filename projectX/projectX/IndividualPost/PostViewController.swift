@@ -9,14 +9,47 @@
 import UIKit
 import FirebaseFirestore
 import FirebaseAuth
+import Combine
+
+///user can like post inside the post vc and that should be updated in the feed, also comment count can change
+protocol DidUpdatePostAfterDissmissingDelegate {
+    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, like: LikedPost?, status: LikeStatus)
+}
+///to help figure out whether like was changed inside of the post and if Feed will need to update like in the database
+enum LikeStatus{
+    case add
+    case delete
+    case unchanged
+}
 
 class PostViewController: UIViewController {
     
     ///post is initialized by presenting controller
     private var post: Post
     
+    private var user: User?
+    
+    private var userSubscription: AnyCancellable!
+    
+    ///is post liked by the user
+    private var like: LikedPost?
+    
+    private var likeStatus: LikeStatus = .unchanged
+    
+    ///used to update data in the feed when view is dissmissed
+    private var indexPath: IndexPath
+    
+    ///user can like post inside the post vc and that should be updated in the feed, also comment count can change
+    var updatePostDelegate: DidUpdatePostAfterDissmissingDelegate?
+    
     ///comments for post
-    private var comments = [Comment] ()
+    private var comments = [Comment]()
+    
+    ///likes for the comments
+    private var likesDictionary = [Comment: LikedPost]()
+    
+    ///personal data about each user
+    private var usersToComments = [Comment: User]()
     
     ///header view for the post table view will be initialized with frame
     private var postHeaderView: PostView?
@@ -47,8 +80,10 @@ class PostViewController: UIViewController {
     }()
     
     ///to create postViewController post MUST be initialized
-    init(post: Post){
+    init(post: Post, like: LikedPost?, indexPath: IndexPath){
         self.post = post
+        self.like = like
+        self.indexPath = indexPath
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -58,16 +93,50 @@ class PostViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         self.navigationItem.title = post.stationName
-        
+
         //only this order works, some bug that makes newcommentview invisible if this is changed
         setupTableViewAndHeader()
         populatePostViewWithPost()
         setupNewCommentView()
         setupKeyboardnotifications()
-        loadCommentsForPost()
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.loadAdditionalPostData()
+        }
+        switch UserManager.shared().state {
+        case .signedIn(let user):
+            self.user = user
+        default:
+            userSubscription = UserManager.shared().userPublisher.sink { (user) in
+                self.user = user
+            }
+        }
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    ///when dismissing the view, need to update data in the Feed
+    override func viewWillDisappear(_ animated: Bool) {
+        updateFeed()
+    }
+    private func updateFeed(){
+        post.commentCount = comments.count
+        if let like = like {
+            switch likeStatus {
+            case .delete: //if we have like and status is to delete - need to delete it
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .delete)
+            default: //do nothing
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .unchanged)
+            }
+        } else { //if there is no like and status is to add it need to add a new like
+            switch likeStatus {
+            case .add: //if there was no like give from feed and we need to add a like
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .add)
+            default:
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .unchanged)
+            }
+        }
     }
     private func setupTableViewAndHeader(){
         commentsTableView.delegate = self
@@ -79,11 +148,14 @@ class PostViewController: UIViewController {
 
         commentsTableView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
                                      leading: view.leadingAnchor,
-                                     bottom: view.safeAreaLayoutGuide.bottomAnchor,
-                                     trailing: view.trailingAnchor)
+                                     bottom: view.bottomAnchor,
+                                     trailing: view.trailingAnchor,
+                                     padding: .init(top: 0, left: 0, bottom: defaultCommentViewHeight, right: 0))
         
         postHeaderView = PostView(frame: view.frame)
         postHeaderView?.translatesAutoresizingMaskIntoConstraints = false
+        postHeaderView?.delegate = self
+        postHeaderView?.isLiked = like != nil ? true : false
         commentsTableView.tableHeaderView = postHeaderView
         commentsTableView.tableHeaderView?.layoutIfNeeded() //Without this autolayout doesnt update the custom view layout
     }
@@ -140,6 +212,7 @@ class PostViewController: UIViewController {
         }
         postHeaderView?.bodyUILabel.text = post.text
         postHeaderView?.likesLabel.text = "\(post.likes)"
+        postHeaderView?.commentsLabel.text = "\(post.commentCount)"
         postHeaderView?.layoutIfNeeded()
         
     }
@@ -166,15 +239,35 @@ extension PostViewController{
 
     }
     @objc func didTapDissmissNewComment(){
-        newCommentView.commentTextView.endEditing(true)
+        guard let text = newCommentView.commentTextView.text else {
+            newCommentView.commentTextView.endEditing(true)
+            return
+        }
+        if !text.isEmpty {
+            let alert = ConfirmationPresenter(question: "Discard uncommited comment?", acceptTitle: "Yes", rejectTitle: "No") { (choice) in
+                switch choice {
+                case .accepted:
+                    self.newCommentView.commentTextView.endEditing(true)
+                    self.newCommentView.setCommentViewDefaltMessage()
+                case .rejected:
+                    print("continue")
+                }
+            }
+            alert.present(in: self)
+        } else {
+            newCommentView.commentTextView.endEditing(true)
+        }
         
     }
     @objc func didTapSendButton(){
-        if let user = Auth.auth().currentUser{
-            writeCommentToDB(userID: user.uid,
-                             text: newCommentView.commentTextView.text ?? "",
-                             isAnonimous: newCommentView.anonimousSwitch.isOn)
-        } else {
+        switch UserManager.shared().state {
+        case .signedIn(let user):
+            guard let userID = user.id else {return}
+            writeCommentToDB(userID: userID,
+                            text: newCommentView.commentTextView.text ?? "",
+                            isAnonimous: newCommentView.anonimousSwitch.isOn)
+            newCommentView.setCommentViewDefaltMessage()
+        default :
             let presenter = AlertPresenter(message: "You need to sign in") {
                 self.dismiss(animated: true)
             }
@@ -186,7 +279,7 @@ extension PostViewController{
 extension PostViewController{
     ///send to the global queue to get user and waits for that data to create a comment.
     ///Comment is then sent to the db, upon success adds a comment to the tableview and refreshes it
-    private func writeCommentToDB(userID: String, text: String, isAnonimous: Bool? = false){
+    private func writeCommentToDB(userID: String, text: String, isAnonimous: Bool){
         if text.count < 1 {
             let presenter = AlertPresenter(message: "Your comment is empty!") {
                 self.dismiss(animated: true)
@@ -194,65 +287,145 @@ extension PostViewController{
             presenter.present(in: self)
             return
         }
-        //move it to global so that group.wait doesnt make thread stuck
-        DispatchQueue.global(qos: .userInitiated).async {
-            var user: User?
-            var comment: Comment?
-            let group = DispatchGroup()
-            //load user
-            group.enter()
-            NetworkManager.shared.getDocumentForID(collection: .users, uid: userID) { (document: User?, error) in
-                if document != nil{
-                    user = document!
-                }else {
-                    print(error ?? "Error loading user")
-                }
-                group.leave()
-            }
-            let result = group.wait(timeout: .now() + 5.0)
-            switch result{
-            case .success:
-                guard let user = user else {return}
-                comment = Comment(postID: self.post.id ?? "", userInfo: user, text: text, likes: 0, date: Date(), isAnonymous: isAnonimous)
-                NetworkManager.shared.writeDocumentsWith(collectionType: .comments, documents: [comment]) { (error) in
-                    if error != nil {
-                        print(error ?? "error sending comment")
-                        DispatchQueue.main.sync {
-                            let presenter = AlertPresenter(message: "Connectivity issues, maybe try again!") {
-                                self.dismiss(animated: true)
-                            }
-                            presenter.present(in: self)
-                        }
-                    }else{
-                        DispatchQueue.main.sync {
-                            self.comments.append(comment!)
-                            self.commentsTableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
-                        }
+        var comment = Comment(postID: self.post.id ?? "", userID: userID, text: text, likes: 0, date: Date(), isAnonymous: isAnonimous)
+        NetworkManager.shared.writeDocumentReturnReference(collectionType: .comments, document: comment) { (ref, error) in
+            if error != nil {
+                print(error ?? "error sending comment")
+                DispatchQueue.main.async {
+                    let presenter = AlertPresenter(message: "Connectivity issues, maybe try again!") {
+                        self.dismiss(animated: true)
                     }
-                    DispatchQueue.main.sync {
-                        self.didTapDissmissNewComment()
-                    }
-                }
-            case .timedOut:
-                let presenter = AlertPresenter(message: "Connectivity issues, maybe try again!") {
-                    self.dismiss(animated: true)
-                }
-                DispatchQueue.main.sync {
                     presenter.present(in: self)
-                    self.didTapDissmissNewComment()
                 }
+            }else if let ref = ref{
+                //increment the number of comments
+                NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
+                                                             documentID: self.post.id ?? "",
+                                                             value: Double(1),
+                                                             field: .commentCount)
+                comment.id = ref
+
+                self.post.commentCount += 1
+                self.postHeaderView?.commentsLabel.text = "\(self.post.commentCount)"
+                self.comments.insert(comment, at: 0)
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.loadUsers(for: [comment]) {
+                        DispatchQueue.main.async {
+                            self.commentsTableView.reloadData()
+                        }
+                    }
+                }
+
             }
-            
+            DispatchQueue.main.async {
+                self.newCommentView.commentTextView.endEditing(true)
+            }
         }
     }
-    func loadCommentsForPost(){
-        let basicQuery = NetworkManager.shared.db.comments.whereField(FirestoreFields.postID.rawValue, isEqualTo: post.id ?? "")
+    private func loadAdditionalPostData(){
+        let group = DispatchGroup()
+        //1. load comments
+        group.enter()
+        loadComments {
+            group.leave()
+        }
+        group.wait()
+        //2. for every comment load  user
+        group.enter()
+        loadUsers(for: comments) {
+            group.leave()
+        }
+        group.enter()
+        loadLikes(for: comments){
+            group.leave()
+        }
+        group.wait()
+        DispatchQueue.main.async {
+            self.commentsTableView.reloadData()
+        }
+    }
+    private func loadComments(completion: @escaping () -> Void){
+        let basicQuery = NetworkManager.shared.db.comments.whereField(FirestoreFields.postID.rawValue, isEqualTo: post.id ?? "").order(by: "likes", descending: true)
         NetworkManager.shared.getDocumentsForQuery(query: basicQuery) { (comments: [Comment]?, error) in
             if comments != nil {
                 self.comments = comments!
                 self.commentsTableView.reloadData()
             }else{
                 print(error ?? "error locading comments")
+            }
+            completion()
+        }
+    }
+    private func loadUsers(for comments: [Comment], completion: @escaping () -> Void){
+        let group = DispatchGroup()
+        for comment in comments {
+            group.enter()
+            NetworkManager.shared.getDocumentForID(collection: .users, uid: comment.userID) { (user: User?, err) in
+                if let error = err {
+                    print(error)
+                } else if let user = user {
+                    self.usersToComments[comment] = user
+                }
+                group.leave()
+                
+            }
+        }
+        group.wait()
+        completion()
+    }
+    private func loadLikes(for comments: [Comment], completion: @escaping () -> Void){
+        let group = DispatchGroup()
+        for comment in comments {
+            group.enter()
+            guard let  id = comment.id else {continue}
+            let query = NetworkManager.shared.db.likedPosts
+                .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
+                .whereField(FirestoreFields.userID.rawValue, isEqualTo: comment.userID)
+            NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [LikedPost]?, error) in
+                if error != nil {
+                    print("error loading liked post", error!)
+                }else if likedPosts != nil {
+                    self.likesDictionary[comment] = likedPosts![0]
+                }
+                group.leave()
+            }
+        }
+        group.wait()
+        completion()
+    }
+    private func writeLikeToTheFirestore(with indexPath: IndexPath) {
+        let userID = comments[indexPath.item].userID
+        guard let commentID = comments[indexPath.item].id else {return}
+        var document = LikedPost(userID: userID, postID: commentID)
+        NetworkManager.shared.writeDocumentReturnReference(collectionType: .likedPosts, document: document  ) { (ref, error) in
+            if let err = error{
+                print("Error creating like \(err)")
+            } else { //need to increment likes in the post
+                NetworkManager.shared.incrementDocumentValue(collectionType: .comments,
+                                                             documentID: commentID,
+                                                             value: Double(1),
+                                                             field: .likes)
+                document.id = ref
+                self.likesDictionary[self.comments[indexPath.item]] = document
+            }
+        }
+    }
+    private func deleteLikeFromFirestore(with indexPath: IndexPath){
+        //let comment = comments[indexPath.item]
+        //let likedP = likesDictionary[comment]
+        guard let likedPost = likesDictionary[comments[indexPath.item]] else {return}
+        guard let docID = likedPost.id else {return}
+        guard let commentID = comments[indexPath.item].id else {return}
+        likesDictionary.removeValue(forKey: self.comments[indexPath.item])
+        NetworkManager.shared.deleteDocumentsWith(collectionType: .likedPosts,
+                                                  documentID: docID) { (error) in
+            if error != nil{
+                print("error disliking", error!)
+            }else{
+                NetworkManager.shared.incrementDocumentValue(collectionType: .comments,
+                                                             documentID: commentID,
+                                                             value: Double(-1),
+                                                             field: .likes)
             }
         }
     }
@@ -269,21 +442,25 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.cellID, for: indexPath) as! CommentCell
+        cell.delegate = self
+        cell.indexPath = indexPath
         let comment = comments[indexPath.row]
-        NetworkManager.shared.getAsynchImage(withURL: comments[indexPath.row].userInfo.photoURL) { (image, error) in
+        guard let user = usersToComments[comment] else {return UITableViewCell()}
+        NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
             DispatchQueue.main.async {
                 cell.authorImageView.image = image
             }
         }
-        //cell.authorTitleLable.text = comment.userInfo.name
+        cell.authorLabel.text = user.name
         cell.commentLabel.text = comment.text
-        let date = comment.date
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        cell.dateTimeLabel.text = "\(formatter.string(from: date))"
+        cell.dateTimeLabel.text = comment.date.diff()
         let likes = comment.likes
         cell.likesLabel.text  = "\(likes)"
-        cell.authorLabel.text = comment.userInfo.name
+        if likesDictionary[comment] != nil {
+            cell.isLiked = true
+        }else{
+            cell.isLiked = false
+        }
         return cell
     }
 }
@@ -319,5 +496,60 @@ extension PostViewController: UITextViewDelegate{
         
         newCommentView.commentTextView.endEditing(true)
     }
+}
+extension PostViewController: PostViewButtonsDelegate{
+    func didTapLikeButton() {
+        guard let header = postHeaderView else {return}
+        postHeaderView?.isLiked.toggle()
+        if header.isLiked{
+            //1. change UI
+            postHeaderView?.changeCellToLiked()
+            //2. change locally
+            post.likes += 1
+            //3. set like status
+            likeStatus = .add
+        } else{
+            //1. change UI
+            header.changeCellToDisliked()
+            //2. change locally
+            post.likes -= 1
+            //3. set like status
+            likeStatus = .delete
+        }
+    }
+    func didTapAuthorLabel() {
+        presentAuthorFor(user: post.userInfo)
+    }
+    private func presentAuthorFor(user: User){
+        let vc = OtherProfileViewController(user: post.userInfo)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+}
+extension PostViewController: CommentCellTapableDelegate{
+    func didTapLikeButton(_ indexPath: IndexPath, _ cell: CommentCell) {
+        cell.isLiked.toggle()
+        if cell.isLiked{
+            //1. change UI
+            cell.changeCellToLiked()
+            //2. change locally
+            comments[indexPath.item].likes += 1
+            //3. change in the DB
+            writeLikeToTheFirestore(with: indexPath)
+        } else{
+            //1. change UI
+            cell.changeCellToDisliked()
+            //2. change locally
+            comments[indexPath.item].likes -= 1
+            //3. change in the DB
+            deleteLikeFromFirestore(with: indexPath)
+        }
+    }
+    
+    func didTapAuthorLabel(_ indexPath: IndexPath) {
+        guard let user = usersToComments[comments[indexPath.item]] else {return}
+        presentAuthorFor(user: user)
+    }
+    
+    
 }
 

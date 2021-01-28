@@ -12,8 +12,6 @@ import FirebaseAuth
 
 class LoginViewController: UIViewController {
     
-    //let userManager = UserManager.shared
-    
     lazy var loginView = createLoginView()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,6 +61,9 @@ class LoginViewController: UIViewController {
     }
     /// Lets users to login into their accounts. Verifies correctness of the email/password and then check if it exists in the database. Errors are displayed on the screen.
     @objc func logMeIn(){
+        //FIXME: deafault login
+        //let email = "radomirbezgin@gmail.com"
+        //let password = "123456"
         guard let email = loginView.emailTextField.text else{return}
         guard let password = loginView.passwordTextField.text else{return}
         
@@ -73,7 +74,8 @@ class LoginViewController: UIViewController {
             return
         }
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
-            if !Auth.auth().currentUser!.isEmailVerified{
+            guard let user = Auth.auth().currentUser else {return}
+            if !user.isEmailVerified{
                 self?.displayLoginErrorMessage(message: "Email not verified")
                 return
             }
@@ -82,8 +84,6 @@ class LoginViewController: UIViewController {
                 self?.displayLoginErrorMessage(message: "User was not found. Please, try again.")
                 return
             }else{
-                guard let id = Auth.auth().currentUser?.uid else {return}
-                UserManager.shared().loadDataFor(userID: id)
                 if self?.presentingViewController is SettingsTableViewController{
                     self?.dismiss(animated: true)
                 }else{

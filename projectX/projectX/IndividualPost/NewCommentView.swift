@@ -13,7 +13,6 @@ class NewCommentView: UIView {
     private let symbolsConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .light, scale: .default)
     
     override init(frame: CGRect) {
-        //super.init(frame: CGRect(x: 0.0, y: 0.0, width: frame.width, height: 0.0))
         super.init(frame: frame)
         setupViews()
     }
@@ -120,5 +119,10 @@ class NewCommentView: UIView {
                           padding: .init(top: 0, left: 0, bottom: 0, right: 0),
                           size: .init(width: 0, height: 0))
 
+    }
+    func setCommentViewDefaltMessage(){
+        commentTextView.text = commentPlaceholderMessage
+        commentTextView.textAlignment = .center
+        commentTextView.textColor = UIColor.lightGray
     }
 }

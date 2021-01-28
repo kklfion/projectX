@@ -8,28 +8,47 @@
 //
 import UIKit
 import FirebaseAuth
-
-/////Loading footer reuse identifier
-//let footerViewReuseIdentifier = "footerViewReuseIdentifier"
-/////Post ceell reuse identifiers
-//let cellReuseIdentifier = "cellReuseIdentifier"
+import Combine
 
 class HomeTableVC: UIViewController, UISearchBarDelegate{
+    
     ///collectionViewController responsible for the feed.
     private var feedCollectionViewController: FeedCollectionViewController!
     
     //TODO: not implemented (searching isn't straightforward with firestore)
     private let searchController = UISearchController(searchResultsController: nil)
+    
+    private var user: User?
+    
+    private var userSubscription: AnyCancellable!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        feedCollectionViewController = FeedCollectionViewController()
-        feedCollectionViewController.setupFeed(feedType: .generalFeed)
-        self.add(feedCollectionViewController)//add feedController as a child
-        presentLoginIfNeeded()
         setupNavigationBar()
+        setupFeedController()
+        setUserAndSubscribeToUpdates()
+        presentLoginIfNeeded()
     }
-    
+    private func setupFeedController(){
+        feedCollectionViewController = FeedCollectionViewController()
+        self.add(feedCollectionViewController)//add feedController as a child
+    }
+    private func setUserAndSubscribeToUpdates(){
+        switch UserManager.shared().state {
+        case .loading:
+            print("user is loading ")//wait for update
+        case .signedIn(let user):
+            self.user = user
+            feedCollectionViewController.setupFeed(feedType: .generalFeed, userID: user.id ?? nil)
+        case .signedOut:
+            print("display nothing")//display default data
+            feedCollectionViewController.setupFeed(feedType: .generalFeed)
+        }
+        userSubscription = UserManager.shared().userPublisher.sink { (user) in
+            self.user = user
+            self.feedCollectionViewController.setupFeed(feedType: .generalFeed, userID: user?.id)
+        }
+    }
 }
 //MARK: - Navigation Bar setup
 extension HomeTableVC{

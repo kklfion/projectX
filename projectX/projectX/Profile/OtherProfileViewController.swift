@@ -8,13 +8,15 @@
 
 import UIKit
 import FirebaseAuth
+import Combine
 
 class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
+    
     func didScrollFeed(_ scrollView: UIScrollView) {
         
     }    
     ///user displayed by the controller
-    var user: User
+    var user: User?
     
     ///posts that were created by user
     private var posts = [Post]()
@@ -25,6 +27,11 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
     ///custom view
     private var profileView: ProfileView?
     
+    ///feed vc
+    private var feedCollectionViewController: FeedCollectionViewController!
+    
+    private var userSubscription: AnyCancellable!
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -37,28 +44,16 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         self.navigationController?.navigationBar.shadowImage = nil
         self.navigationController?.navigationBar.isTranslucent = false
     }
+    ///to initialize your profile
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        print("called personal profile")
+    }
     ///initialize profileviewcontroller with user data (to display other user profile)
     init(user: User){
+        super.init(nibName: nil, bundle: nil)
+        print("called other profile")
         self.user = user
-        super.init(nibName: nil, bundle: nil)
-    }
-    ///user to display current user
-    init(){
-        //must wait for usermanager to complete and update self
-        user = User(email: "1", uid: "1")
-        super.init(nibName: nil, bundle: nil)
-        let user = Auth.auth().currentUser
-        guard let id = user?.uid else {return}
-        NetworkManager.shared.getDataForUser(id) { [weak self] (user, error) in
-            if error != nil {
-                print(error!)
-            }else if user != nil {
-                self?.user = user!
-                self?.updateProfileInformation()
-            }
-        }
-        
-        
     }
     
     required init?(coder: NSCoder) {
@@ -70,8 +65,41 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         setupView()
-        setupTableViews()
-        updateProfileInformation()
+        setupFeedVCs()
+        if user == nil { //means showing personal profile
+            setUserAndSubscribeToUpdates()
+        }else{
+            updateProfileInformation() //dispalying other person profile
+        }
+
+    }
+    private func setUserAndSubscribeToUpdates(){
+        switch UserManager.shared().state {
+        case .loading:
+            print("user is loading ")//wait for update
+        case .signedIn(let user):
+            self.user = user
+            updateProfileInformation()
+            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user.id, userID: user.id)
+        case .signedOut:
+            //display default data
+            updateProfileInformation()
+            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id, userID: user?.id)
+        }
+        userSubscription = UserManager.shared().userPublisher.sink { (user) in
+            self.user = user
+            self.updateProfileInformation()
+            self.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id, userID: user?.id)
+        }
+    }
+    private func setupFeedVCs(){
+        let vc = UIViewController() //instead of the missions vc
+        vc.view.backgroundColor  = .white
+        feedCollectionViewController = FeedCollectionViewController()
+        self.addChild(feedCollectionViewController)
+        feedCollectionViewController.didScrollFeedDelegate = self
+        profileView?.tableViewAndCollectionView?.stackView.addArrangedSubview(feedCollectionViewController.view)
+        profileView?.tableViewAndCollectionView?.stackView.addArrangedSubview(vc.view)
     }
     private func setupView(){
         profileView = ProfileView(frame: self.view.frame, userID: "59qIdPL8uAfltJryIrAWfQNFcuN2")
@@ -101,7 +129,13 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         //profileView?.tableViewAndCollectionView?.bulletinBoardCollectionView.register(BoardCell.self, forCellWithReuseIdentifier: BoardCell.cellID)
     }
     private func updateProfileInformation(){
-        //guard let user = user else{return}
+        guard let user = user else{
+            profileView?.usernameLabel.text = "log in"
+            profileView?.useridLabel.text = ""
+            profileView?.schoolLabel.text = ""
+            profileView?.profileImageView.image = nil
+            return
+        }
         NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
@@ -151,50 +185,50 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         }
     }
 }
-extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        posts.count
-    }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        presentPostFor(indexPath: indexPath)
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage else {return UITableViewCell()}
-        addData(toCell: cell, withIndex: indexPath.row)
-        cell.indexPath = indexPath
-        cell.delegate = self
-        cell.selectionStyle = .none
-        return cell
-    }
-    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
-        NetworkManager.shared.getAsynchImage(withURL: posts[index].userInfo.photoURL) { (image, error) in
-            DispatchQueue.main.async {
-                cell.authorImageView.image = image
-            }
-        }
-        cell.postImageView.image = nil
-        cell.titleLabel.text =  posts[index].title
-        cell.messageLabel.text =  posts[index].text
-        cell.authorLabel.text =  posts[index].userInfo.name
-        cell.likesLabel.text =  String(posts[index].likes)
-        cell.commentsLabel.text =  String(posts[index].commentCount)
-        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        let dateString = formatter.string(from: posts[index].date)
-        cell.dateLabel.text = "\(dateString)"
-        if posts[index].imageURL != nil {
-            cell.postImageView.isHidden = false
-            NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
-                DispatchQueue.main.async {
-                    cell.postImageView.image = image
-                }
-            }
-        } else{
-            cell.postImageView.isHidden = true
-        }
-    }
-}
+//extension OtherProfileViewController: UITableViewDelegate, UITableViewDataSource{
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        posts.count
+//    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        presentPostFor(indexPath: indexPath)
+//    }
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage else {return UITableViewCell()}
+//        addData(toCell: cell, withIndex: indexPath.row)
+//        cell.indexPath = indexPath
+//        cell.delegate = self
+//        cell.selectionStyle = .none
+//        return cell
+//    }
+//    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
+//        NetworkManager.shared.getAsynchImage(withURL: posts[index].userInfo.photoURL) { (image, error) in
+//            DispatchQueue.main.async {
+//                cell.authorImageView.image = image
+//            }
+//        }
+//        cell.postImageView.image = nil
+//        cell.titleLabel.text =  posts[index].title
+//        cell.messageLabel.text =  posts[index].text
+//        cell.authorLabel.text =  posts[index].userInfo.name
+//        cell.likesLabel.text =  String(posts[index].likes)
+//        cell.commentsLabel.text =  String(posts[index].commentCount)
+//        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
+//        let formatter = DateFormatter()
+//        formatter.timeStyle = .short
+//        let dateString = formatter.string(from: posts[index].date)
+//        cell.dateLabel.text = "\(dateString)"
+//        if posts[index].imageURL != nil {
+//            cell.postImageView.isHidden = false
+//            NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
+//                DispatchQueue.main.async {
+//                    cell.postImageView.image = image
+//                }
+//            }
+//        } else{
+//            cell.postImageView.isHidden = true
+//        }
+//    }
+//}
 extension OtherProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -256,9 +290,9 @@ extension OtherProfileViewController: PostCellDidTapDelegate{
     }
     
     private func presentPostFor(indexPath: IndexPath){
-        let postvc = PostViewController(post: posts[indexPath.row])
-        postvc.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(postvc, animated: true)
+//        let postvc = PostViewController(post: posts[indexPath.row])
+//        postvc.hidesBottomBarWhenPushed = true
+//        self.navigationController?.pushViewController(postvc, animated: true)
     }
     private func presentStationFor(indexPath: IndexPath){
         NetworkManager.shared.getDocumentForID(collection: .stations ,uid: posts[indexPath.row].stationID) { (document: Station?, error) in

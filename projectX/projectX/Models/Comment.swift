@@ -8,7 +8,7 @@
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Comment: Identifiable, Codable{
+struct Comment: Identifiable, Codable, Hashable{
     /// property wrapper that stores id of the document associated with data
     @DocumentID var id: String?
 
@@ -19,7 +19,7 @@ struct Comment: Identifiable, Codable{
     var likes: Int
 
     /// User information duplicated in the comment object.
-    var userInfo: User
+    var userID: String
     
     /// The body text of the comment.
     var text: String
@@ -29,17 +29,26 @@ struct Comment: Identifiable, Codable{
     
     /// If author of the comment wants to be Anonymous
     var isAnonymous: Bool?
+    
+    // MARK: - Hashable conformance
+    static func == (lhs: Comment, rhs: Comment) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 
 }
 extension Comment{
     public init(postID: String,
-                userInfo: User,
+                userID: String,
                 text: String,
                 likes: Int,
                 date: Date,
                 isAnonymous: Bool? = false) {
         self.postID = postID
-        self.userInfo = userInfo
+        self.userID = userID
         self.text = text
         self.likes = likes
         self.date = date
