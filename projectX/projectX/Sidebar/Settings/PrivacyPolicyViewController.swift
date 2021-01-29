@@ -44,7 +44,7 @@ class PrivacyPolicyViewController: UIViewController {
     
     ///scrollView<-contentView<-TOSView
     func setupView(){
-        /*view.addSubview(scrollView)
+        view.addSubview(scrollView)
         self.addKeyboardTapOutGesture(target: self)
         scrollView.addAnchors(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
       
@@ -53,9 +53,9 @@ class PrivacyPolicyViewController: UIViewController {
         contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
         
         contentView.addSubview(PPView)
-        PPView.addAnchors(top: contentView.topAnchor, leading: contentView.leadingAnchor, bottom: contentView.bottomAnchor, trailing: contentView.trailingAnchor)*/
-        self.view.addSubview(PPView)
-        PPView.addAnchors(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        PPView.addAnchors(top: contentView.topAnchor, leading: contentView.leadingAnchor, bottom: contentView.bottomAnchor, trailing: contentView.trailingAnchor)
+        //self.view.addSubview(PPView)
+        //PPView.addAnchors(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
     
     @objc func dismissAction(_ sender:UIButton!) {

@@ -40,7 +40,7 @@ class TermsOfServiceView: UIView {
     let bottomNoteType:UIFont.Weight = .heavy
     
     let headerSpacing:CGFloat = 15
-    let paragraphSpacing:CGFloat = 5
+    let paragraphSpacing:CGFloat = 7
     
     
     /// For section 5 and 9 only
@@ -84,7 +84,7 @@ class TermsOfServiceView: UIView {
         label.tintColor = UIColor.black
         label.textAlignment = .left
         label.numberOfLines = 0;
-        label.text = "Necto is licensed to You (End-User) by Project Necto, located at, UC Santa Cruz, California, United States (hereinafter: Licensor), for use only under the terms of this License Agreement. By downloading the Application from the Apple AppStore, and any update thereto (as permitted by this License Agreement), You indicate that You agree to be bound by all of the terms and conditions of this License Agreement, and that You accept this License Agreement. The parties of this License Agreement acknowledge that Apple is not a Party to this License Agreement and is not bound by any provisions or obligations with regard to the Application, such as warranty, liability, maintenance and support thereof. Necto, not Apple, is solely responsible for the licensed Application and the content thereof. This License Agreement may not provide for usage rules for the Application that are in conflict with the latest App Store Terms of Service. Necto acknowledges that it had the opportunity to review said terms and this License Agreement is not conflicting with them. All rights not expressly granted to You are reserved."
+        label.text = "This is licensed to You (End-User) by Necto (hereinafter: Licensor), for use only under the terms of this License Agreement. By downloading the Application from the Apple AppStore, and any update thereto (as permitted by this License Agreement), You indicate that You agree to be bound by all of the terms and conditions of this License Agreement, and that You accept this License Agreement. The parties of this License Agreement acknowledge that Apple is not a Party to this License Agreement and is not bound by any provisions or obligations with regard to the Application, such as warranty, liability, maintenance and support thereof. Necto, not Apple, is solely responsible for the licensed Application and the content thereof. This License Agreement may not provide for usage rules for the Application that are in conflict with the latest App Store Terms of Service. Necto acknowledges that it had the opportunity to review said terms and this License Agreement is not conflicting with them. All rights not expressly granted to You are reserved."
         return label
     }()
     
