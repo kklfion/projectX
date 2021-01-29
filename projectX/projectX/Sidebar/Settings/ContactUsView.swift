@@ -38,11 +38,21 @@ class ContactUsView: UIView {
         label.text = "Contact Us"
         return label
     }()
+    lazy var No1: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        label.tintColor = UIColor.black
+        label.textAlignment = .center
+        label.numberOfLines = 0;
+        label.text = "For general inquiries, complaints, questions or claims concerning the licensed Application, please contact: appdevucsc2020@gmail.com, Instagram: @necto_uc"
+        return label
+    }()
     private func setupViews(){
         self.backgroundColor = .white
         
         self.addSubview(cancelButton)
         self.addSubview(contactUs)
+        self.addSubview(No1)
         cancelButton.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
                                 leading: nil,
                                 bottom: nil,
@@ -53,6 +63,11 @@ class ContactUsView: UIView {
                                     bottom: nil,
                                     trailing: self.trailingAnchor,
                                     padding: .init(top: 10, left: 5, bottom: 0, right: 5),size: .init(width: 0, height: 0))
+        No1.addAnchors(top: contactUs.bottomAnchor,
+                                    leading: self.leadingAnchor,
+                                    bottom: nil,
+                                    trailing: self.trailingAnchor,
+                                    padding: .init(top: 15, left: 5, bottom: 0, right: 5),size: .init(width: 0, height: 0))
         
         
     }
