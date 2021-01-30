@@ -10,7 +10,7 @@
 *.xcworkspace/
 project.xcworkspace/
 xcuserdata/
-
+*/Podfile.lock
 # Podfiles
 Pods/
 ../.DS_Store
