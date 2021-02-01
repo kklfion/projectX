@@ -33,6 +33,9 @@ struct User: Identifiable, Codable {
     
     /// Age of the user
     var age: Int?
+    
+    ///how many people follow this user
+    var followersCount: Int?
 
 
 }

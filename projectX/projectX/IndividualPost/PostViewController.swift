@@ -13,7 +13,7 @@ import Combine
 
 ///user can like post inside the post vc and that should be updated in the feed, also comment count can change
 protocol DidUpdatePostAfterDissmissingDelegate {
-    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, like: LikedPost?, status: LikeStatus)
+    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, like: Like?, status: LikeStatus)
 }
 ///to help figure out whether like was changed inside of the post and if Feed will need to update like in the database
 enum LikeStatus{
@@ -50,7 +50,7 @@ class PostViewController: UIViewController {
     private var userSubscription: AnyCancellable!
     
     ///is post liked by the user
-    private var like: LikedPost?
+    private var like: Like?
     
     private var likeStatus: LikeStatus = .unchanged
     
@@ -64,7 +64,7 @@ class PostViewController: UIViewController {
     private var comments = [Comment]()
     
     ///likes for the comments
-    private var likesDictionary = [Comment: LikedPost]()
+    private var likesDictionary = [Comment: Like]()
     
     ///personal data about each user
     private var usersToComments = [Comment: User]()
@@ -98,7 +98,7 @@ class PostViewController: UIViewController {
     }()
     
     ///to create postViewController post MUST be initialized
-    init(post: Post, like: LikedPost?, indexPath: IndexPath){
+    init(post: Post, like: Like?, indexPath: IndexPath){
         self.post = post
         self.like = like
         self.indexPath = indexPath
@@ -415,7 +415,7 @@ extension PostViewController{
             let query = NetworkManager.shared.db.likedPosts
                 .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
                 .whereField(FirestoreFields.userID.rawValue, isEqualTo: comment.userID)
-            NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [LikedPost]?, error) in
+            NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [Like]?, error) in
                 if error != nil {
                     print("error loading liked post", error!)
                 }else if likedPosts != nil {
@@ -430,7 +430,7 @@ extension PostViewController{
     private func writeLikeToTheFirestore(with indexPath: IndexPath) {
         let userID = comments[indexPath.item].userID
         guard let commentID = comments[indexPath.item].id else {return}
-        var document = LikedPost(userID: userID, postID: commentID)
+        var document = Like(userID: userID, postID: commentID)
         NetworkManager.shared.writeDocumentReturnReference(collectionType: .likedPosts, document: document  ) { (ref, error) in
             if let err = error{
                 print("Error creating like \(err)")
@@ -555,7 +555,7 @@ extension PostViewController: PostViewButtonsDelegate{
         presentAuthorFor(user: post.userInfo)
     }
     private func presentAuthorFor(user: User){
-        let vc = OtherProfileViewController(user: post.userInfo)
+        let vc = OtherProfileViewController(user: user)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

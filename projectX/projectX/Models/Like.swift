@@ -9,7 +9,7 @@
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct LikedPost: Identifiable, Codable{
+struct Like: Identifiable, Codable{
     
     @DocumentID var id: String?
     
@@ -23,7 +23,7 @@ struct LikedPost: Identifiable, Codable{
     var date: Date
     
 }
-extension LikedPost{
+extension Like{
     /// returns a new post object
     public init(userID: String, postID: String){
         self.userID = userID

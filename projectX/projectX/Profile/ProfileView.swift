@@ -16,10 +16,6 @@ class ProfileView: UIView {
         super.init(frame: frame)
         setupViews(frame: frame)
     }
-    convenience init(frame: CGRect, userID: String? = nil) {
-        self.init(frame: frame)
-        setupViews(frame: frame)
-    }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -55,13 +51,9 @@ class ProfileView: UIView {
     }()
     let followButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = Constants.Colors.mainYellow
-        button.setTitle("+", for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 35)
-        //button.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        button.backgroundColor = UIColor(rgb: 0xf6e58f)
         button.layer.cornerRadius = 30; // this value vary as per your desire
         button.clipsToBounds = true;
-
         return button
     }()
     let bioStackView: UIStackView = {
@@ -96,13 +88,13 @@ class ProfileView: UIView {
     }()
     let spacingView: UIView  = {
         let view = UIView()
-        view.backgroundColor = .lightGray
+        //view.backgroundColor = .lightGray
         view.alpha = 0.1
         view.layer.cornerRadius = 1
         return view
     }()
 
-    var tableViewAndCollectionView: SegmentedControlWithStackView?
+    var segmentedControlWithStackView: SegmentedControlWithStackView?
     
     private func setupViews(frame: CGRect) {
         
@@ -152,14 +144,20 @@ class ProfileView: UIView {
                                 trailing: self.trailingAnchor,
                                 padding: .init(top: 10, left: 10, bottom: 0, right: 10),
                                 size: .init(width: 0, height: 2))
-        tableViewAndCollectionView = SegmentedControlWithStackView(frame: frame)
-        self.addSubview(tableViewAndCollectionView!)
-        tableViewAndCollectionView?.addAnchors(top: spacingView.bottomAnchor,
+        segmentedControlWithStackView = SegmentedControlWithStackView(frame: frame)
+        self.addSubview(segmentedControlWithStackView!)
+        segmentedControlWithStackView?.addAnchors(top: spacingView.bottomAnchor,
                                      leading: self.leadingAnchor,
                                      bottom: self.bottomAnchor,
                                      trailing: self.trailingAnchor,
                                      padding: .init(top: 0, left: 0, bottom: 0, right: 0),
                                      size: .init(width: 0, height: 0))
         
+    }
+    func setFollowButtonToFollowed(){
+        followButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+    }
+    func setFollowButtonToNotFollowed(){
+        followButton.setImage(UIImage(systemName: "plus"), for: .normal)
     }
 }
