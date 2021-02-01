@@ -47,12 +47,10 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
     ///to initialize your profile
     init() {
         super.init(nibName: nil, bundle: nil)
-        print("called personal profile")
     }
     ///initialize profileviewcontroller with user data (to display other user profile)
     init(user: User){
         super.init(nibName: nil, bundle: nil)
-        print("called other profile")
         self.user = user
     }
     
@@ -63,6 +61,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         extendedLayoutIncludesOpaqueBars = true
+        
         view.backgroundColor = .white
         navigationItem.largeTitleDisplayMode = .never
         setupView()
@@ -71,6 +70,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
             setUserAndSubscribeToUpdates()
         }else{
             updateProfileInformation() //dispalying other person profile
+            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.userID, userID: user?.userID)
         }
 
     }
