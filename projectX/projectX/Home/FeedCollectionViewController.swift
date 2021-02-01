@@ -364,16 +364,9 @@ extension FeedCollectionViewController: DidUpdatePostAfterDissmissingDelegate {
         guard  let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
         //2.updateData (likes & post & database)
         posts[indexPath.item].commentCount = post.commentCount
-        switch status {
-        case .add:
-            
+        if status == .add || status == .delete{
             didTapLikeButton(indexPath, cell)
-        case .delete:
-            didTapLikeButton(indexPath, cell)
-        case .unchanged:
-            print("unchanged")
         }
-        
         //3.trigger reload
         var snapshot = dataSource.snapshot()
         snapshot.reloadItems([selectedPost])
