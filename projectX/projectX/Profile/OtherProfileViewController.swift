@@ -64,6 +64,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         super.viewDidLoad()
         extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
+        navigationItem.largeTitleDisplayMode = .never
         setupView()
         setupFeedVCs()
         if user == nil { //means showing personal profile

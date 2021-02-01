@@ -59,14 +59,11 @@ extension HomeTableVC{
         navBarAppearance.shadowColor = .clear
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
-        navigationController?.navigationBar.prefersLargeTitles = true
-        
-        
     }
     private func setupNavigationBar(){
+        navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationItem.title = "Home"
         navigationItem.searchController = searchController
-        //navigationItem.hidesSearchBarWhenScrolling = false
         searchController.searchBar.delegate = self
     }
 }

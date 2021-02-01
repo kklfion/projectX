@@ -340,7 +340,6 @@ PODS:
   - ProgressHUD (13.4)
   - PromisesObjC (1.2.12)
 
-
 DEPENDENCIES:
   - Firebase/Analytics
   - Firebase/Auth
@@ -399,4 +398,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: daa8c013a87d645ca32f73f3048f8083d5d54d4c
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1

@@ -27,7 +27,25 @@ class PostViewController: UIViewController {
     ///post is initialized by presenting controller
     private var post: Post
     
-    private var user: User?
+    private var user: User? {
+        didSet{
+            if user != nil {
+                NetworkManager.shared.getAsynchImage(withURL: user?.photoURL, completion: { (image, error) in
+                    if let image = image{
+                        DispatchQueue.main.async {
+                            self.userImage = image
+                        }
+                    }
+                })
+            }
+        }
+    }
+    
+    private var userImage: UIImage? {
+        didSet {
+            newCommentView.authorView.image = userImage
+        }
+    }
     
     private var userSubscription: AnyCancellable!
     
@@ -95,6 +113,7 @@ class PostViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         self.navigationItem.title = post.stationName
+        navigationItem.largeTitleDisplayMode = .never
 
         //only this order works, some bug that makes newcommentview invisible if this is changed
         setupTableViewAndHeader()
@@ -114,7 +133,7 @@ class PostViewController: UIViewController {
         }
     }
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.prefersLargeTitles = false
+        //self.navigationController?.navigationBar.prefersLargeTitles = false
     }
     ///when dismissing the view, need to update data in the Feed
     override func viewWillDisappear(_ animated: Bool) {
@@ -172,9 +191,10 @@ class PostViewController: UIViewController {
         newCommentViewHeightConstraint?.isActive = true
         newCommentViewBottomConstraint = newCommentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         newCommentViewBottomConstraint?.isActive = true
-   
+        
         newCommentView.closeButton.addTarget(self, action: #selector(didTapDissmissNewComment), for: .touchUpInside)
         newCommentView.sendButton.addTarget(self, action: #selector(didTapSendButton), for: .touchUpInside)
+        newCommentView.anonimousSwitch.addTarget(self, action: #selector(switchValueDidChange), for: .valueChanged)
     }
     ///enables notifications when keyboards shows up/ hides
     private func setupKeyboardnotifications(){
@@ -272,6 +292,20 @@ extension PostViewController{
                 self.dismiss(animated: true)
             }
             presenter.present(in: self)
+        }
+    }
+    @objc func switchValueDidChange(){
+        if newCommentView.anonimousSwitch.isOn {
+            newCommentView.setAnonimousImage()
+        } else {
+            NetworkManager.shared.getAsynchImage(withURL: user?.photoURL, completion: { (image, error) in
+                if let image = image{
+                    DispatchQueue.main.async {
+                        self.newCommentView.authorView.image = image
+                    }
+                }
+            })
+                
         }
     }
 }

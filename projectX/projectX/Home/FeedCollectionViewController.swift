@@ -366,6 +366,7 @@ extension FeedCollectionViewController: DidUpdatePostAfterDissmissingDelegate {
         posts[indexPath.item].commentCount = post.commentCount
         switch status {
         case .add:
+            
             didTapLikeButton(indexPath, cell)
         case .delete:
             didTapLikeButton(indexPath, cell)
