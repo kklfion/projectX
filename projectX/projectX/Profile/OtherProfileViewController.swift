@@ -14,10 +14,56 @@ enum ProfileType{
     case otherProfile
     case personalProfile
 }
-class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
+protocol SlideableTopViewProtocol: class{
+    
+    var headerMaxHeight: CGFloat! { get set }
+    
+    var statusBarHeight: CGFloat! { get set }
+    
+    var topViewTopConstraint: NSLayoutConstraint! { get set }
+    
+    func adjustHeaderPosition(_ scrollView: UIScrollView)
+    
+    func setupHeights(viewHeight: CGFloat)
+    
+}
+extension SlideableTopViewProtocol{
+    func adjustHeaderPosition(_ scrollView: UIScrollView){
+        let y_offset: CGFloat = scrollView.contentOffset.y
+        let newConstant = topViewTopConstraint.constant - y_offset
+
+        //when scrolling up
+        if newConstant <= -headerMaxHeight {
+            topViewTopConstraint.constant = -headerMaxHeight
+        //when scrolling down
+        }else if newConstant >= 0{
+            topViewTopConstraint.constant = 0
+        }else{//inbetween we want to adjust the position of the header
+            topViewTopConstraint.constant = newConstant
+            scrollView.contentOffset.y = 0 //to smooth out scrolling
+        }
+    }
+    func setupHeights(viewHeight: CGFloat){ //viewHeight*0.3 is height of the stationtopview could be different for profile
+        if #available(iOS 13.0, *) {
+            let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+            statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        } else {
+            statusBarHeight = UIApplication.shared.statusBarFrame.height
+        }
+        headerMaxHeight = viewHeight * 0.3 + 3 //MUST equal to the height of the view's header that is set up in the stationView
+    }
+}
+
+class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, SlideableTopViewProtocol {
+    
+    var headerMaxHeight: CGFloat!
+    
+    var statusBarHeight: CGFloat!
+    
+    var topViewTopConstraint: NSLayoutConstraint!
     
     func didScrollFeed(_ scrollView: UIScrollView) {
-        
+        //adjustHeaderPosition(scrollView)
     }
     ///user displayed by the controller
     var user: User?
@@ -35,7 +81,14 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
     private var missions = [Mission]()
     
     ///custom view
-    private var profileView: ProfileView?
+    private let profileView: ProfileView = {
+        let view = ProfileView()
+        return view
+    }()
+    private lazy var feedSegmentedControl: SegmentedControlWithStackView = {
+        let feed = SegmentedControlWithStackView(frame: self.view.frame)
+        return feed
+    }()
     
     ///feed vc
     private var feedCollectionViewController: FeedCollectionViewController!
@@ -66,7 +119,8 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
         extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         navigationItem.largeTitleDisplayMode = .never
-        setupView()
+        setupProfileView()
+        setupHeights(viewHeight: self.view.frame.height)
         setupFeedVCs()
         switch profileType{
         case .otherProfile:
@@ -77,7 +131,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
             checkIfUserIsFollowed()
         case .personalProfile:
             setUserAndSubscribeToUpdates()
-            profileView?.followButton.isHidden = true
+            profileView.followButton.isHidden = true
         }
     }
     private func checkIfUserIsFollowed(){
@@ -92,10 +146,11 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
                     print("Error loading follower for user \(String(describing: error?.localizedDescription))")
                 }else if follower != nil{
                     self.follower = follower?[0]
-                    self.profileView?.setFollowButtonToFollowed()
+                    self.profileView.setFollowButtonToFollowed()
+                }else{
+                    self.profileView.setFollowButtonToNotFollowed()
                 }
             }
-        //change ui
     }
     private func setUserAndSubscribeToUpdates(){
         switch UserManager.shared().state {
@@ -115,24 +170,32 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
             self.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id, userID: user?.id)
         }
     }
+    private func setupProfileView(){
+//        feedSegmentedControl = SegmentedControlWithStackView(frame: self.view.frame)
+        view.addSubview(profileView)
+        profileView.addAnchors(top: nil,
+                               leading: view.leadingAnchor,
+                               bottom: nil,
+                                trailing: view.trailingAnchor)
+        profileView.heightAnchor.constraint(equalToConstant: view.frame.height * 0.3).isActive = true
+        topViewTopConstraint = profileView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0)
+        topViewTopConstraint.isActive = true
+        profileView.followButton.addTarget(self, action: #selector(didTapFollowButton), for: .touchUpInside)
+        
+        view.addSubview(feedSegmentedControl)
+        feedSegmentedControl.addAnchors(top: profileView.bottomAnchor,
+                               leading: view.leadingAnchor,
+                               bottom: view.bottomAnchor,
+                                trailing: view.trailingAnchor)
+    }
     private func setupFeedVCs(){
         let vc = UIViewController() //instead of the missions vc
         vc.view.backgroundColor  = .white
         feedCollectionViewController = FeedCollectionViewController()
         self.addChild(feedCollectionViewController)
         feedCollectionViewController.didScrollFeedDelegate = self
-        profileView?.segmentedControlWithStackView?.stackView.addArrangedSubview(feedCollectionViewController.view)
-        profileView?.segmentedControlWithStackView?.stackView.addArrangedSubview(vc.view)
-    }
-    private func setupView(){
-        profileView = ProfileView(frame: self.view.frame)
-        guard let profileView = profileView else {return}
-        view.addSubview(profileView)
-        profileView.addAnchors(top: view.topAnchor,
-                               leading: view.leadingAnchor,
-                               bottom: view.bottomAnchor,
-                                trailing: view.trailingAnchor)
-        profileView.followButton.addTarget(self, action: #selector(didTapFollowButton), for: .touchUpInside)
+        feedSegmentedControl.stackView.addArrangedSubview(feedCollectionViewController.view)
+        feedSegmentedControl.stackView.addArrangedSubview(vc.view)
     }
     @objc func didTapFollowButton(){
         //need to fetch whether user was is followed
@@ -159,7 +222,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
                     if let error = err {
                         print(error)
                     } else {
-                        self.profileView?.setFollowButtonToNotFollowed()
+                        self.profileView.setFollowButtonToNotFollowed()
                         self.follower = nil
                         //increment followers count
                         NetworkManager.shared.incrementDocumentValue(collectionType: .users,
@@ -181,7 +244,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
                 print(error)
             } else {
                 //increment followers count
-                self.profileView?.setFollowButtonToFollowed()
+                self.profileView.setFollowButtonToFollowed()
                 self.follower = doc
                 NetworkManager.shared.incrementDocumentValue(collectionType: .users,
                                                              documentID: userToFollowID, value: 1,
@@ -191,34 +254,30 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate {
     }
     private func updateProfileInformation(){
         guard let user = user else{return}
-        profileView?.usernameLabel.text = user.name
+        profileView.usernameLabel.text = user.name
         NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
-                    guard self.profileView?.profileImageViewContainer != nil else {return}
-                    self.profileView?.profileImageView.image = image
+                    guard self.profileView.profileImageViewContainer != nil else {return}
+                    self.profileView.profileImageView.image = image
                     self.setShadowForProfileImage()
                 }
             }
         }
     }
     private func setShadowForProfileImage(){
-        if let shadowRect = self.profileView?.profileImageViewContainer.layer.bounds
-        {
-            self.profileView?.profileImageViewContainer.layer.masksToBounds = false
-            self.profileView?.profileImageViewContainer.layer.shadowColor = UIColor.black.cgColor//Constants.Colors.mainYellow.cgColor
-            self.profileView?.profileImageViewContainer.layer.shadowOpacity = 0.2
-            self.profileView?.profileImageViewContainer.layer.shadowOffset = CGSize(width: -1, height: 1)
-            self.profileView?.profileImageViewContainer.layer.shadowRadius = 10
-            self.profileView?.profileImageViewContainer.layer.cornerRadius = 50
-            self.profileView?.profileImageViewContainer.layer.shadowPath = UIBezierPath(roundedRect: shadowRect, cornerRadius: shadowRect.height / 2).cgPath
-            //self.profileView?.profileImageViewContainer.layer.shadowPath = UIBezierPath(rect: (self.profileView?.profileImageViewContainer.layer.bounds)!).cgPath
-            self.profileView?.profileImageViewContainer.layer.shouldRasterize = true
-            self.profileView?.profileImageViewContainer.layer.rasterizationScale = UIScreen.main.scale
-        }
+//        let shadowRect = self.profileView.profileImageViewContainer.layer.bounds
+//        self.profileView.profileImageViewContainer.layer.masksToBounds = false
+//        self.profileView.profileImageViewContainer.layer.shadowColor = UIColor.black.cgColor//Constants.Colors.mainYellow.cgColor
+//        self.profileView.profileImageViewContainer.layer.shadowOpacity = 0.2
+//        self.profileView.profileImageViewContainer.layer.shadowOffset = CGSize(width: -1, height: 1)
+//        self.profileView.profileImageViewContainer.layer.shadowRadius = 10
+//        self.profileView.profileImageViewContainer.layer.cornerRadius = 50
+//        self.profileView.profileImageViewContainer.layer.shadowPath = UIBezierPath(roundedRect: shadowRect, cornerRadius: shadowRect.height / 2).cgPath
+//        self.profileView.profileImageViewContainer.layer.shouldRasterize = true
+//        self.profileView.profileImageViewContainer.layer.rasterizationScale = UIScreen.main.scale
     }
 }
-
 
 
 

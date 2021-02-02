@@ -14,7 +14,7 @@ class ProfileView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupViews(frame: frame)
+        setupViews()
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -94,64 +94,64 @@ class ProfileView: UIView {
         return view
     }()
 
-    var segmentedControlWithStackView: SegmentedControlWithStackView?
+    //var segmentedControlWithStackView: SegmentedControlWithStackView?
     
-    private func setupViews(frame: CGRect) {
-        
-        headerGradient.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: (self.frame.width*0.5) + 25)
-        self.layer.addSublayer(headerGradient)
-        
-        viewBackground.frame = CGRect(x: 0, y: (self.frame.width*0.5), width: self.frame.width, height: 50)
-        self.addSubview(viewBackground)
-        
-        profileImageViewContainer.addSubview(profileImageView)
-        profileImageView.addAnchors(top: profileImageViewContainer.topAnchor, leading: profileImageViewContainer.leadingAnchor, bottom: profileImageViewContainer.bottomAnchor, trailing: profileImageViewContainer.trailingAnchor)
-        
-        profileImageViewContainer.addSubview(followButton)
-        followButton.centerXAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: -30).isActive = true
-        followButton.centerYAnchor.constraint(equalTo: profileImageView.bottomAnchor,constant: -30).isActive = true
-        
-        followButton.addAnchors(top: nil,leading: nil,bottom: nil,trailing: nil,size: .init(width: 60, height: 60))
-        
-        self.addSubview(profileImageViewContainer)
-        //self.addSubview(followButton)
-        self.addSubview(bioStackView)
-        self.addSubview(spacingView)
-        
-        bioStackView.addArrangedSubview(usernameLabel)
-        bioStackView.addArrangedSubview(useridLabel)
-        bioStackView.addArrangedSubview(schoolLabel)
-        
-        profileImageViewContainer.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
-                                     leading: nil,
-                                     bottom: nil,
-                                     trailing: nil,
-                                     padding: .init(top: 10, left: 0, bottom: 0, right: 0),
-                                     size: .init(width: self.frame.width*0.5, height: self.frame.width*0.5))
-        profileImageViewContainer.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        profileImageView.layer.cornerRadius = (self.frame.width*0.5 / 2)
-        profileImageViewContainer.layer.cornerRadius = (self.frame.width*0.5 / 2)
-        
-        bioStackView.addAnchors(top: profileImageViewContainer.bottomAnchor,
-                                            leading: self.leadingAnchor,
-                                            bottom: nil,
-                                            trailing: self.trailingAnchor,
-                                            padding: .init(top: 10, left: 0, bottom: 0, right: 0))
-        
-        spacingView.addAnchors(top: bioStackView.bottomAnchor,
-                                leading: self.leadingAnchor,
-                                bottom: nil,
-                                trailing: self.trailingAnchor,
-                                padding: .init(top: 10, left: 10, bottom: 0, right: 10),
-                                size: .init(width: 0, height: 2))
-        segmentedControlWithStackView = SegmentedControlWithStackView(frame: frame)
-        self.addSubview(segmentedControlWithStackView!)
-        segmentedControlWithStackView?.addAnchors(top: spacingView.bottomAnchor,
-                                     leading: self.leadingAnchor,
-                                     bottom: self.bottomAnchor,
-                                     trailing: self.trailingAnchor,
-                                     padding: .init(top: 0, left: 0, bottom: 0, right: 0),
-                                     size: .init(width: 0, height: 0))
+    private func setupViews() {
+        self.backgroundColor = .blue
+//        headerGradient.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: (self.frame.width*0.5) + 25)
+//        self.layer.addSublayer(headerGradient)
+//
+//        viewBackground.frame = CGRect(x: 0, y: (self.frame.width*0.5), width: self.frame.width, height: 50)
+//        self.addSubview(viewBackground)
+//
+//        profileImageViewContainer.addSubview(profileImageView)
+//        profileImageView.addAnchors(top: profileImageViewContainer.topAnchor, leading: profileImageViewContainer.leadingAnchor, bottom: profileImageViewContainer.bottomAnchor, trailing: profileImageViewContainer.trailingAnchor)
+//
+//        profileImageViewContainer.addSubview(followButton)
+//        followButton.centerXAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: -30).isActive = true
+//        followButton.centerYAnchor.constraint(equalTo: profileImageView.bottomAnchor,constant: -30).isActive = true
+//
+//        followButton.addAnchors(top: nil,leading: nil,bottom: nil,trailing: nil,size: .init(width: 60, height: 60))
+//
+//        self.addSubview(profileImageViewContainer)
+//        //self.addSubview(followButton)
+//        self.addSubview(bioStackView)
+//        self.addSubview(spacingView)
+//
+//        bioStackView.addArrangedSubview(usernameLabel)
+//        bioStackView.addArrangedSubview(useridLabel)
+//        bioStackView.addArrangedSubview(schoolLabel)
+//
+//        profileImageViewContainer.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
+//                                     leading: nil,
+//                                     bottom: nil,
+//                                     trailing: nil,
+//                                     padding: .init(top: 10, left: 0, bottom: 0, right: 0),
+//                                     size: .init(width: self.frame.width*0.5, height: self.frame.width*0.5))
+//        profileImageViewContainer.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+//        profileImageView.layer.cornerRadius = (self.frame.width*0.5 / 2)
+//        profileImageViewContainer.layer.cornerRadius = (self.frame.width*0.5 / 2)
+//
+//        bioStackView.addAnchors(top: profileImageViewContainer.bottomAnchor,
+//                                            leading: self.leadingAnchor,
+//                                            bottom: nil,
+//                                            trailing: self.trailingAnchor,
+//                                            padding: .init(top: 10, left: 0, bottom: 0, right: 0))
+//
+//        spacingView.addAnchors(top: bioStackView.bottomAnchor,
+//                                leading: self.leadingAnchor,
+//                                bottom: nil,
+//                                trailing: self.trailingAnchor,
+//                                padding: .init(top: 10, left: 10, bottom: 0, right: 10),
+//                                size: .init(width: 0, height: 2))
+//        //segmentedControlWithStackView = SegmentedControlWithStackView(frame: frame)
+//        //self.addSubview(segmentedControlWithStackView!)
+////        segmentedControlWithStackView?.addAnchors(top: spacingView.bottomAnchor,
+////                                     leading: self.leadingAnchor,
+////                                     bottom: self.bottomAnchor,
+////                                     trailing: self.trailingAnchor,
+////                                     padding: .init(top: 0, left: 0, bottom: 0, right: 0),
+////                                     size: .init(width: 0, height: 0))
         
     }
     func setFollowButtonToFollowed(){
