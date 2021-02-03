@@ -8,16 +8,28 @@
 
 import UIKit
 
+///must be init with frame
 class SegmentedControlWithStackView: UIView{
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
     }
+//    init(frame: CGRect, itemNames: [String]) {
+//        self.numberOfItems = itemNames.count
+//        self.itemNames = itemNames
+//        super.init(frame: frame)
+//        setupViews()
+//    }
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    let segmentedControl: UISegmentedControl = {
-        let sc = UISegmentedControl(items: ["Posts", "Missions"])
+    
+//    let numberOfItems: Int?
+//
+//    let itemNames: [String]?
+    
+    lazy var segmentedControl: UISegmentedControl = {
+        let sc = UISegmentedControl(items: ["Stations", "Missions"])
         sc.selectedSegmentIndex = 0
         sc.selectedSegmentTintColor = .white
         sc.layer.backgroundColor = UIColor.white.cgColor
@@ -46,7 +58,6 @@ class SegmentedControlWithStackView: UIView{
                                             bottom: self.bottomAnchor,
                                             trailing: nil, padding: .init(top: 10, left: 0, bottom: 0, right: 10),
                                             size: .init(width: (self.frame.width * 2), height: 0))
-        print(self.frame.width * 2)
     }
     /// Animation for switching between two tableViewControllers
     private var toggle: Bool = true

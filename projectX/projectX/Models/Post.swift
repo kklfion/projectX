@@ -63,11 +63,8 @@ extension Post{
                 imageURL: URL?,
                 commentCount: Int,
                 isAnonymous: Bool? = false) {
-        print(text)
         if text != nil && text != Constants.NewPost.placeholderBodyText
         {
-            print(text)
-            print("not that")
             self.text = text
         }
         self.stationID = stationID

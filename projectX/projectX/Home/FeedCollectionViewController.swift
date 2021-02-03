@@ -143,7 +143,6 @@ extension FeedCollectionViewController{
         return layout
     }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
         presentPostFor(indexPath: indexPath, likesDictionary[posts[indexPath.row]])
     }
     //TODO: move to cell
@@ -281,7 +280,6 @@ extension FeedCollectionViewController: PostCollectionViewCellDidTapDelegate{
         }
     }
     func didTapCommentsButton(_ indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
         presentPostFor(indexPath: indexPath, likesDictionary[posts[indexPath.row]])
     }
 }

@@ -40,7 +40,7 @@ class MainTabBarVC: UITabBarController {
         let profile = createViewController(tabBarItemImageName: "person", title: "Profile", controller: OtherProfileViewController())
         
         let homeNav = UINavigationController(rootViewController: home)
-        let notigicationsNav = UINavigationController(rootViewController: notifications)
+        _ = UINavigationController(rootViewController: notifications)
         let profileNav = UINavigationController(rootViewController: profile)
     
         self.viewControllers = [sidebar, newPost, homeNav, profileNav]

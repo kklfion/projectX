@@ -22,40 +22,48 @@ protocol SlideableTopViewProtocol: class{
     
     var topViewTopConstraint: NSLayoutConstraint! { get set }
     
-    func adjustHeaderPosition(_ scrollView: UIScrollView)
+    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?)
     
     func setupHeights(viewHeight: CGFloat)
     
+    func isAtMaxHeight(viewHeight: CGFloat, currentOffset:CGFloat) -> Bool
+    
 }
 extension SlideableTopViewProtocol{
-    func adjustHeaderPosition(_ scrollView: UIScrollView){
+    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?){
         let y_offset: CGFloat = scrollView.contentOffset.y
-        let newConstant = topViewTopConstraint.constant - y_offset
-
+        let topViewOffset = topViewTopConstraint.constant - y_offset
         //when scrolling up
-        if newConstant <= -headerMaxHeight {
-            topViewTopConstraint.constant = -headerMaxHeight
-        //when scrolling down
-        }else if newConstant >= 0{
+        if isAtMaxHeight(viewHeight: headerMaxHeight, currentOffset: topViewOffset){
+            topViewTopConstraint.constant = -headerMaxHeight //dont move past that point
+            //controller?.isNavigationBarHidden = false
+        }else if topViewOffset >= 0{//when scrolling down remain at 0
             topViewTopConstraint.constant = 0
+            controller?.isNavigationBarHidden = true
         }else{//inbetween we want to adjust the position of the header
-            topViewTopConstraint.constant = newConstant
+            topViewTopConstraint.constant = topViewOffset
             scrollView.contentOffset.y = 0 //to smooth out scrolling
+            controller?.isNavigationBarHidden = false
         }
     }
-    func setupHeights(viewHeight: CGFloat){ //viewHeight*0.3 is height of the stationtopview could be different for profile
+    func isAtMaxHeight(viewHeight: CGFloat, currentOffset:CGFloat) -> Bool{
+        return currentOffset <= -viewHeight
+    }
+    func setupHeights(viewHeight: CGFloat){
         if #available(iOS 13.0, *) {
             let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
             statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
         } else {
             statusBarHeight = UIApplication.shared.statusBarFrame.height
         }
-        headerMaxHeight = viewHeight * 0.3 + 3 //MUST equal to the height of the view's header that is set up in the stationView
+        headerMaxHeight = viewHeight-statusBarHeight-40
     }
 }
 
 class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, SlideableTopViewProtocol {
     
+    lazy var profileHeight = view.frame.height * 0.4
+     
     var headerMaxHeight: CGFloat!
     
     var statusBarHeight: CGFloat!
@@ -63,7 +71,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slide
     var topViewTopConstraint: NSLayoutConstraint!
     
     func didScrollFeed(_ scrollView: UIScrollView) {
-        //adjustHeaderPosition(scrollView)
+        adjustHeaderPosition(scrollView, navigationController)
     }
     ///user displayed by the controller
     var user: User?
@@ -80,23 +88,23 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slide
     ///missions accepted by the user ? or created?
     private var missions = [Mission]()
     
-    ///custom view
-    private let profileView: ProfileView = {
-        let view = ProfileView()
+    ///profile view
+    private lazy var profileView: ProfileView = {
+        let view = ProfileView(frame: self.view.frame)
         return view
     }()
+    
+    ///segmented control that holds feeds
     private lazy var feedSegmentedControl: SegmentedControlWithStackView = {
-        let feed = SegmentedControlWithStackView(frame: self.view.frame)
-        return feed
+        let control = SegmentedControlWithStackView(frame: self.view.frame)
+        return control
     }()
     
     ///feed vc
     private var feedCollectionViewController: FeedCollectionViewController!
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.isNavigationBarHidden = true
     }
     ///to initialize your profile
     init() {
@@ -116,11 +124,12 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slide
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = "Profile"
         extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         navigationItem.largeTitleDisplayMode = .never
         setupProfileView()
-        setupHeights(viewHeight: self.view.frame.height)
+        setupHeights(viewHeight: profileHeight)
         setupFeedVCs()
         switch profileType{
         case .otherProfile:
@@ -171,22 +180,22 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slide
         }
     }
     private func setupProfileView(){
-//        feedSegmentedControl = SegmentedControlWithStackView(frame: self.view.frame)
         view.addSubview(profileView)
         profileView.addAnchors(top: nil,
                                leading: view.leadingAnchor,
                                bottom: nil,
-                                trailing: view.trailingAnchor)
-        profileView.heightAnchor.constraint(equalToConstant: view.frame.height * 0.3).isActive = true
+                               trailing: view.trailingAnchor)
+        profileView.heightAnchor.constraint(equalToConstant: profileHeight).isActive = true
         topViewTopConstraint = profileView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0)
         topViewTopConstraint.isActive = true
         profileView.followButton.addTarget(self, action: #selector(didTapFollowButton), for: .touchUpInside)
         
         view.addSubview(feedSegmentedControl)
         feedSegmentedControl.addAnchors(top: profileView.bottomAnchor,
-                               leading: view.leadingAnchor,
-                               bottom: view.bottomAnchor,
-                                trailing: view.trailingAnchor)
+                                        leading: view.leadingAnchor,
+                                        bottom: view.bottomAnchor,
+                                        trailing: view.trailingAnchor,
+                                        padding: .init(top: 10, left: 0, bottom: 0, right: 0))
     }
     private func setupFeedVCs(){
         let vc = UIViewController() //instead of the missions vc
@@ -200,7 +209,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slide
     @objc func didTapFollowButton(){
         //need to fetch whether user was is followed
         //if followed and tapped - unfollow
-        if let follower = follower { //already followed / able to fetch the follow
+        if follower != nil { //already followed / able to fetch the follow
             deleteFollowAndDecrementCounter()
         } else { //not followed or unable to fetch follow
             writeFollowAndIncrementCounter()
@@ -258,7 +267,6 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slide
         NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
-                    guard self.profileView.profileImageViewContainer != nil else {return}
                     self.profileView.profileImageView.image = image
                     self.setShadowForProfileImage()
                 }
@@ -266,16 +274,16 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slide
         }
     }
     private func setShadowForProfileImage(){
-//        let shadowRect = self.profileView.profileImageViewContainer.layer.bounds
-//        self.profileView.profileImageViewContainer.layer.masksToBounds = false
-//        self.profileView.profileImageViewContainer.layer.shadowColor = UIColor.black.cgColor//Constants.Colors.mainYellow.cgColor
-//        self.profileView.profileImageViewContainer.layer.shadowOpacity = 0.2
-//        self.profileView.profileImageViewContainer.layer.shadowOffset = CGSize(width: -1, height: 1)
-//        self.profileView.profileImageViewContainer.layer.shadowRadius = 10
-//        self.profileView.profileImageViewContainer.layer.cornerRadius = 50
-//        self.profileView.profileImageViewContainer.layer.shadowPath = UIBezierPath(roundedRect: shadowRect, cornerRadius: shadowRect.height / 2).cgPath
-//        self.profileView.profileImageViewContainer.layer.shouldRasterize = true
-//        self.profileView.profileImageViewContainer.layer.rasterizationScale = UIScreen.main.scale
+        let shadowRect = self.profileView.profileImageViewContainer.layer.bounds
+        self.profileView.profileImageViewContainer.layer.masksToBounds = false
+        self.profileView.profileImageViewContainer.layer.shadowColor = UIColor.black.cgColor//Constants.Colors.mainYellow.cgColor
+        self.profileView.profileImageViewContainer.layer.shadowOpacity = 0.2
+        self.profileView.profileImageViewContainer.layer.shadowOffset = CGSize(width: -1, height: 1)
+        self.profileView.profileImageViewContainer.layer.shadowRadius = 10
+        self.profileView.profileImageViewContainer.layer.cornerRadius = 50
+        self.profileView.profileImageViewContainer.layer.shadowPath = UIBezierPath(roundedRect: shadowRect, cornerRadius: shadowRect.height / 2).cgPath
+        self.profileView.profileImageViewContainer.layer.shouldRasterize = true
+        self.profileView.profileImageViewContainer.layer.rasterizationScale = UIScreen.main.scale
     }
 }
 
