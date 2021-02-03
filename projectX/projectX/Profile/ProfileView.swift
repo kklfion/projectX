@@ -10,8 +10,6 @@ import UIKit
 
 class ProfileView: UIView {
     
-    private var toggle: Bool = true
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -123,7 +121,7 @@ class ProfileView: UIView {
                                      leading: nil,
                                      bottom: nil,
                                      trailing: nil,
-                                     padding: .init(top: 50, left: 0, bottom: 0, right: 0),
+                                     padding: .init(top: 50 , left: 0, bottom: 0, right: 0),
                                      size: .init(width: self.frame.width*0.5, height: self.frame.width*0.5))
         profileImageViewContainer.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         profileImageView.layer.cornerRadius = (self.frame.width*0.5 / 2)

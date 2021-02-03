@@ -47,17 +47,17 @@ class StationViewController: UIViewController, DidScrollFeedDelegate {
         setupHeights()
         setupStationHeaderWithStation()
         checkIfStationFollowed()
+        navigationItem.largeTitleDisplayMode = .never
        
     }
     override func viewWillAppear(_ animated: Bool) {
-        let navBarAppearance = UINavigationBarAppearance()
-        navBarAppearance.backgroundColor = Constants.Colors.gamingBackground
-        navBarAppearance.shadowImage = UIImage()
-        navBarAppearance.shadowColor = .clear
-        navigationController?.navigationBar.standardAppearance = navBarAppearance
-        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
-        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.setNavigationTo(color: Constants.Colors.gamingBackground)
+        super.viewWillAppear(animated)
     }
+//    override func viewWillDisappear(_ animated: Bool) {
+//        //navigationController?.setNavigationToTransparent()
+//        super.viewWillDisappear(animated)
+//    }
     private func setUserAndSubscribeToUpdates(){
         switch UserManager.shared().state {
         case .loading:

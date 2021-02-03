@@ -53,12 +53,8 @@ class HomeTableVC: UIViewController, UISearchBarDelegate{
 //MARK: - Navigation Bar setup
 extension HomeTableVC{
     override func viewWillAppear(_ animated: Bool) {
-        let navBarAppearance = UINavigationBarAppearance()
-        navBarAppearance.backgroundColor = Constants.Colors.mainYellow
-        navBarAppearance.shadowImage = UIImage()
-        navBarAppearance.shadowColor = .clear
-        navigationController?.navigationBar.standardAppearance = navBarAppearance
-        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+        navigationController?.setNavigationToWhite()
+        super.viewWillAppear(animated)
     }
     private func setupNavigationBar(){
         navigationController?.navigationBar.prefersLargeTitles = true

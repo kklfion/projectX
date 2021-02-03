@@ -24,7 +24,7 @@ protocol SlideableTopViewProtocol: class{
     
     func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?)
     
-    func setupHeights(viewHeight: CGFloat)
+    func setupHeights(viewHeight: CGFloat, extraHeight: CGFloat)
     
     func isAtMaxHeight(viewHeight: CGFloat, currentOffset:CGFloat) -> Bool
     
@@ -36,27 +36,24 @@ extension SlideableTopViewProtocol{
         //when scrolling up
         if isAtMaxHeight(viewHeight: headerMaxHeight, currentOffset: topViewOffset){
             topViewTopConstraint.constant = -headerMaxHeight //dont move past that point
-            //controller?.isNavigationBarHidden = false
         }else if topViewOffset >= 0{//when scrolling down remain at 0
             topViewTopConstraint.constant = 0
-            controller?.isNavigationBarHidden = true
         }else{//inbetween we want to adjust the position of the header
             topViewTopConstraint.constant = topViewOffset
             scrollView.contentOffset.y = 0 //to smooth out scrolling
-            controller?.isNavigationBarHidden = false
         }
     }
     func isAtMaxHeight(viewHeight: CGFloat, currentOffset:CGFloat) -> Bool{
         return currentOffset <= -viewHeight
     }
-    func setupHeights(viewHeight: CGFloat){
+    func setupHeights(viewHeight: CGFloat, extraHeight: CGFloat){
         if #available(iOS 13.0, *) {
             let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
             statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
         } else {
             statusBarHeight = UIApplication.shared.statusBarFrame.height
         }
-        headerMaxHeight = viewHeight-statusBarHeight-40
+        headerMaxHeight = viewHeight-statusBarHeight-extraHeight
     }
 }
 
@@ -64,9 +61,14 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slide
     
     lazy var profileHeight = view.frame.height * 0.4
      
+    ///height of the status bar, used in calculations for the sliding up view
     var headerMaxHeight: CGFloat!
     
+    ///height of the status bar, used in calculations for the sliding up view
     var statusBarHeight: CGFloat!
+    
+    ///to acocunt for the optional navBar
+    var extraHeight: CGFloat
     
     var topViewTopConstraint: NSLayoutConstraint!
     
@@ -104,17 +106,20 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slide
     private var feedCollectionViewController: FeedCollectionViewController!
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.isNavigationBarHidden = true
+        navigationController?.setNavigationToTransparent()
+        super.viewWillAppear(animated)
     }
     ///to initialize your profile
     init() {
         self.profileType = .personalProfile
+        self.extraHeight = 0 //no navbar
         super.init(nibName: nil, bundle: nil)
     }
     ///initialize profileviewcontroller with user data (to display other user profile)
     init(user: User){
         self.user = user
         self.profileType = .otherProfile
+        self.extraHeight = 35 //to account for the navBar
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -124,12 +129,11 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slide
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "Profile"
         extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         navigationItem.largeTitleDisplayMode = .never
         setupProfileView()
-        setupHeights(viewHeight: profileHeight)
+        setupHeights(viewHeight: profileHeight, extraHeight: extraHeight)
         setupFeedVCs()
         switch profileType{
         case .otherProfile:
