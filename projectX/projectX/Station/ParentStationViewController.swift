@@ -30,7 +30,7 @@ class ParentStationViewController: UIViewController, UIScrollViewDelegate {
 
     lazy var stationView: StationView = {
         let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
-        let view = StationView(frame: frame, type: .parentStation)
+        let view = StationView(frame: frame)
         return view
     }()
     let seachView: UISearchBar = {
@@ -83,29 +83,29 @@ class ParentStationViewController: UIViewController, UIScrollViewDelegate {
                 return first.date > second.date
             }
             DispatchQueue.main.async {
-                self.stationView.tableViewAndTableView?.listTableView.reloadData()
-                self.stationView.tableViewAndTableView?.loungeTableView.reloadData()
+                //self.stationView.tableViewAndTableView?.listTableView.reloadData()
+                //self.stationView.tableViewAndTableView?.loungeTableView.reloadData()
             }
         }
     }
     /// sets up delegates etc
     private func setupTableView(){
-        guard let tableView = stationView.tableViewAndTableView?.loungeTableView else {return}
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 100
-        tableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
-        tableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
-        tableView.refreshControl = UIRefreshControl()
-        tableView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
-        
-        guard let tableViewList = stationView.tableViewAndTableView?.listTableView else {return}
-        tableViewList.delegate = self
-        tableViewList.dataSource = self
-        tableViewList.register(UITableViewCell.self, forCellReuseIdentifier: listTableViewCellID)
-        tableViewList.refreshControl = UIRefreshControl()
-        tableViewList.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
+//        guard let tableView = stationView.tableViewAndTableView?.loungeTableView else {return}
+//        tableView.delegate = self
+//        tableView.dataSource = self
+//        tableView.rowHeight = UITableView.automaticDimension
+//        tableView.estimatedRowHeight = 100
+//        tableView.register(PostCellWithImage.self, forCellReuseIdentifier: PostCellWithImage.cellID)
+//        tableView.register(PostCellWithoutImage.self, forCellReuseIdentifier: PostCellWithoutImage.cellID)
+//        tableView.refreshControl = UIRefreshControl()
+//        tableView.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
+//
+//        guard let tableViewList = stationView.tableViewAndTableView?.listTableView else {return}
+//        tableViewList.delegate = self
+//        tableViewList.dataSource = self
+//        tableViewList.register(UITableViewCell.self, forCellReuseIdentifier: listTableViewCellID)
+//        tableViewList.refreshControl = UIRefreshControl()
+//        tableViewList.refreshControl?.addTarget(self, action: #selector(handleTableViewRefresh(_:)), for: UIControl.Event.valueChanged)
         
     }
     /// Fills header with data from the Station. Loads images using URLs provided in the Station
@@ -164,92 +164,92 @@ class ParentStationViewController: UIViewController, UIScrollViewDelegate {
     // offset starts at 0.0
     // goes negative if scroll up(tableview goes down), goes positive if scrolls down(tableView goes up)
     // offet can either be too high(keep maximum offset), to little(keep minimum offstet) or inbetween(can be adjusted)
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let y_offset: CGFloat = scrollView.contentOffset.y
-        guard  let headerViewTopConstraint = stationView.topViewContainerTopConstraint else {return}
-        let newConstant = headerViewTopConstraint.constant - y_offset
-        
-        //when scrolling up
-        if newConstant <= -headerMaxHeight {
-            headerViewTopConstraint.constant = -headerMaxHeight
-        //when scrolling down
-        }else if newConstant >= 0{
-            headerViewTopConstraint.constant = 0
-        }else{//inbetween we want to adjust the position of the header
-            headerViewTopConstraint.constant = newConstant
-            scrollView.contentOffset.y = 0 //to smooth out scrolling
-        }
-    }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        let y_offset: CGFloat = scrollView.contentOffset.y
+//        guard  let headerViewTopConstraint = stationView.topViewContainerTopConstraint else {return}
+//        let newConstant = headerViewTopConstraint.constant - y_offset
+//
+//        //when scrolling up
+//        if newConstant <= -headerMaxHeight {
+//            headerViewTopConstraint.constant = -headerMaxHeight
+//        //when scrolling down
+//        }else if newConstant >= 0{
+//            headerViewTopConstraint.constant = 0
+//        }else{//inbetween we want to adjust the position of the header
+//            headerViewTopConstraint.constant = newConstant
+//            scrollView.contentOffset.y = 0 //to smooth out scrolling
+//        }
+//    }
 }
-extension ParentStationViewController: UITableViewDelegate, UITableViewDataSource{
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView == stationView.tableViewAndTableView?.listTableView{
-            return subStations.count
-        }else{
-            return posts.count
-        }
-    }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //present station
-        if tableView == stationView.tableViewAndTableView?.listTableView{
-            presentStationFor(indexPath: indexPath)
-        }else{
-            //present post
-            presentPostFor(indexPath: indexPath)
-        }
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if tableView == stationView.tableViewAndTableView?.listTableView{
-            let cell = tableView.dequeueReusableCell(withIdentifier: listTableViewCellID, for: indexPath)
-            addData(toCell: cell, withIndex: indexPath.row)
-            cell.selectionStyle = .none
-            return cell
-        }else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage else {return UITableViewCell()}
-            addData(toCell: cell, withIndex: indexPath.row)
-            cell.indexPath = indexPath
-            cell.delegate = self
-            cell.selectionStyle = .none
-            return cell
-        }
-
-    }
-    private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
-        cell.textLabel?.text = "\(subStations[index].stationName)"
-        NetworkManager.shared.getAsynchImage(withURL: subStations[index].frontImageURL) { (image, error) in
-            if image != nil {
-                DispatchQueue.main.async {
-                    cell.imageView?.image = image
-                }
-            }
-        }
-    }
-    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
-        cell.postImageView.image = nil
-        cell.titleLabel.text =  posts[index].title
-        cell.messageLabel.text =  posts[index].text
-        cell.authorLabel.text =  posts[index].userInfo.name
-        cell.likesLabel.text =  String(posts[index].likes)
-        cell.commentsLabel.text =  String(posts[index].commentCount)
-        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        let dateString = formatter.string(from: posts[index].date)
-        cell.dateLabel.text = "\(dateString)"
-        if posts[index].imageURL != nil {
-            cell.postImageView.isHidden = false
-            NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
-                DispatchQueue.main.async {
-                    cell.postImageView.image = image
-                }
-            }
-        } else{
-            cell.postImageView.isHidden = true
-        }
-    }
-}
+//extension ParentStationViewController: UITableViewDelegate, UITableViewDataSource{
+//    
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        if tableView == stationView.tableViewAndTableView?.listTableView{
+//            return subStations.count
+//        }else{
+//            return posts.count
+//        }
+//    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        //present station
+//        if tableView == stationView.tableViewAndTableView?.listTableView{
+//            presentStationFor(indexPath: indexPath)
+//        }else{
+//            //present post
+//            presentPostFor(indexPath: indexPath)
+//        }
+//    }
+//
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        if tableView == stationView.tableViewAndTableView?.listTableView{
+//            let cell = tableView.dequeueReusableCell(withIdentifier: listTableViewCellID, for: indexPath)
+//            addData(toCell: cell, withIndex: indexPath.row)
+//            cell.selectionStyle = .none
+//            return cell
+//        }else {
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCellWithoutImage.cellID, for: indexPath) as? PostCellWithoutImage else {return UITableViewCell()}
+//            addData(toCell: cell, withIndex: indexPath.row)
+//            cell.indexPath = indexPath
+//            cell.delegate = self
+//            cell.selectionStyle = .none
+//            return cell
+//        }
+//
+//    }
+//    private func addData(toCell cell: UITableViewCell, withIndex index: Int ){
+//        cell.textLabel?.text = "\(subStations[index].stationName)"
+//        NetworkManager.shared.getAsynchImage(withURL: subStations[index].frontImageURL) { (image, error) in
+//            if image != nil {
+//                DispatchQueue.main.async {
+//                    cell.imageView?.image = image
+//                }
+//            }
+//        }
+//    }
+//    private func addData(toCell cell: PostCellWithoutImage, withIndex index: Int ){
+//        cell.postImageView.image = nil
+//        cell.titleLabel.text =  posts[index].title
+//        cell.messageLabel.text =  posts[index].text
+//        cell.authorLabel.text =  posts[index].userInfo.name
+//        cell.likesLabel.text =  String(posts[index].likes)
+//        cell.commentsLabel.text =  String(posts[index].commentCount)
+//        cell.stationButton.setTitle(posts[index].stationName, for: .normal)
+//        let formatter = DateFormatter()
+//        formatter.timeStyle = .short
+//        let dateString = formatter.string(from: posts[index].date)
+//        cell.dateLabel.text = "\(dateString)"
+//        if posts[index].imageURL != nil {
+//            cell.postImageView.isHidden = false
+//            NetworkManager.shared.getAsynchImage(withURL: posts[index].imageURL) { (image, error) in
+//                DispatchQueue.main.async {
+//                    cell.postImageView.image = image
+//                }
+//            }
+//        } else{
+//            cell.postImageView.isHidden = true
+//        }
+//    }
+//}
 extension ParentStationViewController: UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
     }

@@ -8,7 +8,6 @@
 
 import FirebaseFirestore
 import FirebaseFirestoreSwift
-
 /// an enum that stores type of a station. Used to distinguish stations with different UI and queries
 enum StationType: String, Codable{
     
@@ -21,7 +20,6 @@ enum StationType: String, Codable{
     /// is a substation of a parentstation, will be displayed in the parentStation list and it will have missions as second tableview
     case subStation
 }
-
 struct Station:Identifiable, Codable{
     
     /// property wrapper that stores id of the document associated with data

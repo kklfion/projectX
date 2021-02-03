@@ -11,18 +11,11 @@ import UIKit
 class StationView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupViews(frame: frame)
-    }
-    init(frame: CGRect, type: StationType) {
-        self.type = type
-        super.init(frame: frame)
-        setupViews(frame: frame)
+        setupViews()
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    /// type of station
-    var type: StationType?
     
     let topViewContainer: UIView = {
         let view = UIView()
@@ -31,20 +24,14 @@ class StationView: UIView {
     }()
     let backgroundImageView: UIImageView = {
         let iv = UIImageView()
-        //iv.backgroundColor = .blue
         iv.clipsToBounds = true
-        //iv.image = UIImage(named: "ucsc1")
         iv.contentMode = .scaleAspectFill
         return iv
     }()
     let frontImageView: UIImageView = {
         let iv = UIImageView()
-        //iv.backgroundColor = .yellow
         iv.clipsToBounds = true
-        //iv.image = UIImage(named: "sslug")
         iv.contentMode = .scaleAspectFill
-        //iv.layer.borderWidth = 1
-        //iv.layer.borderColor = UIColor.black.cgColor
         return iv
     }()
     let stationNameLabel: UILabel = {
@@ -78,49 +65,21 @@ class StationView: UIView {
         label.font = Constants.bodyTextFont
         return label
     }()
-
-    
-    var tableViewAndCollectionView: SegmentedControlWithStackView?
-    var tableViewAndTableView: SegmentedControlWithTwoTableViews?
-    
-    var topViewContainerTopConstraint: NSLayoutConstraint?
 }
 //MARK: view setup
 extension StationView{
     
-    func setupViews(frame: CGRect){
+    func setupViews(){
         self.backgroundColor = .white
         [topViewContainer].forEach {self.addSubview($0)}
-        topViewContainer.addAnchors(top: nil,
+        topViewContainer.addAnchors(top: self.topAnchor,
                                     leading: self.leadingAnchor,
                                     bottom: nil,
                                     trailing: self.trailingAnchor,
                                     size: .init(width: self.frame.width, height: self.frame.height*0.3))
-        topViewContainerTopConstraint = topViewContainer.topAnchor.constraint(equalTo: self.topAnchor, constant: 0)
-        topViewContainerTopConstraint?.isActive = true
         
-        switch type{
-        case .parentStation:
-            tableViewAndTableView = SegmentedControlWithTwoTableViews(frame: frame)
-            self.addSubview(tableViewAndTableView!)
-            tableViewAndTableView?.addAnchors(top: topViewContainer.bottomAnchor,
-                                         leading: self.leadingAnchor,
-                                         bottom: self.bottomAnchor,
-                                         trailing: self.trailingAnchor,
-                                         padding: .init(top: 0, left: 0, bottom: 0, right: 0),
-                                         size: .init(width: 0, height: 0))
-        default:
-            tableViewAndCollectionView = SegmentedControlWithStackView(frame: frame)
-            self.addSubview(tableViewAndCollectionView!)
-            tableViewAndCollectionView?.addAnchors(top: topViewContainer.bottomAnchor,
-                                         leading: self.leadingAnchor,
-                                         bottom: self.bottomAnchor,
-                                         trailing: self.trailingAnchor,
-                                         padding: .init(top: 0, left: 0, bottom: 0, right: 0),
-                                         size: .init(width: 0, height: 0))
-        }
-
         topViewContainer.layoutIfNeeded()//foces to setup proper frame?!?!??!  super important ahahah
+        
         [backgroundImageView, frontImageView, followersLabel,stationInfoLabel,stationNameLabel,followButton].forEach({topViewContainer.addSubview($0)})
         
         backgroundImageView.addAnchors(top: topViewContainer.topAnchor,

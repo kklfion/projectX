@@ -187,6 +187,7 @@ extension UINavigationController{
         // Restore the navigation bar to default
         self.navigationBar.setBackgroundImage(nil, for: .default)
         self.navigationBar.shadowImage = UIImage()
+        self.navigationBar.barTintColor = .white
         self.navigationBar.isTranslucent = true
         
     }
@@ -201,27 +202,6 @@ extension UINavigationController{
         self.navigationBar.setBackgroundImage(nil, for: .default)
         self.navigationBar.barTintColor = color
         self.navigationBar.shadowImage = UIImage()
-        self.navigationBar.isTranslucent = true
+        self.navigationBar.isTranslucent = false
     }
-    
-    
-    //        let navBarAppearance = UINavigationBarAppearance()
-    //        navBarAppearance.backgroundImage = UIImage()
-    //        navBarAppearance.backgroundColor = .white
-    //        navBarAppearance.shadowImage = UIImage()
-    //        navBarAppearance.shadowColor = .clear
-    //        self.navigationBar.standardAppearance = navBarAppearance
-    //        self.navigationBar.scrollEdgeAppearance = navBarAppearance
-    
-    //        let navBarAppearance = UINavigationBarAppearance()
-    //        navBarAppearance.backgroundImage = UIImage()
-    //        navBarAppearance.backgroundColor = .white
-    //        navBarAppearance.shadowImage = UIImage()
-    //        navBarAppearance.shadowColor = .clear
-    //        self.navigationBar.standardAppearance = navBarAppearance
-    //        self.navigationBar.scrollEdgeAppearance = navBarAppearance
-    //        self.navigationBar.setBackgroundImage(UIImage(), for: .default)
-    //        self.navigationBar.backgroundColor = .none
-    //        self.navigationBar.shadowImage = UIImage()
-            
 }
