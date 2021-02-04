@@ -17,7 +17,7 @@ class StationViewController: UIViewController, SlidableTopViewProtocol {
     
     var topViewTopConstraint: NSLayoutConstraint!
     
-    lazy var stationHeaderHeight = view.frame.height * 0.3
+    lazy var stationHeaderHeight = view.frame.height * 0.4
     
 
     ///presented Station, either a substation or a regular station
@@ -51,15 +51,15 @@ class StationViewController: UIViewController, SlidableTopViewProtocol {
         view.backgroundColor = .white
         navigationItem.largeTitleDisplayMode = .never
         setupView()
-        setupHeights(viewHeight: stationHeaderHeight, extraHeight: -40)
+        setupHeights(viewHeight: stationHeaderHeight, extraHeight: 10)
         setupFeedVCs()
         setUserAndSubscribeToUpdates()
         setupStationHeaderWithStation()
         checkIfStationFollowed()
     }
     override func viewWillAppear(_ animated: Bool) {
-        navigationController?.setNavigationTo(color: Constants.Colors.gamingBackground)
-        //navigationController?.setNavigationToTransparent()
+        //navigationController?.setNavigationTo(color: Constants.Colors.gamingBackground)
+        navigationController?.setNavigationToTransparent()
         super.viewWillAppear(animated)
     }
     private func setUserAndSubscribeToUpdates(){
@@ -187,7 +187,7 @@ extension StationViewController{
 }
 extension StationViewController: DidScrollFeedDelegate{
     func didScrollFeed(_ scrollView: UIScrollView) {
-        adjustHeaderPosition(scrollView, navigationController)
+        adjustHeaderPosition(scrollView, navigationController, navigationItem: navigationItem)
     }
 }
 

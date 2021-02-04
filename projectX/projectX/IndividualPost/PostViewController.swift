@@ -112,7 +112,7 @@ class PostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        //self.navigationItem.title = post.stationName
+        self.navigationItem.title = post.stationName
         navigationItem.largeTitleDisplayMode = .never
 
         //only this order works, some bug that makes newcommentview invisible if this is changed
@@ -133,7 +133,6 @@ class PostViewController: UIViewController {
         }
     }
     override func viewWillAppear(_ animated: Bool) {
-        //self.navigationController?.navigationBar.prefersLargeTitles = false
     }
     ///when dismissing the view, need to update data in the Feed
     override func viewWillDisappear(_ animated: Bool) {

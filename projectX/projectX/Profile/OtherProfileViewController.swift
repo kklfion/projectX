@@ -22,7 +22,7 @@ protocol SlidableTopViewProtocol: class{
     
     var topViewTopConstraint: NSLayoutConstraint! { get set }
     
-    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?)
+    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?, navigationItem: UINavigationItem?)
     
     func setupHeights(viewHeight: CGFloat, extraHeight: CGFloat)
     
@@ -30,18 +30,20 @@ protocol SlidableTopViewProtocol: class{
     
 }
 extension SlidableTopViewProtocol{
-    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?){
+    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?, navigationItem: UINavigationItem?){
         let y_offset: CGFloat = scrollView.contentOffset.y
         let topViewOffset = topViewTopConstraint.constant - y_offset
-        //when scrolling up
-        //print(topViewTopConstraint.constant)
-        //print(topViewOffset)
-        //print(headerMaxHeight)
         if isAtMaxHeight(viewHeight: headerMaxHeight, currentOffset: topViewOffset){
             topViewTopConstraint.constant = -headerMaxHeight //dont move past that point
         } else if topViewOffset >= 0{//when scrolling down remain at 0
             topViewTopConstraint.constant = 0
+            //controller?.isNavigationBarHidden = true
+            controller?.setNavigationToTransparent()
+            navigationItem?.title = ""
         }else{//inbetween we want to adjust the position of the header
+            //controller?.isNavigationBarHidden = false
+            controller?.setNavigationToWhite()
+            navigationItem?.title = "Profile"
             topViewTopConstraint.constant = topViewOffset
             scrollView.contentOffset.y = 0 //to smooth out scrolling
         }
@@ -76,7 +78,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     var topViewTopConstraint: NSLayoutConstraint!
     
     func didScrollFeed(_ scrollView: UIScrollView) {
-        adjustHeaderPosition(scrollView, navigationController)
+        adjustHeaderPosition(scrollView, navigationController, navigationItem: navigationItem)
     }
     ///user displayed by the controller
     var user: User?
@@ -113,14 +115,10 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     private var feedCollectionViewController: FeedCollectionViewController!
     
     override func viewWillAppear(_ animated: Bool) {
-        navigationController?.setNavigationToTransparent()
-        if profileType == .personalProfile {
-            navigationController?.isNavigationBarHidden = true
-        }
         super.viewWillAppear(animated)
     }
     override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.isNavigationBarHidden = false
+//        navigationController?.isNavigationBarHidden = false
     }
     ///to initialize your profile
     init() {
@@ -132,7 +130,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     init(user: User){
         self.user = user
         self.profileType = .otherProfile
-        self.extraHeight = 35 //to account for the navBar
+        self.extraHeight = -10 //to account for the navBar
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -142,6 +140,8 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.setNavigationToTransparent()
+        self.navigationItem.title = "Profile"
         extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = .white
         navigationItem.largeTitleDisplayMode = .never
