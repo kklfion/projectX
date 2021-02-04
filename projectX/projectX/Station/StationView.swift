@@ -16,17 +16,16 @@ class StationView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    
-    let topViewContainer: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        return view
-    }()
     let backgroundImageView: UIImageView = {
         let iv = UIImageView()
         iv.clipsToBounds = true
         iv.contentMode = .scaleAspectFill
         return iv
+    }()
+    let roundedView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        return view
     }()
     let frontImageView: UIImageView = {
         let iv = UIImageView()
@@ -36,7 +35,6 @@ class StationView: UIView {
     }()
     let stationNameLabel: UILabel = {
         let label = UILabel()
-        //label.text = "University"
         label.font = Constants.headlineTextFont
         label.numberOfLines = 1
         return label
@@ -45,7 +43,6 @@ class StationView: UIView {
         let label = UILabel()
         label.numberOfLines = 1
         label.font = Constants.bodyTextFont
-        //label.text = v
         return label
     }()
     let followButton: UIButton = {
@@ -70,31 +67,34 @@ class StationView: UIView {
 extension StationView{
     
     func setupViews(){
-        self.backgroundColor = .white
-        [topViewContainer].forEach {self.addSubview($0)}
-        topViewContainer.addAnchors(top: self.topAnchor,
-                                    leading: self.leadingAnchor,
-                                    bottom: nil,
-                                    trailing: self.trailingAnchor,
-                                    size: .init(width: self.frame.width, height: self.frame.height*0.3))
+        self.backgroundColor = .none
+        let roundedViewCornerRadius: CGFloat = 25
+        [backgroundImageView, frontImageView, followersLabel,stationInfoLabel,stationNameLabel,followButton, roundedView].forEach({self.addSubview($0)})
+        backgroundImageView.addAnchors(top: self.topAnchor,
+                                       leading: self.leadingAnchor,
+                                       bottom: roundedView.topAnchor,
+                                       trailing: self.trailingAnchor,
+                                       padding: .init(top: 0, left: 0, bottom: -roundedViewCornerRadius, right: 0))
+        //organize views order
+        self.sendSubviewToBack(roundedView)
+        self.sendSubviewToBack(backgroundImageView)
         
-        topViewContainer.layoutIfNeeded()//foces to setup proper frame?!?!??!  super important ahahah
-        
-        [backgroundImageView, frontImageView, followersLabel,stationInfoLabel,stationNameLabel,followButton].forEach({topViewContainer.addSubview($0)})
-        
-        backgroundImageView.addAnchors(top: topViewContainer.topAnchor,
-                                       leading: topViewContainer.leadingAnchor,
-                                       bottom: nil,
-                                       trailing: topViewContainer.trailingAnchor,
-                                       size: .init(width: topViewContainer.frame.width, height: topViewContainer.frame.height / 2))
+        roundedView.layer.cornerRadius = roundedViewCornerRadius
+        roundedView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        roundedView.addAnchors(top: nil,
+                                       leading: self.leadingAnchor,
+                                       bottom: self.bottomAnchor,
+                                       trailing: self.trailingAnchor,
+                                       size: .init(width: 0, height: (self.frame.height * 0.5)))
+        let frontImageHeight: CGFloat = self.frame.height / 3
         frontImageView.addAnchors(top: nil,
-                                  leading: topViewContainer.leadingAnchor,
+                                  leading: self.leadingAnchor,
                                   bottom: nil,
                                   trailing: nil,
                                   padding: .init(top: 0, left: 15, bottom: 0, right: 0),
-                                  size: .init(width: topViewContainer.frame.height/3, height: topViewContainer.frame.height/3))
-        frontImageView.centerYAnchor.constraint(equalTo: backgroundImageView.bottomAnchor).isActive = true
-        frontImageView.layer.cornerRadius = ((topViewContainer.frame.height/3) / 2)
+                                  size: .init(width: frontImageHeight, height: frontImageHeight))
+        frontImageView.centerYAnchor.constraint(equalTo: roundedView.topAnchor, constant: 15).isActive = true
+        frontImageView.layer.cornerRadius = frontImageHeight/2
         
         stationNameLabel.addAnchors(top: nil,
                                     leading: frontImageView.trailingAnchor,
@@ -107,20 +107,26 @@ extension StationView{
                                   trailing: nil,
                                   padding: .init(top: 10, left: 0, bottom: 0, right: 0))
         stationInfoLabel.addAnchors(top: frontImageView.bottomAnchor,
-                                    leading: topViewContainer.leadingAnchor,
-                                    bottom: topViewContainer.bottomAnchor,
-                                    trailing: topViewContainer.trailingAnchor,
+                                    leading: self.leadingAnchor,
+                                    bottom: self.bottomAnchor,
+                                    trailing: self.trailingAnchor,
                                     padding: .init(top: 10, left: 25, bottom: 0, right: 25))
         followButton.addAnchors(top: nil,
                                 leading: nil,
                                 bottom: nil,
-                                trailing: topViewContainer.trailingAnchor,
+                                trailing: self.trailingAnchor,
                                 padding: .init(top: 0, left: 0, bottom: 0, right: 15))
         followButton.centerYAnchor.constraint(equalTo: followersLabel.centerYAnchor).isActive = true
     }
 }
 //MARK: helper functions
 extension StationView {
+    func setFollowButtonToFollowed(){
+        followButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+    }
+    func setFollowButtonToNotFollowed(){
+        followButton.setImage(UIImage(systemName: "plus"), for: .normal)
+    }
     func notFollowedButton(){
         followButton.setTitle("Follow", for: .normal)
         //followButton.backgroundColor = .blue

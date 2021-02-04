@@ -14,7 +14,7 @@ enum ProfileType{
     case otherProfile
     case personalProfile
 }
-protocol SlideableTopViewProtocol: class{
+protocol SlidableTopViewProtocol: class{
     
     var headerMaxHeight: CGFloat! { get set }
     
@@ -29,7 +29,7 @@ protocol SlideableTopViewProtocol: class{
     func isAtMaxHeight(viewHeight: CGFloat, currentOffset:CGFloat) -> Bool
     
 }
-extension SlideableTopViewProtocol{
+extension SlidableTopViewProtocol{
     func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?){
         let y_offset: CGFloat = scrollView.contentOffset.y
         let topViewOffset = topViewTopConstraint.constant - y_offset
@@ -57,7 +57,7 @@ extension SlideableTopViewProtocol{
     }
 }
 
-class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, SlideableTopViewProtocol {
+class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, SlidableTopViewProtocol {
     
     lazy var profileHeight = view.frame.height * 0.4
      

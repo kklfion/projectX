@@ -9,7 +9,7 @@ import UIKit
 
 import Combine
 
-class StationViewController: UIViewController, DidScrollFeedDelegate, SlideableTopViewProtocol {
+class StationViewController: UIViewController, SlidableTopViewProtocol {
     
     var headerMaxHeight: CGFloat!
     
@@ -19,9 +19,7 @@ class StationViewController: UIViewController, DidScrollFeedDelegate, SlideableT
     
     lazy var stationHeaderHeight = view.frame.height * 0.3
     
-    func didScrollFeed(_ scrollView: UIScrollView) {
-        adjustHeaderPosition(scrollView, navigationController)
-    }
+
     ///presented Station, either a substation or a regular station
     var station: Station?
     
@@ -39,8 +37,7 @@ class StationViewController: UIViewController, DidScrollFeedDelegate, SlideableT
     private var userSubscription: AnyCancellable!
     
     lazy var stationView: StationView = {
-        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
-        let view = StationView(frame: frame)
+        let view = StationView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: stationHeaderHeight))
         return view
     }()
 
@@ -139,36 +136,6 @@ class StationViewController: UIViewController, DidScrollFeedDelegate, SlideableT
         feedSegmentedControl.stackView.addArrangedSubview(feedCollectionViewController.view)
         feedSegmentedControl.stackView.addArrangedSubview(vc.view)
     }
-
-//    private func setupHeights(){
-//        if #available(iOS 13.0, *) {
-//            let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
-//            statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
-//        } else {
-//            statusBarHeight = UIApplication.shared.statusBarFrame.height
-//        }
-//        headerMaxHeight = view.frame.height * 0.3 + 3 //MUST equal to the height of the view's header that is set up in the stationView
-//    }
-//    // adjustHeaderPosition handles the change in layout when user scrolls
-//    // offset starts at 0.0
-//    // goes negative if scroll up(tableview goes down), goes positive if scrolls down(tableView goes up)
-//    // offet can either be too high(keep maximum offset), to little(keep minimum offstet) or inbetween(can be adjusted)
-//    private func adjustHeaderPosition(_ scrollView: UIScrollView){
-//        let y_offset: CGFloat = scrollView.contentOffset.y
-//        guard  let headerViewTopConstraint = stationView.topViewContainerTopConstraint else {return}
-//        let newConstant = headerViewTopConstraint.constant - y_offset
-//
-//        //when scrolling up
-//        if newConstant <= -headerMaxHeight {
-//            headerViewTopConstraint.constant = -headerMaxHeight
-//        //when scrolling down
-//        }else if newConstant >= 0{
-//            headerViewTopConstraint.constant = 0
-//        }else{//inbetween we want to adjust the position of the header
-//            headerViewTopConstraint.constant = newConstant
-//            scrollView.contentOffset.y = 0 //to smooth out scrolling
-//        }
-//    }
 }
 //MARK: - Handlers
 extension StationViewController{
@@ -215,6 +182,11 @@ extension StationViewController{
             }
         }
   
+    }
+}
+extension StationViewController: DidScrollFeedDelegate{
+    func didScrollFeed(_ scrollView: UIScrollView) {
+        adjustHeaderPosition(scrollView, navigationController)
     }
 }
 
