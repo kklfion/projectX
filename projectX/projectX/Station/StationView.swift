@@ -47,13 +47,8 @@ class StationView: UIView {
     }()
     let followButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Follow", for: .normal)
-        button.setTitleColor(.lightGray, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
-        button.contentEdgeInsets = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 5)
-        button.layer.cornerRadius = 4
-        button.layer.borderWidth = 0.5
-        button.layer.borderColor = UIColor.lightGray.cgColor
+        button.backgroundColor = .lightGray
+        button.clipsToBounds = true
         return button
     }()
     let stationInfoLabel: UILabel = {
@@ -78,6 +73,7 @@ extension StationView{
         //organize views order
         self.sendSubviewToBack(roundedView)
         self.sendSubviewToBack(backgroundImageView)
+        self.bringSubviewToFront(followButton)
         
         roundedView.layer.cornerRadius = roundedViewCornerRadius
         roundedView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -86,7 +82,7 @@ extension StationView{
                                        bottom: self.bottomAnchor,
                                        trailing: self.trailingAnchor,
                                        size: .init(width: 0, height: (self.frame.height * 0.5)))
-        let frontImageHeight: CGFloat = self.frame.height / 3
+        let frontImageHeight: CGFloat = self.frame.height * 0.40
         frontImageView.addAnchors(top: nil,
                                   leading: self.leadingAnchor,
                                   bottom: nil,
@@ -111,12 +107,15 @@ extension StationView{
                                     bottom: self.bottomAnchor,
                                     trailing: self.trailingAnchor,
                                     padding: .init(top: 10, left: 25, bottom: 0, right: 25))
+        let followButtonDimensions = self.frame.height * 0.2
+        followButton.layer.cornerRadius = followButtonDimensions/2
         followButton.addAnchors(top: nil,
                                 leading: nil,
                                 bottom: nil,
                                 trailing: self.trailingAnchor,
-                                padding: .init(top: 0, left: 0, bottom: 0, right: 15))
-        followButton.centerYAnchor.constraint(equalTo: followersLabel.centerYAnchor).isActive = true
+                                padding: .init(top: 0, left: 0, bottom: 0, right: 30),
+                                size: .init(width: followButtonDimensions, height: followButtonDimensions))
+        followButton.centerYAnchor.constraint(equalTo: roundedView.topAnchor).isActive = true
     }
 }
 //MARK: helper functions
@@ -128,12 +127,10 @@ extension StationView {
         followButton.setImage(UIImage(systemName: "plus"), for: .normal)
     }
     func notFollowedButton(){
-        followButton.setTitle("Follow", for: .normal)
-        //followButton.backgroundColor = .blue
+        followButton.setImage(UIImage(systemName: "plus"), for: .normal)
     }
     func followedButton(){
-        followButton.setTitle("Followed", for: .normal)
-        //followButton.backgroundColor = .yellow
+        followButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
     }
     func changeFollowerCount(by number: Int){
         if number >= 1000{
