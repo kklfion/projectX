@@ -84,12 +84,7 @@ class LoginViewController: UIViewController {
                 self?.displayLoginErrorMessage(message: "User was not found. Please, try again.")
                 return
             }else{
-                if self?.presentingViewController is SettingsTableViewController{
-                    self?.dismiss(animated: true)
-                }else{
-                    self?.dismiss(animated: true)
-                }
-               
+                self?.dismiss(animated: true)
             }
         }
     }

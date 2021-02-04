@@ -59,6 +59,7 @@ class StationViewController: UIViewController, SlidableTopViewProtocol {
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setNavigationTo(color: Constants.Colors.gamingBackground)
+        //navigationController?.setNavigationToTransparent()
         super.viewWillAppear(animated)
     }
     private func setUserAndSubscribeToUpdates(){
@@ -106,7 +107,7 @@ class StationViewController: UIViewController, SlidableTopViewProtocol {
         }
         stationView.stationInfoLabel.text = station?.info
         stationView.stationNameLabel.text = station?.stationName
-        self.navigationItem.title = station?.stationName ?? "Station"
+        //self.navigationItem.title = station?.stationName ?? "Station"
 
     }
     private func setupView(){

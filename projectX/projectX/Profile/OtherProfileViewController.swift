@@ -34,9 +34,12 @@ extension SlidableTopViewProtocol{
         let y_offset: CGFloat = scrollView.contentOffset.y
         let topViewOffset = topViewTopConstraint.constant - y_offset
         //when scrolling up
+        //print(topViewTopConstraint.constant)
+        //print(topViewOffset)
+        //print(headerMaxHeight)
         if isAtMaxHeight(viewHeight: headerMaxHeight, currentOffset: topViewOffset){
             topViewTopConstraint.constant = -headerMaxHeight //dont move past that point
-        }else if topViewOffset >= 0{//when scrolling down remain at 0
+        } else if topViewOffset >= 0{//when scrolling down remain at 0
             topViewTopConstraint.constant = 0
         }else{//inbetween we want to adjust the position of the header
             topViewTopConstraint.constant = topViewOffset
@@ -95,6 +98,10 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         let view = ProfileView(frame: self.view.frame)
         return view
     }()
+    private lazy var loginView: NeedToLoginView = {
+        let view = NeedToLoginView(frame: self.view.frame)
+        return view
+    }()
     
     ///segmented control that holds feeds
     private lazy var feedSegmentedControl: SegmentedControlWithStackView = {
@@ -107,12 +114,18 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setNavigationToTransparent()
+        if profileType == .personalProfile {
+            navigationController?.isNavigationBarHidden = true
+        }
         super.viewWillAppear(animated)
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.isNavigationBarHidden = false
     }
     ///to initialize your profile
     init() {
         self.profileType = .personalProfile
-        self.extraHeight = 0 //no navbar
+        self.extraHeight = -10 //no navbar
         super.init(nibName: nil, bundle: nil)
     }
     ///initialize profileviewcontroller with user data (to display other user profile)
@@ -169,19 +182,41 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         switch UserManager.shared().state {
         case .loading:
             print("user is loading ")//wait for update
+            //show loading screen
         case .signedIn(let user):
             self.user = user
+            self.hideLoginScreen()
             updateProfileInformation()
             feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user.id, userID: user.id)
         case .signedOut:
-            //display default data
-            print("user is signed out need to display login options")
+            showLoginScreen()
         }
         userSubscription = UserManager.shared().userPublisher.sink { (user) in
-            self.user = user
-            self.updateProfileInformation()
-            self.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id, userID: user?.id)
+            if user == nil {
+                self.showLoginScreen()
+            } else{
+                self.hideLoginScreen()
+                self.user = user
+                self.updateProfileInformation()
+                self.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id, userID: user?.id)
+            }
+
         }
+    }
+    private func hideLoginScreen(){
+        loginView.removeFromSuperview()
+    }
+    private func showLoginScreen(){
+        //show login screen instead
+        loginView.loginButton.addTarget(self, action: #selector(didTapLoginButton), for: .touchUpInside)
+        self.view.addSubview(loginView)
+        loginView.addAnchors(top: self.view.topAnchor, leading: self.view.leadingAnchor, bottom: self.view.bottomAnchor, trailing: self.view.trailingAnchor)
+    }
+    @objc func didTapLoginButton(){
+        let vc = LoginViewController()
+        let navvc = UINavigationController(rootViewController: vc)
+        navvc.modalPresentationStyle = .fullScreen
+        self.tabBarController?.present(navvc, animated: true)
     }
     private func setupProfileView(){
         view.addSubview(profileView)
@@ -268,6 +303,10 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     private func updateProfileInformation(){
         guard let user = user else{return}
         profileView.usernameLabel.text = user.name
+        if let school = getSchoolFrom(email: user.email){
+            profileView.schoolLabel.text = school
+        }
+        profileView.useridLabel.text = "\(user.followersCount ?? 0) followers"
         NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
@@ -276,6 +315,19 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
                 }
             }
         }
+    }
+    let schools = [ "ucsc": "University of California, Santa Cruz", "ucla": "University of California, Los Angeles", "gmail": "University of Gmail"]
+     
+    private func getSchoolFrom(email: String) -> String?{
+        let schoolResults = schools.filter { (element) -> Bool in
+            if email.contains(element.key){
+                return true
+            } else {
+                return false
+            }
+        }
+        guard let school = schoolResults.first else {return nil}
+        return school.value
     }
     private func setShadowForProfileImage(){
         let shadowRect = self.profileView.profileImageViewContainer.layer.bounds

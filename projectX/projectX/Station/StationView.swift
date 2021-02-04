@@ -18,6 +18,7 @@ class StationView: UIView {
     }
     let backgroundImageView: UIImageView = {
         let iv = UIImageView()
+        //iv.layer.opacity = 0.4
         iv.clipsToBounds = true
         iv.contentMode = .scaleAspectFill
         return iv
@@ -47,7 +48,7 @@ class StationView: UIView {
     }()
     let followButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .lightGray
+        button.backgroundColor = .white
         button.clipsToBounds = true
         return button
     }()
@@ -94,7 +95,7 @@ extension StationView{
         
         stationNameLabel.addAnchors(top: nil,
                                     leading: frontImageView.trailingAnchor,
-                                    bottom: backgroundImageView.bottomAnchor,
+                                    bottom: roundedView.topAnchor,
                                     trailing: nil,
                                     padding: .init(top: 0, left: 0, bottom: 10, right: 0))
         followersLabel.addAnchors(top: backgroundImageView.bottomAnchor,
