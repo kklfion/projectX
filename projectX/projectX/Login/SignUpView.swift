@@ -39,8 +39,48 @@ class SignUpView: UIView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.distribution = .equalSpacing
         stack.axis = .vertical
-        stack.spacing = 30
+        stack.spacing = 20
         return stack
+    }()
+    
+    let profileImageViewContainer: UIView = {
+        let container = UIView()
+        container.clipsToBounds = false
+        container.layer.shadowColor = UIColor.black.cgColor
+        container.layer.shadowOpacity = 1
+        container.layer.shadowOffset = CGSize.zero
+        container.layer.shadowRadius = 50
+        container.layer.shadowPath = UIBezierPath(roundedRect: container.bounds, cornerRadius: 10).cgPath
+        return container
+    }()
+    let userAvatar: UIImageView = {
+        let imageView  = UIImageView()
+        let image = UIImage(named: "blank")
+        imageView.image = image
+        imageView.layer.cornerRadius = 60
+        imageView.clipsToBounds = true
+        imageView.backgroundColor = .lightGray
+        
+        imageView.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 1).isActive = true
+        
+        return imageView
+    }()
+    let editButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Choose Avatar", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.otherTextFontSize, weight: .semibold)
+        button.setTitleColor(Constants.Colors.darkBrown, for: .normal)
+        button.backgroundColor = Constants.Colors.mainYellow
+        button.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 110).isActive = true
+        button.layer.cornerRadius = 10
+        
+        button.layer.shadowOpacity = 0.1
+        button.layer.shadowRadius = 2.0
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowColor = UIColor.black.cgColor
+        return button
     }()
     let nameTextField: UITextField = {
         let field = UITextField()
@@ -111,7 +151,7 @@ class SignUpView: UIView {
     func setupViews(){
         setupBackgroundView()
         [nameTextField, emailTextField, passwordTextField, spacingButton,signUpButton].forEach({stackView.addArrangedSubview($0)})
-        [stackView, errorLabel].forEach({self.addSubview($0)})
+        [profileImageViewContainer, editButton, stackView, errorLabel].forEach({self.addSubview($0)})
         /*
         logoImageView.addAnchors(top: nil,
                                  leading: stackView.leadingAnchor,
@@ -127,13 +167,33 @@ class SignUpView: UIView {
                              padding: .init(top: 0, left: 0, bottom: Constants.Login.EmailPasswordStackViewTopPadding, right: 0),
                              size: .init(width: 0, height: 0))
         */
+        profileImageViewContainer.addSubview(userAvatar)
+        userAvatar.addAnchors(top: profileImageViewContainer.topAnchor, leading: profileImageViewContainer.leadingAnchor, bottom: profileImageViewContainer.bottomAnchor, trailing: profileImageViewContainer.trailingAnchor)
+        
+        //self.addSubview(profileImageViewContainer)
+        
+        
+        profileImageViewContainer.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        profileImageViewContainer.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
+                              leading: nil,
+                              bottom: nil,
+                              trailing: nil,
+                              padding: .init(top: 10, left: 0, bottom: 0, right: 0))
+        
+        editButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        editButton.addAnchors(top: userAvatar.bottomAnchor,
+                              leading: nil,
+                              bottom: nil,
+                              trailing: nil,
+                              padding: .init(top: 10, left: 0, bottom: 0, right: 0))
+        
         stackView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        stackView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -50).isActive = true
-        stackView.addAnchors(top: nil,
+        //stackView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -30).isActive = true
+        stackView.addAnchors(top: userAvatar.bottomAnchor,
                              leading: self.leadingAnchor,
                              bottom: nil,
                              trailing: self.trailingAnchor,
-                             padding: .init(top: 0, left: 70, bottom: 0, right: 70),
+                             padding: .init(top: 50, left: 70, bottom: 0, right: 70),
                              size: .init(width: 0, height: 0))
         errorLabel.addAnchors(top: nil,
                               leading: stackView.leadingAnchor,

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		563A4ECB25B6028000FFEF66 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 563A4ECA25B6028000FFEF66 /* GoogleService-Info.plist */; };
+		56DFFD9225CB0F3300B18CE8 /* SelectAvatarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DFFD9125CB0F3300B18CE8 /* SelectAvatarViewController.swift */; };
+		56DFFD9725CB134A00B18CE8 /* AvatarCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DFFD9525CB134A00B18CE8 /* AvatarCollectionViewCell.swift */; };
 		801A37A62514024800F22A11 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A37A52514024800F22A11 /* NotificationCell.swift */; };
 		801A37A82514025D00F22A11 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A37A72514025D00F22A11 /* NotificationView.swift */; };
 		803972D52519780D002695EC /* SideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803972D42519780D002695EC /* SideBarView.swift */; };
@@ -81,6 +83,8 @@
 /* Begin PBXFileReference section */
 		4A216F81A4DD94A6239F9BAE /* Pods-projectX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-projectX.debug.xcconfig"; path = "Target Support Files/Pods-projectX/Pods-projectX.debug.xcconfig"; sourceTree = "<group>"; };
 		563A4ECA25B6028000FFEF66 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		56DFFD9125CB0F3300B18CE8 /* SelectAvatarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAvatarViewController.swift; sourceTree = "<group>"; };
+		56DFFD9525CB134A00B18CE8 /* AvatarCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarCollectionViewCell.swift; sourceTree = "<group>"; };
 		6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_projectX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		801A37A52514024800F22A11 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		801A37A72514025D00F22A11 /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
@@ -374,6 +378,8 @@
 				8081185524C262910032D46D /* LoginView.swift */,
 				80CA4FC524C4CA2900B66D6B /* SignUpViewController.swift */,
 				80CA4FC724C4CA3E00B66D6B /* SignUpView.swift */,
+				56DFFD9125CB0F3300B18CE8 /* SelectAvatarViewController.swift */,
+				56DFFD9525CB134A00B18CE8 /* AvatarCollectionViewCell.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -510,11 +516,13 @@
 				80AF6F0F2579A2B5006A6C57 /* ShadowLayerView.swift in Sources */,
 				804E618B24957D0C00825150 /* ViewController.swift in Sources */,
 				804E619D24980C9400825150 /* NotificationsTableVC.swift in Sources */,
+				56DFFD9725CB134A00B18CE8 /* AvatarCollectionViewCell.swift in Sources */,
 				80D97BAC251D819C00825BBB /* MissionDeadlineCell.swift in Sources */,
 				80699CBC25AE59D10037FF0F /* FeedCollectionViewController.swift in Sources */,
 				8081185624C262910032D46D /* LoginView.swift in Sources */,
 				806E777A24C9255F00A95B89 /* DataTest.swift in Sources */,
 				80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */,
+				56DFFD9225CB0F3300B18CE8 /* SelectAvatarViewController.swift in Sources */,
 				804E618724957D0C00825150 /* AppDelegate.swift in Sources */,
 				8068E81C2542329300A85B33 /* OtherProfileViewController.swift in Sources */,
 				80F57E0425A4F7A100CDF5C3 /* PostPaginator.swift in Sources */,
@@ -716,7 +724,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 5NP79EB7TF;
 				INFOPLIST_FILE = projectX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -736,7 +744,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 5NP79EB7TF;
 				INFOPLIST_FILE = projectX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
