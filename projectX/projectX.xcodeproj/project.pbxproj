@@ -8,9 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		563A4ECB25B6028000FFEF66 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 563A4ECA25B6028000FFEF66 /* GoogleService-Info.plist */; };
-		8008C6BE25CCA5EE0072864A /* NeedToLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8008C6BD25CCA5ED0072864A /* NeedToLoginView.swift */; };
 		56DFFD9225CB0F3300B18CE8 /* SelectAvatarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DFFD9125CB0F3300B18CE8 /* SelectAvatarViewController.swift */; };
 		56DFFD9725CB134A00B18CE8 /* AvatarCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DFFD9525CB134A00B18CE8 /* AvatarCollectionViewCell.swift */; };
+		8008C6BE25CCA5EE0072864A /* NeedToLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8008C6BD25CCA5ED0072864A /* NeedToLoginView.swift */; };
+		8008C6F725CE0D820072864A /* ContactUsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8008C6F625CE0D820072864A /* ContactUsView.swift */; };
+		8008C6FA25CE0D980072864A /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8008C6F925CE0D980072864A /* PrivacyPolicyView.swift */; };
+		8008C6FD25CE0D9D0072864A /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8008C6FC25CE0D9D0072864A /* PrivacyPolicyViewController.swift */; };
+		8008C70125CE0DA70072864A /* TermsOfServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8008C6FF25CE0DA60072864A /* TermsOfServiceView.swift */; };
+		8008C70225CE0DA70072864A /* TermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8008C70025CE0DA60072864A /* TermsOfServiceViewController.swift */; };
+		8008C70525CE0DC90072864A /* ContactUsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8008C70425CE0DC90072864A /* ContactUsViewController.swift */; };
 		801A37A62514024800F22A11 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A37A52514024800F22A11 /* NotificationCell.swift */; };
 		801A37A82514025D00F22A11 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A37A72514025D00F22A11 /* NotificationView.swift */; };
 		803972D52519780D002695EC /* SideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803972D42519780D002695EC /* SideBarView.swift */; };
@@ -87,6 +93,12 @@
 		56DFFD9525CB134A00B18CE8 /* AvatarCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarCollectionViewCell.swift; sourceTree = "<group>"; };
 		6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_projectX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8008C6BD25CCA5ED0072864A /* NeedToLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedToLoginView.swift; sourceTree = "<group>"; };
+		8008C6F625CE0D820072864A /* ContactUsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactUsView.swift; sourceTree = "<group>"; };
+		8008C6F925CE0D980072864A /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
+		8008C6FC25CE0D9D0072864A /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
+		8008C6FF25CE0DA60072864A /* TermsOfServiceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfServiceView.swift; sourceTree = "<group>"; };
+		8008C70025CE0DA60072864A /* TermsOfServiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfServiceViewController.swift; sourceTree = "<group>"; };
+		8008C70425CE0DC90072864A /* ContactUsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactUsViewController.swift; sourceTree = "<group>"; };
 		801A37A52514024800F22A11 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		801A37A72514025D00F22A11 /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		803972D42519780D002695EC /* SideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarView.swift; sourceTree = "<group>"; };
@@ -185,6 +197,20 @@
 				CE774F905F70DF49766D0585 /* Pods-projectX.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		8008C70725CE0E030072864A /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */,
+				8008C6F625CE0D820072864A /* ContactUsView.swift */,
+				8008C70425CE0DC90072864A /* ContactUsViewController.swift */,
+				8008C6FF25CE0DA60072864A /* TermsOfServiceView.swift */,
+				8008C70025CE0DA60072864A /* TermsOfServiceViewController.swift */,
+				8008C6FC25CE0D9D0072864A /* PrivacyPolicyViewController.swift */,
+				8008C6F925CE0D980072864A /* PrivacyPolicyView.swift */,
+			);
+			path = "New Group";
 			sourceTree = "<group>";
 		};
 		803D759D250AD3A5003F569D /* IndividualPost */ = {
@@ -309,7 +335,7 @@
 		804E61A824980E6A00825150 /* Sidebar */ = {
 			isa = PBXGroup;
 			children = (
-				80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */,
+				8008C70725CE0E030072864A /* New Group */,
 				803972D42519780D002695EC /* SideBarView.swift */,
 				804E61A024980DB000825150 /* SidebarViewController.swift */,
 			);
@@ -514,7 +540,10 @@
 				8081185424C2626C0032D46D /* LoginViewController.swift in Sources */,
 				803D75B5250B079E003F569D /* FirebaseExtension.swift in Sources */,
 				80AF6F0F2579A2B5006A6C57 /* ShadowLayerView.swift in Sources */,
+				8008C70225CE0DA70072864A /* TermsOfServiceViewController.swift in Sources */,
+				8008C6F725CE0D820072864A /* ContactUsView.swift in Sources */,
 				8008C6BE25CCA5EE0072864A /* NeedToLoginView.swift in Sources */,
+				8008C70125CE0DA70072864A /* TermsOfServiceView.swift in Sources */,
 				804E618B24957D0C00825150 /* ViewController.swift in Sources */,
 				804E619D24980C9400825150 /* NotificationsTableVC.swift in Sources */,
 				56DFFD9725CB134A00B18CE8 /* AvatarCollectionViewCell.swift in Sources */,
@@ -543,6 +572,7 @@
 				ED4E05722533C7C2007ED4FA /* Mission.swift in Sources */,
 				8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */,
 				804E61A124980DB000825150 /* SidebarViewController.swift in Sources */,
+				8008C70525CE0DC90072864A /* ContactUsViewController.swift in Sources */,
 				80CA4FC624C4CA2900B66D6B /* SignUpViewController.swift in Sources */,
 				804E618924957D0C00825150 /* SceneDelegate.swift in Sources */,
 				80CA4FC824C4CA3E00B66D6B /* SignUpView.swift in Sources */,
@@ -561,6 +591,7 @@
 				804E619B24957E3200825150 /* MainTabBarVC.swift in Sources */,
 				8071D7A42551E99000547CC1 /* AlertPresenter.swift in Sources */,
 				8066D62F24AACAF8002A9E16 /* PostCellWithImage.swift in Sources */,
+				8008C6FA25CE0D980072864A /* PrivacyPolicyView.swift in Sources */,
 				8071D7C12554A8EE00547CC1 /* UserManagerEnums.swift in Sources */,
 				8068E7CE2541029C00A85B33 /* CellProtocols.swift in Sources */,
 				80A0DC1D253B780300474541 /* BoardCell.swift in Sources */,
@@ -575,6 +606,7 @@
 				90C178CF25439A6300200222 /* Like.swift in Sources */,
 				803972D52519780D002695EC /* SideBarView.swift in Sources */,
 				80BB37B224D8C50700B12253 /* StationViewController.swift in Sources */,
+				8008C6FD25CE0D9D0072864A /* PrivacyPolicyViewController.swift in Sources */,
 				90C178D72543AC8000200222 /* BlacklistedUser.swift in Sources */,
 				90C178D525439AA100200222 /* FollowedStation.swift in Sources */,
 			);

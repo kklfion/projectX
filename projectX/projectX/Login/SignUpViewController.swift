@@ -95,7 +95,6 @@ class SignUpViewController: UIViewController {
     {
         signUpView.userAvatar.image = UIImage(named: imageName)
         userPhotoURL = URL(string: imageURL) 
-        print(userPhotoURL)
     }
     @objc func newUserSignUp(){
         //try creating a new account
