@@ -96,7 +96,7 @@ class ProfileView: UIView {
         headerGradient.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: (self.frame.width*0.5) + 25)
         self.layer.addSublayer(headerGradient)
 
-        viewBackground.frame = CGRect(x: 0, y: (self.frame.width*0.5), width: self.frame.width, height: 50)
+        viewBackground.frame = CGRect(x: 0, y: (self.frame.width*0.4), width: self.frame.width, height: 100)
         self.addSubview(viewBackground)
 
         profileImageViewContainer.addSubview(profileImageView)
@@ -117,12 +117,13 @@ class ProfileView: UIView {
         bioStackView.addArrangedSubview(useridLabel)
         bioStackView.addArrangedSubview(schoolLabel)
 
-        profileImageViewContainer.addAnchors(top: self.topAnchor,
+        profileImageViewContainer.addAnchors(top: nil,
                                      leading: nil,
                                      bottom: nil,
                                      trailing: nil,
-                                     padding: .init(top: 50 , left: 0, bottom: 0, right: 0),
+                                     padding: .init(top: 0 , left: 0, bottom: 0, right: 0),
                                      size: .init(width: self.frame.width*0.5, height: self.frame.width*0.5))
+        profileImageViewContainer.centerYAnchor.constraint(equalTo: viewBackground.topAnchor).isActive = true
         profileImageViewContainer.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         profileImageView.layer.cornerRadius = (self.frame.width*0.5 / 2)
         profileImageViewContainer.layer.cornerRadius = (self.frame.width*0.5 / 2)

@@ -156,11 +156,23 @@ extension FeedCollectionViewController{
         cell.stationButton.setTitle(post.stationName, for: .normal)
         let dateString = post.date.diff()
         cell.dateLabel.text = "\(dateString)"
-        NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
-            DispatchQueue.main.async {
-                cell.authorImageView.image = image
+        if !post.isAnonymous{
+            
+            cell.authorLabel.text =  post.userInfo.name
+            NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
+                DispatchQueue.main.async {
+                    cell.authorImageView.image = image
+                }
             }
+            cell.authorLabel.isUserInteractionEnabled = true
+            cell.authorImageView.isUserInteractionEnabled = true
+        } else{
+            cell.authorLabel.text =  "Anonymous"
+            cell.authorImageView.image = (UIImage(systemName: "person.fill.questionmark")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+            cell.authorLabel.isUserInteractionEnabled = false
+            cell.authorImageView.isUserInteractionEnabled = false
         }
+
         if post.imageURL != nil {
             cell.postImageView.isHidden = false
             NetworkManager.shared.getAsynchImage(withURL: post.imageURL) { (image, error) in

@@ -40,7 +40,7 @@ struct Post:Identifiable, Codable, Hashable{
     var imageURL: URL?
     
     /// If user wants his name to be anoynmous
-    var isAnonymous: Bool?
+    var isAnonymous: Bool
     
     // MARK: - Hashable conformance
     static func == (lhs: Post, rhs: Post) -> Bool {
@@ -62,7 +62,7 @@ extension Post{
                 date: Date,
                 imageURL: URL?,
                 commentCount: Int,
-                isAnonymous: Bool? = false) {
+                isAnonymous: Bool = false) {
         if text != nil && text != Constants.NewPost.placeholderBodyText
         {
             self.text = text

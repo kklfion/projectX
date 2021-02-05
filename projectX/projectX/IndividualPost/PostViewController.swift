@@ -111,6 +111,7 @@ class PostViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = .white
         self.navigationItem.title = post.stationName
         navigationItem.largeTitleDisplayMode = .never
@@ -208,18 +209,30 @@ class PostViewController: UIViewController {
                                                object: nil)
     }
     private func populatePostViewWithPost(){
-        postHeaderView?.authorUILabel.text = post.userInfo.name
+        //postHeaderView?.authorUILabel.text = post.userInfo.name
         let date = post.date
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         postHeaderView?.dateUILabel.text = "\(formatter.string(from: date))"
         postHeaderView?.titleUILabel.text = post.title
-        postHeaderView?.authorLabel.text = post.userInfo.name
-        NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
-            DispatchQueue.main.async {
-                self.postHeaderView?.authorImageView.image = image
+        if !post.isAnonymous{
+            postHeaderView?.authorUILabel.text = post.userInfo.name
+            postHeaderView?.authorLabel.text = post.userInfo.name
+            NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
+                DispatchQueue.main.async {
+                    self.postHeaderView?.authorImageView.image = image
+                }
             }
+            postHeaderView?.authorLabel.isUserInteractionEnabled = true
+            postHeaderView?.authorImageView.isUserInteractionEnabled = true
+        } else {
+            postHeaderView?.authorUILabel.text = "Definitely not Jordon"
+            postHeaderView?.authorLabel.text = "Anonymous"
+            self.postHeaderView?.authorImageView.image = (UIImage(systemName: "person.fill.questionmark")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+            postHeaderView?.authorLabel.isUserInteractionEnabled = false
+            postHeaderView?.authorImageView.isUserInteractionEnabled = false
         }
+
         
         if post.imageURL != nil {
             let data = try? Data(contentsOf: post.imageURL!)
@@ -479,12 +492,22 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
         cell.indexPath = indexPath
         let comment = comments[indexPath.row]
         guard let user = usersToComments[comment] else {return UITableViewCell()}
-        NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
-            DispatchQueue.main.async {
-                cell.authorImageView.image = image
+        if !comment.isAnonymous {
+            NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
+                DispatchQueue.main.async {
+                    cell.authorImageView.image = image
+                }
             }
+            cell.authorLabel.text = user.name
+            cell.authorLabel.isUserInteractionEnabled = true
+            cell.authorImageView.isUserInteractionEnabled = true
+        } else {
+            cell.authorLabel.text = "Anonymous"
+            cell.authorImageView.image = (UIImage(systemName: "person.fill.questionmark")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+            cell.authorLabel.isUserInteractionEnabled = false
+            cell.authorImageView.isUserInteractionEnabled = false
         }
-        cell.authorLabel.text = user.name
+
         cell.commentLabel.text = comment.text
         cell.dateTimeLabel.text = comment.date.diff()
         let likes = comment.likes
