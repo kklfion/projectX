@@ -194,3 +194,27 @@ extension Date {
  return "0s"
  }
 }
+
+extension UINavigationController{
+    func setNavigationToWhite(){
+        // Restore the navigation bar to default
+        self.navigationBar.setBackgroundImage(nil, for: .default)
+        self.navigationBar.shadowImage = UIImage()
+        self.navigationBar.barTintColor = .white
+        self.navigationBar.isTranslucent = true
+        
+    }
+    func setNavigationToTransparent(){
+        // Make the navigation bar background clear
+        self.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationBar.shadowImage = UIImage()
+        self.navigationBar.isTranslucent = true
+    }
+    func setNavigationTo(color: UIColor){
+        // Restore the navigation bar to default
+        self.navigationBar.setBackgroundImage(nil, for: .default)
+        self.navigationBar.barTintColor = color
+        self.navigationBar.shadowImage = UIImage()
+        self.navigationBar.isTranslucent = false
+    }
+}

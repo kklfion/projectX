@@ -46,7 +46,7 @@ class FeedCollectionViewController: UICollectionViewController{
     private var posts = [Post]()
     
     ///likes for the posts in the feed
-    private var likesDictionary = [Post: LikedPost]()
+    private var likesDictionary = [Post: Like]()
     
     ///provided by
     private var userID: String?
@@ -143,7 +143,6 @@ extension FeedCollectionViewController{
         return layout
     }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
         presentPostFor(indexPath: indexPath, likesDictionary[posts[indexPath.row]])
     }
     //TODO: move to cell
@@ -157,11 +156,23 @@ extension FeedCollectionViewController{
         cell.stationButton.setTitle(post.stationName, for: .normal)
         let dateString = post.date.diff()
         cell.dateLabel.text = "\(dateString)"
-        NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
-            DispatchQueue.main.async {
-                cell.authorImageView.image = image
+        if !post.isAnonymous{
+            
+            cell.authorLabel.text =  post.userInfo.name
+            NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
+                DispatchQueue.main.async {
+                    cell.authorImageView.image = image
+                }
             }
+            cell.authorLabel.isUserInteractionEnabled = true
+            cell.authorImageView.isUserInteractionEnabled = true
+        } else{
+            cell.authorLabel.text =  "Anonymous"
+            cell.authorImageView.image = (UIImage(systemName: "person.fill.questionmark")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+            cell.authorLabel.isUserInteractionEnabled = false
+            cell.authorImageView.isUserInteractionEnabled = false
         }
+
         if post.imageURL != nil {
             cell.postImageView.isHidden = false
             NetworkManager.shared.getAsynchImage(withURL: post.imageURL) { (image, error) in
@@ -229,7 +240,7 @@ extension FeedCollectionViewController {
             let query = NetworkManager.shared.db.likedPosts
                 .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
                 .whereField(FirestoreFields.userID.rawValue, isEqualTo: userID ?? "")
-            NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [LikedPost]?, error) in
+            NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [Like]?, error) in
                 if error != nil {
                     print("error loading liked post", error!)
                 }else if likedPosts != nil {
@@ -281,7 +292,6 @@ extension FeedCollectionViewController: PostCollectionViewCellDidTapDelegate{
         }
     }
     func didTapCommentsButton(_ indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
         presentPostFor(indexPath: indexPath, likesDictionary[posts[indexPath.row]])
     }
 }
@@ -296,7 +306,7 @@ extension FeedCollectionViewController{
             self.tabBarController?.present(navvc, animated: true)
         }
     }
-    private func presentPostFor(indexPath: IndexPath,_ like: LikedPost?){
+    private func presentPostFor(indexPath: IndexPath,_ like: Like?){
         let postvc = PostViewController(post: posts[indexPath.row], like: like, indexPath: indexPath)
         postvc.hidesBottomBarWhenPushed = true
         postvc.updatePostDelegate = self
@@ -324,7 +334,7 @@ extension FeedCollectionViewController {
     private func writeLikeToTheFirestore(with indexPath: IndexPath) {
         guard  let userID = userID else {return}
         guard let postID = posts[indexPath.item].id else {return}
-        var document = LikedPost(userID: userID, postID: postID)
+        var document = Like(userID: userID, postID: postID)
         NetworkManager.shared.writeDocumentReturnReference(collectionType: .likedPosts, document: document  ) { (ref, error) in
             if let err = error{
                 print("Error creating like \(err)")
@@ -358,21 +368,15 @@ extension FeedCollectionViewController {
 }
 extension FeedCollectionViewController: DidUpdatePostAfterDissmissingDelegate {
     //reload cell and reload data for that cell
-    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, like: LikedPost?, status: LikeStatus) {
+    func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, like: Like?, status: LikeStatus) {
         //1.get id
         guard let selectedPost = dataSource.itemIdentifier(for: indexPath) else {return}
         guard  let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
         //2.updateData (likes & post & database)
         posts[indexPath.item].commentCount = post.commentCount
-        switch status {
-        case .add:
+        if status == .add || status == .delete{
             didTapLikeButton(indexPath, cell)
-        case .delete:
-            didTapLikeButton(indexPath, cell)
-        case .unchanged:
-            print("unchanged")
         }
-        
         //3.trigger reload
         var snapshot = dataSource.snapshot()
         snapshot.reloadItems([selectedPost])

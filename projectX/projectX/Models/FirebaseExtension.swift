@@ -40,4 +40,7 @@ extension Firestore{
     var likedPosts: CollectionReference{
         return self.collection("likedPosts")
     }
+    var followers: CollectionReference{
+        return self.collection("followers")
+    }
 }

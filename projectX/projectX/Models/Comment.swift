@@ -28,7 +28,7 @@ struct Comment: Identifiable, Codable, Hashable{
     var date: Date
     
     /// If author of the comment wants to be Anonymous
-    var isAnonymous: Bool?
+    var isAnonymous: Bool
     
     // MARK: - Hashable conformance
     static func == (lhs: Comment, rhs: Comment) -> Bool {
@@ -46,7 +46,7 @@ extension Comment{
                 text: String,
                 likes: Int,
                 date: Date,
-                isAnonymous: Bool? = false) {
+                isAnonymous: Bool = false) {
         self.postID = postID
         self.userID = userID
         self.text = text

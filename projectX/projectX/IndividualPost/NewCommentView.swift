@@ -56,9 +56,11 @@ class NewCommentView: UIView {
     lazy var authorView: UIImageView = {
         let iv = UIImageView() 
         iv.image = (UIImage(systemName: "person.circle")?.withConfiguration(symbolsConfig).withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+        iv.contentMode = .scaleAspectFit
+        iv.clipsToBounds = true
         return iv
     }()
-    let anonimousSwitch: UISwitch = {
+    var anonimousSwitch: UISwitch = {
         let sw = UISwitch()
         sw.transform = CGAffineTransform(scaleX: 0.75, y: 0.75);
         return sw
@@ -79,6 +81,10 @@ class NewCommentView: UIView {
         topStack.spacing = 10
         topStack.isHidden = true
         
+        let size: CGFloat = 25.0
+        authorView.heightAnchor.constraint(equalToConstant: size).isActive = true
+        authorView.widthAnchor.constraint(equalToConstant: size).isActive = true
+        authorView.layer.cornerRadius = size/2
         let authorStack = UIStackView(arrangedSubviews: [authorView, anonimousSwitch, UIView()])
         authorStack.axis = .horizontal
         authorStack.spacing = 10
@@ -124,5 +130,8 @@ class NewCommentView: UIView {
         commentTextView.text = commentPlaceholderMessage
         commentTextView.textAlignment = .center
         commentTextView.textColor = UIColor.lightGray
+    }
+    func setAnonimousImage(){
+        authorView.image = (UIImage(systemName: "person.fill.questionmark")?.withConfiguration(symbolsConfig).withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
     }
 }

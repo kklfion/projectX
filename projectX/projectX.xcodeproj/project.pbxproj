@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		563A4ECB25B6028000FFEF66 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 563A4ECA25B6028000FFEF66 /* GoogleService-Info.plist */; };
+		8008C6BE25CCA5EE0072864A /* NeedToLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8008C6BD25CCA5ED0072864A /* NeedToLoginView.swift */; };
 		56DFFD9225CB0F3300B18CE8 /* SelectAvatarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DFFD9125CB0F3300B18CE8 /* SelectAvatarViewController.swift */; };
 		56DFFD9725CB134A00B18CE8 /* AvatarCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DFFD9525CB134A00B18CE8 /* AvatarCollectionViewCell.swift */; };
 		801A37A62514024800F22A11 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A37A52514024800F22A11 /* NotificationCell.swift */; };
@@ -70,8 +71,7 @@
 		80F57E0425A4F7A100CDF5C3 /* PostPaginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */; };
 		90C178B725319EE800200222 /* QueryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178B625319EE800200222 /* QueryData.swift */; };
 		90C178CD25439A5200200222 /* AcceptedMission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178CC25439A5200200222 /* AcceptedMission.swift */; };
-		90C178CF25439A6300200222 /* LikedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178CE25439A6300200222 /* LikedPost.swift */; };
-		90C178D125439A7C00200222 /* LikedComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178D025439A7C00200222 /* LikedComment.swift */; };
+		90C178CF25439A6300200222 /* Like.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178CE25439A6300200222 /* Like.swift */; };
 		90C178D325439A9000200222 /* Follower.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178D225439A9000200222 /* Follower.swift */; };
 		90C178D525439AA100200222 /* FollowedStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178D425439AA100200222 /* FollowedStation.swift */; };
 		90C178D72543AC8000200222 /* BlacklistedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C178D62543AC8000200222 /* BlacklistedUser.swift */; };
@@ -86,6 +86,7 @@
 		56DFFD9125CB0F3300B18CE8 /* SelectAvatarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAvatarViewController.swift; sourceTree = "<group>"; };
 		56DFFD9525CB134A00B18CE8 /* AvatarCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarCollectionViewCell.swift; sourceTree = "<group>"; };
 		6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_projectX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8008C6BD25CCA5ED0072864A /* NeedToLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedToLoginView.swift; sourceTree = "<group>"; };
 		801A37A52514024800F22A11 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		801A37A72514025D00F22A11 /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		803972D42519780D002695EC /* SideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarView.swift; sourceTree = "<group>"; };
@@ -148,8 +149,7 @@
 		80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostPaginator.swift; sourceTree = "<group>"; };
 		90C178B625319EE800200222 /* QueryData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryData.swift; sourceTree = "<group>"; };
 		90C178CC25439A5200200222 /* AcceptedMission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptedMission.swift; sourceTree = "<group>"; };
-		90C178CE25439A6300200222 /* LikedPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedPost.swift; sourceTree = "<group>"; };
-		90C178D025439A7C00200222 /* LikedComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedComment.swift; sourceTree = "<group>"; };
+		90C178CE25439A6300200222 /* Like.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Like.swift; sourceTree = "<group>"; };
 		90C178D225439A9000200222 /* Follower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Follower.swift; sourceTree = "<group>"; };
 		90C178D425439AA100200222 /* FollowedStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowedStation.swift; sourceTree = "<group>"; };
 		90C178D62543AC8000200222 /* BlacklistedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlacklistedUser.swift; sourceTree = "<group>"; };
@@ -208,8 +208,7 @@
 				ED4E056D2533C3CF007ED4FA /* Notification.swift */,
 				ED4E05712533C7C2007ED4FA /* Mission.swift */,
 				90C178CC25439A5200200222 /* AcceptedMission.swift */,
-				90C178CE25439A6300200222 /* LikedPost.swift */,
-				90C178D025439A7C00200222 /* LikedComment.swift */,
+				90C178CE25439A6300200222 /* Like.swift */,
 				90C178D225439A9000200222 /* Follower.swift */,
 				90C178D425439AA100200222 /* FollowedStation.swift */,
 				90C178D62543AC8000200222 /* BlacklistedUser.swift */,
@@ -340,6 +339,7 @@
 			isa = PBXGroup;
 			children = (
 				8068E81B2542329300A85B33 /* OtherProfileViewController.swift */,
+				8008C6BD25CCA5ED0072864A /* NeedToLoginView.swift */,
 				80F52F8A251C1AA400076825 /* ProfileView.swift */,
 			);
 			path = Profile;
@@ -514,6 +514,7 @@
 				8081185424C2626C0032D46D /* LoginViewController.swift in Sources */,
 				803D75B5250B079E003F569D /* FirebaseExtension.swift in Sources */,
 				80AF6F0F2579A2B5006A6C57 /* ShadowLayerView.swift in Sources */,
+				8008C6BE25CCA5EE0072864A /* NeedToLoginView.swift in Sources */,
 				804E618B24957D0C00825150 /* ViewController.swift in Sources */,
 				804E619D24980C9400825150 /* NotificationsTableVC.swift in Sources */,
 				56DFFD9725CB134A00B18CE8 /* AvatarCollectionViewCell.swift in Sources */,
@@ -539,7 +540,6 @@
 				808361C8252920F900DEF0DE /* UserManager.swift in Sources */,
 				801A37A82514025D00F22A11 /* NotificationView.swift in Sources */,
 				90C178B725319EE800200222 /* QueryData.swift in Sources */,
-				90C178D125439A7C00200222 /* LikedComment.swift in Sources */,
 				ED4E05722533C7C2007ED4FA /* Mission.swift in Sources */,
 				8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */,
 				804E61A124980DB000825150 /* SidebarViewController.swift in Sources */,
@@ -572,7 +572,7 @@
 				806E777624C9074700A95B89 /* Constants.swift in Sources */,
 				8067F0C1257ADC3B00CED98F /* PostCollectionViewCell.swift in Sources */,
 				80699C9C25A7CA480037FF0F /* LoadingFooterView.swift in Sources */,
-				90C178CF25439A6300200222 /* LikedPost.swift in Sources */,
+				90C178CF25439A6300200222 /* Like.swift in Sources */,
 				803972D52519780D002695EC /* SideBarView.swift in Sources */,
 				80BB37B224D8C50700B12253 /* StationViewController.swift in Sources */,
 				90C178D72543AC8000200222 /* BlacklistedUser.swift in Sources */,
@@ -731,7 +731,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.AdedejiToki.projectX;
+				PRODUCT_BUNDLE_IDENTIFIER = com.RadomyrBezghin.projectX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -751,7 +751,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.AdedejiToki.projectX;
+				PRODUCT_BUNDLE_IDENTIFIER = com.RadomyrBezghin.projectX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

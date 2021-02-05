@@ -33,21 +33,16 @@ enum FirestoreFields: String {
     case stationID
     case stationType
     case parentStationID
-    
     case userID
     case userInfo
     case userInfoUserID = "userInfo.userID"
-    
     case followers
-    
     case likes
     case commentCount
-    
     case postID
-    
     case missionID
-
-
+    case followingUserWithID
+    case followersCount
 }
 class NetworkManager {
 
@@ -107,7 +102,6 @@ extension NetworkManager {
             }
         }
     }
-    
 }
 //MARK: Put data
 extension NetworkManager {

@@ -14,17 +14,19 @@ struct Follower : Identifiable, Codable{
     
     @DocumentID var id: String?
     
-    /// ID of the liked post
-    var postID: String
+    /// ID of user
+    var userID: String
     
-    //TODO: Probably have some more varaibles and implement the firebase increment funcion here
+    /// ID of person that user is following
+    var followingUserWithID: String
     
-
-    
+    var date: Date
 }
 extension Follower{
     /// returns a new post object
-    public init(postID: String) {
-        self.postID = postID
+    public init(userID: String, followingUserWithID: String) {
+        self.userID = userID
+        self.followingUserWithID = followingUserWithID
+        self.date = Date()
     }
 }
