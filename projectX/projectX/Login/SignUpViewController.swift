@@ -13,6 +13,7 @@ import FirebaseFirestore
 
 class SignUpViewController: UIViewController {
     lazy var signUpView = createSignUpView()
+    var userPhotoURL = URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/Avatars%2Fblank.png?alt=media&token=90cbe14e-9023-497d-bd5f-6c1b0803d848")
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Sign Up"
@@ -35,6 +36,7 @@ class SignUpViewController: UIViewController {
     func createSignUpView()-> SignUpView{
         let view = SignUpView(frame: self.view.frame)
         view.signUpButton.addTarget(self, action: #selector(newUserSignUp), for: .touchUpInside)
+        view.editButton.addTarget(self, action: #selector(openAvatarSelector), for: .touchUpInside)
         
         view.emailTextField.delegate = self
         view.passwordTextField.delegate = self
@@ -45,6 +47,21 @@ class SignUpViewController: UIViewController {
     }
     func setupView(){
         view.addSubview(signUpView)
+        
+        let shadowRect = self.signUpView.profileImageViewContainer.layer.bounds
+        
+            self.signUpView.profileImageViewContainer.layer.masksToBounds = false
+            self.signUpView.profileImageViewContainer.layer.shadowColor = UIColor.black.cgColor//Constants.Colors.mainYellow.cgColor
+            self.signUpView.profileImageViewContainer.layer.shadowOpacity = 0.2
+            self.signUpView.profileImageViewContainer.layer.shadowOffset = CGSize(width: -1, height: 1)
+            self.signUpView.profileImageViewContainer.layer.shadowRadius = 10
+            self.signUpView.profileImageViewContainer.layer.cornerRadius = 50
+            self.signUpView.profileImageViewContainer.layer.shadowPath = UIBezierPath(roundedRect: shadowRect, cornerRadius: shadowRect.height / 2).cgPath
+            //self.profileView?.profileImageViewContainer.layer.shadowPath = UIBezierPath(rect: (self.profileView?.profileImageViewContainer.layer.bounds)!).cgPath
+            self.signUpView.profileImageViewContainer.layer.shouldRasterize = true
+            self.signUpView.profileImageViewContainer.layer.rasterizationScale = UIScreen.main.scale
+        
+        //signUpView.userAvatar.applyShadowWithCorner(containerView: signUpView.avaterContainterView, cornerRadious: 60)
         self.addKeyboardTapOutGesture(target: self)
     }
     func addBottomLine(){
@@ -67,7 +84,19 @@ class SignUpViewController: UIViewController {
         signUpView.nameTextField.borderStyle = .none
         signUpView.nameTextField.layer.addSublayer(bottomLine)
     }
-
+    @objc func openAvatarSelector(){
+        print("choose avatar")
+        let VC = SelectAvatarViewController()
+        VC.delegate = self
+        self.navigationController?.present(VC, animated: true, completion: nil)
+        //present(SelectAvatarViewController(), animated: true, completion: nil)
+    }
+    func setNewImage(imageName: String, imageURL: String)
+    {
+        signUpView.userAvatar.image = UIImage(named: imageName)
+        userPhotoURL = URL(string: imageURL) 
+        print(userPhotoURL)
+    }
     @objc func newUserSignUp(){
         //try creating a new account
         guard let email = signUpView.emailTextField.text else{return}
@@ -89,7 +118,7 @@ class SignUpViewController: UIViewController {
                 return
             }else if let authResult = authResult{
                 let newUser = User(name: name,
-                                   photoURL: nil,
+                                   photoURL: self.userPhotoURL,
                                    email: email,
                                    uid: String(authResult.user.uid))
                 let db = Firestore.firestore()
