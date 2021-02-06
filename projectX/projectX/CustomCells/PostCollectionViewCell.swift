@@ -99,10 +99,8 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 5
         imageView.clipsToBounds = true
-        
-        imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 80).isActive = true
-        
+        imageView.widthAnchor.constraint(equalToConstant: 110).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 85).isActive = true
         return imageView
     }()
 
@@ -113,7 +111,6 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
         imageView.layer.cornerRadius = 15
-        
         return imageView
     }()
     let authorLabel: UILabel = {
@@ -183,52 +180,34 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         stationDateStack.spacing = 10
         stationDateStack.distribution = .fillEqually
         stationDateStack.axis = .horizontal
-        
-        textView.addSubview(titleLabel)
-        textView.addSubview(messageLabel)
-        //TODO: fix this !!!!
-        textView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        titleLabel.addAnchors(top: textView.topAnchor,
-                                leading: textView.leadingAnchor,
-                                bottom: messageLabel.topAnchor,
-                                trailing: textView.trailingAnchor,
-                                padding: .init(top: 0, left: 0, bottom: 0, right: 0))
-        messageLabel.addAnchors(top: titleLabel.bottomAnchor,
-                                leading: textView.leadingAnchor,
-                                bottom: textView.bottomAnchor,
-                                trailing: textView.trailingAnchor,
-                                padding: .init(top: 0, left: 0, bottom: 0, right: 0))
-        
-        let textImageStack = UIStackView(arrangedSubviews: [textView, postImageView])
-        textImageStack.spacing = 10
-        textImageStack.axis = .horizontal
-        textImageStack.alignment = .center
-        
+        //stationDateStack.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        stationDateStack.backgroundColor = .red
         
         let authorStack = UIStackView(arrangedSubviews: [authorImageView, authorLabel])
         authorStack.axis = .horizontal
-        authorStack.spacing = 10
-        //authorStack.backgroundColor = .yellow
+        authorStack.spacing = 0
         
         let likesCommentsStack = UIStackView(arrangedSubviews: [likeButton, likesLabel, commentsButton, commentsLabel])
         likesCommentsStack.axis = .horizontal
-        likesCommentsStack.spacing = 10
+        likesCommentsStack.spacing = 0
         likesCommentsStack.distribution = .fillEqually
-        //likesCommentsStack.backgroundColor = .green
         
         let bottomStack = UIStackView(arrangedSubviews: [authorStack, likesCommentsStack])
         bottomStack.axis = .horizontal
         bottomStack.distribution = .fillEqually
-        bottomStack.spacing = 10
+        bottomStack.spacing = 0
         
-        
+        let leftVerticalStack = UIStackView(arrangedSubviews: [titleLabel, messageLabel, bottomStack])
+        leftVerticalStack.axis = .vertical
+        let leftVerticalAndImageStack = UIStackView(arrangedSubviews: [leftVerticalStack, postImageView])
+        leftVerticalAndImageStack.axis = .horizontal
         
         //MAIN stack, all stacks come in this stack
-        let stack = UIStackView(arrangedSubviews: [stationDateStack, textImageStack, bottomStack])
-        stack.spacing = 0
+        let stack = UIStackView(arrangedSubviews: [stationDateStack, leftVerticalAndImageStack])
+        stack.spacing = 10
         stack.axis = .vertical
         
-        [stack].forEach { containerView.addSubview($0) }
+        containerView.addSubview(stack)
         stack.addAnchors(top: containerView.topAnchor,
                          leading: containerView.leadingAnchor,
                          bottom: containerView.bottomAnchor,
