@@ -122,11 +122,11 @@ extension FeedCollectionViewController{
     //TODO: add estimatedHeight to make cells dynamically sized
     private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                             heightDimension: .fractionalHeight(1.0))
+                                             heightDimension: .estimated(100))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .estimated(140))
+                                               heightDimension: .estimated(100))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
                                                          subitems: [item])
 
@@ -149,13 +149,15 @@ extension FeedCollectionViewController{
     private func addData(toCell cell: PostCollectionViewCell, withPost post: Post ){
         cell.postImageView.image = nil
         cell.titleLabel.text =  post.title
-        cell.messageLabel.text =  post.text
+        //cell.messageLabel.text =  post.text
         cell.authorLabel.text =  post.userInfo.name
         cell.likesLabel.text =  String(post.likes)
         cell.commentsLabel.text =  String(post.commentCount)
         cell.stationButton.setTitle(post.stationName, for: .normal)
         let dateString = post.date.diff()
         cell.dateLabel.text = "\(dateString)"
+        cell.authorImageView.image = nil
+        cell.postImageView.image = nil
         if !post.isAnonymous{
             
             cell.authorLabel.text =  post.userInfo.name
@@ -167,21 +169,18 @@ extension FeedCollectionViewController{
             cell.authorLabel.isUserInteractionEnabled = true
             cell.authorImageView.isUserInteractionEnabled = true
         } else{
-            cell.authorLabel.text =  "Anonymous"
-            cell.authorImageView.image = (UIImage(systemName: "person.fill.questionmark")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
-            cell.authorLabel.isUserInteractionEnabled = false
-            cell.authorImageView.isUserInteractionEnabled = false
+            cell.setAnonymousUser()
         }
 
         if post.imageURL != nil {
             cell.postImageView.isHidden = false
             NetworkManager.shared.getAsynchImage(withURL: post.imageURL) { (image, error) in
                 DispatchQueue.main.async {
-                    cell.postImageView.image = image
+                    cell.setPostImage(image: image)
                 }
             }
         } else{
-            cell.postImageView.isHidden = true
+            cell.setDefaultPostImage()
         }
         
         if likesDictionary[post] != nil {

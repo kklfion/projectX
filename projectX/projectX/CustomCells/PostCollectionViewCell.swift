@@ -12,13 +12,15 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     
     static let cellID = "PostCollectionViewCell"
     
+    let likeCommentsConfig = UIImage.SymbolConfiguration(pointSize: 17, weight: .ultraLight, scale: .medium)
+    
     ///when cell is liked vs disliked UI should be changed as well as likes count
     var isLiked = false {
         didSet{
             if isLiked{
-                likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+                likeButton.setImage(UIImage(systemName: "heart.fill", withConfiguration: likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
             }else{
-                likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+                likeButton.setImage(UIImage(systemName: "heart", withConfiguration: likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
             }
         }
     }
@@ -72,14 +74,11 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     }()
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Title"
-        label.font = Constants.headlineTextFont
-        label.numberOfLines = 3
+        label.font = Constants.bodyTextFont
+        label.numberOfLines = 4
         label.adjustsFontSizeToFitWidth = false
         label.lineBreakMode = .byTruncatingTail
         label.textColor = .black
-        //label.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        //label.backgroundColor = .red
         return label
     }()
     let messageLabel: UILabel = {
@@ -88,10 +87,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         label.numberOfLines = 4
         label.adjustsFontSizeToFitWidth = false
         label.lineBreakMode = .byTruncatingTail
-        label.text = "Preview"
-        //label.heightAnchor.constraint(equalToConstant: 100).isActive = true
         label.textColor = .black
-        //label.backgroundColor = .blue
         return label
     }()
     let postImageView: UIImageView = {
@@ -99,8 +95,6 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 5
         imageView.clipsToBounds = true
-        imageView.widthAnchor.constraint(equalToConstant: 110).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 85).isActive = true
         return imageView
     }()
 
@@ -121,10 +115,10 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         label.numberOfLines = 1
         return label
     }()
-
-    let likeButton: UIButton = {
+    
+    lazy var likeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "heart", withConfiguration: likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let likesLabel: UILabel = {
@@ -136,9 +130,9 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         label.numberOfLines = 1
         return label
     }()
-    let commentsButton: UIButton = {
+    lazy var commentsButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "bubble.right.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "bubble.right.fill", withConfiguration: likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let commentsLabel: UILabel = {
@@ -171,7 +165,25 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         authorLabel.addGestureRecognizer(authorTap)
         authorImageView.addGestureRecognizer(imageTap)
     }
-    
+    let defaultImageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .ultraLight)
+    func setDefaultPostImage(){
+        postImageView.image = UIImage(systemName: "line.horizontal.3", withConfiguration: defaultImageConfig)?.withTintColor(.lightGray, renderingMode: .alwaysOriginal)
+        postImageView.contentMode = .center
+        postImageView.layer.borderWidth = 0.3
+        postImageView.layer.borderColor = UIColor.systemGray4.cgColor
+    }
+    func setPostImage(image: UIImage?){
+        postImageView.image = image
+        postImageView.contentMode = .scaleAspectFill
+        postImageView.layer.borderWidth = 0
+        postImageView.layer.borderColor = nil
+    }
+    func setAnonymousUser(){
+        authorLabel.text =  "Anonymous"
+        authorImageView.image = (UIImage(systemName: "person.fill.questionmark")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+        authorLabel.isUserInteractionEnabled = false
+        authorImageView.isUserInteractionEnabled = false
+    }
     private func setupContentView(){
         
         contentView.backgroundColor = .none
@@ -181,7 +193,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         stationDateStack.distribution = .fillEqually
         stationDateStack.axis = .horizontal
         //stationDateStack.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        stationDateStack.backgroundColor = .red
+        //statio
         
         let authorStack = UIStackView(arrangedSubviews: [authorImageView, authorLabel])
         authorStack.axis = .horizontal
@@ -195,16 +207,24 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         let bottomStack = UIStackView(arrangedSubviews: [authorStack, likesCommentsStack])
         bottomStack.axis = .horizontal
         bottomStack.distribution = .fillEqually
-        bottomStack.spacing = 0
+        bottomStack.spacing = 10
         
-        let leftVerticalStack = UIStackView(arrangedSubviews: [titleLabel, messageLabel, bottomStack])
+        let leftVerticalStack = UIStackView(arrangedSubviews: [titleLabel, bottomStack])
+        leftVerticalStack.spacing = 10
         leftVerticalStack.axis = .vertical
+        
+        postImageView.widthAnchor.constraint(equalToConstant: 90).isActive = true
+        postImageView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
         let leftVerticalAndImageStack = UIStackView(arrangedSubviews: [leftVerticalStack, postImageView])
         leftVerticalAndImageStack.axis = .horizontal
+        leftVerticalAndImageStack.alignment = .center
         
         //MAIN stack, all stacks come in this stack
-        let stack = UIStackView(arrangedSubviews: [stationDateStack, leftVerticalAndImageStack])
-        stack.spacing = 10
+        let stack = UIStackView(arrangedSubviews: [stationDateStack ,leftVerticalAndImageStack])
+        //stack.spacing = 10
+        stack.isLayoutMarginsRelativeArrangement = true
+        stack.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         stack.axis = .vertical
         
         containerView.addSubview(stack)
@@ -212,24 +232,22 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
                          leading: containerView.leadingAnchor,
                          bottom: containerView.bottomAnchor,
                          trailing: containerView.trailingAnchor,
-                         padding: .init(top: 0, left: 10, bottom: 10, right: 10),
+                         padding: .init(top: 0, left: 0, bottom: 0, right: 0),
                          size: .init(width: 0, height: 0))
         
         
         ///finish up by adding views to the content view
         [shadowLayerView,containerView].forEach({contentView.addSubview($0)})
-        containerView.addAnchors(top: contentView.safeAreaLayoutGuide.topAnchor,
-                          leading: contentView.safeAreaLayoutGuide.leadingAnchor,
-                          bottom: contentView.safeAreaLayoutGuide.bottomAnchor,
-                          trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
-                          padding: .init(top: 10, left: 10, bottom: 10, right: 10),
-                          size: .init(width: 0, height: 0))
+        containerView.addAnchors(top: contentView.topAnchor,
+                          leading: contentView.leadingAnchor,
+                          bottom: contentView.bottomAnchor,
+                          trailing: contentView.trailingAnchor,
+                          padding: .init(top: 10, left: 10, bottom: 10, right: 10))
         shadowLayerView.addAnchors(top: contentView.safeAreaLayoutGuide.topAnchor,
                           leading: contentView.safeAreaLayoutGuide.leadingAnchor,
                           bottom: contentView.safeAreaLayoutGuide.bottomAnchor,
                           trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
-                          padding: .init(top: 10, left: 10, bottom: 10, right: 10),
-                          size: .init(width: 0, height: 0))
+                          padding: .init(top: 10, left: 10, bottom: 10, right: 10))
     }
 }
 extension PostCollectionViewCell{
