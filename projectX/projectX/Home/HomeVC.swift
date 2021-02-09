@@ -57,7 +57,7 @@ extension HomeTableVC{
         super.viewWillAppear(animated)
     }
     private func setupNavigationBar(){
-        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.prefersLargeTitles = false
         self.navigationItem.title = "Home"
         navigationItem.searchController = searchController
         searchController.searchBar.delegate = self

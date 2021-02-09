@@ -145,16 +145,15 @@ extension UIViewController{
         child.didMove(toParent: self)
     }
 }
-extension UIImageView {
+extension UIView {
     func applyShadowWithCorner(containerView : UIView, cornerRadious : CGFloat){
         containerView.clipsToBounds = false
-        containerView.layer.shadowColor = UIColor.black.cgColor
-        containerView.layer.shadowOpacity = 1
-        containerView.layer.shadowOffset = CGSize.zero
-        containerView.layer.shadowRadius = 10
+        containerView.layer.shadowColor = UIColor.gray.cgColor
+        containerView.layer.shadowOpacity = 0.5
+        containerView.layer.shadowOffset = CGSize(width: 0.0, height: -5)
+        containerView.layer.shadowRadius = 3
         containerView.layer.cornerRadius = cornerRadious
         containerView.layer.shadowPath = UIBezierPath(roundedRect: containerView.bounds, cornerRadius: cornerRadious).cgPath
-        self.clipsToBounds = true
         self.layer.cornerRadius = cornerRadious
     }
 }
@@ -202,7 +201,6 @@ extension UINavigationController{
         self.navigationBar.shadowImage = UIImage()
         self.navigationBar.barTintColor = .white
         self.navigationBar.isTranslucent = true
-        
     }
     func setNavigationToTransparent(){
         // Make the navigation bar background clear
