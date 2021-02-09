@@ -13,23 +13,12 @@ import FirebaseAuth
 protocol DidScrollFeedDelegate {
     func didScrollFeed(_ scrollView: UIScrollView)
 }
-///The Only one section in collectionView
-enum FeedSection {
-    ///Section that displays posts
-    case main
-}
-///Feed types to init feed
-enum FeedType {
-    case userHistoryFeed
-    case generalFeed
-    case stationFeed
-}
-///Loading footer reuse identifier
-let footerViewReuseIdentifier = "footerViewReuseIdentifier"
-///Post ceell reuse identifiers
-let cellReuseIdentifier = "cellReuseIdentifier"
 
 class FeedCollectionViewController: UICollectionViewController{
+    ///Loading footer reuse identifier
+    let footerViewReuseIdentifier = "footerViewReuseIdentifier"
+    ///Post ceell reuse identifiers
+    let cellReuseIdentifier = "cellReuseIdentifier"
     
     private var dataSource: UICollectionViewDiffableDataSource<FeedSection, Post>!
     
@@ -57,6 +46,9 @@ class FeedCollectionViewController: UICollectionViewController{
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+//MARK: - FeedController Setup functions
+extension FeedCollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
@@ -89,6 +81,20 @@ class FeedCollectionViewController: UICollectionViewController{
         postPaginator?.resetPaginator()
     }
 }
+//MARK: - FeedController enums
+extension FeedCollectionViewController {
+    ///The Only one section in collectionView
+    enum FeedSection {
+        ///Section that displays posts
+        case main
+    }
+    ///Feed types to init feed
+    enum FeedType {
+        case userHistoryFeed
+        case generalFeed
+        case stationFeed
+    }
+}
 //MARK: - CollectionView setup
 extension FeedCollectionViewController{
     private func setupCollectionView(){
@@ -101,7 +107,7 @@ extension FeedCollectionViewController{
         collectionView.collectionViewLayout = createLayout()
         //configure datasource for cells
         dataSource = .init(collectionView: collectionView, cellProvider: { (collectionView, indexPath, post) -> UICollectionViewCell? in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as! PostCollectionViewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellReuseIdentifier, for: indexPath) as! PostCollectionViewCell
             cell.postImageView.image = nil
             cell.authorImageView.image = nil
             self.addData(toCell: cell, withPost: self.posts[indexPath.item])
@@ -112,7 +118,7 @@ extension FeedCollectionViewController{
         //configure datasource for footer view
         dataSource.supplementaryViewProvider = .some({ (collectionView, kind, indexPath) -> UICollectionReusableView? in
             if kind == UICollectionView.elementKindSectionFooter {
-                let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerViewReuseIdentifier, for: indexPath) as! LoadingFooterView
+                let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.footerViewReuseIdentifier, for: indexPath) as! LoadingFooterView
                 self.loadingFooterView = view
                 return view
             }else {
@@ -124,11 +130,11 @@ extension FeedCollectionViewController{
     //TODO: add estimatedHeight to make cells dynamically sized
     private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                             heightDimension: .estimated(100))
+                                              heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .estimated(100))
+                                               heightDimension: .absolute(140))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
                                                          subitems: [item])
 
@@ -149,19 +155,14 @@ extension FeedCollectionViewController{
     }
     //TODO: move to cell
     private func addData(toCell cell: PostCollectionViewCell, withPost post: Post ){
-        cell.postImageView.image = nil
         cell.titleLabel.text =  post.title
-        //cell.messageLabel.text =  post.text
         cell.authorLabel.text =  post.userInfo.name
         cell.likesLabel.text =  String(post.likes)
         cell.commentsLabel.text =  String(post.commentCount)
         cell.stationButton.setTitle(post.stationName, for: .normal)
         let dateString = post.date.diff()
         cell.dateLabel.text = "\(dateString)"
-        cell.authorImageView.image = nil
-        cell.postImageView.image = nil
         if !post.isAnonymous{
-            
             cell.authorLabel.text =  post.userInfo.name
             NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
                 DispatchQueue.main.async {
@@ -173,7 +174,6 @@ extension FeedCollectionViewController{
         } else{
             cell.setAnonymousUser()
         }
-
         if post.imageURL != nil {
             NetworkManager.shared.getAsynchImage(withURL: post.imageURL) { (image, error) in
                 DispatchQueue.main.async {
@@ -257,19 +257,10 @@ extension FeedCollectionViewController {
     private func applyFetchedDataOnCollectionView(data: [Post]){
         self.loadingFooterView?.stopAnimating()
         self.collectionView.refreshControl?.endRefreshing()
-        
-        
-//        var initialSnapshot = NSDiffableDataSourceSnapshot<FeedSection, Post>()
-//        initialSnapshot.appendSections([.main])
-//        initialSnapshot.appendItems(self.posts, toSection: .main)
         var snapshot = NSDiffableDataSourceSnapshot<FeedSection, Post>()
         snapshot.appendSections([.main])
         snapshot.appendItems(self.posts, toSection: .main)
         dataSource.apply(snapshot, animatingDifferences: true)
-
-        
-        
-        //self.dataSource.apply(initialSnapshot, animatingDifferences: true)
     }
 }
 //MARK: - PostCollectionViewCellDidTapDelegate

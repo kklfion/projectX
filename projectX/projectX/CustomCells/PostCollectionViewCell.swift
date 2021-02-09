@@ -167,16 +167,10 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     }
     let defaultImageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .ultraLight)
     func setDefaultPostImage(){
-        postImageView.image = UIImage(systemName: "line.horizontal.3", withConfiguration: defaultImageConfig)?.withTintColor(.lightGray, renderingMode: .alwaysOriginal)
-        postImageView.contentMode = .center
-        postImageView.layer.borderWidth = 0.3
-        postImageView.layer.borderColor = UIColor.systemGray4.cgColor
+        postImageView.image = UIImage(named: "noImagePostImage")
     }
     func setPostImage(image: UIImage?){
         postImageView.image = image
-        postImageView.contentMode = .scaleAspectFill
-        postImageView.layer.borderWidth = 0
-        postImageView.layer.borderColor = nil
     }
     func setAnonymousUser(){
         authorLabel.text =  "Anonymous"
@@ -189,19 +183,17 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         contentView.backgroundColor = .none
         
         let stationDateStack = UIStackView(arrangedSubviews: [dateLabel, stationButton])
-        stationDateStack.spacing = 10
+        stationDateStack.spacing = 5
         stationDateStack.distribution = .fillEqually
         stationDateStack.axis = .horizontal
-        //stationDateStack.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        //statio
         
         let authorStack = UIStackView(arrangedSubviews: [authorImageView, authorLabel])
         authorStack.axis = .horizontal
-        authorStack.spacing = 0
+        authorStack.spacing = 5
         
         let likesCommentsStack = UIStackView(arrangedSubviews: [likeButton, likesLabel, commentsButton, commentsLabel])
         likesCommentsStack.axis = .horizontal
-        likesCommentsStack.spacing = 0
+        likesCommentsStack.spacing = 5
         likesCommentsStack.distribution = .fillEqually
         
         let bottomStack = UIStackView(arrangedSubviews: [authorStack, likesCommentsStack])
@@ -213,12 +205,13 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         leftVerticalStack.spacing = 10
         leftVerticalStack.axis = .vertical
         
-        postImageView.widthAnchor.constraint(equalToConstant: 90).isActive = true
-        postImageView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        postImageView.widthAnchor.constraint(equalToConstant: 75).isActive = true
+        postImageView.heightAnchor.constraint(equalToConstant: 75).isActive = true
         
         let leftVerticalAndImageStack = UIStackView(arrangedSubviews: [leftVerticalStack, postImageView])
         leftVerticalAndImageStack.axis = .horizontal
         leftVerticalAndImageStack.alignment = .center
+        leftVerticalAndImageStack.spacing = 10
         
         //MAIN stack, all stacks come in this stack
         let stack = UIStackView(arrangedSubviews: [stationDateStack ,leftVerticalAndImageStack])
