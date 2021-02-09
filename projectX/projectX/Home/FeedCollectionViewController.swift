@@ -102,6 +102,8 @@ extension FeedCollectionViewController{
         //configure datasource for cells
         dataSource = .init(collectionView: collectionView, cellProvider: { (collectionView, indexPath, post) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as! PostCollectionViewCell
+            cell.postImageView.image = nil
+            cell.authorImageView.image = nil
             self.addData(toCell: cell, withPost: self.posts[indexPath.item])
             cell.delegate = self
             cell.indexPath = indexPath
@@ -173,7 +175,6 @@ extension FeedCollectionViewController{
         }
 
         if post.imageURL != nil {
-            cell.postImageView.isHidden = false
             NetworkManager.shared.getAsynchImage(withURL: post.imageURL) { (image, error) in
                 DispatchQueue.main.async {
                     cell.setPostImage(image: image)
@@ -256,10 +257,19 @@ extension FeedCollectionViewController {
     private func applyFetchedDataOnCollectionView(data: [Post]){
         self.loadingFooterView?.stopAnimating()
         self.collectionView.refreshControl?.endRefreshing()
-        var initialSnapshot = NSDiffableDataSourceSnapshot<FeedSection, Post>()
-        initialSnapshot.appendSections([.main])
-        initialSnapshot.appendItems(self.posts, toSection: .main)
-        self.dataSource.apply(initialSnapshot, animatingDifferences: true)
+        
+        
+//        var initialSnapshot = NSDiffableDataSourceSnapshot<FeedSection, Post>()
+//        initialSnapshot.appendSections([.main])
+//        initialSnapshot.appendItems(self.posts, toSection: .main)
+        var snapshot = NSDiffableDataSourceSnapshot<FeedSection, Post>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(self.posts, toSection: .main)
+        dataSource.apply(snapshot, animatingDifferences: true)
+
+        
+        
+        //self.dataSource.apply(initialSnapshot, animatingDifferences: true)
     }
 }
 //MARK: - PostCollectionViewCellDidTapDelegate
