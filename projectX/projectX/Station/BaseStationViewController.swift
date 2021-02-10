@@ -9,8 +9,8 @@ import UIKit
 
 import Combine
 
-class StationViewController: UIViewController, SlidableTopViewProtocol {
-    
+class BaseStationViewController: UIViewController, SlidableTopViewProtocol {
+    //MARK: - SlidableTopViewProtocol variables
     var headerMaxHeight: CGFloat!
     
     var statusBarHeight: CGFloat!
@@ -19,9 +19,9 @@ class StationViewController: UIViewController, SlidableTopViewProtocol {
     
     lazy var stationHeaderHeight = view.frame.height * 0.4
     
-
+    //MARK: - other variables
     ///presented Station, either a substation or a regular station
-    var station: Station?
+    internal var station: Station
     
     ///posts for Station are loaded after viewcontroller was loaded
     private var posts = [Post]()
@@ -33,7 +33,7 @@ class StationViewController: UIViewController, SlidableTopViewProtocol {
     private var feedCollectionViewController: FeedCollectionViewController!
     
     private var user: User?
-    
+
     private var userSubscription: AnyCancellable!
     
     lazy var stationView: StationView = {
@@ -42,23 +42,37 @@ class StationViewController: UIViewController, SlidableTopViewProtocol {
     }()
 
     ///segmented control that holds feeds
-    private lazy var feedSegmentedControl: SegmentedControlWithStackView = {
+    lazy var feedSegmentedControl: SegmentedControlWithStackView = {
         let control = SegmentedControlWithStackView(frame: self.view.frame, itemNames: ["Lounge", "Bus Stop"])
         return control
     }()
-
+    
+    init(station: Station){
+        self.station = station
+        super.init(nibName: nil, bundle: nil)
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    internal func setupFeedsWithUserData(_ user: User?){
+        fatalError("Must Override")
+    }
+    internal func setupSegmentedStackWithFeeds(){
+        fatalError("Must Override")
+    }
+}
+extension BaseStationViewController{
     override func viewDidLoad() {
         view.backgroundColor = .white
         navigationItem.largeTitleDisplayMode = .never
         setupView()
         setupHeights(viewHeight: stationHeaderHeight, extraHeight: 10)
-        setupFeedVCs()
+        setupSegmentedStackWithFeeds()
         setUserAndSubscribeToUpdates()
-        setupStationHeaderWithStation()
+        setupStationHeaderWithStationData()
         checkIfStationFollowed()
     }
     override func viewWillAppear(_ animated: Bool) {
-        //navigationController?.setNavigationTo(color: Constants.Colors.gamingBackground)
         navigationController?.setNavigationToTransparent()
         super.viewWillAppear(animated)
     }
@@ -68,17 +82,17 @@ class StationViewController: UIViewController, SlidableTopViewProtocol {
             print("user is loading ")//wait for update
         case .signedIn(let user):
             self.user = user
-            feedCollectionViewController.setupFeed(feedType: .stationFeed, paginatorId: station?.id, userID: user.id)
+            setupFeedsWithUserData(user)
         case .signedOut:
-            print("display nothing")//display default data
-            feedCollectionViewController.setupFeed(feedType: .stationFeed, paginatorId: station?.id, userID: user?.id)
+            setupFeedsWithUserData(user)
         }
         userSubscription = UserManager.shared().userPublisher.sink { (user) in
             self.user = user
-            self.feedCollectionViewController.setupFeed(feedType: .stationFeed, paginatorId: self.station?.id, userID: user?.id)
+            self.setupFeedsWithUserData(user)
         }
     }
     ///if user is signed in station can be followed/not followed
+    //FIXME: I dont this this is working properly lol
     private func checkIfStationFollowed(){
         switch UserManager.shared().state{
         case .signedIn(_):
@@ -89,25 +103,25 @@ class StationViewController: UIViewController, SlidableTopViewProtocol {
             print("loading")
         }
     }
-    private func setupStationHeaderWithStation(){
-        stationView.changeFollowerCount(by: station?.followers ?? 0)
-        NetworkManager.shared.getAsynchImage(withURL: station?.backgroundImageURL) { (image, error) in
+    private func setupStationHeaderWithStationData(){
+        stationView.changeFollowerCount(by: station.followers)
+        NetworkManager.shared.getAsynchImage(withURL: station.backgroundImageURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
                     self.stationView.backgroundImageView.image = image
                 }
             }
         }
-        NetworkManager.shared.getAsynchImage(withURL: station?.frontImageURL) { (image, error) in
+        NetworkManager.shared.getAsynchImage(withURL: station.frontImageURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
                     self.stationView.frontImageView.image = image
                 }
             }
         }
-        stationView.stationInfoLabel.text = station?.info
-        stationView.stationNameLabel.text = station?.stationName
-        //self.navigationItem.title = station?.stationName ?? "Station"
+        stationView.stationInfoLabel.text = station.info
+        stationView.stationNameLabel.text = station.stationName
+        self.navigationItem.title = station.stationName
 
     }
     private func setupView(){
@@ -128,21 +142,11 @@ class StationViewController: UIViewController, SlidableTopViewProtocol {
                                         trailing: view.trailingAnchor,
                                         padding: .init(top: 0, left: 0, bottom: 0, right: 0))
     }
-    private func setupFeedVCs(){
-        let vc = UIViewController() //instead of the missions vc
-        vc.view.backgroundColor  = .white
-        feedCollectionViewController = FeedCollectionViewController()
-        self.addChild(feedCollectionViewController)
-        feedCollectionViewController.didScrollFeedDelegate = self
-        feedSegmentedControl.stackView.addArrangedSubview(feedCollectionViewController.view)
-        feedSegmentedControl.stackView.addArrangedSubview(vc.view)
-    }
 }
 //MARK: - Handlers
-extension StationViewController{
+extension BaseStationViewController{
     /// when follow button is tapped followedStation should be added/removes in UserManager and in the Firestore
     @objc private func didTapFollowButton(){
-        guard let station = station else {return}
         guard let stationID = station.id else {return}
         guard  let userID = UserManager.shared().user?.userID else {return}
         //if station is followed - unfollow it
@@ -155,8 +159,8 @@ extension StationViewController{
                 }else{
                     UserManager.shared().removeFollowedStation(stationID: stationID)
                     self.stationView.notFollowedButton()
-                    self.station?.followers -= 1
-                    self.stationView.changeFollowerCount(by: self.station?.followers ?? 0)
+                    self.station.followers -= 1
+                    self.stationView.changeFollowerCount(by: self.station.followers)
                     NetworkManager.shared.incrementDocumentValue(collectionType: .stations,
                                                                  documentID: stationID,
                                                                  value: Double(-1),
@@ -170,8 +174,8 @@ extension StationViewController{
                 if error != nil {
                     print(error?.localizedDescription ?? "error creating followedStation")
                 }else if (referenceID != nil){
-                    self.station?.followers += 1
-                    self.stationView.changeFollowerCount(by: self.station?.followers ?? 0)
+                    self.station.followers += 1
+                    self.stationView.changeFollowerCount(by: self.station.followers)
                     self.stationView.followedButton()
                     document.id = referenceID
                     UserManager.shared().addFollowedStation(followedStation: document)
@@ -185,7 +189,7 @@ extension StationViewController{
   
     }
 }
-extension StationViewController: DidScrollFeedDelegate{
+extension BaseStationViewController: DidScrollFeedDelegate{
     func didScrollFeed(_ scrollView: UIScrollView) {
         adjustHeaderPosition(scrollView, navigationController, navigationItem: navigationItem)
     }
