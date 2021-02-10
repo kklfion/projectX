@@ -10,34 +10,32 @@ import UIKit
 
 ///must be init with frame
 class SegmentedControlWithStackView: UIView{
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-//    init(frame: CGRect, itemNames: [String]) {
-//        self.numberOfItems = itemNames.count
-//        self.itemNames = itemNames
+//    override init(frame: CGRect) {
 //        super.init(frame: frame)
 //        setupViews()
 //    }
+    required init(frame: CGRect, itemNames: [String]) {
+        self.numberOfItems = itemNames.count
+        self.itemNames = itemNames
+        super.init(frame: frame)
+        setupViews()
+    }
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    let numberOfItems: Int?
-//
-//    let itemNames: [String]?
+    let numberOfItems: Int
+
+    let itemNames: [String]
     
     let leftButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Posts", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.addTarget(self, action: #selector(didTapLeftButton), for: .touchUpInside)
         return button
     }()
     let rightButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Missions", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.addTarget(self, action: #selector(didTapRightButton), for: .touchUpInside)
         return button
@@ -48,6 +46,9 @@ class SegmentedControlWithStackView: UIView{
         view.clipsToBounds = true
         return view
     }()
+    func setSlidingThingyColor(color: UIColor){
+        slidingThingy.backgroundColor = color
+    }
     
     @objc func didTapLeftButton(){
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseOut,
@@ -67,15 +68,6 @@ class SegmentedControlWithStackView: UIView{
                 self.layoutIfNeeded()
             }, completion: nil)
     }
-    lazy var segmentedControl: UISegmentedControl = {
-        let sc = UISegmentedControl(items: ["Stations", "Missions"])
-        sc.selectedSegmentIndex = 0
-        sc.selectedSegmentTintColor = .white
-        sc.layer.backgroundColor = UIColor.white.cgColor
-        sc.tintColor = .white
-        sc.addTarget(self, action: #selector(performAnimation), for: .valueChanged)
-        return sc
-    }()
     let stackView: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -88,7 +80,8 @@ class SegmentedControlWithStackView: UIView{
     var rightAxis: NSLayoutConstraint?
 
     private func setupViews(){
-        //self.addSubview(segmentedControl)
+        leftButton.setTitle(itemNames.first, for: .normal)
+        rightButton.setTitle(itemNames[1], for: .normal)
         self.addSubview(stackView)
         let  buttonsStack = UIStackView(arrangedSubviews: [leftButton, rightButton])
         buttonsStack.axis = .horizontal
@@ -113,25 +106,25 @@ class SegmentedControlWithStackView: UIView{
         
         leftAxis?.isActive = true
         
-        stackView.addAnchors(top: buttonsStack.bottomAnchor,
+        stackView.addAnchors(top: slidingThingy.bottomAnchor,
                                             leading: self.leadingAnchor,
                                             bottom: self.bottomAnchor,
                                             trailing: nil, padding: .init(top: 0, left: 0, bottom: 0, right: 10),
                                             size: .init(width: (self.frame.width * 2), height: 0))
     }
     /// Animation for switching between two tableViewControllers
-    private var toggle: Bool = true
-    @objc func performAnimation(){
-        let slideRight = {
-            self.stackView.transform = CGAffineTransform(translationX: -self.frame.width, y: 0)
-        }
-        let reset = {
-            self.stackView.transform = .identity
-        }
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseOut,
-            animations:{
-                self.toggle ? slideRight() : reset()
-            }, completion: nil)
-        toggle = !toggle
-    }
+//    private var toggle: Bool = true
+//    @objc func performAnimation(){
+//        let slideRight = {
+//            self.stackView.transform = CGAffineTransform(translationX: -self.frame.width, y: 0)
+//        }
+//        let reset = {
+//            self.stackView.transform = .identity
+//        }
+//        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseOut,
+//            animations:{
+//                self.toggle ? slideRight() : reset()
+//            }, completion: nil)
+//        toggle = !toggle
+//    }
 }

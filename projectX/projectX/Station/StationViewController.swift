@@ -43,7 +43,7 @@ class StationViewController: UIViewController, SlidableTopViewProtocol {
 
     ///segmented control that holds feeds
     private lazy var feedSegmentedControl: SegmentedControlWithStackView = {
-        let control = SegmentedControlWithStackView(frame: self.view.frame)
+        let control = SegmentedControlWithStackView(frame: self.view.frame, itemNames: ["Lounge", "Bus Stop"])
         return control
     }()
 

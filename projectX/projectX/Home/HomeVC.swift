@@ -21,8 +21,15 @@ class HomeTableVC: UIViewController, UISearchBarDelegate{
     private var user: User?
     
     private var userSubscription: AnyCancellable!
+    
+    ///segmented control that holds feeds
+    private lazy var feedSegmentedControl: SegmentedControlWithStackView = {
+        let control = SegmentedControlWithStackView(frame: self.view.frame, itemNames: ["Lounge", "Bus Stop"])
+        return control
+    }()
 
     override func viewDidLoad() {
+        view.backgroundColor = .white
         super.viewDidLoad()
         setupNavigationBar()
         setupFeedController()
@@ -30,8 +37,25 @@ class HomeTableVC: UIViewController, UISearchBarDelegate{
         presentLoginIfNeeded()
     }
     private func setupFeedController(){
+        view.addSubview(feedSegmentedControl)
+        feedSegmentedControl.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
+                                        leading: view.leadingAnchor,
+                                        bottom: view.bottomAnchor,
+                                        trailing: view.trailingAnchor,
+                                        padding: .init(top: 0, left: 0, bottom: 0, right: 0))
+        
         feedCollectionViewController = FeedCollectionViewController()
         self.add(feedCollectionViewController)//add feedController as a child
+//        self.addChild(feedCollectionViewController)
+//        self.view.addSubview(feedCollectionViewController.view)
+//        feedCollectionViewController.didMove(toParent: self)
+        
+        let vc = UIViewController() //instead of the missions vc
+        vc.view.backgroundColor  = .white
+        
+        feedSegmentedControl.stackView.addArrangedSubview(feedCollectionViewController.view)
+        feedSegmentedControl.stackView.addArrangedSubview(vc.view)
+        
     }
     private func setUserAndSubscribeToUpdates(){
         switch UserManager.shared().state {
@@ -58,9 +82,9 @@ extension HomeTableVC{
     }
     private func setupNavigationBar(){
         navigationController?.navigationBar.prefersLargeTitles = false
-        self.navigationItem.title = "Home"
-        navigationItem.searchController = searchController
-        searchController.searchBar.delegate = self
+        navigationItem.titleView = UISearchBar()
+        //navigationItem.searchController = searchController
+        //searchController.searchBar.delegate = self
     }
 }
 //MARK: - SideBarStationSelectionDelegate

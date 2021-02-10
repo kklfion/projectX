@@ -107,7 +107,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     
     ///segmented control that holds feeds
     private lazy var feedSegmentedControl: SegmentedControlWithStackView = {
-        let control = SegmentedControlWithStackView(frame: self.view.frame)
+        let control = SegmentedControlWithStackView(frame: self.view.frame, itemNames: ["Posts", "Missions"])
         return control
     }()
     
