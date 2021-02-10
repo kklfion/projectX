@@ -101,16 +101,16 @@ extension HomeTableVC{
 //MARK: - SideBarStationSelectionDelegate
 extension HomeTableVC: SideBarStationSelectionDelegate{
     func didTapSidebar(station: Station) {
+        let vc: BaseStationViewController
         switch station.stationType {
         case .parentStation:
-            let vc = ParentStationViewController()
-            vc.station = station
-            navigationController?.pushViewController(vc, animated: true)
-        default:
-            let vc = StationViewController()
-            vc.station = station
-            navigationController?.pushViewController(vc, animated: true)
+            vc = ParentStationViewController(station: station)
+        case .subStation:
+            vc = SubstationViewController(station: station)
+        case .station:
+            vc = BaseStationViewController(station: station)
         }
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 //MARK: - Navigation

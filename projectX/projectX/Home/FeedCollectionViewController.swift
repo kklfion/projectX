@@ -316,9 +316,16 @@ extension FeedCollectionViewController{
         NetworkManager.shared.getDocumentForID(collection: .stations, uid: posts[indexPath.row].stationID) { (document: Station?, error) in
             if error != nil {
                 print("error receiving station")
-            }else if document != nil {
-                let vc = StationViewController()
-                vc.station = document
+            }else if let doc = document {
+                var vc: BaseStationViewController
+                switch doc.stationType {
+                case .parentStation:
+                    vc = ParentStationViewController(station: doc)
+                case .subStation:
+                    vc = SubstationViewController(station: doc)
+                case .station:
+                    vc = RegularStationViewController(station: doc)
+                }
                 vc.modalPresentationStyle = .fullScreen
                 self.navigationController?.pushViewController(vc, animated: true)
             }
