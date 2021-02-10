@@ -31,18 +31,20 @@ class SegmentedControlWithStackView: UIView{
     let leftButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = Constants.bodyTextFont
         button.addTarget(self, action: #selector(didTapLeftButton), for: .touchUpInside)
         return button
     }()
     let rightButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = Constants.bodyTextFont
         button.addTarget(self, action: #selector(didTapRightButton), for: .touchUpInside)
         return button
     }()
     let slidingThingy: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.blue.withAlphaComponent(0.5)
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         view.clipsToBounds = true
         return view
     }()
@@ -99,7 +101,7 @@ class SegmentedControlWithStackView: UIView{
                                  leading: nil,
                                  bottom: nil,
                                  trailing: nil,
-                                 size: .init(width: 15, height: 5))
+                                 size: .init(width: 20, height: 2.5))
         slidingThingy.layer.cornerRadius = 2
         leftAxis =  slidingThingy.centerXAnchor.constraint(equalTo: leftButton.centerXAnchor)
         rightAxis = slidingThingy.centerXAnchor.constraint(equalTo: rightButton.centerXAnchor)
