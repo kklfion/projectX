@@ -20,7 +20,7 @@ enum StationType: String, Codable{
     /// is a substation of a parentstation, will be displayed in the parentStation list and it will have missions as second tableview
     case subStation
 }
-struct Station:Identifiable, Codable{
+struct Station:Identifiable, Codable, Hashable{
     
     /// property wrapper that stores id of the document associated with data
     @DocumentID var id: String?

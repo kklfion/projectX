@@ -28,7 +28,6 @@ class SegmentedControlWithStackView: UIView{
             rightButton.setTitle(itemNames[1], for: .normal)
         }
     }
-    
     let leftButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(.black, for: .normal)
