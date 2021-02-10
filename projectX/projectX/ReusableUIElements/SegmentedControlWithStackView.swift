@@ -10,10 +10,6 @@ import UIKit
 
 ///must be init with frame
 class SegmentedControlWithStackView: UIView{
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//        setupViews()
-//    }
     required init(frame: CGRect, itemNames: [String]) {
         self.numberOfItems = itemNames.count
         self.itemNames = itemNames
@@ -26,7 +22,12 @@ class SegmentedControlWithStackView: UIView{
     
     let numberOfItems: Int
 
-    let itemNames: [String]
+    var itemNames: [String]{
+        didSet{
+            leftButton.setTitle(itemNames.first, for: .normal)
+            rightButton.setTitle(itemNames[1], for: .normal)
+        }
+    }
     
     let leftButton: UIButton = {
         let button = UIButton()

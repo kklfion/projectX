@@ -9,11 +9,12 @@
 import UIKit
 
 class RegularStationViewController: BaseStationViewController {
+    //TODO: implement two different feeds!
     ///collectionViewController responsible for the feed.
     private var popularFeedController: FeedCollectionViewController!
     private var newFeedController: FeedCollectionViewController!
-    
     override func viewDidLoad() {
+        
         super.viewDidLoad()
     }
     override func setupFeedsWithUserData(_ user: User?){
@@ -29,5 +30,8 @@ class RegularStationViewController: BaseStationViewController {
         newFeedController.didScrollFeedDelegate = self
         feedSegmentedControl.stackView.addArrangedSubview(popularFeedController.view)
         feedSegmentedControl.stackView.addArrangedSubview(newFeedController.view)
+    }
+    override func setFeedNames(){
+        feedSegmentedControl.itemNames = ["Lounge", "New"]
     }
 }

@@ -9,6 +9,8 @@ import UIKit
 
 import Combine
 
+///is a super class for all stations. Don't create is directly, rather use it's subclasses.
+///Is responsible for general UI and its subclasses are responsible for different feeds
 class BaseStationViewController: UIViewController, SlidableTopViewProtocol {
     //MARK: - SlidableTopViewProtocol variables
     var headerMaxHeight: CGFloat!
@@ -18,7 +20,6 @@ class BaseStationViewController: UIViewController, SlidableTopViewProtocol {
     var topViewTopConstraint: NSLayoutConstraint!
     
     lazy var stationHeaderHeight = view.frame.height * 0.4
-    
     //MARK: - other variables
     ///presented Station, either a substation or a regular station
     internal var station: Station
@@ -60,6 +61,9 @@ class BaseStationViewController: UIViewController, SlidableTopViewProtocol {
     internal func setupSegmentedStackWithFeeds(){
         fatalError("Must Override")
     }
+    internal func setFeedNames(){
+        fatalError("Must Override")
+    }
 }
 extension BaseStationViewController{
     override func viewDidLoad() {
@@ -71,6 +75,7 @@ extension BaseStationViewController{
         setUserAndSubscribeToUpdates()
         setupStationHeaderWithStationData()
         checkIfStationFollowed()
+        setFeedNames()
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setNavigationToTransparent()

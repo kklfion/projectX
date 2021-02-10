@@ -30,7 +30,7 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
     
     ///segmented control that holds feeds
     private lazy var feedSegmentedControl: SegmentedControlWithStackView = {
-        let control = SegmentedControlWithStackView(frame: self.view.frame, itemNames: ["Lounge", "Bus Stop"])
+        let control = SegmentedControlWithStackView(frame: self.view.frame, itemNames: ["Lounge", "New"])
         return control
     }()
 
@@ -108,7 +108,7 @@ extension HomeTableVC: SideBarStationSelectionDelegate{
         case .subStation:
             vc = SubstationViewController(station: station)
         case .station:
-            vc = BaseStationViewController(station: station)
+            vc = RegularStationViewController(station: station)
         }
         navigationController?.pushViewController(vc, animated: true)
     }
