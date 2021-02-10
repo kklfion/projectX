@@ -9,22 +9,22 @@
 class ParentStationViewController: BaseStationViewController{
     ///collectionViewController responsible for the feed.
     private var collegesFeedController: FeedCollectionViewController!
-    private var collegesListController: FeedCollectionViewController!
+    private var collegesListController: CollegesListController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     override func setupFeedsWithUserData(_ user: User?){
         collegesFeedController.setupFeed(feedType: .stationFeed, paginatorId: self.station.id, userID: user?.id)
-        collegesListController.setupFeed(feedType: .stationFeed, paginatorId: self.station.id, userID: user?.id)
+        //collegesListController.setupFeed(feedType: .stationFeed, paginatorId: self.station.id, userID: user?.id)
     }
     override func setupSegmentedStackWithFeeds(){
-        collegesListController = FeedCollectionViewController()
+        collegesListController = CollegesListController(parentStation: station)
         collegesFeedController = FeedCollectionViewController()
         self.addChild(collegesFeedController)
         self.addChild(collegesListController)
         collegesFeedController.didScrollFeedDelegate = self
-        collegesListController.didScrollFeedDelegate = self
+        //collegesListController.didScrollFeedDelegate = self
         feedSegmentedControl.stackView.addArrangedSubview(collegesFeedController.view)
         feedSegmentedControl.stackView.addArrangedSubview(collegesListController.view)
     }

@@ -43,6 +43,12 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
         setUserAndSubscribeToUpdates()
         
         presentLoginIfNeeded()
+        
+//        let station = Station(info: "The University of California, Los Angeles is a public land-grant research university in Los Angeles, California. UCLA traces its early origins back to 1882 as the southern branch of the California State Normal School.", stationName: "UCLA", followers: 0, date: Date(), frontImageURL: nil, backgroundImageURL: nil, postCount: 0, parentStationID: "zNc2v0z6J666UHS4fUbB", isSubStation: true, stationType: .subStation)
+//        NetworkManager.shared.writeDocumentsWith(collectionType: .stations, documents: [station]) {
+//            result in
+//            print(result)
+//        }
     }
     private func setupFeedController(){
         view.addSubview(feedSegmentedControl)
