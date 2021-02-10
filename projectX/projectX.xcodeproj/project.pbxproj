@@ -41,7 +41,6 @@
 		804E61A324980DD500825150 /* NewPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A224980DD500825150 /* NewPostVC.swift */; };
 		804E61A524980DFD00825150 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A424980DFD00825150 /* HomeVC.swift */; };
 		8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62C24A6CEC0002A9E16 /* HomeView.swift */; };
-		8066D62F24AACAF8002A9E16 /* PostCellWithImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */; };
 		8067F0BE257AD70800CED98F /* RoundShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F0BD257AD70800CED98F /* RoundShadowView.swift */; };
 		8067F0C1257ADC3B00CED98F /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F0C0257ADC3B00CED98F /* PostCollectionViewCell.swift */; };
 		8067F123257C158300CED98F /* StaticStationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F122257C158300CED98F /* StaticStationData.swift */; };
@@ -59,13 +58,13 @@
 		8071D7C12554A8EE00547CC1 /* UserManagerEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8071D7C02554A8ED00547CC1 /* UserManagerEnums.swift */; };
 		8081185424C2626C0032D46D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8081185324C2626C0032D46D /* LoginViewController.swift */; };
 		8081185624C262910032D46D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8081185524C262910032D46D /* LoginView.swift */; };
-		808361C425290DEC00DEF0DE /* PostCellWithoutImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */; };
 		808361C8252920F900DEF0DE /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361C7252920F900DEF0DE /* UserManager.swift */; };
 		808361CB2529215700DEF0DE /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808361CA2529215700DEF0DE /* NetworkManager.swift */; };
 		80A0DC16253B56A500474541 /* SegmentedControlWithStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC15253B56A500474541 /* SegmentedControlWithStackView.swift */; };
 		80A0DC1D253B780300474541 /* BoardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0DC1C253B780300474541 /* BoardCell.swift */; };
 		80A19E9825D465BE00E06F13 /* RegularStationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A19E9725D465BE00E06F13 /* RegularStationViewController.swift */; };
 		80A19E9C25D4783D00E06F13 /* SubstationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A19E9B25D4783D00E06F13 /* SubstationViewController.swift */; };
+		80A19E9F25D4855500E06F13 /* CollegesListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A19E9E25D4855500E06F13 /* CollegesListController.swift */; };
 		80AF6F0F2579A2B5006A6C57 /* ShadowLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AF6F0E2579A2B5006A6C57 /* ShadowLayerView.swift */; };
 		80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */; };
 		80B2C6A92516E3220025F9EE /* SideBarSlidingTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */; };
@@ -127,7 +126,6 @@
 		804E61A224980DD500825150 /* NewPostVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostVC.swift; sourceTree = "<group>"; };
 		804E61A424980DFD00825150 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		8066D62C24A6CEC0002A9E16 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCellWithImage.swift; sourceTree = "<group>"; };
 		8067F0BD257AD70800CED98F /* RoundShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundShadowView.swift; sourceTree = "<group>"; };
 		8067F0C0257ADC3B00CED98F /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
 		8067F122257C158300CED98F /* StaticStationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticStationData.swift; sourceTree = "<group>"; };
@@ -145,13 +143,13 @@
 		8071D7C02554A8ED00547CC1 /* UserManagerEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManagerEnums.swift; sourceTree = "<group>"; };
 		8081185324C2626C0032D46D /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		8081185524C262910032D46D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCellWithoutImage.swift; sourceTree = "<group>"; };
 		808361C7252920F900DEF0DE /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		808361CA2529215700DEF0DE /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		80A0DC15253B56A500474541 /* SegmentedControlWithStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlWithStackView.swift; sourceTree = "<group>"; };
 		80A0DC1C253B780300474541 /* BoardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCell.swift; sourceTree = "<group>"; };
 		80A19E9725D465BE00E06F13 /* RegularStationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularStationViewController.swift; sourceTree = "<group>"; };
 		80A19E9B25D4783D00E06F13 /* SubstationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubstationViewController.swift; sourceTree = "<group>"; };
+		80A19E9E25D4855500E06F13 /* CollegesListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollegesListController.swift; sourceTree = "<group>"; };
 		80AF6F0E2579A2B5006A6C57 /* ShadowLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowLayerView.swift; sourceTree = "<group>"; };
 		80B2C68D2516B54C0025F9EE /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarSlidingTransition.swift; sourceTree = "<group>"; };
@@ -255,6 +253,7 @@
 				80A19E9725D465BE00E06F13 /* RegularStationViewController.swift */,
 				80A19E9B25D4783D00E06F13 /* SubstationViewController.swift */,
 				8068E7D2254107BD00A85B33 /* ParentStationViewController.swift */,
+				80A19E9E25D4855500E06F13 /* CollegesListController.swift */,
 			);
 			path = Station;
 			sourceTree = "<group>";
@@ -262,8 +261,6 @@
 		803D75B1250ADB84003F569D /* CustomCells */ = {
 			isa = PBXGroup;
 			children = (
-				8066D62E24AACAF8002A9E16 /* PostCellWithImage.swift */,
-				808361C325290DEC00DEF0DE /* PostCellWithoutImage.swift */,
 				8067F0C0257ADC3B00CED98F /* PostCollectionViewCell.swift */,
 				803D759F250AD3E0003F569D /* CommentCell.swift */,
 				80A0DC1C253B780300474541 /* BoardCell.swift */,
@@ -549,6 +546,7 @@
 				8008C70225CE0DA70072864A /* TermsOfServiceViewController.swift in Sources */,
 				8008C6F725CE0D820072864A /* ContactUsView.swift in Sources */,
 				8008C6BE25CCA5EE0072864A /* NeedToLoginView.swift in Sources */,
+				80A19E9F25D4855500E06F13 /* CollegesListController.swift in Sources */,
 				8008C70125CE0DA70072864A /* TermsOfServiceView.swift in Sources */,
 				804E618B24957D0C00825150 /* ViewController.swift in Sources */,
 				804E619D24980C9400825150 /* NotificationsTableVC.swift in Sources */,
@@ -566,7 +564,6 @@
 				80D97BA9251D819000825BBB /* MissionsCell.swift in Sources */,
 				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,
 				8067F123257C158300CED98F /* StaticStationData.swift in Sources */,
-				808361C425290DEC00DEF0DE /* PostCellWithoutImage.swift in Sources */,
 				803D75B3250AE531003F569D /* Post.swift in Sources */,
 				80A19E9825D465BE00E06F13 /* RegularStationViewController.swift in Sources */,
 				803D75A4250AD3E0003F569D /* PostView.swift in Sources */,
@@ -598,7 +595,6 @@
 				803D75A3250AD3E0003F569D /* CommentCell.swift in Sources */,
 				804E619B24957E3200825150 /* MainTabBarVC.swift in Sources */,
 				8071D7A42551E99000547CC1 /* AlertPresenter.swift in Sources */,
-				8066D62F24AACAF8002A9E16 /* PostCellWithImage.swift in Sources */,
 				8008C6FA25CE0D980072864A /* PrivacyPolicyView.swift in Sources */,
 				8071D7C12554A8EE00547CC1 /* UserManagerEnums.swift in Sources */,
 				8068E7CE2541029C00A85B33 /* CellProtocols.swift in Sources */,

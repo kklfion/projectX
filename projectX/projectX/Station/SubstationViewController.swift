@@ -30,4 +30,7 @@ class SubstationViewController: BaseStationViewController {
         feedSegmentedControl.stackView.addArrangedSubview(popularFeedController.view)
         feedSegmentedControl.stackView.addArrangedSubview(missionsController.view)
     }
+    override func setFeedNames(){
+        feedSegmentedControl.itemNames = ["Lounge", "Bulletin Board"]
+    }
 }

@@ -28,6 +28,9 @@ class ParentStationViewController: BaseStationViewController{
         feedSegmentedControl.stackView.addArrangedSubview(collegesFeedController.view)
         feedSegmentedControl.stackView.addArrangedSubview(collegesListController.view)
     }
+    override func setFeedNames(){
+        feedSegmentedControl.itemNames = ["Lounge", "List"]
+    }
 }
 
 ////
