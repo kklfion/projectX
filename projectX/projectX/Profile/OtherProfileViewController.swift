@@ -20,6 +20,7 @@ protocol SlidableTopViewProtocol: class{
     
     var statusBarHeight: CGFloat! { get set }
     
+    //must be pinned to the top anchor of the view that is sliding
     var topViewTopConstraint: NSLayoutConstraint! { get set }
     
     func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?, navigationItem: UINavigationItem?)

@@ -10,7 +10,13 @@ import UIKit
 import FirebaseAuth
 import Combine
 
-class HomeTableVC: UIViewController, UISearchBarDelegate{
+class HomeTableVC: UIViewController, SlidableTopViewProtocol{
+    
+    var headerMaxHeight: CGFloat!
+    
+    var statusBarHeight: CGFloat!
+    
+    var topViewTopConstraint: NSLayoutConstraint!
     
     ///collectionViewController responsible for the feed.
     private var feedCollectionViewController: FeedCollectionViewController!
@@ -32,24 +38,26 @@ class HomeTableVC: UIViewController, UISearchBarDelegate{
         view.backgroundColor = .white
         super.viewDidLoad()
         setupNavigationBar()
+        setupHeights(viewHeight: 85, extraHeight: 0)
         setupFeedController()
         setUserAndSubscribeToUpdates()
+        
         presentLoginIfNeeded()
     }
     private func setupFeedController(){
         view.addSubview(feedSegmentedControl)
-        feedSegmentedControl.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
+        feedSegmentedControl.addAnchors(top: nil,
                                         leading: view.leadingAnchor,
                                         bottom: view.bottomAnchor,
                                         trailing: view.trailingAnchor,
                                         padding: .init(top: 0, left: 0, bottom: 0, right: 0))
+        topViewTopConstraint = feedSegmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0)
+        topViewTopConstraint.isActive = true
         
         feedCollectionViewController = FeedCollectionViewController()
+        feedCollectionViewController.didScrollFeedDelegate = self
         self.add(feedCollectionViewController)//add feedController as a child
-//        self.addChild(feedCollectionViewController)
-//        self.view.addSubview(feedCollectionViewController.view)
-//        feedCollectionViewController.didMove(toParent: self)
-        
+
         let vc = UIViewController() //instead of the missions vc
         vc.view.backgroundColor  = .white
         
@@ -74,6 +82,11 @@ class HomeTableVC: UIViewController, UISearchBarDelegate{
         }
     }
 }
+extension HomeTableVC: DidScrollFeedDelegate{
+    func didScrollFeed(_ scrollView: UIScrollView) {
+        adjustHeaderPosition(scrollView, navigationController, navigationItem: navigationItem)
+    }
+}
 //MARK: - Navigation Bar setup
 extension HomeTableVC{
     override func viewWillAppear(_ animated: Bool) {
@@ -83,8 +96,6 @@ extension HomeTableVC{
     private func setupNavigationBar(){
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.titleView = UISearchBar()
-        //navigationItem.searchController = searchController
-        //searchController.searchBar.delegate = self
     }
 }
 //MARK: - SideBarStationSelectionDelegate
