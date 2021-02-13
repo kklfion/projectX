@@ -43,7 +43,6 @@
 		8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62C24A6CEC0002A9E16 /* HomeView.swift */; };
 		8067F0BE257AD70800CED98F /* RoundShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F0BD257AD70800CED98F /* RoundShadowView.swift */; };
 		8067F0C1257ADC3B00CED98F /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F0C0257ADC3B00CED98F /* PostCollectionViewCell.swift */; };
-		8067F123257C158300CED98F /* StaticStationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F122257C158300CED98F /* StaticStationData.swift */; };
 		8068E7CE2541029C00A85B33 /* CellProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E7CD2541029C00A85B33 /* CellProtocols.swift */; };
 		8068E7D3254107BD00A85B33 /* ParentStationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E7D2254107BD00A85B33 /* ParentStationViewController.swift */; };
 		8068E80225410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */; };
@@ -53,7 +52,6 @@
 		806B790524B817AD002B45BD /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806B790424B817AD002B45BD /* PostModel.swift */; };
 		806E777624C9074700A95B89 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806E777524C9074700A95B89 /* Constants.swift */; };
 		806E777824C9076200A95B89 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806E777724C9076200A95B89 /* Extensions.swift */; };
-		806E777A24C9255F00A95B89 /* DataTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806E777924C9255F00A95B89 /* DataTest.swift */; };
 		8071D7A42551E99000547CC1 /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8071D7A32551E99000547CC1 /* AlertPresenter.swift */; };
 		8071D7C12554A8EE00547CC1 /* UserManagerEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8071D7C02554A8ED00547CC1 /* UserManagerEnums.swift */; };
 		8081185424C2626C0032D46D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8081185324C2626C0032D46D /* LoginViewController.swift */; };
@@ -129,7 +127,6 @@
 		8066D62C24A6CEC0002A9E16 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		8067F0BD257AD70800CED98F /* RoundShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundShadowView.swift; sourceTree = "<group>"; };
 		8067F0C0257ADC3B00CED98F /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
-		8067F122257C158300CED98F /* StaticStationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticStationData.swift; sourceTree = "<group>"; };
 		8068E7CD2541029C00A85B33 /* CellProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellProtocols.swift; sourceTree = "<group>"; };
 		8068E7D2254107BD00A85B33 /* ParentStationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentStationViewController.swift; sourceTree = "<group>"; };
 		8068E80125410B0B00A85B33 /* SegmentedControlWithTwoTableViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlWithTwoTableViews.swift; sourceTree = "<group>"; };
@@ -139,7 +136,6 @@
 		806B790424B817AD002B45BD /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		806E777524C9074700A95B89 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		806E777724C9076200A95B89 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		806E777924C9255F00A95B89 /* DataTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTest.swift; sourceTree = "<group>"; };
 		8071D7A32551E99000547CC1 /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
 		8071D7C02554A8ED00547CC1 /* UserManagerEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManagerEnums.swift; sourceTree = "<group>"; };
 		8081185324C2626C0032D46D /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -381,12 +377,10 @@
 			isa = PBXGroup;
 			children = (
 				808361C7252920F900DEF0DE /* UserManager.swift */,
-				8067F122257C158300CED98F /* StaticStationData.swift */,
 				8071D7C02554A8ED00547CC1 /* UserManagerEnums.swift */,
 				808361CA2529215700DEF0DE /* NetworkManager.swift */,
 				8071D7A32551E99000547CC1 /* AlertPresenter.swift */,
 				806E777524C9074700A95B89 /* Constants.swift */,
-				806E777924C9255F00A95B89 /* DataTest.swift */,
 				806E777724C9076200A95B89 /* Extensions.swift */,
 				80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */,
 				90C178B625319EE800200222 /* QueryData.swift */,
@@ -558,7 +552,6 @@
 				80D97BAC251D819C00825BBB /* MissionDeadlineCell.swift in Sources */,
 				80699CBC25AE59D10037FF0F /* FeedCollectionViewController.swift in Sources */,
 				8081185624C262910032D46D /* LoginView.swift in Sources */,
-				806E777A24C9255F00A95B89 /* DataTest.swift in Sources */,
 				80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */,
 				56DFFD9225CB0F3300B18CE8 /* SelectAvatarViewController.swift in Sources */,
 				804E618724957D0C00825150 /* AppDelegate.swift in Sources */,
@@ -567,7 +560,6 @@
 				803D75AE250AD786003F569D /* Station.swift in Sources */,
 				80D97BA9251D819000825BBB /* MissionsCell.swift in Sources */,
 				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,
-				8067F123257C158300CED98F /* StaticStationData.swift in Sources */,
 				803D75B3250AE531003F569D /* Post.swift in Sources */,
 				80A19E9825D465BE00E06F13 /* RegularStationViewController.swift in Sources */,
 				803D75A4250AD3E0003F569D /* PostView.swift in Sources */,

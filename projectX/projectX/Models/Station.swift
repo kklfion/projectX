@@ -43,6 +43,12 @@ struct Station:Identifiable, Codable, Hashable{
     /// Station photo url stored in the Firestore
     var backgroundImageURL: URL?
     
+    /// main color
+    var mainColorHex: String
+    
+    /// secondary color
+    var secondaryColorHex: String
+    
     /// Station's post count
     var postCount: Int?
     
@@ -63,6 +69,8 @@ extension Station{
                 date: Date,
                 frontImageURL: URL?,
                 backgroundImageURL: URL?,
+                mainColor: String,
+                secondaryColor: String,
                 postCount: Int? = 0,
                 parentStationID: String?,
                 isSubStation: Bool? = false,
@@ -73,6 +81,8 @@ extension Station{
         self.date = date
         self.frontImageURL = frontImageURL
         self.backgroundImageURL = backgroundImageURL
+        self.mainColorHex = mainColor
+        self.secondaryColorHex = secondaryColor
         self.postCount = postCount
         self.parentStationID = parentStationID
         self.isSubStation = isSubStation

@@ -132,7 +132,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     }()
     lazy var commentsButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "bubble.right.fill", withConfiguration: likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "message", withConfiguration: likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let commentsLabel: UILabel = {
