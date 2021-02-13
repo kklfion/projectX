@@ -124,6 +124,7 @@ extension BaseStationViewController{
                 }
             }
         }
+        stationView.setupGradient(mainColorHex: station.mainColorHex, secondaryColorHex: station.secondaryColorHex)
         stationView.stationInfoLabel.text = station.info
         stationView.stationNameLabel.text = station.stationName
         self.navigationItem.title = station.stationName

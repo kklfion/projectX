@@ -34,7 +34,6 @@ class StationView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
-        setupGradient()
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -144,7 +143,7 @@ extension StationView{
         followButton.addSubview(RoundShadowView(frame: followButton.frame, cornerRadius: followButtonDimensions/2))
     }
 
-    private func setupGradient(){
+    func setupGradient(mainColorHex: String, secondaryColorHex: String){
         layoutIfNeeded()
         let gradientLayer = CAGradientLayer()
         // Diagonal: top left to bottom corner.
@@ -154,7 +153,13 @@ extension StationView{
         gradientLayer.frame = backgroundView.bounds
         // Set an array of Core Graphics colors (.cgColor) to create the gradient.
         // This example uses a Color Literal and a UIColor from RGB values.29, 191, 143
-        gradientLayer.colors = [UIColor(red: 29, green: 191, blue: 143).cgColor, UIColor(red: 42, green: 136, blue: 108).cgColor]
+        //let mainColor = UIColor(hex: mainColorHex)
+        //let secondary = UIColor(hex: secondaryColorHex)
+        let main = hexStringToUIColor(hex: mainColorHex)
+        let secondary = hexStringToUIColor(hex: secondaryColorHex)
+        
+        
+        gradientLayer.colors = [secondary.cgColor, main.cgColor]
         // Rasterize this static layer to improve app performance.
         gradientLayer.shouldRasterize = true
         // Apply the gradient to the backgroundGradientView.
@@ -182,5 +187,26 @@ extension StationView {
             followersLabel.text = "\(number) Followers"
         }
 
+    }
+    func hexStringToUIColor (hex:String) -> UIColor {
+        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+
+        if (cString.hasPrefix("#")) {
+            cString.remove(at: cString.startIndex)
+        }
+
+        if ((cString.count) != 6) {
+            return UIColor.gray
+        }
+
+        var rgbValue:UInt64 = 0
+        Scanner(string: cString).scanHexInt64(&rgbValue)
+
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
     }
 }
