@@ -43,7 +43,7 @@ extension SlidableTopViewProtocol{
             navigationItem?.title = ""
         }else{//inbetween we want to adjust the position of the header
             //controller?.isNavigationBarHidden = false
-            controller?.setNavigationToWhite()
+            controller?.setNavigationToViewColor()
             navigationItem?.title = "Profile"
             topViewTopConstraint.constant = topViewOffset
             scrollView.contentOffset.y = 0 //to smooth out scrolling
@@ -144,7 +144,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         navigationController?.setNavigationToTransparent()
         self.navigationItem.title = "Profile"
         extendedLayoutIncludesOpaqueBars = true
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         navigationItem.largeTitleDisplayMode = .never
         setupProfileView()
         setupHeights(viewHeight: profileHeight, extraHeight: extraHeight)
@@ -239,7 +239,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     }
     private func setupFeedVCs(){
         let vc = UIViewController() //instead of the missions vc
-        vc.view.backgroundColor  = .white
+        vc.view.backgroundColor  = Constants.Colors.mainBackground
         feedCollectionViewController = FeedCollectionViewController()
         self.addChild(feedCollectionViewController)
         feedCollectionViewController.didScrollFeedDelegate = self
@@ -333,7 +333,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     private func setShadowForProfileImage(){
         let shadowRect = self.profileView.profileImageViewContainer.layer.bounds
         self.profileView.profileImageViewContainer.layer.masksToBounds = false
-        self.profileView.profileImageViewContainer.layer.shadowColor = UIColor.black.cgColor//Constants.Colors.mainYellow.cgColor
+        self.profileView.profileImageViewContainer.layer.shadowColor = Constants.Colors.shadow.cgColor//Constants.Colors.mainYellow.cgColor
         self.profileView.profileImageViewContainer.layer.shadowOpacity = 0.2
         self.profileView.profileImageViewContainer.layer.shadowOffset = CGSize(width: -1, height: 1)
         self.profileView.profileImageViewContainer.layer.shadowRadius = 10

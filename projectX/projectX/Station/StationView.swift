@@ -20,7 +20,7 @@ class ShadowButton: UIButton {
         let halfOfButtonHeight = layer.frame.height / 2
         // setup shadow
         layer.cornerRadius = halfOfButtonHeight
-        layer.shadowColor = UIColor.darkGray.cgColor
+        layer.shadowColor = Constants.Colors.shadow.cgColor
         layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: halfOfButtonHeight).cgPath
         layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
         layer.shadowOpacity = 0.5
@@ -50,7 +50,7 @@ class StationView: UIView {
     }()
     let roundedView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         return view
     }()
     let frontImageView: UIImageView = {
@@ -72,7 +72,7 @@ class StationView: UIView {
     }()
     let followButton: ShadowButton = {
         let button = ShadowButton()
-        button.backgroundColor = .white
+        button.backgroundColor = Constants.Colors.secondaryBackground
         return button
     }()
     let stationInfoLabel: UILabel = {

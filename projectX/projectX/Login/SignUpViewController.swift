@@ -17,7 +17,7 @@ class SignUpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Sign Up"
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         setupView()
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -51,8 +51,8 @@ class SignUpViewController: UIViewController {
         let shadowRect = self.signUpView.profileImageViewContainer.layer.bounds
         
             self.signUpView.profileImageViewContainer.layer.masksToBounds = false
-            self.signUpView.profileImageViewContainer.layer.shadowColor = UIColor.black.cgColor//Constants.Colors.mainYellow.cgColor
-            self.signUpView.profileImageViewContainer.layer.shadowOpacity = 0.2
+            self.signUpView.profileImageViewContainer.layer.shadowColor = Constants.Colors.shadow.cgColor//Constants.Colors.mainYellow.cgColor
+            self.signUpView.profileImageViewContainer.layer.shadowOpacity = 0.5
             self.signUpView.profileImageViewContainer.layer.shadowOffset = CGSize(width: -1, height: 1)
             self.signUpView.profileImageViewContainer.layer.shadowRadius = 10
             self.signUpView.profileImageViewContainer.layer.cornerRadius = 50

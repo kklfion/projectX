@@ -26,14 +26,14 @@ class ProfileView: UIView {
     }()
     let viewBackground: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         view.layer.cornerRadius = 25
         return view
     }()
     let profileImageViewContainer: UIView = {
         let container = UIView()
         container.clipsToBounds = false
-        container.layer.shadowColor = UIColor.black.cgColor
+        container.layer.shadowColor = Constants.Colors.shadow.cgColor
         container.layer.shadowOpacity = 1
         container.layer.shadowOffset = CGSize.zero
         container.layer.shadowRadius = 8
@@ -42,7 +42,7 @@ class ProfileView: UIView {
     }()
     let profileImageView: UIImageView = {
         let imageview = UIImageView()
-        imageview.backgroundColor = .white
+        imageview.backgroundColor = Constants.Colors.secondaryBackground
         imageview.clipsToBounds = true
         
         return imageview
@@ -67,21 +67,21 @@ class ProfileView: UIView {
         let label = UILabel()
         label.text = "Username"
         label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        label.textColor = .black
+        label.textColor = Constants.Colors.mainText
         return label
     }()
     let useridLabel: UILabel = {
         let label = UILabel()
         label.text = ""
         label.font = UIFont.preferredFont(forTextStyle: .body)
-        label.textColor = .lightGray
+        label.textColor = Constants.Colors.subText
         return label
     }()
     let schoolLabel: UILabel = {
         let label = UILabel()
         label.text = ""
         label.font = UIFont.preferredFont(forTextStyle: .body)
-        label.textColor = .black
+        label.textColor = Constants.Colors.mainText
         return label
     }()
     let spacingView: UIView  = {

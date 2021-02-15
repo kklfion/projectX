@@ -11,9 +11,9 @@ import UIKit
 class ShadowLayerView: UIView {
     let shadowLayerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .clear
         view.layer.cornerRadius = 15
-        view.layer.shadowColor = UIColor.gray.cgColor
+        view.layer.shadowColor = Constants.Colors.shadow.cgColor
         view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
         view.layer.shadowRadius = 5
         view.layer.shadowOpacity = 0.4

@@ -18,9 +18,9 @@ class PostView: UIView, LikeableCellProtocol {
     var isLiked: Bool = false {
         didSet{
             if isLiked{
-                likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+                likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
             }else{
-                likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+                likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
             }
         }
     }
@@ -42,9 +42,9 @@ class PostView: UIView, LikeableCellProtocol {
     //shadow is added to the container
     let shadowLayerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .clear
         view.layer.cornerRadius = 5
-        view.layer.shadowColor = UIColor.lightGray.cgColor
+        view.layer.shadowColor = Constants.Colors.shadow.cgColor
         view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
         view.layer.shadowRadius = 5
         view.layer.shadowOpacity = 0.2
@@ -53,8 +53,8 @@ class PostView: UIView, LikeableCellProtocol {
     //container contains all the stacks
     let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white//Constants.backgroundColor //
-        view.layer.cornerRadius = 5
+        view.backgroundColor = Constants.Colors.secondaryBackground
+        //view.layer.cornerRadius = 5
         view.layer.masksToBounds = true
         return view
     }()
@@ -62,13 +62,13 @@ class PostView: UIView, LikeableCellProtocol {
     //holds view above the comment section
     let topViewContainer: UIView = {
         let view = UIView()
-        view.backgroundColor = .blue
+        view.backgroundColor = Constants.Colors.mainBackground
         return view
     }()
      let authorUILabel: UILabel = {
        let label = UILabel()
         label.font = Constants.smallerTextFont
-       label.textColor = .lightGray
+       label.textColor = Constants.Colors.subText
        label.numberOfLines = 1
        label.translatesAutoresizingMaskIntoConstraints = false
        return label
@@ -78,7 +78,7 @@ class PostView: UIView, LikeableCellProtocol {
        label.text = "1h"
        label.font = Constants.smallerTextFont
        label.textAlignment = .right
-       label.textColor = .lightGray
+       label.textColor = Constants.Colors.subText
        label.translatesAutoresizingMaskIntoConstraints = false
        return label
     }()
@@ -88,7 +88,7 @@ class PostView: UIView, LikeableCellProtocol {
        label.numberOfLines = 0
        label.adjustsFontSizeToFitWidth = false
        label.lineBreakMode = .byTruncatingTail
-       label.textColor = .black
+       label.textColor = Constants.Colors.mainText
        label.translatesAutoresizingMaskIntoConstraints = false
        return label
     }()
@@ -105,7 +105,7 @@ class PostView: UIView, LikeableCellProtocol {
        text.numberOfLines = 0
        text.adjustsFontSizeToFitWidth = false
        text.lineBreakMode = .byTruncatingTail
-       text.textColor = .black
+       text.textColor = Constants.Colors.mainText
        text.translatesAutoresizingMaskIntoConstraints = false
        return text
     }()
@@ -124,19 +124,19 @@ class PostView: UIView, LikeableCellProtocol {
         let label = UILabel()
         label.text = "u/Sammy"
         label.font = Constants.smallerTextFont
-        label.textColor = .lightGray
+        label.textColor = Constants.Colors.subText
         label.numberOfLines = 1
         return label
     }()
     let likeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "heart")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "heart")?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let likesLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
-        label.textColor = .black
+        label.textColor = Constants.Colors.mainText
         label.textAlignment = .left
         label.font = Constants.smallerTextFont
         label.numberOfLines = 1
@@ -144,7 +144,7 @@ class PostView: UIView, LikeableCellProtocol {
     }()
     let commentsButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "bubble.right.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "bubble.right.fill")?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let commentsLabel: UILabel = {
@@ -152,7 +152,7 @@ class PostView: UIView, LikeableCellProtocol {
         label.textAlignment = .left
         label.text = "1"
         label.font = Constants.smallerTextFont
-        label.textColor = .black
+        label.textColor = Constants.Colors.mainText
         label.numberOfLines = 1
         return label
     }()
@@ -170,7 +170,7 @@ class PostView: UIView, LikeableCellProtocol {
     
     private func setupViews(viewFrame: CGRect? = nil){
         let size = viewFrame ?? CGRect(x: 0, y: 0, width: 0, height: 0)
-        self.backgroundColor = .white
+        self.backgroundColor = Constants.Colors.mainBackground
         self.widthAnchor.constraint(equalToConstant: size.width).isActive = true
         
         let authorStack = UIStackView(arrangedSubviews: [authorImageView, authorLabel])

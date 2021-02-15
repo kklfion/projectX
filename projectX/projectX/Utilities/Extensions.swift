@@ -43,7 +43,6 @@ extension UIColor {
         return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
     }
     
-    static let mainBlue = UIColor.rgb(red: 0, green: 150, blue: 255)
 }
 
 extension UIWindow {
@@ -195,11 +194,11 @@ extension Date {
 }
 
 extension UINavigationController{
-    func setNavigationToWhite(){
+    func setNavigationToViewColor(){
         // Restore the navigation bar to default
         self.navigationBar.setBackgroundImage(nil, for: .default)
         self.navigationBar.shadowImage = UIImage()
-        self.navigationBar.barTintColor = .white
+        self.navigationBar.barTintColor = Constants.Colors.mainBackground
         self.navigationBar.isTranslucent = true
     }
     func setNavigationToTransparent(){

@@ -55,7 +55,7 @@ class MainTabBarVC: UITabBarController {
         return controller
     }
     private func setupNavigationBarAppearance(){
-        UINavigationBar.appearance().tintColor = Constants.Colors.darkBrown
+        UINavigationBar.appearance().tintColor = Constants.Colors.mainText
         UINavigationBar.appearance().barTintColor = Constants.Colors.mainYellow
         UINavigationBar.appearance().isTranslucent = true
         UINavigationBar.appearance().shadowImage = UIImage()
@@ -72,7 +72,7 @@ class MainTabBarVC: UITabBarController {
                                                       width: self.tabBar.bounds.width,
                                                       height: self.tabBar.bounds.height + 100),
                                   cornerRadius: (20)).cgPath
-        layer.shadowColor = UIColor.lightGray.cgColor
+        layer.shadowColor = Constants.Colors.shadow.cgColor
         layer.shadowOffset = CGSize(width: 5.0, height: 5.0)
         layer.shadowRadius = 25.0
         layer.shadowOpacity = 0.3
@@ -80,12 +80,12 @@ class MainTabBarVC: UITabBarController {
         layer.opacity = 1.0
         layer.isHidden = false
         layer.masksToBounds = false
-        layer.fillColor = UIColor.white.cgColor
+        layer.fillColor = Constants.Colors.mainBackground.cgColor
         self.tabBar.layer.insertSublayer(layer, at: 0)
 
         //tabBar.barTintColor = Constants.backgroundColor
         //tabBar.unselectedItemTintColor = Constants.brownColor
-        tabBar.tintColor = Constants.Colors.darkBrown//Constants.yellowColor
+        tabBar.tintColor = Constants.Colors.mainText//Constants.yellowColor
     }
 }
 //MARK: handling special cases of tabbar items
