@@ -67,6 +67,7 @@ class MainTabBarVC: UITabBarController {
         
         //create a rounded layer with shadow and add it to the transparent tabar
         let layer = CAShapeLayer()
+        layer.name = "tabBarFill"
         layer.path = UIBezierPath(roundedRect: CGRect(x: 0,
                                                       y: self.view.bounds.minY,
                                                       width: self.tabBar.bounds.width,
@@ -86,6 +87,23 @@ class MainTabBarVC: UITabBarController {
         //tabBar.barTintColor = Constants.backgroundColor
         //tabBar.unselectedItemTintColor = Constants.brownColor
         tabBar.tintColor = Constants.Colors.mainText//Constants.yellowColor
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            guard let sublayers = self.tabBar.layer.sublayers
+            else
+            {
+                return
+            }
+            for layer in sublayers {
+                 if layer.name == "tabBarFill" {
+                      layer.removeFromSuperlayer()
+                      setupTabBarAppearance()
+                 }
+             }
+        }
     }
 }
 //MARK: handling special cases of tabbar items

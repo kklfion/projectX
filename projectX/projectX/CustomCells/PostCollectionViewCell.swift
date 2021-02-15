@@ -39,7 +39,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         view.layer.shadowColor = Constants.Colors.shadow.cgColor
         view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
         view.layer.shadowRadius = 5
-        view.layer.shadowOpacity = 0.2
+        view.layer.shadowOpacity = 0.5
         return view
     }()
     //container contains all the stacks
