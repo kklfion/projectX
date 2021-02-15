@@ -63,7 +63,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         
         super.viewDidLoad()
         isModalInPresentation = true
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         
         if isMission
         {
@@ -80,8 +80,8 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         Xbutton.setTitle("X", for: .normal)
         Xbutton.contentHorizontalAlignment = .left
         Xbutton.contentVerticalAlignment = .top
-        Xbutton.tintColor = UIColor.black
-        Xbutton.backgroundColor = UIColor.white
+        Xbutton.tintColor = Constants.Colors.darkBrown
+        Xbutton.backgroundColor = Constants.Colors.mainBackground
         Xbutton.titleLabel?.font = UIFont.systemFont(ofSize: 18,weight: .bold)
         Xbutton.addTarget(self, action: #selector(dismissAction), for: .touchUpInside)
         self.view.addSubview(Xbutton)
@@ -94,18 +94,18 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         {
             newPostLabel.text = "New Mission"
         }
-        newPostLabel.textColor = Constants.Colors.darkBrown
+        newPostLabel.textColor = Constants.Colors.mainText
         newPostLabel.font = UIFont.systemFont(ofSize: 25,weight: .heavy)
         self.view.addSubview(newPostLabel)
         
         // MARK: - Choose Station
-        chooseStation.frame = CGRect(x: 0.0, y: 75.0, width: UIScreen.main.bounds.size.width, height: 40) //was 155
+        chooseStation.frame = CGRect(x: -1.0, y: 75.0, width: UIScreen.main.bounds.size.width + 2, height: 40) //was 155
         chooseStation.setTitle("  Choose a station >", for: .normal)
         chooseStation.contentHorizontalAlignment = .left
-        chooseStation.tintColor = UIColor.black
-        chooseStation.backgroundColor = UIColor.white
+        chooseStation.tintColor = Constants.Colors.mainText
+        chooseStation.backgroundColor = Constants.Colors.mainBackground
         chooseStation.layer.borderWidth = 0.3
-        chooseStation.layer.borderColor = (UIColor( red: 0, green: 0, blue:0, alpha: 0.5)).cgColor
+        chooseStation.layer.borderColor = UIColor.systemGray.cgColor//(UIColor( red: 0, green: 0, blue:0, alpha: 0.5)).cgColor
         chooseStation.titleLabel?.font = UIFont.systemFont(ofSize: 15,weight: .regular)
         chooseStation.addTarget(self, action: #selector(stationAction), for: .touchUpInside)
         self.view.addSubview(chooseStation)
@@ -119,16 +119,16 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         
         // MARK: post image X button
         postImageXButton.setImage( UIImage(systemName: "xmark.circle.fill"), for: .normal)
-        postImageXButton.tintColor = Constants.Colors.darkBrown //.lightGray
+        postImageXButton.tintColor = Constants.Colors.mainText //.lightGray
         postImageXButton.addTarget(self, action: #selector(postImageXPressed), for: .touchUpInside)
         self.view.addSubview(postImageXButton)
         
         
         // MARK: Post Title
-        postTitle.attributedPlaceholder = NSAttributedString(string: Constants.NewPost.placeholderTitleText, attributes: [NSAttributedString.Key.foregroundColor: Constants.Colors.darkBrown])
+        postTitle.attributedPlaceholder = NSAttributedString(string: Constants.NewPost.placeholderTitleText, attributes: [NSAttributedString.Key.foregroundColor: Constants.Colors.mainText])
         postTitle.font = UIFont.systemFont(ofSize: 19,weight: .bold)
         //postTitle.font = UIFont (name: "ChalkboardSE-Regular" , size: 20.0)
-        postTitle.tintColor = UIColor.black
+        postTitle.tintColor = Constants.Colors.mainText
         postTitle.delegate = self
         self.view.addSubview(postTitle)
         
@@ -138,8 +138,9 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         postBodyText.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         postBodyText.textAlignment = .left
         postBodyText.text = Constants.NewPost.placeholderBodyText
-        postBodyText.textColor = Constants.Colors.placeholderTextColor
-        postBodyText.tintColor = Constants.Colors.textColor
+        postBodyText.textColor = Constants.Colors.subText
+        postBodyText.tintColor = Constants.Colors.mainText
+        postBodyText.backgroundColor = Constants.Colors.mainBackground
         self.view.addSubview(postBodyText)
         
         // MARK: - ADD Constraints
@@ -169,6 +170,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         anonymousSwitch.sizeToFit()
         anonymousSwitch.isOn = true
         anonymousSwitch.onTintColor = Constants.Colors.darkBrown
+        anonymousSwitch.thumbTintColor = Constants.Colors.secondaryBackground
         anonymousSwitch.setOn(true, animated: false)
         anonymousSwitch.addTarget(self, action: #selector(switch2(_:)), for: .valueChanged)
         anonymousSwitchContainer.sizeToFit()
@@ -231,13 +233,13 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         
         // MARK: - Toolbar
         let toolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
-        toolbar.backgroundColor = .white
+        toolbar.backgroundColor = Constants.Colors.mainBackground
         let toolbarFlexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let toolbarFixSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         toolbarFixSpace.width = 8
         let toolbarFixSpace2 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         toolbarFixSpace2.width = 12
-        toolbar.barTintColor = .white
+        toolbar.barTintColor = Constants.Colors.mainBackground
         toolbar.isTranslucent = false
         toolbar.clipsToBounds = true
         toolbar.setItems([toolbarFixSpace2, toolUserIcon, toolbarFixSpace, barSwitch, toolbarFlexSpace,toolAttachButton,toolbarFixSpace,toolPhotoButton,toolbarFixSpace, toolSendButton, toolbarFixSpace2] , animated: true)
@@ -274,15 +276,15 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         self.view.endEditing(true)
         picker = UIPickerView.init()
         picker.delegate = self
-        picker.backgroundColor = UIColor.white
-        picker.setValue(UIColor.black, forKey: "textColor")
+        picker.backgroundColor = Constants.Colors.mainBackground
+        picker.setValue(Constants.Colors.mainText, forKey: "textColor")
         picker.autoresizingMask = .flexibleWidth
         picker.contentMode = .center
         picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
         self.view.addSubview(picker)
         stationToolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 35))
         stationToolBar.items = [UIBarButtonItem.init(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil),UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(doneButton))]
-        stationToolBar.tintColor = Constants.Colors.darkBrown
+        stationToolBar.tintColor = Constants.Colors.secondaryBackground
         //selectedStationLabel.inputAccessoryView = stationToolBar
         //picker.addSubview(stationToolBar)
     }
@@ -341,14 +343,14 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         picker.removeFromSuperview()
         if postBodyText.text == Constants.NewPost.placeholderBodyText  {
             postBodyText.text = ""
-            postBodyText.textColor = Constants.Colors.textColor
+            postBodyText.textColor = Constants.Colors.mainText
         }
         postBodyText.becomeFirstResponder()
     }
     
     func textViewDidEndEditing (_ textView: UITextView) {
         if postBodyText.text.isEmpty || postBodyText.text == "" {
-            postBodyText.textColor = Constants.Colors.placeholderTextColor
+            postBodyText.textColor = .systemGray
             postBodyText.text = Constants.NewPost.placeholderBodyText
         }
         postBodyText.resignFirstResponder()

@@ -15,7 +15,7 @@ class LoginViewController: UIViewController {
     lazy var loginView = createLoginView()
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         self.navigationController?.navigationBar.isHidden = true
         setupView()
     }

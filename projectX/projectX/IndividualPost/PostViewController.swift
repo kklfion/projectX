@@ -92,7 +92,7 @@ class PostViewController: UIViewController {
     private var commentsTableView: UITableView = {
         let tableview = UITableView()
         tableview.tableFooterView = UIView()
-        tableview.backgroundColor = .white
+        tableview.backgroundColor = Constants.Colors.mainBackground
         tableview.separatorStyle = .none
         return tableview
     }()
@@ -112,7 +112,7 @@ class PostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         self.navigationItem.title = post.stationName
         navigationItem.largeTitleDisplayMode = .never
 
@@ -532,9 +532,9 @@ extension PostViewController: UITextViewDelegate{
         
     }
     private func slideOutNewCommentView(_ textView: UITextView){
-        if textView.textColor == UIColor.lightGray {
+        if textView.textColor == Constants.Colors.subText {
             textView.text = nil
-            textView.textColor = UIColor.black
+            textView.textColor = Constants.Colors.mainText
             textView.textAlignment = .left
         }
         newCommentView.commentTextView.becomeFirstResponder()

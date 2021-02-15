@@ -29,7 +29,7 @@ class SignUpView: UIView {
     let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "Necto"
-        label.textColor = Constants.Colors.darkBrown
+        label.textColor = Constants.Colors.mainText
         label.font = UIFont.boldSystemFont(ofSize: Constants.Login.logoFontSize)
         label.textAlignment = .center
         return label
@@ -46,7 +46,7 @@ class SignUpView: UIView {
     let profileImageViewContainer: UIView = {
         let container = UIView()
         container.clipsToBounds = false
-        container.layer.shadowColor = UIColor.black.cgColor
+        container.layer.shadowColor = Constants.Colors.shadow.cgColor
         container.layer.shadowOpacity = 1
         container.layer.shadowOffset = CGSize.zero
         container.layer.shadowRadius = 50
@@ -59,7 +59,7 @@ class SignUpView: UIView {
         imageView.image = image
         imageView.layer.cornerRadius = 60
         imageView.clipsToBounds = true
-        imageView.backgroundColor = .lightGray
+        imageView.backgroundColor = .systemGray
         
         imageView.heightAnchor.constraint(equalToConstant: 120).isActive = true
         imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 1).isActive = true
@@ -70,16 +70,16 @@ class SignUpView: UIView {
         let button = UIButton()
         button.setTitle("Choose Avatar", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.otherTextFontSize, weight: .semibold)
-        button.setTitleColor(Constants.Colors.darkBrown, for: .normal)
-        button.backgroundColor = Constants.Colors.mainYellow
+        button.setTitleColor(Constants.Colors.mainText, for: .normal)
+        button.backgroundColor = Constants.Colors.secondaryBackground
         button.heightAnchor.constraint(equalToConstant: 20).isActive = true
         button.widthAnchor.constraint(equalToConstant: 110).isActive = true
         button.layer.cornerRadius = 10
         
-        button.layer.shadowOpacity = 0.1
+        button.layer.shadowOpacity = 0.5
         button.layer.shadowRadius = 2.0
         button.layer.shadowOffset = CGSize(width: 0, height: 2)
-        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowColor = Constants.Colors.shadow.cgColor
         return button
     }()
     let nameTextField: UITextField = {
@@ -88,8 +88,8 @@ class SignUpView: UIView {
         field.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize)
         //let imageView = UIImageView(image: UIImage(systemName: "mail"))
         field.setLeftIcon(UIImage(systemName: "mail")!, width: 25, height: 18)
-        field.textColor = Constants.Colors.darkBrown
-        field.tintColor = Constants.Colors.darkBrown
+        field.textColor = Constants.Colors.mainText
+        field.tintColor = Constants.Colors.mainText
         field.borderStyle = .none
         field.heightAnchor.constraint(equalToConstant: 30).isActive = true
         return field
@@ -100,8 +100,8 @@ class SignUpView: UIView {
         field.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize)
         //let imageView = UIImageView(image: UIImage(systemName: "envelope"))
         field.setLeftIcon(UIImage(systemName: "envelope")!, width: 25, height: 18)
-        field.textColor = Constants.Colors.darkBrown
-        field.tintColor = Constants.Colors.darkBrown
+        field.textColor = Constants.Colors.mainText
+        field.tintColor = Constants.Colors.mainText
         field.borderStyle = .none
         field.heightAnchor.constraint(equalToConstant: 30).isActive = true
         return field
@@ -113,8 +113,8 @@ class SignUpView: UIView {
         //let imageView = UIImageView(image: UIImage(systemName: "lock"))
         field.setLeftIcon(UIImage(systemName: "lock")!)
         field.isSecureTextEntry = true
-        field.textColor = Constants.Colors.darkBrown
-        field.tintColor = Constants.Colors.darkBrown
+        field.textColor = Constants.Colors.mainText
+        field.tintColor = Constants.Colors.mainText
         field.borderStyle = .none
         field.heightAnchor.constraint(equalToConstant: 30).isActive = true
         return field
@@ -128,15 +128,15 @@ class SignUpView: UIView {
         let button = UIButton()
         button.setTitle("Sign Me Up!", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize, weight: .bold)
-        button.setTitleColor(Constants.Colors.darkBrown, for: .normal)
-        button.backgroundColor = Constants.Colors.mainYellow
+        button.setTitleColor(Constants.Colors.mainText, for: .normal)
+        button.backgroundColor = Constants.Colors.secondaryBackground
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         button.layer.cornerRadius = 25
         
-        button.layer.shadowOpacity = 0.1
+        button.layer.shadowOpacity = 0.5
         button.layer.shadowRadius = 3.0
         button.layer.shadowOffset = CGSize(width: 0, height: 3)
-        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowColor = Constants.Colors.shadow.cgColor
         return button
     }()
     let errorLabel: UILabel = {

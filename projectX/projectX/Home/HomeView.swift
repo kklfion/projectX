@@ -33,7 +33,7 @@ class HomeView: UIView {
         sc.translatesAutoresizingMaskIntoConstraints = false
         sc.selectedSegmentIndex = 0
         sc.selectedSegmentTintColor = .white
-        sc.layer.backgroundColor = UIColor.white.cgColor
+        sc.layer.backgroundColor = Constants.Colors.mainBackground.cgColor
         sc.tintColor = .white
         sc.addTarget(self, action: #selector(performAnimation), for: .valueChanged)
         return sc
@@ -41,14 +41,14 @@ class HomeView: UIView {
     let loungeTableView: UITableView = {
         let home = UITableView()
         home.separatorStyle = .none
-        home.backgroundColor = .white
+        home.backgroundColor = Constants.Colors.mainBackground
         home.translatesAutoresizingMaskIntoConstraints = false
         return home
     }()
     let busStopTableView: UITableView = {
         let rec = UITableView()
         rec.separatorStyle = .none
-        rec.backgroundColor = .white
+        rec.backgroundColor = Constants.Colors.mainBackground
         rec.translatesAutoresizingMaskIntoConstraints = false
         return rec
     }()

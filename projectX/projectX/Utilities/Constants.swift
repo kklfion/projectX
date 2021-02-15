@@ -16,17 +16,21 @@ struct Constants{
     static let smallerTextFont = UIFont.preferredFont(forTextStyle: .footnote)
 
     struct Colors {
-        static let mainYellow = UIColor.white//UIColor(rgb: 0xf6e58f)
-        static let darkBrown = UIColor(rgb: 0x434239)
-        static let subText = UIColor(rgb: 0x817e6e)
-        static let profileBlue = UIColor(rgb: 0xdff9ff)
-        static let profileYellow = UIColor(rgb: 0xfef8d3)
-        static let buttonsRed = UIColor(rgb: 0xf2aba7)
-
-        static let gamingBackground = UIColor(rgb: 0x2A886D)
+        static let mainYellow = UIColor(named: "mainYellow") ?? UIColor.white//UIColor(rgb: 0xf6e58f)
+        static let darkBrown = UIColor(named: "darkBrown") ?? UIColor(rgb: 0x434239)
+        static let subText = UIColor(named: "subText") ?? UIColor(rgb: 0x817e6e)
+        static let profileBlue = UIColor(named: "profileBlue") ?? UIColor(rgb: 0xdff9ff)
+        static let profileYellow = UIColor(named: "profileYellow") ?? UIColor(rgb: 0xfef8d3)
+        static let buttonsRed = UIColor(named: "buttonsRed") ?? UIColor(rgb: 0xf2aba7)
+        static let shadow = UIColor(named: "shadow") ?? UIColor.lightGray
+        static let gamingBackground = UIColor(named: "gamingBackground") ?? UIColor(rgb: 0x2A886D)
 
         static let placeholderTextColor = UIColor.lightGray
-        static let textColor = Colors.darkBrown
+        static let mainText = Colors.darkBrown
+        
+        //
+        static let mainBackground = UIColor(named: "mainBackground") ?? UIColor.white
+        static let secondaryBackground = UIColor(named: "secondaryBackground") ?? UIColor.white//UIColor(rgb: 0xf6e58f)
     }
 
     struct Screen {

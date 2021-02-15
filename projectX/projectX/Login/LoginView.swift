@@ -28,7 +28,7 @@ class LoginView: UIView {
     let nameLabel: UILabel = {
         let label = UILabel()
         //label.text = //"Necto"
-        label.textColor = Constants.Colors.darkBrown
+        label.textColor = Constants.Colors.mainText
         label.font = UIFont.boldSystemFont(ofSize: Constants.Login.logoFontSize)
         label.textAlignment = .center
         return label
@@ -47,8 +47,8 @@ class LoginView: UIView {
         field.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize)
         let imageView = UIImageView(image: UIImage(systemName: "envelope"))
         field.setLeftIcon(UIImage(systemName: "envelope")!, width: 25, height: 18)
-        field.textColor = Constants.Colors.darkBrown
-        field.tintColor = Constants.Colors.darkBrown
+        field.textColor = Constants.Colors.mainText
+        field.tintColor = Constants.Colors.mainText
         field.borderStyle = .none
         field.heightAnchor.constraint(equalToConstant: 30).isActive = true
         return field
@@ -64,8 +64,8 @@ class LoginView: UIView {
         let imageView = UIImageView(image: UIImage(systemName: "lock"))
         field.setLeftIcon(UIImage(systemName: "lock")!)
         field.isSecureTextEntry = true
-        field.textColor = Constants.Colors.darkBrown
-        field.tintColor = Constants.Colors.darkBrown
+        field.textColor = Constants.Colors.mainText
+        field.tintColor = Constants.Colors.mainText
         field.borderStyle = .none
         field.heightAnchor.constraint(equalToConstant: 30).isActive = true
         return field
@@ -75,13 +75,13 @@ class LoginView: UIView {
         button.setTitle("Error", for: .normal)
         button.isEnabled = false
         button.titleLabel?.textAlignment = .center
-        button.setTitleColor(.red, for: .normal)
+        button.setTitleColor(Constants.Colors.buttonsRed, for: .normal)
         return button
     }()
     let forgotLoginButton: UIButton = {
         let button = UIButton()
         button.setTitle("Forgot password?", for: .normal)
-        button.setTitleColor(Constants.Colors.darkBrown, for: .normal)
+        button.setTitleColor(Constants.Colors.mainText, for: .normal)
         button.contentHorizontalAlignment = .left
         button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.otherTextFontSize)
         return button
@@ -92,7 +92,7 @@ class LoginView: UIView {
         label.textAlignment = .center
         label.numberOfLines = 0
         
-        label.textColor = .systemRed
+        label.textColor = Constants.Colors.buttonsRed
         return label
     }()
     let loginSignUpStackView: UIStackView = {
@@ -107,15 +107,15 @@ class LoginView: UIView {
         let button = UIButton()
         button.setTitle("Login", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize, weight: .bold)
-        button.setTitleColor(Constants.Colors.darkBrown, for: .normal)
-        button.backgroundColor = Constants.Colors.mainYellow
+        button.setTitleColor(Constants.Colors.mainText, for: .normal)
+        button.backgroundColor = Constants.Colors.secondaryBackground
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         button.layer.cornerRadius = 25
         
-        button.layer.shadowOpacity = 0.1
+        button.layer.shadowOpacity = 0.5
         button.layer.shadowRadius = 3.0
         button.layer.shadowOffset = CGSize(width: 0, height: 3)
-        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowColor = Constants.Colors.shadow.cgColor
         return button
     }()
     let spacingButton: UIButton = {
@@ -131,16 +131,16 @@ class LoginView: UIView {
     let registerButton: UIButton = {
         let button = UIButton()
         button.setTitle("Sign Up", for: .normal)
-        button.setTitleColor(Constants.Colors.darkBrown, for: .normal)
+        button.setTitleColor(Constants.Colors.mainText, for: .normal)
+        button.backgroundColor = Constants.Colors.secondaryBackground
         button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize, weight: .bold)
-        button.backgroundColor = .white
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         button.layer.cornerRadius = 25
         
-        button.layer.shadowOpacity = 0.1
+        button.layer.shadowOpacity = 0.5
         button.layer.shadowRadius = 3.0
         button.layer.shadowOffset = CGSize(width: 0, height: 3)
-        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowColor = Constants.Colors.shadow.cgColor
         return button
     }()
     let skipButton: UIButton = {
@@ -148,7 +148,7 @@ class LoginView: UIView {
         button.setTitle("skip", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize)
         button.titleLabel?.textAlignment = .center
-        button.setTitleColor(Constants.Colors.darkBrown, for: .normal)
+        button.setTitleColor(Constants.Colors.mainText, for: .normal)
         return button
     }()
     

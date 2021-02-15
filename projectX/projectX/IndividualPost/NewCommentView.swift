@@ -22,9 +22,9 @@ class NewCommentView: UIView {
     //shadow is added to the container
     let shadowLayerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .clear
         view.layer.cornerRadius = 15
-        view.layer.shadowColor = UIColor.lightGray.cgColor
+        view.layer.shadowColor = Constants.Colors.shadow.cgColor
         view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
         view.layer.shadowRadius = 5
         view.layer.shadowOpacity = 0.4
@@ -33,7 +33,7 @@ class NewCommentView: UIView {
     //container contains all the stacks
     let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         view.layer.cornerRadius = 15
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         return view
@@ -43,7 +43,7 @@ class NewCommentView: UIView {
         let textView = UITextView()
         textView.text = commentPlaceholderMessage
         textView.textAlignment = .center
-        textView.textColor = UIColor.lightGray
+        textView.textColor = Constants.Colors.subText
         textView.font = Constants.bodyTextFont
         textView.sizeToFit()
         return textView
@@ -129,7 +129,7 @@ class NewCommentView: UIView {
     func setCommentViewDefaltMessage(){
         commentTextView.text = commentPlaceholderMessage
         commentTextView.textAlignment = .center
-        commentTextView.textColor = UIColor.lightGray
+        commentTextView.textColor = Constants.Colors.subText
     }
     func setAnonimousImage(){
         authorView.image = (UIImage(systemName: "person.fill.questionmark")?.withConfiguration(symbolsConfig).withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))

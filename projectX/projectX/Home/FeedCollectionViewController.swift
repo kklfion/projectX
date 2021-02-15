@@ -98,7 +98,7 @@ extension FeedCollectionViewController {
 //MARK: - CollectionView setup
 extension FeedCollectionViewController{
     private func setupCollectionView(){
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = Constants.Colors.mainBackground
         self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         self.collectionView.register(LoadingFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: footerViewReuseIdentifier)
     }

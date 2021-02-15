@@ -133,10 +133,11 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
         if tableView == sideBarView?.menuTableView{
             let imageName = sideBarView?.imageNames[indexPath.row] ?? ""
             let text = sideBarView?.menuItems[indexPath.row]
-            let image = UIImage(systemName: imageName)?.withTintColor(.black, renderingMode: .alwaysOriginal)
+            let image = UIImage(systemName: imageName)?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal)
             cell.textLabel?.text = text
             cell.imageView?.image = image
             cell.selectionStyle = .none
+            cell.contentView.backgroundColor = Constants.Colors.secondaryBackground
         }
         else{ //stations
             let text = dbstations?[indexPath.row].stationName
@@ -144,6 +145,7 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
             cell.textLabel?.textAlignment = .left
             cell.imageView?.image = nil
             cell.selectionStyle = .none
+            cell.contentView.backgroundColor = Constants.Colors.secondaryBackground
         }
         return cell
     }
