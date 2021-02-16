@@ -43,7 +43,7 @@ extension SlidableTopViewProtocol{
             controller?.setNavigationToTransparent()
             navigationItem?.title = ""
         }else{//inbetween we want to adjust the position of the header
-            controller?.setNavigationTo(color: .white)
+            controller?.setNavigationToViewColor()
             headerTopConstraint.constant = headerOffset
             scrollView.contentOffset.y = 0 //to smooth out scrolling
         }
