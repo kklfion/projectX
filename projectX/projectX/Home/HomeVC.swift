@@ -12,11 +12,10 @@ import Combine
 
 class HomeTableVC: UIViewController, SlidableTopViewProtocol{
     
-    var headerMaxHeight: CGFloat!
+    var headerHeight: CGFloat?
     
-    var statusBarHeight: CGFloat!
+    var headerTopConstraint: NSLayoutConstraint!
     
-    var topViewTopConstraint: NSLayoutConstraint!
     
     ///collectionViewController responsible for the feed.
     private var feedCollectionViewController: FeedCollectionViewController!
@@ -30,7 +29,7 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
     
     ///segmented control that holds feeds
     private lazy var feedSegmentedControl: SegmentedControlWithStackView = {
-        let control = SegmentedControlWithStackView(frame: self.view.frame, itemNames: ["Lounge", "New"])
+        let control = SegmentedControlWithStackView(frame: self.view.frame, itemNames: ["Lounge", "Bus Stop"])
         return control
     }()
 
@@ -38,12 +37,18 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
         view.backgroundColor = .white
         super.viewDidLoad()
         setupNavigationBar()
-        setupHeights(viewHeight: 85, extraHeight: 0)
         setupFeedController()
         setUserAndSubscribeToUpdates()
         
         presentLoginIfNeeded()
         
+    }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if (feedSegmentedControl.leftButton.frame.height != 0 && headerHeight == nil){
+            
+            headerHeight = feedSegmentedControl.leftButton.frame.height
+        }
     }
     func doit(){
         let names = ["Barstool", "Beta Station", "Confession", "Life", "Mental", "Movie", "Rant"]
@@ -107,8 +112,8 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
                                         bottom: view.bottomAnchor,
                                         trailing: view.trailingAnchor,
                                         padding: .init(top: 0, left: 0, bottom: 0, right: 0))
-        topViewTopConstraint = feedSegmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0)
-        topViewTopConstraint.isActive = true
+        headerTopConstraint = feedSegmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0)
+        headerTopConstraint.isActive = true
         
         feedCollectionViewController = FeedCollectionViewController()
         feedCollectionViewController.didScrollFeedDelegate = self

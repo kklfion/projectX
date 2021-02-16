@@ -220,16 +220,21 @@ extension FeedCollectionViewController {
     }
     ///when users scrolls to the bottom of the loaded data, more data is fetched
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        didScrollFeedDelegate?.didScrollFeed(scrollView)
-        //FIXME: - figureout when its okay to call fetching ><
-        let position = scrollView.contentOffset.y
-        if position < 0 {return}
-        if position > (collectionView.contentSize.height-100-scrollView.frame.size.height) && collectionView.contentSize.height > 0{
-            guard let paginator = postPaginator else {return}
-            if (paginator.isFetching) {return}//we fetching data, no need to fetch more
-            self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
-            fetchDataWithPagination()
+        if(scrollView.isTracking || scrollView.isDragging || scrollView.isDecelerating) {
+            didScrollFeedDelegate?.didScrollFeed(scrollView)
+            //FIXME: - figureout when its okay to call fetching ><
+            let position = scrollView.contentOffset.y
+            if position < 0 {
+                return
+            }
+            if position > (collectionView.contentSize.height-100-scrollView.frame.size.height) && collectionView.contentSize.height > 0{
+                guard let paginator = postPaginator else {return}
+                if (paginator.isFetching) {return}//we fetching data, no need to fetch more
+                self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
+                fetchDataWithPagination()
+            }
         }
+
     }
     ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
     private func updatePostsAndLikesWith(data: [Post]){
