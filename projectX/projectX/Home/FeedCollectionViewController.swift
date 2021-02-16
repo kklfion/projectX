@@ -127,6 +127,7 @@ extension FeedCollectionViewController{
         })
         collectionView.dataSource = dataSource
     }
+    
     //TODO: add estimatedHeight to make cells dynamically sized
     private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),

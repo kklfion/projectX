@@ -176,6 +176,13 @@ class CommentCell: UITableViewCell, LikeableCellProtocol {
                           size: .init(width: 0, height: 0))
    
     }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            self.shadowLayerView.layer.shadowColor = Constants.Colors.shadow.cgColor
+        }
+    }
 
 }
 extension CommentCell{

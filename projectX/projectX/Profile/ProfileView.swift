@@ -147,4 +147,11 @@ class ProfileView: UIView {
     func setFollowButtonToNotFollowed(){
         followButton.setImage(UIImage(systemName: "plus"), for: .normal)
     }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            self.headerGradient.colors = [Constants.Colors.profileBlue.cgColor, Constants.Colors.profileYellow.cgColor]
+        }
+    }
 }
