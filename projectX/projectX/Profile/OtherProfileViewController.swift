@@ -14,69 +14,14 @@ enum ProfileType{
     case otherProfile
     case personalProfile
 }
-protocol SlidableTopViewProtocol: class{
-    
-    var headerMaxHeight: CGFloat! { get set }
-    
-    var statusBarHeight: CGFloat! { get set }
-    
-    //must be pinned to the top anchor of the view that is sliding
-    var topViewTopConstraint: NSLayoutConstraint! { get set }
-    
-    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?, navigationItem: UINavigationItem?)
-    
-    func setupHeights(viewHeight: CGFloat, extraHeight: CGFloat)
-    
-    func isAtMaxHeight(viewHeight: CGFloat, currentOffset:CGFloat) -> Bool
-    
-}
-extension SlidableTopViewProtocol{
-    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?, navigationItem: UINavigationItem?){
-        let y_offset: CGFloat = scrollView.contentOffset.y
-        let topViewOffset = topViewTopConstraint.constant - y_offset
-        if isAtMaxHeight(viewHeight: headerMaxHeight, currentOffset: topViewOffset){
-            topViewTopConstraint.constant = -headerMaxHeight //dont move past that point
-        } else if topViewOffset >= 0{//when scrolling down remain at 0
-            topViewTopConstraint.constant = 0
-            //controller?.isNavigationBarHidden = true
-            controller?.setNavigationToTransparent()
-            navigationItem?.title = ""
-        }else{//inbetween we want to adjust the position of the header
-            //controller?.isNavigationBarHidden = false
-            controller?.setNavigationToViewColor()
-            navigationItem?.title = "Profile"
-            topViewTopConstraint.constant = topViewOffset
-            scrollView.contentOffset.y = 0 //to smooth out scrolling
-        }
-    }
-    func isAtMaxHeight(viewHeight: CGFloat, currentOffset:CGFloat) -> Bool{
-        return currentOffset <= -viewHeight
-    }
-    func setupHeights(viewHeight: CGFloat, extraHeight: CGFloat){
-        if #available(iOS 13.0, *) {
-            let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
-            statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
-        } else {
-            statusBarHeight = UIApplication.shared.statusBarFrame.height
-        }
-        headerMaxHeight = viewHeight-statusBarHeight-extraHeight
-    }
-}
-
 class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, SlidableTopViewProtocol {
     
     lazy var profileHeight = view.frame.height * 0.4
      
     ///height of the status bar, used in calculations for the sliding up view
-    var headerMaxHeight: CGFloat!
+    var headerHeight: CGFloat?
     
-    ///height of the status bar, used in calculations for the sliding up view
-    var statusBarHeight: CGFloat!
-    
-    ///to acocunt for the optional navBar
-    var extraHeight: CGFloat
-    
-    var topViewTopConstraint: NSLayoutConstraint!
+    var headerTopConstraint: NSLayoutConstraint!
     
     func didScrollFeed(_ scrollView: UIScrollView) {
         adjustHeaderPosition(scrollView, navigationController, navigationItem: navigationItem)
@@ -115,23 +60,15 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     ///feed vc
     private var feedCollectionViewController: FeedCollectionViewController!
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-//        navigationController?.isNavigationBarHidden = false
-    }
     ///to initialize your profile
     init() {
         self.profileType = .personalProfile
-        self.extraHeight = -10 //no navbar
         super.init(nibName: nil, bundle: nil)
     }
     ///initialize profileviewcontroller with user data (to display other user profile)
     init(user: User){
         self.user = user
         self.profileType = .otherProfile
-        self.extraHeight = -10 //to account for the navBar
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -147,7 +84,6 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         view.backgroundColor = Constants.Colors.mainBackground
         navigationItem.largeTitleDisplayMode = .never
         setupProfileView()
-        setupHeights(viewHeight: profileHeight, extraHeight: extraHeight)
         setupFeedVCs()
         switch profileType{
         case .otherProfile:
@@ -159,6 +95,16 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         case .personalProfile:
             setUserAndSubscribeToUpdates()
             profileView.followButton.isHidden = true
+        }
+    }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if !headerHeightWasSet() && feedSegmentedControl.leftButton.frame.height != 0 && profileView.frame.height != 0 {
+            let headerHeight = feedSegmentedControl.leftButton.frame.height + profileView.frame.height
+            let statusBarHeight = view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0
+            let navBarHeight = self.navigationController?.navigationBar.frame.height ?? 0.0
+            let safeAreaInset = statusBarHeight + navBarHeight
+            setupHeaderHeight(header: headerHeight, safeArea: safeAreaInset)
         }
     }
     private func checkIfUserIsFollowed(){
@@ -226,8 +172,8 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
                                bottom: nil,
                                trailing: view.trailingAnchor)
         profileView.heightAnchor.constraint(equalToConstant: profileHeight).isActive = true
-        topViewTopConstraint = profileView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0)
-        topViewTopConstraint.isActive = true
+        headerTopConstraint = profileView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0)
+        headerTopConstraint.isActive = true
         profileView.followButton.addTarget(self, action: #selector(didTapFollowButton), for: .touchUpInside)
         
         view.addSubview(feedSegmentedControl)
@@ -235,7 +181,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
                                         leading: view.leadingAnchor,
                                         bottom: view.bottomAnchor,
                                         trailing: view.trailingAnchor,
-                                        padding: .init(top: 10, left: 0, bottom: 0, right: 0))
+                                        padding: .init(top: 0, left: 0, bottom: 0, right: 0))
     }
     private func setupFeedVCs(){
         let vc = UIViewController() //instead of the missions vc

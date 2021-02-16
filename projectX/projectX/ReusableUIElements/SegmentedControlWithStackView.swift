@@ -80,7 +80,6 @@ class SegmentedControlWithStackView: UIView{
     
     var leftAxis: NSLayoutConstraint?
     var rightAxis: NSLayoutConstraint?
-
     private func setupViews(){
         leftButton.setTitle(itemNames.first, for: .normal)
         rightButton.setTitle(itemNames[1], for: .normal)
@@ -101,14 +100,15 @@ class SegmentedControlWithStackView: UIView{
                                  leading: nil,
                                  bottom: nil,
                                  trailing: nil,
-                                 size: .init(width: 20, height: 2.5))
+                                 padding: .init(top: -2.5, left: 0, bottom: 0, right: 0),
+                                 size: .init(width: 35, height: 2.5))
         slidingThingy.layer.cornerRadius = 2
         leftAxis =  slidingThingy.centerXAnchor.constraint(equalTo: leftButton.centerXAnchor)
         rightAxis = slidingThingy.centerXAnchor.constraint(equalTo: rightButton.centerXAnchor)
         
         leftAxis?.isActive = true
         
-        stackView.addAnchors(top: slidingThingy.bottomAnchor,
+        stackView.addAnchors(top: buttonsStack.bottomAnchor,
                                             leading: self.leadingAnchor,
                                             bottom: self.bottomAnchor,
                                             trailing: nil, padding: .init(top: 0, left: 0, bottom: 0, right: 10),

@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol PostViewButtonsDelegate {
+protocol PostViewButtonsDelegate: class {
     func didTapLikeButton()
     func didTapAuthorLabel()
 }
@@ -25,7 +25,7 @@ class PostView: UIView, LikeableCellProtocol {
         }
     }
     ///to add actions to postView buttons
-    var delegate: PostViewButtonsDelegate?
+    weak var delegate: PostViewButtonsDelegate?
     
     
     var imageHeightConstaint: NSLayoutConstraint! //if image is nil we want imageview to have height of zero

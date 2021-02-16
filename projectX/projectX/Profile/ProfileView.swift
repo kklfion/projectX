@@ -18,9 +18,11 @@ class ProfileView: UIView {
         super.init(coder: coder)
     }
     let headerGradient: CAGradientLayer = {
-        let gradient = CAGradientLayer()
+        let gradient = CAGradientLayer() 
         gradient.colors = [Constants.Colors.profileBlue.cgColor, Constants.Colors.profileYellow.cgColor]
-        gradient.locations = [0,0.8]
+        //gradient.locations = [0,0.8]
+        gradient.startPoint = CGPoint(x: 0, y: 0) // Top left corner.
+        gradient.endPoint = CGPoint(x: 1, y: 1)
         gradient.shouldRasterize = true
         return gradient
     }()
@@ -65,31 +67,21 @@ class ProfileView: UIView {
     }()
     let usernameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Username"
         label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         label.textColor = Constants.Colors.mainText
         return label
     }()
     let useridLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
-        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.font = Constants.bodyTextFont
         label.textColor = Constants.Colors.subText
         return label
     }()
     let schoolLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
-        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.font = Constants.bodyTextFont
         label.textColor = Constants.Colors.mainText
         return label
-    }()
-    let spacingView: UIView  = {
-        let view = UIView()
-        //view.backgroundColor = .lightGray
-        view.alpha = 0.1
-        view.layer.cornerRadius = 1
-        return view
     }()
     private func setupViews() {
         //self.backgroundColor = .blue
@@ -109,9 +101,7 @@ class ProfileView: UIView {
         followButton.addAnchors(top: nil,leading: nil,bottom: nil,trailing: nil,size: .init(width: 60, height: 60))
 
         self.addSubview(profileImageViewContainer)
-        //self.addSubview(followButton)
         self.addSubview(bioStackView)
-        self.addSubview(spacingView)
 
         bioStackView.addArrangedSubview(usernameLabel)
         bioStackView.addArrangedSubview(useridLabel)
@@ -122,24 +112,17 @@ class ProfileView: UIView {
                                      bottom: nil,
                                      trailing: nil,
                                      padding: .init(top: 0 , left: 0, bottom: 0, right: 0),
-                                     size: .init(width: self.frame.width*0.5, height: self.frame.width*0.5))
+                                     size: .init(width: self.frame.width*0.4, height: self.frame.width*0.4))
         profileImageViewContainer.centerYAnchor.constraint(equalTo: viewBackground.topAnchor).isActive = true
         profileImageViewContainer.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        profileImageView.layer.cornerRadius = (self.frame.width*0.5 / 2)
-        profileImageViewContainer.layer.cornerRadius = (self.frame.width*0.5 / 2)
+        profileImageView.layer.cornerRadius = (self.frame.width*0.4 / 2)
+        profileImageViewContainer.layer.cornerRadius = (self.frame.width*0.4 / 2)
 
         bioStackView.addAnchors(top: profileImageViewContainer.bottomAnchor,
                                             leading: self.leadingAnchor,
                                             bottom: nil,
                                             trailing: self.trailingAnchor,
                                             padding: .init(top: 10, left: 0, bottom: 0, right: 0))
-
-        spacingView.addAnchors(top: bioStackView.bottomAnchor,
-                                leading: self.leadingAnchor,
-                                bottom: nil,
-                                trailing: self.trailingAnchor,
-                                padding: .init(top: 10, left: 10, bottom: 0, right: 10),
-                                size: .init(width: 0, height: 2))
     }
     func setFollowButtonToFollowed(){
         followButton.setImage(UIImage(systemName: "checkmark"), for: .normal)

@@ -237,10 +237,10 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
                           bottom: contentView.bottomAnchor,
                           trailing: contentView.trailingAnchor,
                           padding: .init(top: 10, left: 10, bottom: 10, right: 10))
-        shadowLayerView.addAnchors(top: contentView.safeAreaLayoutGuide.topAnchor,
-                          leading: contentView.safeAreaLayoutGuide.leadingAnchor,
-                          bottom: contentView.safeAreaLayoutGuide.bottomAnchor,
-                          trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
+        shadowLayerView.addAnchors(top: contentView.topAnchor,
+                          leading: contentView.leadingAnchor,
+                          bottom: contentView.bottomAnchor,
+                          trailing: contentView.trailingAnchor,
                           padding: .init(top: 10, left: 10, bottom: 10, right: 10))
     }
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

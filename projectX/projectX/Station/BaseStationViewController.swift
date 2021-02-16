@@ -12,12 +12,11 @@ import Combine
 ///is a super class for all stations. Don't create is directly, rather use it's subclasses.
 ///Is responsible for general UI and its subclasses are responsible for different feeds
 class BaseStationViewController: UIViewController, SlidableTopViewProtocol {
+    
     //MARK: - SlidableTopViewProtocol variables
-    var headerMaxHeight: CGFloat!
+    var headerHeight: CGFloat?
     
-    var statusBarHeight: CGFloat!
-    
-    var topViewTopConstraint: NSLayoutConstraint!
+    var headerTopConstraint: NSLayoutConstraint!
     
     lazy var stationHeaderHeight = view.frame.height * 0.4
     //MARK: - other variables
@@ -70,7 +69,6 @@ extension BaseStationViewController{
         view.backgroundColor = Constants.Colors.mainBackground
         navigationItem.largeTitleDisplayMode = .never
         setupView()
-        setupHeights(viewHeight: stationHeaderHeight, extraHeight: 10)
         setupSegmentedStackWithFeeds()
         setUserAndSubscribeToUpdates()
         setupStationHeaderWithStationData()
@@ -80,6 +78,16 @@ extension BaseStationViewController{
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setNavigationToTransparent()
         super.viewWillAppear(animated)
+    }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if !headerHeightWasSet() && feedSegmentedControl.leftButton.frame.height != 0 && stationView.frame.height != 0 {
+            let headerHeight = feedSegmentedControl.leftButton.frame.height + stationView.frame.height
+            let statusBarHeight = view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0
+            let navBarHeight = self.navigationController?.navigationBar.frame.height ?? 0.0
+            let safeAreaInset = statusBarHeight + navBarHeight
+            setupHeaderHeight(header: headerHeight, safeArea: safeAreaInset)
+        }
     }
     private func setUserAndSubscribeToUpdates(){
         switch UserManager.shared().state {
@@ -137,8 +145,8 @@ extension BaseStationViewController{
                                bottom: nil,
                                trailing: view.trailingAnchor)
         stationView.heightAnchor.constraint(equalToConstant: stationHeaderHeight).isActive = true
-        topViewTopConstraint = stationView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0)
-        topViewTopConstraint.isActive = true
+        headerTopConstraint = stationView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0)
+        headerTopConstraint.isActive = true
         stationView.followButton.addTarget(self, action: #selector(didTapFollowButton), for: .touchUpInside)
         
         view.addSubview(feedSegmentedControl)
