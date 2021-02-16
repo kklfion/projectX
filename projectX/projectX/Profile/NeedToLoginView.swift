@@ -25,7 +25,7 @@ class NeedToLoginView: UIView{
         button.backgroundColor = Constants.Colors.secondaryBackground
         button.layer.cornerRadius = 25
         
-        button.layer.shadowOpacity = 0.1
+        button.layer.shadowOpacity = 0.5
         button.layer.shadowRadius = 3.0
         button.layer.shadowOffset = CGSize(width: 0, height: 3)
         button.layer.shadowColor = Constants.Colors.shadow.cgColor
@@ -39,6 +39,13 @@ class NeedToLoginView: UIView{
         loginButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         loginButton.widthAnchor.constraint(equalToConstant: self.frame.width * 0.7).isActive = true
         loginButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            self.loginButton.layer.shadowColor = Constants.Colors.shadow.cgColor
+        }
     }
 }
 

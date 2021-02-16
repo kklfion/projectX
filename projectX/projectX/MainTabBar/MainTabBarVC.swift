@@ -92,17 +92,9 @@ class MainTabBarVC: UITabBarController {
         super.traitCollectionDidChange(previousTraitCollection)
 
         if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
-            guard let sublayers = self.tabBar.layer.sublayers
-            else
-            {
-                return
+            removeSublayer(withName: "tabBarFill", from: self.tabBar) {
+                setupTabBarAppearance()
             }
-            for layer in sublayers {
-                 if layer.name == "tabBarFill" {
-                      layer.removeFromSuperlayer()
-                      setupTabBarAppearance()
-                 }
-             }
         }
     }
 }

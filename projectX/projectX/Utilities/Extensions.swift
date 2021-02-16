@@ -127,6 +127,20 @@ extension UIViewController {
     @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {
         self.view.endEditing(true)
     }
+    func removeSublayer(withName: String,from: UIView, completion: () -> Void)
+    {
+        guard let sublayers = from.layer.sublayers
+        else
+        {
+            return
+        }
+        for layer in sublayers {
+             if layer.name == withName {
+                  layer.removeFromSuperlayer()
+                  completion()
+             }
+        }
+    }
 }
 extension String {
 func withBoldText(text: String, font: UIFont? = nil) -> NSAttributedString {

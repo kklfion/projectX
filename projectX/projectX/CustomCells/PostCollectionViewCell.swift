@@ -167,7 +167,8 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     }
     let defaultImageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .ultraLight)
     func setDefaultPostImage(){
-        postImageView.image = UIImage(named: "noImagePostImage")
+        postImageView.image = UIImage(named: "noImagePostImage")?.withRenderingMode(.alwaysTemplate)
+        postImageView.tintColor = Constants.Colors.mainText
     }
     func setPostImage(image: UIImage?){
         postImageView.image = image
@@ -241,6 +242,13 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
                           bottom: contentView.safeAreaLayoutGuide.bottomAnchor,
                           trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
                           padding: .init(top: 10, left: 10, bottom: 10, right: 10))
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            self.shadowLayerView.layer.shadowColor = Constants.Colors.shadow.cgColor
+        }
     }
 }
 extension PostCollectionViewCell{
