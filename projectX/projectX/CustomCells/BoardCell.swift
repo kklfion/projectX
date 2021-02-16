@@ -127,4 +127,11 @@ class BoardCell: UICollectionViewCell {
         
         
     }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            self.shadowLayerView.layer.shadowColor = Constants.Colors.shadow.cgColor
+        }
+    }
 }

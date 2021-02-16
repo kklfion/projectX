@@ -21,7 +21,7 @@ class PrivacyPolicyViewController: UIViewController {
     
     lazy var scrollView : UIScrollView = {
          let scrollView = UIScrollView(frame: .zero)
-         scrollView.backgroundColor = .white
+         scrollView.backgroundColor = Constants.Colors.mainBackground
          scrollView.bounces = true
          scrollView.translatesAutoresizingMaskIntoConstraints = false
          return scrollView
@@ -29,7 +29,7 @@ class PrivacyPolicyViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         self.navigationController?.navigationBar.isHidden = true
         setupView()
         

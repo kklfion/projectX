@@ -21,24 +21,31 @@ class NeedToLoginView: UIView{
         let button = UIButton()
         button.setTitle("Login", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: Constants.Login.mainTextFontSize, weight: .bold)
-        button.setTitleColor(Constants.Colors.darkBrown, for: .normal)
-        button.backgroundColor = Constants.Colors.mainYellow
+        button.setTitleColor(Constants.Colors.mainText, for: .normal)
+        button.backgroundColor = Constants.Colors.secondaryBackground
         button.layer.cornerRadius = 25
         
-        button.layer.shadowOpacity = 0.1
+        button.layer.shadowOpacity = 0.5
         button.layer.shadowRadius = 3.0
         button.layer.shadowOffset = CGSize(width: 0, height: 3)
-        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowColor = Constants.Colors.shadow.cgColor
         return button
     }()
     private func setupViews(){
         self.addSubview(loginButton)
-        self.backgroundColor = .white
+        self.backgroundColor = Constants.Colors.mainBackground
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         loginButton.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         loginButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         loginButton.widthAnchor.constraint(equalToConstant: self.frame.width * 0.7).isActive = true
         loginButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            self.loginButton.layer.shadowColor = Constants.Colors.shadow.cgColor
+        }
     }
 }
 

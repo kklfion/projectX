@@ -43,7 +43,6 @@ extension UIColor {
         return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
     }
     
-    static let mainBlue = UIColor.rgb(red: 0, green: 150, blue: 255)
 }
 
 extension UIWindow {
@@ -128,6 +127,20 @@ extension UIViewController {
     @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {
         self.view.endEditing(true)
     }
+    func removeSublayer(withName: String,from: UIView, completion: () -> Void)
+    {
+        guard let sublayers = from.layer.sublayers
+        else
+        {
+            return
+        }
+        for layer in sublayers {
+             if layer.name == withName {
+                  layer.removeFromSuperlayer()
+                  completion()
+             }
+        }
+    }
 }
 extension String {
 func withBoldText(text: String, font: UIFont? = nil) -> NSAttributedString {
@@ -195,11 +208,11 @@ extension Date {
 }
 
 extension UINavigationController{
-    func setNavigationToWhite(){
+    func setNavigationToViewColor(){
         // Restore the navigation bar to default
         self.navigationBar.setBackgroundImage(nil, for: .default)
         self.navigationBar.shadowImage = UIImage()
-        self.navigationBar.barTintColor = .white
+        self.navigationBar.barTintColor = Constants.Colors.mainBackground
         self.navigationBar.isTranslucent = true
     }
     func setNavigationToTransparent(){

@@ -34,7 +34,7 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
     }()
 
     override func viewDidLoad() {
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         super.viewDidLoad()
         setupNavigationBar()
         setupFeedController()
@@ -120,7 +120,7 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
         self.add(feedCollectionViewController)//add feedController as a child
 
         let vc = UIViewController() //instead of the missions vc
-        vc.view.backgroundColor  = .white
+        vc.view.backgroundColor  = Constants.Colors.mainBackground
         
         feedSegmentedControl.stackView.addArrangedSubview(feedCollectionViewController.view)
         feedSegmentedControl.stackView.addArrangedSubview(vc.view)
@@ -151,7 +151,7 @@ extension HomeTableVC: DidScrollFeedDelegate{
 //MARK: - Navigation Bar setup
 extension HomeTableVC{
     override func viewWillAppear(_ animated: Bool) {
-        navigationController?.setNavigationToWhite()
+        navigationController?.setNavigationToViewColor()
         super.viewWillAppear(animated)
     }
     private func setupNavigationBar(){

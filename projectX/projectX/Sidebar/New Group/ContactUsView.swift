@@ -33,7 +33,7 @@ class ContactUsView: UIView {
     lazy var contactUs: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: title,weight: titleType)
-        label.tintColor = UIColor.black
+        label.tintColor = Constants.Colors.mainText
         label.textAlignment = .center
         label.text = "Contact Us"
         return label
@@ -41,14 +41,14 @@ class ContactUsView: UIView {
     lazy var No1: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.tintColor = UIColor.black
+        label.tintColor = Constants.Colors.mainText
         label.textAlignment = .center
         label.numberOfLines = 0;
         label.text = "For general inquiries, complaints, questions or claims concerning the licensed Application, please contact: appdevucsc2020@gmail.com, Instagram: @necto_uc"
         return label
     }()
     private func setupViews(){
-        self.backgroundColor = .white
+        self.backgroundColor = Constants.Colors.mainBackground
         
         self.addSubview(cancelButton)
         self.addSubview(contactUs)

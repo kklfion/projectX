@@ -27,7 +27,7 @@ class CollegesListController: UICollectionViewController{
     }
     
     override func viewDidLoad() {
-        collectionView.backgroundColor = .systemGray6
+        collectionView.backgroundColor = Constants.Colors.mainBackground
         setupCollection()
         loadData()
     }

@@ -34,18 +34,18 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     //shadow is added to the container
     let shadowLayerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         view.layer.cornerRadius = 5
-        view.layer.shadowColor = UIColor.lightGray.cgColor
+        view.layer.shadowColor = Constants.Colors.shadow.cgColor
         view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
         view.layer.shadowRadius = 5
-        view.layer.shadowOpacity = 0.2
+        view.layer.shadowOpacity = 0.5
         return view
     }()
     //container contains all the stacks
     let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white//Constants.backgroundColor //
+        view.backgroundColor = Constants.Colors.secondaryBackground
         view.layer.cornerRadius = 5
         view.layer.masksToBounds = true
         return view
@@ -56,13 +56,13 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         label.text = "1h"
         label.font = Constants.smallerTextFont
         label.textAlignment = .right
-        label.textColor = .lightGray
+        label.textColor = Constants.Colors.subText
         return label
     }()
     let stationButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("Station", for: .normal)
-        button.setTitleColor(.lightGray, for: .normal)
+        button.setTitleColor(Constants.Colors.subText, for: .normal)
         button.titleLabel?.font = Constants.smallerTextFont
         button.contentHorizontalAlignment = .left
         return button
@@ -78,7 +78,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         label.numberOfLines = 4
         label.adjustsFontSizeToFitWidth = false
         label.lineBreakMode = .byTruncatingTail
-        label.textColor = .black
+        label.textColor = Constants.Colors.mainText
         return label
     }()
     let messageLabel: UILabel = {
@@ -87,7 +87,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         label.numberOfLines = 4
         label.adjustsFontSizeToFitWidth = false
         label.lineBreakMode = .byTruncatingTail
-        label.textColor = .black
+        label.textColor = Constants.Colors.mainText
         return label
     }()
     let postImageView: UIImageView = {
@@ -111,7 +111,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         let label = UILabel()
         label.text = "u/Sammy"
         label.font = Constants.smallerTextFont
-        label.textColor = .lightGray
+        label.textColor = Constants.Colors.subText
         label.numberOfLines = 1
         return label
     }()
@@ -124,7 +124,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     let likesLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
-        label.textColor = .black
+        label.textColor = Constants.Colors.mainText
         label.textAlignment = .left
         label.font = Constants.smallerTextFont
         label.numberOfLines = 1
@@ -139,7 +139,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         let label = UILabel()
         label.textAlignment = .left
         label.font = Constants.smallerTextFont
-        label.textColor = .black
+        label.textColor = Constants.Colors.mainText
         label.numberOfLines = 1
         return label
     }()
@@ -167,7 +167,8 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     }
     let defaultImageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .ultraLight)
     func setDefaultPostImage(){
-        postImageView.image = UIImage(named: "noImagePostImage")
+        postImageView.image = UIImage(named: "noImagePostImage")?.withRenderingMode(.alwaysTemplate)
+        postImageView.tintColor = Constants.Colors.mainText
     }
     func setPostImage(image: UIImage?){
         postImageView.image = image
@@ -241,6 +242,13 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
                           bottom: contentView.bottomAnchor,
                           trailing: contentView.trailingAnchor,
                           padding: .init(top: 10, left: 10, bottom: 10, right: 10))
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            self.shadowLayerView.layer.shadowColor = Constants.Colors.shadow.cgColor
+        }
     }
 }
 extension PostCollectionViewCell{

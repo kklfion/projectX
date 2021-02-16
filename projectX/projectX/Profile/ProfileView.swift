@@ -28,14 +28,14 @@ class ProfileView: UIView {
     }()
     let viewBackground: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         view.layer.cornerRadius = 25
         return view
     }()
     let profileImageViewContainer: UIView = {
         let container = UIView()
         container.clipsToBounds = false
-        container.layer.shadowColor = UIColor.black.cgColor
+        container.layer.shadowColor = Constants.Colors.shadow.cgColor
         container.layer.shadowOpacity = 1
         container.layer.shadowOffset = CGSize.zero
         container.layer.shadowRadius = 8
@@ -44,7 +44,7 @@ class ProfileView: UIView {
     }()
     let profileImageView: UIImageView = {
         let imageview = UIImageView()
-        imageview.backgroundColor = .white
+        imageview.backgroundColor = Constants.Colors.secondaryBackground
         imageview.clipsToBounds = true
         
         return imageview
@@ -68,28 +68,21 @@ class ProfileView: UIView {
     let usernameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        label.textColor = .black
+        label.textColor = Constants.Colors.mainText
         return label
     }()
     let useridLabel: UILabel = {
         let label = UILabel()
         label.font = Constants.bodyTextFont
-        label.textColor = .lightGray
+        label.textColor = Constants.Colors.subText
         return label
     }()
     let schoolLabel: UILabel = {
         let label = UILabel()
         label.font = Constants.bodyTextFont
-        label.textColor = .black
+        label.textColor = Constants.Colors.mainText
         return label
     }()
-//    let spacingView: UIView  = {
-//        let view = UIView()
-//        //view.backgroundColor = .lightGray
-//        view.alpha = 0.1
-//        view.layer.cornerRadius = 1
-//        return view
-//    }()
     private func setupViews() {
         //self.backgroundColor = .blue
         headerGradient.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: (self.frame.width*0.5) + 25)
@@ -108,9 +101,7 @@ class ProfileView: UIView {
         followButton.addAnchors(top: nil,leading: nil,bottom: nil,trailing: nil,size: .init(width: 60, height: 60))
 
         self.addSubview(profileImageViewContainer)
-        //self.addSubview(followButton)
         self.addSubview(bioStackView)
-        //self.addSubview(spacingView)
 
         bioStackView.addArrangedSubview(usernameLabel)
         bioStackView.addArrangedSubview(useridLabel)
@@ -132,18 +123,18 @@ class ProfileView: UIView {
                                             bottom: nil,
                                             trailing: self.trailingAnchor,
                                             padding: .init(top: 10, left: 0, bottom: 0, right: 0))
-
-//        spacingView.addAnchors(top: bioStackView.bottomAnchor,
-//                                leading: self.leadingAnchor,
-//                                bottom: nil,
-//                                trailing: self.trailingAnchor,
-//                                padding: .init(top: 10, left: 10, bottom: 0, right: 10),
-//                                size: .init(width: 0, height: 2))
     }
     func setFollowButtonToFollowed(){
         followButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
     }
     func setFollowButtonToNotFollowed(){
         followButton.setImage(UIImage(systemName: "plus"), for: .normal)
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            self.headerGradient.colors = [Constants.Colors.profileBlue.cgColor, Constants.Colors.profileYellow.cgColor]
+        }
     }
 }

@@ -81,7 +81,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         navigationController?.setNavigationToTransparent()
         self.navigationItem.title = "Profile"
         extendedLayoutIncludesOpaqueBars = true
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         navigationItem.largeTitleDisplayMode = .never
         setupProfileView()
         setupFeedVCs()
@@ -185,7 +185,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     }
     private func setupFeedVCs(){
         let vc = UIViewController() //instead of the missions vc
-        vc.view.backgroundColor  = .white
+        vc.view.backgroundColor  = Constants.Colors.mainBackground
         feedCollectionViewController = FeedCollectionViewController()
         self.addChild(feedCollectionViewController)
         feedCollectionViewController.didScrollFeedDelegate = self
@@ -279,7 +279,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     private func setShadowForProfileImage(){
         let shadowRect = self.profileView.profileImageViewContainer.layer.bounds
         self.profileView.profileImageViewContainer.layer.masksToBounds = false
-        self.profileView.profileImageViewContainer.layer.shadowColor = UIColor.black.cgColor//Constants.Colors.mainYellow.cgColor
+        self.profileView.profileImageViewContainer.layer.shadowColor = Constants.Colors.shadow.cgColor//Constants.Colors.mainYellow.cgColor
         self.profileView.profileImageViewContainer.layer.shadowOpacity = 0.2
         self.profileView.profileImageViewContainer.layer.shadowOffset = CGSize(width: -1, height: 1)
         self.profileView.profileImageViewContainer.layer.shadowRadius = 10

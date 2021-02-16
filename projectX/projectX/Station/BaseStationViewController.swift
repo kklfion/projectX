@@ -66,7 +66,7 @@ class BaseStationViewController: UIViewController, SlidableTopViewProtocol {
 }
 extension BaseStationViewController{
     override func viewDidLoad() {
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.mainBackground
         navigationItem.largeTitleDisplayMode = .never
         setupView()
         setupSegmentedStackWithFeeds()

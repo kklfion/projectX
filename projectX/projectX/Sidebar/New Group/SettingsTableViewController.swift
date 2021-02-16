@@ -182,12 +182,12 @@ class SectionHeaderView: UIView {
         label.text = "Section"
         label.font = UIFont.preferredFont(forTextStyle: .headline)
         label.textAlignment = .left
-        label.textColor = .black
+        label.textColor = Constants.Colors.mainText
         return label
     }()
 
     private func setupViews(){
-        self.backgroundColor = UIColor.init(red: 223/255.0, green: 230/255.0, blue: 233/255.0, alpha: 1.0)
+        self.backgroundColor = Constants.Colors.mainBackground//UIColor.init(red: 223/255.0, green: 230/255.0, blue: 233/255.0, alpha: 1.0)
         self.addSubview(sectionTitleLabel)
         sectionTitleLabel.addAnchors(top: self.topAnchor,
                                      leading: self.layoutMarginsGuide.leadingAnchor,

@@ -24,29 +24,31 @@ class SideBarView: UIView {
     }
     let stationsTableView: UITableView = {
         let tv = UITableView()
+        tv.backgroundColor = Constants.Colors.secondaryBackground
         tv.separatorStyle = .none
         return tv
     }()
     let spacingView: UIView  = {
         let view = UIView()
-        view.backgroundColor = .lightGray
+        view.backgroundColor = .systemGray
         view.alpha = 0.5
         return view
     }()
     let menuTableView: UITableView = {
         let tv = UITableView()
+        tv.backgroundColor = Constants.Colors.secondaryBackground
         tv.separatorStyle = .none
         tv.isScrollEnabled = false
         return tv
     }()
     let cancelButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(systemName: "xmark")?.withTintColor(.lightGray, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "xmark")?.withTintColor(.systemGray, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
 
     private func setupViews(){
-        self.backgroundColor = .white
+        self.backgroundColor = Constants.Colors.secondaryBackground
         self.addSubview(cancelButton)
         self.addSubview(stationsTableView)
         self.addSubview(spacingView)
@@ -72,7 +74,7 @@ class SideBarView: UIView {
                                     leading: self.leadingAnchor,
                                     bottom: self.bottomAnchor,
                                     trailing: self.trailingAnchor,
-                                    padding: .init(top: 5, left: 10, bottom: 10, right: 0))
+                                    padding: .init(top: 5, left: 10, bottom: 10, right: 10))
         
     }
 }

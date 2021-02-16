@@ -32,13 +32,13 @@ class SelectAvatarViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .systemBackground
+        self.view.backgroundColor = Constants.Colors.secondaryBackground
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addTapped))
 
         let titleLabel = UILabel()
         titleLabel.text = "Choose Avatar"
         titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-        titleLabel.textColor = Constants.Colors.darkBrown
+        titleLabel.textColor = Constants.Colors.mainText
         self.view.addSubview(titleLabel)
         titleLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         titleLabel.addAnchors(top: self.view.topAnchor, leading: nil, bottom: nil, trailing: nil, padding: .init(top: 10, left: 0, bottom: 0, right: 0))
@@ -57,7 +57,7 @@ class SelectAvatarViewController: UIViewController {
         collectionview.delegate = self
         collectionview.register(AvatarCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
         collectionview.showsVerticalScrollIndicator = false
-        collectionview.backgroundColor = .systemBackground
+        collectionview.backgroundColor = Constants.Colors.secondaryBackground
         self.view.addSubview(collectionview)
     }
     @objc func addTapped()

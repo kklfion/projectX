@@ -98,7 +98,7 @@ extension FeedCollectionViewController {
 //MARK: - CollectionView setup
 extension FeedCollectionViewController{
     private func setupCollectionView(){
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = Constants.Colors.mainBackground
         self.collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         self.collectionView.register(LoadingFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: footerViewReuseIdentifier)
     }
@@ -127,6 +127,7 @@ extension FeedCollectionViewController{
         })
         collectionView.dataSource = dataSource
     }
+    
     //TODO: add estimatedHeight to make cells dynamically sized
     private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
