@@ -81,7 +81,7 @@ extension BaseStationViewController{
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if (feedSegmentedControl.leftButton.frame.height != 0 && stationView.frame.height != 0 && headerHeight == nil){
+        if !headerHeightWasSet() && feedSegmentedControl.leftButton.frame.height != 0 && stationView.frame.height != 0 {
             let headerHeight = feedSegmentedControl.leftButton.frame.height + stationView.frame.height
             let statusBarHeight = view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0
             let navBarHeight = self.navigationController?.navigationBar.frame.height ?? 0.0

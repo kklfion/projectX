@@ -14,55 +14,6 @@ enum ProfileType{
     case otherProfile
     case personalProfile
 }
-protocol SlidableTopViewProtocol: class{
-    
-    var headerHeight: CGFloat? { get set }
-    
-    //must be pinned to the top anchor of the view that is sliding
-    var headerTopConstraint: NSLayoutConstraint! { get set }
-    
-    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?, navigationItem: UINavigationItem?)
-    
-    func isAboveHeader(headerHeight: CGFloat, currentOffset:CGFloat) -> Bool
-    
-    func setupHeaderHeight(header height: CGFloat, safeArea padding: CGFloat)
-    
-}
-extension SlidableTopViewProtocol{
-    
-    func setupHeaderHeight(header height: CGFloat, safeArea padding: CGFloat){
-        if !headerHeightWasSet(){
-            self.headerHeight =  height - padding
-        } else {
-            return
-        }
-    }
-    private func headerHeightWasSet() -> Bool{
-        return headerHeight != nil
-    }
-    
-    
-    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?, navigationItem: UINavigationItem?){
-        guard let headerHeight = headerHeight else {print("not set yet"); return}
-        let y_offset: CGFloat = scrollView.contentOffset.y
-        let headerOffset = headerTopConstraint.constant - y_offset
-        if isAboveHeader(headerHeight: headerHeight, currentOffset: headerOffset){
-            headerTopConstraint.constant = -headerHeight //dont move past that point
-        } else if headerOffset >= 0{//when scrolling down remain at 0
-            headerTopConstraint.constant = 0
-            controller?.setNavigationToTransparent()
-            navigationItem?.title = ""
-        }else{//inbetween we want to adjust the position of the header
-            controller?.setNavigationToWhite()
-            headerTopConstraint.constant = headerOffset
-            scrollView.contentOffset.y = 0 //to smooth out scrolling
-        }
-    }
-    func isAboveHeader(headerHeight: CGFloat, currentOffset:CGFloat) -> Bool{
-        return currentOffset <= -headerHeight
-    }
-}
-
 class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, SlidableTopViewProtocol {
     
     lazy var profileHeight = view.frame.height * 0.4
@@ -109,12 +60,6 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     ///feed vc
     private var feedCollectionViewController: FeedCollectionViewController!
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-//        navigationController?.isNavigationBarHidden = false
-    }
     ///to initialize your profile
     init() {
         self.profileType = .personalProfile
@@ -150,6 +95,16 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         case .personalProfile:
             setUserAndSubscribeToUpdates()
             profileView.followButton.isHidden = true
+        }
+    }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if !headerHeightWasSet() && feedSegmentedControl.leftButton.frame.height != 0 && profileView.frame.height != 0 {
+            let headerHeight = feedSegmentedControl.leftButton.frame.height + profileView.frame.height
+            let statusBarHeight = view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0
+            let navBarHeight = self.navigationController?.navigationBar.frame.height ?? 0.0
+            let safeAreaInset = statusBarHeight + navBarHeight
+            setupHeaderHeight(header: headerHeight, safeArea: safeAreaInset)
         }
     }
     private func checkIfUserIsFollowed(){
@@ -226,7 +181,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
                                         leading: view.leadingAnchor,
                                         bottom: view.bottomAnchor,
                                         trailing: view.trailingAnchor,
-                                        padding: .init(top: 10, left: 0, bottom: 0, right: 0))
+                                        padding: .init(top: 0, left: 0, bottom: 0, right: 0))
     }
     private func setupFeedVCs(){
         let vc = UIViewController() //instead of the missions vc

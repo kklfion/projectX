@@ -245,11 +245,11 @@ extension FeedCollectionViewController {
             let query = NetworkManager.shared.db.likedPosts
                 .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
                 .whereField(FirestoreFields.userID.rawValue, isEqualTo: userID ?? "")
-            NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [Like]?, error) in
+            NetworkManager.shared.getDocumentsForQuery(query: query) { [weak self] (likedPosts: [Like]?, error) in
                 if error != nil {
                     print("error loading liked post", error!)
                 }else if likedPosts != nil {
-                    self.likesDictionary[doc] = likedPosts![0]
+                    self?.likesDictionary[doc] = likedPosts![0]
                 }
                 group.leave()
             }

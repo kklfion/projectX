@@ -12,7 +12,7 @@ import FirebaseAuth
 import Combine
 
 ///user can like post inside the post vc and that should be updated in the feed, also comment count can change
-protocol DidUpdatePostAfterDissmissingDelegate {
+protocol DidUpdatePostAfterDissmissingDelegate: class {
     func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, like: Like?, status: LikeStatus)
 }
 ///to help figure out whether like was changed inside of the post and if Feed will need to update like in the database
@@ -58,7 +58,7 @@ class PostViewController: UIViewController {
     private var indexPath: IndexPath
     
     ///user can like post inside the post vc and that should be updated in the feed, also comment count can change
-    var updatePostDelegate: DidUpdatePostAfterDissmissingDelegate?
+    weak var updatePostDelegate: DidUpdatePostAfterDissmissingDelegate?
     
     ///comments for post
     private var comments = [Comment]()

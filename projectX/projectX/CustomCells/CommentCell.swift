@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol CommentCellTapableDelegate{
+protocol CommentCellTapableDelegate: class{
     /// returns index of a cell that was tapped
     func didTapLikeButton(_ indexPath: IndexPath, _ cell: CommentCell)
     /// returns index of a cell that was tapped
@@ -29,7 +29,7 @@ class CommentCell: UITableViewCell, LikeableCellProtocol {
             }
         }
     }
-    var delegate: CommentCellTapableDelegate?
+    weak var delegate: CommentCellTapableDelegate?
 
     static let cellID = "CommentTableViewCell"
     
