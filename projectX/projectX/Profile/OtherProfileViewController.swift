@@ -88,8 +88,8 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         switch profileType{
         case .otherProfile:
             updateProfileInformation()
-            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed,
-                                                   paginatorId: user?.userID,
+            guard let userid = user?.userID else {return}
+            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed(userid),
                                                    userID: user?.userID)
             checkIfUserIsFollowed()
         case .personalProfile:
@@ -134,7 +134,8 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
             self.user = user
             self.hideLoginScreen()
             updateProfileInformation()
-            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user.id, userID: user.id)
+            guard let userid = user.id else {return}
+            feedCollectionViewController.setupFeed(feedType: .userHistoryFeed(userid), userID: user.id)
         case .signedOut:
             showLoginScreen()
         }
@@ -145,7 +146,8 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
                 self.hideLoginScreen()
                 self.user = user
                 self.updateProfileInformation()
-                self.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed, paginatorId: user?.id, userID: user?.id)
+                guard let userid = user?.id else {return}
+                self.feedCollectionViewController.setupFeed(feedType: .userHistoryFeed(userid), userID: user?.id)
             }
 
         }

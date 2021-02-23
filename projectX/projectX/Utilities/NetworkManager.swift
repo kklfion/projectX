@@ -43,6 +43,7 @@ enum FirestoreFields: String {
     case missionID
     case followingUserWithID
     case followersCount
+    case date
 }
 class NetworkManager {
 

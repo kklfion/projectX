@@ -56,14 +56,22 @@ extension FeedCollectionViewController {
         setupRefreshControl()
     }
     ///parent view controller must call this function to setup appropriate feed.
-    func setupFeed(feedType: FeedType, paginatorId: String? = nil, userID: String? = nil){
+    func setupFeed(feedType: FeedType, userID: String? = nil){
         switch feedType {
-        case .generalFeed:
-            self.postPaginator = PostPaginator()
-        case .stationFeed:
-            self.postPaginator = PostPaginator(stationID: paginatorId ?? "")
-        case .userHistoryFeed:
-            self.postPaginator = PostPaginator(userID: paginatorId ?? "")
+        case .lounge(let stationID):
+            if let id = stationID{//station loungefeed
+                self.postPaginator = PostPaginator(stationID: id, feedType: .lounge(id))
+            } else{//home lounge feed
+                self.postPaginator = PostPaginator(feedType: .lounge(nil))
+            }
+        case .busStop(let stationID):
+            if let id = stationID{//station loungefeed
+                self.postPaginator = PostPaginator(stationID: id, feedType: .busStop(id))
+            } else{//home lounge feed
+                self.postPaginator = PostPaginator(feedType: .busStop(nil))
+            }
+        case .userHistoryFeed(let userID):
+                self.postPaginator = PostPaginator(userID: userID)
         }
         self.userID = userID
         self.resetCollectionViewIfNeeded()
@@ -87,12 +95,6 @@ extension FeedCollectionViewController {
     enum FeedSection {
         ///Section that displays posts
         case main
-    }
-    ///Feed types to init feed
-    enum FeedType {
-        case userHistoryFeed
-        case generalFeed
-        case stationFeed
     }
 }
 //MARK: - CollectionView setup
