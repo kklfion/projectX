@@ -8,6 +8,16 @@
 
 import FirebaseFirestore
 
+///Feed types to init feed
+enum FeedType: Equatable {
+    /// to bring up most recent posts, need to provide userID as an argument
+    case userHistoryFeed(String)
+    /// you can provide an optional id, home doesnt need it but lounge for station needs a station id
+    case lounge(String?)
+    /// you can provide an optional id, home doesnt need it but busstop for station needs a station id
+    case busStop(String?)
+    //case university //most recent posts from all the subcolleges
+}
 class PostPaginator {
     
     ///initial first fetch should not have pagination enabled
@@ -26,15 +36,39 @@ class PostPaginator {
     private var lastDocumentSnapshot: DocumentSnapshot?
 
     ///limit of docs fetched ech query
-    private let documentsPerQuery = 6
+    private var documentsPerQuery = 6
+    ///to sort by likes(special case for lounge)
+    private var feedType: FeedType?
+    
+    private let loungeDate = Calendar.current.date(byAdding: .hour, value: -84, to: Date())
     
     ///home feed
-    init() {
-        self.defaultQuery = NetworkManager.shared.db.posts.order(by: "date", descending: true)
+    init(feedType: FeedType) {
+        switch feedType {
+        case .busStop:
+            self.defaultQuery = NetworkManager.shared.db.posts.order(by: "date", descending: true)
+        case .lounge:
+            self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.date.rawValue, isGreaterThan: loungeDate)
+            documentsPerQuery = 100
+            self.feedType = feedType
+        default:
+            fatalError()
+        }
     }
     ///station feed
-    init(stationID id: String){
-        self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.stationID.rawValue, isEqualTo: id).order(by: "date", descending: true)
+    init(stationID id: String, feedType: FeedType){
+        switch feedType {
+        case .busStop(let stationid):
+            guard  let stationid = stationid else {fatalError()}
+            self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.stationID.rawValue, isEqualTo: stationid).order(by: "date", descending: true)
+        case .lounge(let stationid):
+            guard  let stationid = stationid else {fatalError()}
+            self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.stationID.rawValue, isEqualTo: stationid).whereField(FirestoreFields.date.rawValue, isGreaterThan: loungeDate)
+            documentsPerQuery = 100
+            self.feedType = feedType
+        default:
+            fatalError()
+        }
     }
     ///user profile history
     init(userID id: String){
@@ -64,7 +98,15 @@ class PostPaginator {
                     let genericDocs = documents.compactMap { (querySnapshot) -> Post? in
                         return try? querySnapshot.data(as: Post.self)
                     }
-                    completion(.success(genericDocs))
+                    if self.feedType == .lounge(nil){
+                        let posts = genericDocs.sorted { (post1, post2) -> Bool in
+                            return post1.likes > post2.likes
+                        }
+                        completion(.success(posts))
+                    } else{
+                        completion(.success(genericDocs))
+                    }
+                    
                     self.lastDocumentSnapshot = snapshot!.documents.last
                 }
                 self.isFetching = false

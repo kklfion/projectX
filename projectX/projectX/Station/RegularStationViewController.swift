@@ -18,8 +18,8 @@ class RegularStationViewController: BaseStationViewController {
         super.viewDidLoad()
     }
     override func setupFeedsWithUserData(_ user: User?){
-        popularFeedController.setupFeed(feedType: .stationFeed, paginatorId: self.station.id, userID: user?.id)
-        newFeedController.setupFeed(feedType: .stationFeed, paginatorId: self.station.id, userID: user?.id)
+        popularFeedController.setupFeed(feedType: .lounge(self.station.id), userID: user?.id)
+        newFeedController.setupFeed(feedType: .busStop(self.station.id), userID: user?.id)
     }
     override func setupSegmentedStackWithFeeds(){
         newFeedController = FeedCollectionViewController()
