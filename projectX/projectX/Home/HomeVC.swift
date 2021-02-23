@@ -19,6 +19,7 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
     
     ///collectionViewController responsible for the feed.
     private var feedCollectionViewController: FeedCollectionViewController!
+    private var newFeedController: FeedCollectionViewController!
     
     //TODO: not implemented (searching isn't straightforward with firestore)
     private let searchController = UISearchController(searchResultsController: nil)
@@ -50,61 +51,6 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
             headerHeight = feedSegmentedControl.leftButton.frame.height
         }
     }
-    func doit(){
-        let names = ["Barstool", "Beta Station", "Confession", "Life", "Mental", "Movie", "Rant"]
-        let imagesURL = [
-        URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/stationsImages%2FsecondaryImages%2Fbarstool.png?alt=media&token=2ca8f8cd-ac2e-4e75-a297-74857659ca29")!,
-            URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/stationsImages%2FsecondaryImages%2Fbeta.png?alt=media&token=2373d8e5-10bb-4e69-ba10-dfdd2245804a")!,
-            URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/stationsImages%2FsecondaryImages%2Fconfession.png?alt=media&token=c026ad8e-362a-447d-b270-c11f3188874a")!,
-            URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/stationsImages%2FsecondaryImages%2Flife.png?alt=media&token=2cccfdcf-f2fd-42c0-8183-63c86efe0323")!,
-            URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/stationsImages%2FsecondaryImages%2Fmental.png?alt=media&token=c4d88d0b-3cf3-44d6-b1a3-9b26220bbd0d")!,
-            URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/stationsImages%2FsecondaryImages%2Fmovie.png?alt=media&token=076f7911-cf09-4bb4-9f21-118f6456ef4c")!,
-            URL(string: "https://firebasestorage.googleapis.com/v0/b/projectx-e4848.appspot.com/o/stationsImages%2FsecondaryImages%2Frant.png?alt=media&token=243070c4-fa1a-4740-a445-ef4779c6fa28")!
-        ]
-        let info = ["",
-                    "For suggestions and possible feedback users in beta could post about and collaborate.",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-        ]
-        let main = [
-            "#4bbcc9",
-            "#657cb5",
-            "#d57f63",
-            "#b18ec7",
-            "#3fa7b7",
-            "#dfc078",
-            "#9be2d3"
-        ]
-        let secondary = [
-            "#6fcfd4",
-            "#83a1ce",
-            "#e7a37e",
-            "#d5c4e0",
-            "#5dbaba",
-            "#eedd96",
-            "#b8ede4"
-        ]
-        for index in 0..<names.count{
-            let station = Station(info: info[index],
-                                  stationName: names[index],
-                                  followers: 0,
-                                  date: Date(),
-                                  frontImageURL: imagesURL[index],
-                                  backgroundImageURL: nil,
-                                  mainColor: main[index],
-                                  secondaryColor: secondary[index],
-                                  parentStationID: nil,
-                                  stationType: .station)
-                    NetworkManager.shared.writeDocumentsWith(collectionType: .stations,
-                                                            documents: [station])
-                    {
-                        result in
-                    }
-        }
-    }
     private func setupFeedController(){
         view.addSubview(feedSegmentedControl)
         feedSegmentedControl.addAnchors(top: nil,
@@ -119,11 +65,12 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
         feedCollectionViewController.didScrollFeedDelegate = self
         self.add(feedCollectionViewController)//add feedController as a child
 
-        let vc = UIViewController() //instead of the missions vc
-        vc.view.backgroundColor  = Constants.Colors.mainBackground
+        newFeedController = FeedCollectionViewController()
+        newFeedController.didScrollFeedDelegate = self
+        self.add(newFeedController)//add feedController as a child
         
         feedSegmentedControl.stackView.addArrangedSubview(feedCollectionViewController.view)
-        feedSegmentedControl.stackView.addArrangedSubview(vc.view)
+        feedSegmentedControl.stackView.addArrangedSubview(newFeedController.view)
         
     }
     private func setUserAndSubscribeToUpdates(){
@@ -132,14 +79,17 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
             print("user is loading ")//wait for update
         case .signedIn(let user):
             self.user = user
-            feedCollectionViewController.setupFeed(feedType: .generalFeed, userID: user.id ?? nil)
+            feedCollectionViewController.setupFeed(feedType: .lounge(nil), userID: user.id ?? nil)
+            newFeedController.setupFeed(feedType: .busStop(nil), userID: user.id ?? nil)
         case .signedOut:
             print("display nothing")//display default data
-            feedCollectionViewController.setupFeed(feedType: .generalFeed)
+            feedCollectionViewController.setupFeed(feedType: .lounge(nil))
+            newFeedController.setupFeed(feedType: .busStop(nil), userID: user?.id ?? nil)
         }
         userSubscription = UserManager.shared().userPublisher.sink { (user) in
             self.user = user
-            self.feedCollectionViewController.setupFeed(feedType: .generalFeed, userID: user?.id)
+            self.feedCollectionViewController.setupFeed(feedType: .lounge(nil), userID: user?.id)
+            self.newFeedController.setupFeed(feedType: .busStop(nil), userID: user?.id ?? nil)
         }
     }
 }
