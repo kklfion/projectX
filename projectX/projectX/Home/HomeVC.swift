@@ -34,11 +34,10 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
         return control
     }()
     override func viewDidAppear(_ animated: Bool) {
-        showWelcomeScreen()
-        /*if !UserManager.shared().isNewUser()
+        if !UserManager.shared().isNewUser()
         {
             showWelcomeScreen()
-        }*/
+        }
     }
     override func viewDidLoad() {
         view.backgroundColor = Constants.Colors.mainBackground
