@@ -15,6 +15,9 @@ struct Constants{
     static let bodyTextFont = UIFont.preferredFont(forTextStyle: .subheadline)
     static let smallerTextFont = UIFont.preferredFont(forTextStyle: .footnote)
 
+    struct defaultKeys{
+        static let isExistingUserDefaultsKey = "isExistingUser"
+    }
     struct Colors {
         static let mainYellow = UIColor(named: "mainYellow") ?? UIColor.white//UIColor(rgb: 0xf6e58f)
         static let darkBrown = UIColor(named: "darkBrown") ?? UIColor(rgb: 0x434239)

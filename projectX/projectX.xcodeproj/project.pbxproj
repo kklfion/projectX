@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		563A4ECB25B6028000FFEF66 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 563A4ECA25B6028000FFEF66 /* GoogleService-Info.plist */; };
+		56C801A425E0397F00B14877 /* WelcomeScreenVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C801A325E0397F00B14877 /* WelcomeScreenVC.swift */; };
 		56DFFD9225CB0F3300B18CE8 /* SelectAvatarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DFFD9125CB0F3300B18CE8 /* SelectAvatarViewController.swift */; };
 		56DFFD9725CB134A00B18CE8 /* AvatarCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DFFD9525CB134A00B18CE8 /* AvatarCollectionViewCell.swift */; };
 		8008C6BE25CCA5EE0072864A /* NeedToLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8008C6BD25CCA5ED0072864A /* NeedToLoginView.swift */; };
@@ -90,6 +91,7 @@
 /* Begin PBXFileReference section */
 		4A216F81A4DD94A6239F9BAE /* Pods-projectX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-projectX.debug.xcconfig"; path = "Target Support Files/Pods-projectX/Pods-projectX.debug.xcconfig"; sourceTree = "<group>"; };
 		563A4ECA25B6028000FFEF66 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		56C801A325E0397F00B14877 /* WelcomeScreenVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreenVC.swift; sourceTree = "<group>"; };
 		56DFFD9125CB0F3300B18CE8 /* SelectAvatarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAvatarViewController.swift; sourceTree = "<group>"; };
 		56DFFD9525CB134A00B18CE8 /* AvatarCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarCollectionViewCell.swift; sourceTree = "<group>"; };
 		6016FA9D2BEBBB85B30C0B41 /* Pods_projectX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_projectX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -395,6 +397,7 @@
 			isa = PBXGroup;
 			children = (
 				804E619A24957E3200825150 /* MainTabBarVC.swift */,
+				56C801A325E0397F00B14877 /* WelcomeScreenVC.swift */,
 				80B2C6A82516E3220025F9EE /* SideBarSlidingTransition.swift */,
 			);
 			path = MainTabBar;
@@ -561,6 +564,7 @@
 				804E618724957D0C00825150 /* AppDelegate.swift in Sources */,
 				8068E81C2542329300A85B33 /* OtherProfileViewController.swift in Sources */,
 				80F57E0425A4F7A100CDF5C3 /* PostPaginator.swift in Sources */,
+				56C801A425E0397F00B14877 /* WelcomeScreenVC.swift in Sources */,
 				803D75AE250AD786003F569D /* Station.swift in Sources */,
 				80D97BA9251D819000825BBB /* MissionsCell.swift in Sources */,
 				804E61A324980DD500825150 /* NewPostVC.swift in Sources */,
@@ -761,7 +765,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 5NP79EB7TF;
 				INFOPLIST_FILE = projectX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -782,7 +786,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 5NP79EB7TF;
 				INFOPLIST_FILE = projectX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

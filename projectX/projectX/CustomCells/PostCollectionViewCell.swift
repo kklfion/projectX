@@ -175,7 +175,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     }
     func setAnonymousUser(){
         authorLabel.text =  "Anonymous"
-        authorImageView.image = (UIImage(systemName: "person.fill.questionmark")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+        authorImageView.image = (UIImage(systemName: "person.crop.circle.fill")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
         authorLabel.isUserInteractionEnabled = false
         authorImageView.isUserInteractionEnabled = false
     }

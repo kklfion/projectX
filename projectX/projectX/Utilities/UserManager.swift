@@ -109,6 +109,16 @@ extension UserManager{
 //MARK: networking
 extension UserManager{
     
+    ///key to figure out whether the user is new to show the onboarding/not show it
+    
+    func isNewUser() -> Bool {
+        return UserDefaults.standard.bool(forKey: Constants.defaultKeys.isExistingUserDefaultsKey)
+    }
+    
+    func setToExistingUser(){
+        UserDefaults.standard.setValue(true, forKey: Constants.defaultKeys.isExistingUserDefaultsKey)
+    }
+    
     ///function that manages loading data for user id
     private func loadDataFor(userID: String){
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in

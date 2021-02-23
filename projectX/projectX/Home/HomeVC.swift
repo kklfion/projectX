@@ -32,16 +32,26 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
         let control = SegmentedControlWithStackView(frame: self.view.frame, itemNames: ["Lounge", "Bus Stop"])
         return control
     }()
-
+    override func viewDidAppear(_ animated: Bool) {
+        showWelcomeScreen()
+        /*if !UserManager.shared().isNewUser()
+        {
+            showWelcomeScreen()
+        }*/
+    }
     override func viewDidLoad() {
         view.backgroundColor = Constants.Colors.mainBackground
         super.viewDidLoad()
         setupNavigationBar()
         setupFeedController()
         setUserAndSubscribeToUpdates()
-        
         presentLoginIfNeeded()
-        
+    }
+    private func showWelcomeScreen()
+    {
+        let vc = WelcomeScreenVC()
+        vc.modalPresentationStyle = .overFullScreen //or .overFullScreen for transparency
+        self.present(vc, animated: true, completion: nil)
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
