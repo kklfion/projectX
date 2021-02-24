@@ -116,6 +116,8 @@ extension HomeTableVC{
     private func setupNavigationBar(){
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.titleView = UISearchBar()
+        //Disable search bar interaction
+        navigationItem.titleView?.isUserInteractionEnabled = false
     }
 }
 //MARK: - SideBarStationSelectionDelegate
