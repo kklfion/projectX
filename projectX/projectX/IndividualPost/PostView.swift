@@ -18,9 +18,9 @@ class PostView: UIView, LikeableCellProtocol {
     var isLiked: Bool = false {
         didSet{
             if isLiked{
-                likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
+                likeButton.setImage(UIImage(systemName: "heart.fill", withConfiguration: Constants.sfSymbolsSetup.likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
             }else{
-                likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
+                likeButton.setImage(UIImage(systemName: "heart", withConfiguration: Constants.sfSymbolsSetup.likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
             }
         }
     }
@@ -94,9 +94,9 @@ class PostView: UIView, LikeableCellProtocol {
     }()
      let postImageView: UIImageView = {
         let iv = UIImageView()
-        iv.backgroundColor = .blue
+        iv.backgroundColor = .black
         iv.clipsToBounds = true
-        iv.contentMode = .scaleAspectFill
+        iv.contentMode = .scaleAspectFit
         return iv
     }()
      let bodyUILabel: UILabel = {
@@ -112,17 +112,15 @@ class PostView: UIView, LikeableCellProtocol {
     let authorImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        //imageView.image = UIImage(named: "sslug")
         imageView.clipsToBounds = true
-        imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        imageView.layer.cornerRadius = 15
+        imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.layer.cornerRadius = 25/2
         
         return imageView
     }()
     let authorLabel: UILabel = {
         let label = UILabel()
-        label.text = "u/Sammy"
         label.font = Constants.smallerTextFont
         label.textColor = Constants.Colors.subText
         label.numberOfLines = 1
@@ -130,7 +128,7 @@ class PostView: UIView, LikeableCellProtocol {
     }()
     let likeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "heart")?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "heart", withConfiguration: Constants.sfSymbolsSetup.likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let likesLabel: UILabel = {
@@ -144,7 +142,7 @@ class PostView: UIView, LikeableCellProtocol {
     }()
     let commentsButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "bubble.right.fill")?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "message", withConfiguration: Constants.sfSymbolsSetup.likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let commentsLabel: UILabel = {
@@ -207,7 +205,7 @@ class PostView: UIView, LikeableCellProtocol {
                                 size: .init(width: 0, height: 0))
         
         
-        titleUILabel.addAnchors(top: authorUILabel.bottomAnchor,
+        titleUILabel.addAnchors(top: dateUILabel.bottomAnchor,
                                 leading: containerView.leadingAnchor,
                                 bottom: nil,
                                 trailing: containerView.trailingAnchor,
@@ -263,5 +261,12 @@ class PostView: UIView, LikeableCellProtocol {
     func changeCellToDisliked(){
         guard let likesCount = Int(likesLabel.text ?? "") else {return}
         likesLabel.text = "\(likesCount - 1)"
+    }
+    func setAnonymousUser(){
+        
+        authorLabel.text =  "Anonymous"
+        authorImageView.image = (UIImage(systemName: "person.crop.circle.fill")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+        authorLabel.isUserInteractionEnabled = false
+        authorImageView.isUserInteractionEnabled = false
     }
 }

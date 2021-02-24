@@ -107,14 +107,14 @@ extension BaseStationViewController{
     ///if user is signed in station can be followed/not followed
     //FIXME: I dont this this is working properly lol
     private func checkIfStationFollowed(){
-        switch UserManager.shared().state{
-        case .signedIn(_):
-            stationView.followedButton()
-        case .signedOut:
-            stationView.notFollowedButton()
-        case .loading:
-            print("loading")
-        }
+//        switch UserManager.shared().state{
+//        case .signedIn(_):
+//            //stationView.followedButton()
+//        case .signedOut:
+//            //stationView.notFollowedButton()
+//        case .loading:
+//            print("loading")
+//        }
     }
     private func setupStationHeaderWithStationData(){
         stationView.changeFollowerCount(by: station.followers)
@@ -149,6 +149,13 @@ extension BaseStationViewController{
         headerTopConstraint.isActive = true
         stationView.followButton.addTarget(self, action: #selector(didTapFollowButton), for: .touchUpInside)
         
+        guard let id = station.id else {return}
+        if UserManager.shared().isStationFollowed(stationID: id) != nil {
+            stationView.setFollowButtonToFollowed()
+        } else {
+            stationView.setFollowButtonToNotFollowed()
+        }
+        
         view.addSubview(feedSegmentedControl)
         feedSegmentedControl.addAnchors(top: stationView.bottomAnchor,
                                         leading: view.leadingAnchor,
@@ -164,33 +171,32 @@ extension BaseStationViewController{
         guard let stationID = station.id else {return}
         guard  let userID = UserManager.shared().user?.userID else {return}
         //if station is followed - unfollow it
-        if let followedStation = UserManager.shared().isStationFollowed(stationID: stationID){
+        if let followedStationDocID = UserManager.shared().isStationFollowed(stationID: stationID)?.id{
             //delete it from db
-            guard let followedStationID = followedStation.id else {return}
-            NetworkManager.shared.deleteDocumentsWith(collectionType: .followedStations, documentID: followedStationID) { (error) in
+            UserManager.shared().removeFollowedStation(stationID: stationID)
+            self.stationView.notFollowedButton()
+            self.station.followers -= 1
+            self.stationView.changeFollowerCount(by: self.station.followers)
+            NetworkManager.shared.deleteDocumentsWith(collectionType: .followedStations, documentID: followedStationDocID) { (error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "error deleting followedStation")
                 }else{
-                    UserManager.shared().removeFollowedStation(stationID: stationID)
-                    self.stationView.notFollowedButton()
-                    self.station.followers -= 1
-                    self.stationView.changeFollowerCount(by: self.station.followers)
+
                     NetworkManager.shared.incrementDocumentValue(collectionType: .stations,
                                                                  documentID: stationID,
                                                                  value: Double(-1),
                                                                  field: .followers)
                 }
             }
-
         }else{//else follow it
             var document = FollowedStation(userID: userID, stationID: stationID, stationName: station.stationName, date: Date())
+            self.station.followers += 1
+            self.stationView.changeFollowerCount(by: self.station.followers)
+            self.stationView.followedButton()
             NetworkManager.shared.writeDocumentReturnReference(collectionType: .followedStations, document: document) { (referenceID, error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "error creating followedStation")
                 }else if (referenceID != nil){
-                    self.station.followers += 1
-                    self.stationView.changeFollowerCount(by: self.station.followers)
-                    self.stationView.followedButton()
                     document.id = referenceID
                     UserManager.shared().addFollowedStation(followedStation: document)
                     NetworkManager.shared.incrementDocumentValue(collectionType: .stations,
@@ -200,7 +206,6 @@ extension BaseStationViewController{
                 }
             }
         }
-  
     }
 }
 extension BaseStationViewController: DidScrollFeedDelegate{

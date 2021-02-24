@@ -102,9 +102,9 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
-        imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        imageView.layer.cornerRadius = 15
+        imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.layer.cornerRadius = 25/2
         return imageView
     }()
     let authorLabel: UILabel = {
