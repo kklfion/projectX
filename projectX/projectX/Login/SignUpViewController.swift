@@ -119,7 +119,8 @@ class SignUpViewController: UIViewController {
                 let newUser = User(name: name,
                                    photoURL: self.userPhotoURL,
                                    email: email,
-                                   uid: String(authResult.user.uid))
+                                   uid: String(authResult.user.uid),
+                                   followersCount: 0)
                 let db = Firestore.firestore()
                 do {
                     try db.collection("users").document(authResult.user.uid).setData(from: newUser)
