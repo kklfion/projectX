@@ -226,11 +226,7 @@ class PostViewController: UIViewController {
             postHeaderView?.authorLabel.isUserInteractionEnabled = true
             postHeaderView?.authorImageView.isUserInteractionEnabled = true
         } else {
-            postHeaderView?.authorUILabel.text = "Definitely not Jordon"
-            postHeaderView?.authorLabel.text = "Anonymous"
-            self.postHeaderView?.authorImageView.image = (UIImage(systemName: "person.fill.questionmark")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
-            postHeaderView?.authorLabel.isUserInteractionEnabled = false
-            postHeaderView?.authorImageView.isUserInteractionEnabled = false
+            postHeaderView?.setAnonymousUser()
         }
 
         
@@ -503,7 +499,7 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
             cell.authorImageView.isUserInteractionEnabled = true
         } else {
             cell.authorLabel.text = "Anonymous"
-            cell.authorImageView.image = (UIImage(systemName: "person.fill.questionmark")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+            cell.authorImageView.image = (UIImage(systemName: "person.crop.circle.fill")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
             cell.authorLabel.isUserInteractionEnabled = false
             cell.authorImageView.isUserInteractionEnabled = false
         }

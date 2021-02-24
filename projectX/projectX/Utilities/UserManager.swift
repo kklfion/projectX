@@ -13,7 +13,7 @@ import Combine
 /// Users state in the app
 enum UserState {
     
-    ///when user was signedin, returns current user data
+    ///when user was signedin, returns current user data 
     case signedIn(user: User)
     
     ///deafault state

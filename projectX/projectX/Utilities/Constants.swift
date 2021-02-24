@@ -18,6 +18,16 @@ struct Constants{
     struct defaultKeys{
         static let isExistingUserDefaultsKey = "isExistingUser"
     }
+    
+    struct sfSymbolsSetup{
+        
+        static let followButtonConfig = UIImage.SymbolConfiguration(pointSize: 17, weight: .heavy, scale: .large)
+        static let followButtonColor = Constants.Colors.darkBrown
+        
+        static let likeCommentsConfig = UIImage.SymbolConfiguration(pointSize: 17, weight: .ultraLight, scale: .medium)
+        static let likesCommentColor = Constants.Colors.buttonsRed
+    }
+    
     struct Colors {
         static let mainYellow = UIColor(named: "mainYellow") ?? UIColor.white//UIColor(rgb: 0xf6e58f)
         static let darkBrown = UIColor(named: "darkBrown") ?? UIColor(rgb: 0x434239)

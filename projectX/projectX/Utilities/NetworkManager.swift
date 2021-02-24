@@ -143,7 +143,7 @@ extension NetworkManager {
             fatalError("can't delete document without doc id")
         }
         db.collection(collectionType.rawValue).document(documentID).delete() { err in
-            if let err = err {
+                if let err = err {
                 print("Error removing document: \(err)")
                 completion(err)
             } else {

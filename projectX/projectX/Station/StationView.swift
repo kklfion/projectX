@@ -38,6 +38,10 @@ class StationView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+    
+    let followedImage = UIImage(systemName: "checkmark", withConfiguration: Constants.sfSymbolsSetup.followButtonConfig)?.withTintColor(Constants.sfSymbolsSetup.followButtonColor, renderingMode: .alwaysOriginal)
+    let notFollowedImage = UIImage(systemName: "plus", withConfiguration: Constants.sfSymbolsSetup.followButtonConfig)?.withTintColor(Constants.sfSymbolsSetup.followButtonColor, renderingMode: .alwaysOriginal)
+    
     let backgroundImageView: UIImageView = {
         let iv = UIImageView()
         iv.clipsToBounds = true
@@ -169,16 +173,16 @@ extension StationView{
 //MARK: helper functions
 extension StationView {
     func setFollowButtonToFollowed(){
-        followButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+        followButton.setImage(followedImage, for: .normal)
     }
     func setFollowButtonToNotFollowed(){
-        followButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        followButton.setImage(notFollowedImage, for: .normal)
     }
     func notFollowedButton(){
-        followButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        followButton.setImage(notFollowedImage, for: .normal)
     }
     func followedButton(){
-        followButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+        followButton.setImage(followedImage, for: .normal)
     }
     func changeFollowerCount(by number: Int){
         if number >= 1000{
@@ -188,7 +192,7 @@ extension StationView {
         }
 
     }
-    func hexStringToUIColor (hex:String) -> UIColor {
+    func hexStringToUIColor (hex: String) -> UIColor {
         var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
 
         if (cString.hasPrefix("#")) {
