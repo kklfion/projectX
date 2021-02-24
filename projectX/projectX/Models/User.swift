@@ -35,7 +35,7 @@ struct User: Identifiable, Codable {
     var age: Int?
     
     ///how many people follow this user
-    var followersCount: Int?
+    var followersCount: Int
 
 
 }
@@ -48,12 +48,14 @@ extension User{
     public init(name: String? = "User",
                 photoURL: URL? = User.defaultImageURL,
                 email: String,
-                uid: String) {
+                uid: String,
+                followersCount: Int) {
         
         self.init(userID: uid,
                   name: name ?? "User",
                   photoURL: photoURL ?? User.defaultImageURL,
-                  email: email)
+                  email: email,
+                  followersCount: followersCount)
     }
 }
 //MARK: default data
