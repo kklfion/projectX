@@ -56,7 +56,6 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if (feedSegmentedControl.leftButton.frame.height != 0 && headerHeight == nil){
-            
             headerHeight = feedSegmentedControl.leftButton.frame.height
         }
     }
