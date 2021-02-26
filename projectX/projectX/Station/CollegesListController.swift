@@ -18,6 +18,9 @@ class CollegesListController: UICollectionViewController{
     
     private lazy var dataSource = makeDataSource()
     
+    ///delegated used to send scrolling data to the parent view (station)
+    var didScrollFeedDelegate: DidScrollFeedDelegate?
+    
     init(parentStation: Station){
         self.parentStation = parentStation
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
@@ -25,7 +28,6 @@ class CollegesListController: UICollectionViewController{
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     override func viewDidLoad() {
         collectionView.backgroundColor = Constants.Colors.mainBackground
         setupCollection()
@@ -48,9 +50,16 @@ class CollegesListController: UICollectionViewController{
             }
         }
     }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let collegeVC = SubstationViewController(station: colleges[indexPath.item])
+        self.navigationController?.pushViewController(collegeVC, animated: true)
+    }
 
-    
-    
+}
+extension CollegesListController{
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        didScrollFeedDelegate?.didScrollFeed(scrollView)
+    }
 }
 extension CollegesListController {
     enum Section: CaseIterable {

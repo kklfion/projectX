@@ -237,7 +237,6 @@ extension FeedCollectionViewController {
                 fetchDataWithPagination()
             }
         }
-
     }
     ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
     private func updatePostsAndLikesWith(data: [Post]){
