@@ -16,7 +16,6 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
     
     var headerTopConstraint: NSLayoutConstraint!
     
-    
     ///collectionViewController responsible for the feed.
     private var feedCollectionViewController: FeedCollectionViewController!
     private var newFeedController: FeedCollectionViewController!

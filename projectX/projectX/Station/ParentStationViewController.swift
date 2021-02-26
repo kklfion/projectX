@@ -25,7 +25,7 @@ class ParentStationViewController: BaseStationViewController{
         self.addChild(collegesFeedController)
         self.addChild(collegesListController)
         collegesFeedController.didScrollFeedDelegate = self
-        //collegesListController.didScrollFeedDelegate = self
+        collegesListController.didScrollFeedDelegate = self
         feedSegmentedControl.stackView.addArrangedSubview(collegesFeedController.view)
         feedSegmentedControl.stackView.addArrangedSubview(collegesListController.view)
     }
