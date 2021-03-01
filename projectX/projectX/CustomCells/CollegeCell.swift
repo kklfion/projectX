@@ -77,9 +77,11 @@ class CollegeCell: UICollectionViewCell {
         
         let infoStack = UIStackView(arrangedSubviews: [schoolNameLabel, schoolFollowersLabel])
         infoStack.axis = .vertical
+        infoStack.alignment = .center
         
         let stack = UIStackView(arrangedSubviews: [schoolImageView, infoStack])
         stack.axis = .horizontal
+        stack.alignment = .center
 
         contentView.addSubview(stack)
         stack.addAnchors(top: contentView.topAnchor,
