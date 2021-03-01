@@ -55,8 +55,8 @@ class SegmentedControlWithStackView: UIView{
     @objc func didTapLeftButton(){
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseOut,
             animations:{
-                self.leftAxis?.isActive = true
                 self.rightAxis?.isActive = false
+                self.leftAxis?.isActive = true
                 self.stackView.transform = .identity
                 self.layoutIfNeeded()
             }, completion: nil)
