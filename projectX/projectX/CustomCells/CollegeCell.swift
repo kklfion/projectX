@@ -7,13 +7,13 @@
 //
 
 import UIKit
-class CollegeCell: UICollectionViewCell {
+
+class CollegeCell: ShadowUICollectionViewCell {
     
-    let cornerRadius: CGFloat = 10
+    //let cornerRadius: CGFloat = 10
     
     let schoolImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "sslug")
         view.contentMode = .scaleAspectFit
         return view
     }()
@@ -27,10 +27,11 @@ class CollegeCell: UICollectionViewCell {
         label.font = Constants.bodyTextFont
         return label
     }()
-    let followButton: UIButton = {
-        let button = UIButton()
+    let followButton: ShadowRoundUIButton = {
+        let button = ShadowRoundUIButton()
         return button
     }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupContentView()
@@ -40,11 +41,6 @@ class CollegeCell: UICollectionViewCell {
     }
     override func layoutSubviews() {
         super.layoutSubviews()
-        // Improve scrolling performance with an explicit shadowPath
-        layer.shadowPath = UIBezierPath(
-            roundedRect: bounds,
-            cornerRadius: cornerRadius
-        ).cgPath
         // school image
         let imageHeight = self.frame.height * 0.6
         schoolImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -54,34 +50,29 @@ class CollegeCell: UICollectionViewCell {
         schoolImageView.clipsToBounds = true
     }
     
+    func setCollegeBackgroundColor(colorHex: String){
+        schoolImageView.backgroundColor = UIColor.blue
+    }
+    
     private func setupContentView(){
-        
-        // Apply rounded corners to contentView
-        contentView.layer.cornerRadius = cornerRadius
-        contentView.layer.masksToBounds = true
-        
-        // Set masks to bounds to false to avoid the shadow
-        // from being clipped to the corner radius
-        layer.cornerRadius = cornerRadius
-        layer.masksToBounds = false
-        
-        // Apply a shadow
-        layer.shadowRadius = 8.0
-        layer.shadowOpacity = 0.10
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = CGSize(width: 0, height: 5)
-        
-        
-        
         contentView.backgroundColor = .white
         
         let infoStack = UIStackView(arrangedSubviews: [schoolNameLabel, schoolFollowersLabel])
         infoStack.axis = .vertical
-        infoStack.alignment = .center
+        infoStack.alignment = .leading
         
         let stack = UIStackView(arrangedSubviews: [schoolImageView, infoStack])
         stack.axis = .horizontal
+        stack.spacing = 30
         stack.alignment = .center
+        
+//        contentView.addSubview(followButton)
+//        followButton.addAnchors(top: contentView.topAnchor,
+//                                leading: nil,
+//                                bottom: nil,
+//                                trailing: contentView.trailingAnchor,
+//                                padding: .init(top: 10, left: 0, bottom: 0, right: 10),
+//                                size: .init(width: 40, height: 40))
 
         contentView.addSubview(stack)
         stack.addAnchors(top: contentView.topAnchor,
@@ -90,4 +81,10 @@ class CollegeCell: UICollectionViewCell {
                              trailing: contentView.trailingAnchor,
                              padding: .init(top: 10, left: 10, bottom: 10, right: 10))
     }
+//    func setFollowButtonToFollowed(){
+//        followButton.setImage(followButton.followedImage, for: .normal)
+//    }
+//    func setFollowButtonToNotFollowed(){
+//        followButton.setImage(followButton.notFollowedImage, for: .normal)
+//    }
 }

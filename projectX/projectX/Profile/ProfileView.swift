@@ -52,8 +52,8 @@ class ProfileView: UIView {
         
         return imageview
     }()
-    let followButton: ShadowButton = {
-        let button = ShadowButton()
+    let followButton: ShadowRoundUIButton = {
+        let button = ShadowRoundUIButton()
         button.backgroundColor = UIColor(rgb: 0xf6e58f)
         button.layer.cornerRadius = 30; // this value vary as per your desire
         button.clipsToBounds = true;

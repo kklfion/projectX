@@ -17,6 +17,7 @@ enum FeedType: Equatable {
     /// you can provide an optional id, home doesnt need it but busstop for station needs a station id
     case busStop(String?)
     //case university //most recent posts from all the subcolleges
+    case collegeFeed
 }
 class PostPaginator {
     
@@ -51,6 +52,10 @@ class PostPaginator {
             self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.date.rawValue, isGreaterThan: loungeDate)
             documentsPerQuery = 100
             self.feedType = feedType
+        case .collegeFeed:
+            self.defaultQuery = NetworkManager.shared.db.posts
+                .order(by: "date", descending: true)
+                .whereField(FirestoreFields.stationID.rawValue, in: ["3AxUgKncylshyShO6qBu", "GNXfvWZMqseEjpAegnWN"])
         default:
             fatalError()
         }

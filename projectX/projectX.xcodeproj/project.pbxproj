@@ -41,6 +41,7 @@
 		804E61A124980DB000825150 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A024980DB000825150 /* SidebarViewController.swift */; };
 		804E61A324980DD500825150 /* NewPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A224980DD500825150 /* NewPostVC.swift */; };
 		804E61A524980DFD00825150 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E61A424980DFD00825150 /* HomeVC.swift */; };
+		806261AD25EDA88C0047793E /* ShadowUIElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806261AC25EDA88C0047793E /* ShadowUIElements.swift */; };
 		8066D62D24A6CEC0002A9E16 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8066D62C24A6CEC0002A9E16 /* HomeView.swift */; };
 		8067F0BE257AD70800CED98F /* RoundShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F0BD257AD70800CED98F /* RoundShadowView.swift */; };
 		8067F0C1257ADC3B00CED98F /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067F0C0257ADC3B00CED98F /* PostCollectionViewCell.swift */; };
@@ -127,6 +128,7 @@
 		804E61A024980DB000825150 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
 		804E61A224980DD500825150 /* NewPostVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostVC.swift; sourceTree = "<group>"; };
 		804E61A424980DFD00825150 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
+		806261AC25EDA88C0047793E /* ShadowUIElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowUIElements.swift; sourceTree = "<group>"; };
 		8066D62C24A6CEC0002A9E16 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		8067F0BD257AD70800CED98F /* RoundShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundShadowView.swift; sourceTree = "<group>"; };
 		8067F0C0257ADC3B00CED98F /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -389,6 +391,7 @@
 				806E777724C9076200A95B89 /* Extensions.swift */,
 				80F57E0325A4F7A100CDF5C3 /* PostPaginator.swift */,
 				90C178B625319EE800200222 /* QueryData.swift */,
+				806261AC25EDA88C0047793E /* ShadowUIElements.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -559,6 +562,7 @@
 				80D97BAC251D819C00825BBB /* MissionDeadlineCell.swift in Sources */,
 				80699CBC25AE59D10037FF0F /* FeedCollectionViewController.swift in Sources */,
 				8081185624C262910032D46D /* LoginView.swift in Sources */,
+				806261AD25EDA88C0047793E /* ShadowUIElements.swift in Sources */,
 				80B2C68E2516B54C0025F9EE /* SettingsTableViewController.swift in Sources */,
 				56DFFD9225CB0F3300B18CE8 /* SelectAvatarViewController.swift in Sources */,
 				804E618724957D0C00825150 /* AppDelegate.swift in Sources */,

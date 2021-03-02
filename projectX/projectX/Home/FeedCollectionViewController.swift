@@ -72,6 +72,8 @@ extension FeedCollectionViewController {
             }
         case .userHistoryFeed(let userID):
                 self.postPaginator = PostPaginator(userID: userID)
+        case .collegeFeed:
+            self.postPaginator = PostPaginator(feedType: .collegeFeed)
         }
         self.userID = userID
         self.resetCollectionViewIfNeeded()
