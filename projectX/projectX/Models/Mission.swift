@@ -11,7 +11,7 @@
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Mission:Identifiable, Codable{
+struct Mission:Identifiable, Codable, Hashable {
     /// property wrapper that stores id of the document associated with data
     @DocumentID var id: String?
 
@@ -38,6 +38,15 @@ struct Mission:Identifiable, Codable{
     
     /// Post photo url stored in the Firestore
     var imageURL: URL?
+    
+    // MARK: - Hashable conformance
+    static func == (lhs: Mission, rhs: Mission) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 extension Mission{
     /// returns a new post object
