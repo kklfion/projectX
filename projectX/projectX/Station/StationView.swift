@@ -5,28 +5,6 @@
 //  Created by Radomyr Bezghin on 8/2/20.
 //  Copyright © 2020 Radomyr Bezghin. All rights reserved.
 //
-class ShadowButton: UIButton {
-    
-    required init() {
-        super.init(frame: .zero)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        let halfOfButtonHeight = layer.frame.height / 2
-        // setup shadow
-        layer.cornerRadius = halfOfButtonHeight
-        layer.shadowColor = Constants.Colors.shadow.cgColor
-        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: halfOfButtonHeight).cgPath
-        layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        layer.shadowOpacity = 0.5
-        layer.shadowRadius = 4.0
-    }
-}
 
 import UIKit
 /// use init(frame: CGRect, type: TypeOfStation) and specify what type of station it is! Depending on that different tableViews will be displayed
@@ -74,8 +52,8 @@ class StationView: UIView {
         label.font = Constants.bodyTextFont
         return label
     }()
-    let followButton: ShadowButton = {
-        let button = ShadowButton()
+    let followButton: ShadowRoundUIButton = {
+        let button = ShadowRoundUIButton()
         button.backgroundColor = Constants.Colors.secondaryBackground
         return button
     }()

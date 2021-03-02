@@ -16,7 +16,7 @@ class ParentStationViewController: BaseStationViewController{
     }
     override func setupFeedsWithUserData(_ user: User?){
         //FIXME: fix the feed
-        //collegesFeedController.setupFeed(feedType: .stationFeed, paginatorId: self.station.id, userID: user?.id)
+        collegesFeedController.setupFeed(feedType: .collegeFeed, userID: user?.id)
         //collegesListController.setupFeed(feedType: .stationFeed, paginatorId: self.station.id, userID: user?.id)
     }
     override func setupSegmentedStackWithFeeds(){
