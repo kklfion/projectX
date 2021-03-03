@@ -15,6 +15,10 @@ protocol DidScrollFeedDelegate {
 }
 
 class FeedCollectionViewController: UICollectionViewController{
+    enum FeedSection {
+        ///Section that displays posts
+        case main
+    }
     ///Loading footer reuse identifier
     let footerViewReuseIdentifier = "footerViewReuseIdentifier"
     ///Post ceell reuse identifiers
@@ -36,6 +40,12 @@ class FeedCollectionViewController: UICollectionViewController{
     
     ///likes for the posts in the feed
     private var likesDictionary = [Post: Like]()
+    
+    private var postImages = [Post: UIImage]()
+    
+    private var postAuthors = [Post: User]()
+    
+    private var authorsImages = [User: UIImage]()
     
     ///provided by
     private var userID: String?
@@ -77,7 +87,9 @@ extension FeedCollectionViewController {
         }
         self.userID = userID
         self.resetCollectionViewIfNeeded()
-        self.fetchDataWithPagination()
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.fetchDataWithPagination()
+        }
     }
     private func resetCollectionViewIfNeeded(){
         //delete old data
@@ -89,14 +101,6 @@ extension FeedCollectionViewController {
         self.dataSource.apply(initialSnapshot, animatingDifferences: false)
         //reset pagination
         postPaginator?.resetPaginator()
-    }
-}
-//MARK: - FeedController enums
-extension FeedCollectionViewController {
-    ///The Only one section in collectionView
-    enum FeedSection {
-        ///Section that displays posts
-        case main
     }
 }
 //MARK: - CollectionView setup
@@ -158,22 +162,256 @@ extension FeedCollectionViewController{
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         presentPostFor(indexPath: indexPath, likesDictionary[posts[indexPath.row]])
     }
+}
+//MARK: - Post fetching & applying & scrollViewDidScroll
+extension FeedCollectionViewController {
+    private func fetchDataWithPagination(){
+        print("fetching data")
+        var fetchedPosts = [Post]()
+        var fetchedLikes = [Post: Like]()
+        var fetchedPostImages = [Post: UIImage]()
+        var fetchedPostAuthors = [Post: User]()
+        var fetchedAuthorsImages = [User: UIImage]()
+        
+        let group = DispatchGroup()
+        group.enter()
+        //1. fetch posts
+        print("fetching Posts")
+        postPaginator?.queryPostWith() { result in
+            switch result {
+                case .success(let data):
+                    fetchedPosts =  data
+                case .failure(let error):
+                    print("FeedVC Failed loading posts ", error)
+            }
+            print("received posts")
+            group.leave()
+        }
+        group.wait()
+        group.enter()
+        //1.a fetch postImages
+        print("fetching images posts")
+        fetchImagesPosts(data: fetchedPosts) { (result) in
+            switch result {
+            case .success(let data):
+                fetchedPostImages = data
+            case .failure(let err):
+                print("FeedVC Failed loading images ", err)
+            }
+            print("received images posts")
+            group.leave()
+        }
+        group.enter()
+        //2. fetch likes
+        print("fetching likes")
+        fetchLikes(data: fetchedPosts) { (result) in
+            switch result {
+            case .success(let data):
+                fetchedLikes = data
+            case .failure(let err):
+                print("FeedVC Failed loading likes ", err)
+            }
+            print("received likes")
+            group.leave()
+        }
+        //3. fetch users
+        print("fetching users")
+        group.enter()
+        fetchUsers(data: fetchedPosts) { (result) in
+            switch result {
+            case .success(let data):
+                fetchedPostAuthors = data
+            case .failure(let err):
+                print("FeedVC Failed loading likes ", err)
+            }
+            print("received users")
+            group.leave()
+        }
+        group.wait()
+        //4. fetch userImages
+        group.enter()
+        print("fetching user images")
+        fetchImagesForUsers(data: fetchedPostAuthors) { (result) in
+            switch result {
+            case .success(let data):
+                fetchedAuthorsImages = data
+            case .failure(let err):
+                print("FeedVC Failed loading author images ", err)
+            }
+            print("received user images")
+            group.leave()
+        }
+        //5. apply data to the colection
+        group.notify(queue: DispatchQueue.main) {
+            print("applying data")
+            self.posts.append(contentsOf: fetchedPosts)
+            self.postImages.merge(fetchedPostImages) { (_, new) -> UIImage in new }
+            self.likesDictionary.merge(fetchedLikes) { (_, new) -> Like in new }
+            
+            self.postAuthors.merge(fetchedPostAuthors) { (_, new) -> User in new }
+            self.authorsImages.merge(fetchedAuthorsImages) { (_, new) -> UIImage in new }
+            
+            self.applyFetchedDataOnCollectionView(data: fetchedPosts)
+        }
+
+        
+    }
+    ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
+    private func fetchUsers(data: [Post], completion: @escaping (Result<[Post: User], Error>) -> Void){
+        let group = DispatchGroup()
+        var users = [Post: User]()
+        for post in data{
+            group.enter()
+            let query = NetworkManager.shared.db.users.whereField(FirestoreFields.userID.rawValue, isEqualTo: post.authorID)
+            NetworkManager.shared.getDocumentsForQuery(query: query) { (data: [User]?, error) in
+                if error != nil {
+                    print("error loading liked post", error!)
+                }else if let user = data?[0]{
+                    users[post] = user
+                }
+                group.leave()
+            }
+        }
+        group.notify(queue: DispatchQueue.global()){
+            completion(.success(users))
+        }
+    }
+    ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
+    private func fetchLikes(data: [Post], completion: @escaping (Result<[Post: Like], Error>) -> Void){
+        let group = DispatchGroup()
+        var likes = [Post: Like]()
+        for post in data {
+            group.enter()
+            guard let  id = post.id else {continue}
+            let query = NetworkManager.shared.db.likedPosts
+                .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
+                .whereField(FirestoreFields.userID.rawValue, isEqualTo: userID ?? "")
+            NetworkManager.shared.getDocumentsForQuery(query: query) { (likedPosts: [Like]?, error) in
+                if error != nil {
+                    print("error loading liked post", error!)
+                }else if let like = likedPosts?[0]{
+                    likes[post] = like
+                }
+                group.leave()
+            }
+        }
+        group.notify(queue: DispatchQueue.global()){
+            completion(.success(likes))
+        }
+    }
+    func fetchImagesPosts(data: [Post], completion: @escaping (Result<[Post: UIImage], Error>) -> Void) {
+        let group = DispatchGroup()
+        var imagesDict = [Post: UIImage]()
+        for post in data{
+            group.enter()
+            NetworkManager.shared.getAsynchImage(withURL: post.imageURL) { (image, err) in
+                if let image = image {
+                    imagesDict[post]=image
+                }
+                group.leave()
+            }
+        }
+        group.notify(queue: DispatchQueue.global()){
+            completion(.success(imagesDict))
+        }
+    }
+    func fetchImagesForUsers(data: [Post: User], completion: @escaping (Result<[User: UIImage], Error>) -> Void) {
+        let group = DispatchGroup()
+        var imagesDict = [User: UIImage]()
+        for (_, user) in data{
+            group.enter()
+            NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, err) in
+                if let image = image {
+                    imagesDict[user]=image
+                }
+                group.leave()
+            }
+        }
+        group.notify(queue: DispatchQueue.global()){
+            completion(.success(imagesDict))
+        }
+    }
+    
+//    ///Initial fetch should be done with pagination false, all other calls with pagination true
+//    func fetchDataWithPagination(){
+//        postPaginator?.queryPostWith() { [weak self] result in
+//            switch result {
+//                case .success(let data):
+//                    self?.posts.append(contentsOf: data)
+//                    DispatchQueue.global(qos: .userInitiated).async { //global queue to prevent app from freezing while waiting
+//                        self?.updatePostsAndLikesWith(data: data)
+//                    }
+//                case .failure(let error):
+//                    print("FeedVC Failed loading data ", error)
+//            }
+//        }
+//    }
+    ///when users scrolls to the bottom of the loaded data, more data is fetched
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if(scrollView.isTracking || scrollView.isDragging || scrollView.isDecelerating) {
+            didScrollFeedDelegate?.didScrollFeed(scrollView)
+            //FIXME: - figureout when its okay to call fetching ><
+            let position = scrollView.contentOffset.y
+            if position < 0 {
+                return
+            }
+            if position > (collectionView.contentSize.height-100-scrollView.frame.size.height) && collectionView.contentSize.height > 0{
+                guard let paginator = postPaginator else {return}
+                if (paginator.isFetching) {return}//we fetching data, no need to fetch more
+                self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.fetchDataWithPagination()
+                }
+            }
+        }
+    }
+//    ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
+//    private func updatePostsAndLikesWith(data: [Post]){
+//        let group = DispatchGroup()
+//        for doc in data {
+//            group.enter()
+//            guard let  id = doc.id else {continue}
+//            let query = NetworkManager.shared.db.likedPosts
+//                .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
+//                .whereField(FirestoreFields.userID.rawValue, isEqualTo: userID ?? "")
+//            NetworkManager.shared.getDocumentsForQuery(query: query) { [weak self] (likedPosts: [Like]?, error) in
+//                if error != nil {
+//                    print("error loading liked post", error!)
+//                }else if likedPosts != nil {
+//                    self?.likesDictionary[doc] = likedPosts![0]
+//                }
+//                group.leave()
+//            }
+//        }
+//        group.wait()
+//        DispatchQueue.main.async {
+//            self.applyFetchedDataOnCollectionView(data: data)
+//        }
+//    }
+    private func applyFetchedDataOnCollectionView(data: [Post]){
+        self.loadingFooterView?.stopAnimating()
+        self.collectionView.refreshControl?.endRefreshing()
+        var snapshot = NSDiffableDataSourceSnapshot<FeedSection, Post>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(self.posts, toSection: .main)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
     //TODO: move to cell
     private func addData(toCell cell: PostCollectionViewCell, withPost post: Post ){
         cell.titleLabel.text =  post.title
-        cell.authorLabel.text =  post.userInfo.name
+        //cell.authorLabel.text =  post.userInfo.name
         cell.likesLabel.text =  String(post.likes)
         cell.commentsLabel.text =  String(post.commentCount)
         cell.stationButton.setTitle(post.stationName, for: .normal)
         let dateString = post.date.diff()
         cell.dateLabel.text = "\(dateString)"
         if !post.isAnonymous{
-            cell.authorLabel.text =  post.userInfo.name
-            NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
-                DispatchQueue.main.async {
-                    cell.authorImageView.image = image
-                }
-            }
+            //cell.authorLabel.text =  post.userInfo.name
+//            NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
+//                DispatchQueue.main.async {
+//                    cell.authorImageView.image = image
+//                }
+//            }
             cell.authorLabel.isUserInteractionEnabled = true
             cell.authorImageView.isUserInteractionEnabled = true
         } else{
@@ -204,72 +442,9 @@ extension FeedCollectionViewController{
     }
     @objc func handleRefreshControl() {
         resetCollectionViewIfNeeded()
-        fetchDataWithPagination()
-    }
-}
-//MARK: - Post fetching & applying & scrollViewDidScroll
-extension FeedCollectionViewController {
-    ///Initial fetch should be done with pagination false, all other calls with pagination true
-    func fetchDataWithPagination(){
-        postPaginator?.queryPostWith() { [weak self] result in
-            switch result {
-                case .success(let data):
-                    self?.posts.append(contentsOf: data)
-                    DispatchQueue.global(qos: .userInitiated).async { //global queue to prevent app from freezing while waiting
-                        self?.updatePostsAndLikesWith(data: data)
-                    }
-                case .failure(let error):
-                    print("FeedVC Failed loading data ", error)
-            }
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.fetchDataWithPagination()
         }
-    }
-    ///when users scrolls to the bottom of the loaded data, more data is fetched
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if(scrollView.isTracking || scrollView.isDragging || scrollView.isDecelerating) {
-            didScrollFeedDelegate?.didScrollFeed(scrollView)
-            //FIXME: - figureout when its okay to call fetching ><
-            let position = scrollView.contentOffset.y
-            if position < 0 {
-                return
-            }
-            if position > (collectionView.contentSize.height-100-scrollView.frame.size.height) && collectionView.contentSize.height > 0{
-                guard let paginator = postPaginator else {return}
-                if (paginator.isFetching) {return}//we fetching data, no need to fetch more
-                self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
-                fetchDataWithPagination()
-            }
-        }
-    }
-    ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
-    private func updatePostsAndLikesWith(data: [Post]){
-        let group = DispatchGroup()
-        for doc in data {
-            group.enter()
-            guard let  id = doc.id else {continue}
-            let query = NetworkManager.shared.db.likedPosts
-                .whereField(FirestoreFields.postID.rawValue, isEqualTo: id)
-                .whereField(FirestoreFields.userID.rawValue, isEqualTo: userID ?? "")
-            NetworkManager.shared.getDocumentsForQuery(query: query) { [weak self] (likedPosts: [Like]?, error) in
-                if error != nil {
-                    print("error loading liked post", error!)
-                }else if likedPosts != nil {
-                    self?.likesDictionary[doc] = likedPosts![0]
-                }
-                group.leave()
-            }
-        }
-        group.wait()
-        DispatchQueue.main.async {
-            self.applyFetchedDataOnCollectionView(data: data)
-        }
-    }
-    private func applyFetchedDataOnCollectionView(data: [Post]){
-        self.loadingFooterView?.stopAnimating()
-        self.collectionView.refreshControl?.endRefreshing()
-        var snapshot = NSDiffableDataSourceSnapshot<FeedSection, Post>()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(self.posts, toSection: .main)
-        dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
 //MARK: - PostCollectionViewCellDidTapDelegate
@@ -316,10 +491,10 @@ extension FeedCollectionViewController{
         }
     }
     private func presentPostFor(indexPath: IndexPath,_ like: Like?){
-        let postvc = PostViewController(post: posts[indexPath.row], like: like, indexPath: indexPath)
-        postvc.hidesBottomBarWhenPushed = true
-        postvc.updatePostDelegate = self
-        self.navigationController?.pushViewController(postvc, animated: true)
+//        let postvc = PostViewController(post: posts[indexPath.row], like: like, indexPath: indexPath)
+//        postvc.hidesBottomBarWhenPushed = true
+//        postvc.updatePostDelegate = self
+//        self.navigationController?.pushViewController(postvc, animated: true)
     }
     private func presentStationFor(indexPath: IndexPath){
         NetworkManager.shared.getDocumentForID(collection: .stations, uid: posts[indexPath.row].stationID) { (document: Station?, error) in
@@ -341,8 +516,8 @@ extension FeedCollectionViewController{
         }
     }
     private func presentAuthorFor(indexPath: IndexPath){
-        let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
-        self.navigationController?.pushViewController(vc, animated: true)
+//        let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
+//        self.navigationController?.pushViewController(vc, animated: true)
     }
 }
 //MARK: - Networking calls like/dislike

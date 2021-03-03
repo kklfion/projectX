@@ -27,25 +27,27 @@ class PostViewController: UIViewController {
     ///post is initialized by presenting controller
     private var post: Post
     
-    private var user: User? {
-        didSet{
-            if user != nil {
-                NetworkManager.shared.getAsynchImage(withURL: user?.photoURL, completion: { (image, error) in
-                    if let image = image{
-                        DispatchQueue.main.async {
-                            self.userImage = image
-                        }
-                    }
-                })
-            }
-        }
-    }
+    private var user: User
+//    {
+//        didSet{
+//            if user != nil {
+//                NetworkManager.shared.getAsynchImage(withURL: user?.photoURL, completion: { (image, error) in
+//                    if let image = image{
+//                        DispatchQueue.main.async {
+//                            self.userImage = image
+//                        }
+//                    }
+//                })
+//            }
+//        }
+//    }
     
-    private var userImage: UIImage? {
-        didSet {
-            newCommentView.authorView.image = userImage
-        }
-    }
+    private var userImage: UIImage
+//    {
+//        didSet {
+//            newCommentView.authorView.image = userImage
+//        }
+//    }
     
     private var userSubscription: AnyCancellable!
     
@@ -98,7 +100,9 @@ class PostViewController: UIViewController {
     }()
     
     ///to create postViewController post MUST be initialized
-    init(post: Post, like: Like?, indexPath: IndexPath){
+    init(post: Post, like: Like?, indexPath: IndexPath, user: User, userImage: UIImage){
+        self.user=user
+        self.userImage=userImage
         self.post = post
         self.like = like
         self.indexPath = indexPath
@@ -129,7 +133,7 @@ class PostViewController: UIViewController {
             self.user = user
         default:
             userSubscription = UserManager.shared().userPublisher.sink { (user) in
-                self.user = user
+                //self.user = user
             }
         }
     }
@@ -216,15 +220,17 @@ class PostViewController: UIViewController {
         postHeaderView?.dateUILabel.text = "\(formatter.string(from: date))"
         postHeaderView?.titleUILabel.text = post.title
         if !post.isAnonymous{
-            postHeaderView?.authorUILabel.text = post.userInfo.name
-            postHeaderView?.authorLabel.text = post.userInfo.name
-            NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
-                DispatchQueue.main.async {
-                    self.postHeaderView?.authorImageView.image = image
-                }
-            }
-            postHeaderView?.authorLabel.isUserInteractionEnabled = true
-            postHeaderView?.authorImageView.isUserInteractionEnabled = true
+            //FIXME: fix user, load user data
+            fatalError()
+            //postHeaderView?.authorUILabel.text = post.userInfo.name
+            //postHeaderView?.authorLabel.text = post.userInfo.name
+//            NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
+//                DispatchQueue.main.async {
+//                    self.postHeaderView?.authorImageView.image = image
+//                }
+//            }
+            //postHeaderView?.authorLabel.isUserInteractionEnabled = true
+            //postHeaderView?.authorImageView.isUserInteractionEnabled = true
         } else {
             postHeaderView?.setAnonymousUser()
         }
@@ -306,14 +312,7 @@ extension PostViewController{
         if newCommentView.anonimousSwitch.isOn {
             newCommentView.setAnonimousImage()
         } else {
-            NetworkManager.shared.getAsynchImage(withURL: user?.photoURL, completion: { (image, error) in
-                if let image = image{
-                    DispatchQueue.main.async {
-                        self.newCommentView.authorView.image = image
-                    }
-                }
-            })
-                
+            newCommentView.authorView.image = userImage
         }
     }
 }
@@ -570,7 +569,7 @@ extension PostViewController: PostViewButtonsDelegate{
         }
     }
     func didTapAuthorLabel() {
-        presentAuthorFor(user: post.userInfo)
+        presentAuthorFor(user: user)
     }
     private func presentAuthorFor(user: User){
         let vc = OtherProfileViewController(user: user)

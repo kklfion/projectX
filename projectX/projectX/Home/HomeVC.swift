@@ -81,22 +81,20 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
         
     }
     private func setUserAndSubscribeToUpdates(){
-        switch UserManager.shared().state {
-        case .loading:
-            print("user is loading ")//wait for update
-        case .signedIn(let user):
-            self.user = user
-            feedCollectionViewController.setupFeed(feedType: .lounge(nil), userID: user.id ?? nil)
-            newFeedController.setupFeed(feedType: .busStop(nil), userID: user.id ?? nil)
-        case .signedOut:
-            print("display nothing")//display default data
-            feedCollectionViewController.setupFeed(feedType: .lounge(nil))
-            newFeedController.setupFeed(feedType: .busStop(nil), userID: user?.id ?? nil)
-        }
         userSubscription = UserManager.shared().userPublisher.sink { (user) in
-            self.user = user
-            self.feedCollectionViewController.setupFeed(feedType: .lounge(nil), userID: user?.id)
-            self.newFeedController.setupFeed(feedType: .busStop(nil), userID: user?.id ?? nil)
+            switch UserManager.shared().state {
+            case .loading:
+                print("user is loading ")//wait for update
+            case .signedIn(let user):
+                self.user = user
+                self.feedCollectionViewController.setupFeed(feedType: .lounge(nil), userID: user.id ?? nil)
+                self.newFeedController.setupFeed(feedType: .busStop(nil), userID: user.id ?? nil)
+            case .signedOut:
+                print("display nothing")//display default data
+                self.feedCollectionViewController.setupFeed(feedType: .lounge(nil))
+                self.newFeedController.setupFeed(feedType: .busStop(nil), userID: user?.id ?? nil)
+            }
+
         }
     }
 }

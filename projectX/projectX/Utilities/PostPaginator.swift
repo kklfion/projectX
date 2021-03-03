@@ -49,7 +49,7 @@ class PostPaginator {
         case .busStop:
             self.defaultQuery = NetworkManager.shared.db.posts.order(by: "date", descending: true)
         case .lounge:
-            self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.date.rawValue, isGreaterThan: loungeDate)
+            self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.date.rawValue, isGreaterThan: loungeDate ?? Date())
             documentsPerQuery = 100
             self.feedType = feedType
         case .collegeFeed:
@@ -68,7 +68,7 @@ class PostPaginator {
             self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.stationID.rawValue, isEqualTo: stationid).order(by: "date", descending: true)
         case .lounge(let stationid):
             guard  let stationid = stationid else {fatalError()}
-            self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.stationID.rawValue, isEqualTo: stationid).whereField(FirestoreFields.date.rawValue, isGreaterThan: loungeDate)
+            self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.stationID.rawValue, isEqualTo: stationid).whereField(FirestoreFields.date.rawValue, isGreaterThan: loungeDate ?? Date())
             documentsPerQuery = 100
             self.feedType = feedType
         default:
