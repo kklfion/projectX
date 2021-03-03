@@ -7,7 +7,7 @@
 //
 import FirebaseFirestore
 import FirebaseFirestoreSwift
-struct User: Identifiable, Codable {
+struct User: Identifiable, Codable, Hashable {
     /// property wrapper that stores id of the document associated with data
     @DocumentID var id: String?
     
