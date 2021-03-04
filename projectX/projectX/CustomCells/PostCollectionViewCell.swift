@@ -10,6 +10,34 @@ import UIKit
 
 class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     
+    var postViewModel: PostViewModel! {
+        didSet{
+            titleLabel.text =  postViewModel.title
+            authorLabel.text =  postViewModel.user.name
+            likesLabel.text =  postViewModel.likes
+            commentsLabel.text = postViewModel.commentCount
+            stationButton.setTitle(postViewModel.stationName, for: .normal)
+            dateLabel.text = postViewModel.date
+            
+            if !postViewModel.isAnonymous, let image = postViewModel.userImage{
+                setUser(image: image, user: postViewModel.user)
+            } else{
+                setAnonymousUser()
+            }
+            if let image = postViewModel.postImage{
+                setPostImage(image: image)
+            } else{
+                setDefaultPostImage()
+            }
+    
+            if postViewModel.isLiked {
+                isLiked = true
+            }else{
+                isLiked = false
+            }
+        }
+    }
+    
     static let cellID = "PostCollectionViewCell"
     
     let likeCommentsConfig = UIImage.SymbolConfiguration(pointSize: 17, weight: .ultraLight, scale: .medium)
@@ -166,19 +194,6 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         authorImageView.addGestureRecognizer(imageTap)
     }
     let defaultImageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .ultraLight)
-    func setDefaultPostImage(){
-        postImageView.image = UIImage(named: "noImagePostImage")?.withRenderingMode(.alwaysTemplate)
-        postImageView.tintColor = Constants.Colors.mainText
-    }
-    func setPostImage(image: UIImage?){
-        postImageView.image = image
-    }
-    func setAnonymousUser(){
-        authorLabel.text =  "Anonymous"
-        authorImageView.image = (UIImage(systemName: "person.crop.circle.fill")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
-        authorLabel.isUserInteractionEnabled = false
-        authorImageView.isUserInteractionEnabled = false
-    }
     private func setupContentView(){
         
         contentView.backgroundColor = .none
@@ -251,6 +266,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         }
     }
 }
+//MARK: --handlers
 extension PostCollectionViewCell{
     @objc func didTapAuthorLabel( ) {
         guard let indexPath = indexPath else{return}
@@ -268,6 +284,10 @@ extension PostCollectionViewCell{
         guard let indexPath = indexPath else{return}
         self.delegate?.didTapCommentsButton(indexPath)
     }
+
+}
+//MARK: -- helper functions
+extension PostCollectionViewCell {
     func changeCellToLiked(){
         guard let likesCount = Int(likesLabel.text ?? "") else {return}
         likesLabel.text = "\(likesCount + 1)"
@@ -276,5 +296,23 @@ extension PostCollectionViewCell{
         guard let likesCount = Int(likesLabel.text ?? "") else {return}
         likesLabel.text = "\(likesCount - 1)"
     }
+    func setDefaultPostImage(){
+        postImageView.image = UIImage(named: "noImagePostImage")?.withRenderingMode(.alwaysTemplate)
+        postImageView.tintColor = Constants.Colors.mainText
+    }
+    func setPostImage(image: UIImage?){
+        postImageView.image = image
+    }
+    func setUser(image: UIImage?, user: User){
+        authorLabel.text =  user.name
+        authorImageView.image = postViewModel.userImage
+        authorLabel.isUserInteractionEnabled = true
+        authorImageView.isUserInteractionEnabled = true
+    }
+    func setAnonymousUser(){
+        authorLabel.text =  "Anonymous"
+        authorImageView.image = (UIImage(systemName: "person.crop.circle.fill")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+        authorLabel.isUserInteractionEnabled = false
+        authorImageView.isUserInteractionEnabled = false
+    }
 }
-
