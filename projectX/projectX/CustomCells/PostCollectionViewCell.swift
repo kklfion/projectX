@@ -12,14 +12,14 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     
     var postViewModel: PostViewModel! {
         didSet{
-            titleLabel.text =  postViewModel.title
+            titleLabel.text =  postViewModel.post.title
             authorLabel.text =  postViewModel.user.name
-            likesLabel.text =  postViewModel.likes
-            commentsLabel.text = postViewModel.commentCount
-            stationButton.setTitle(postViewModel.stationName, for: .normal)
-            dateLabel.text = postViewModel.date
+            likesLabel.text =  postViewModel.getLikesCountString()
+            commentsLabel.text = postViewModel.getCommentsCountString()
+            stationButton.setTitle(postViewModel.post.stationName, for: .normal)
+            dateLabel.text = postViewModel.getDate()
             
-            if !postViewModel.isAnonymous, let image = postViewModel.userImage{
+             if !postViewModel.isAnonymous(), let image = postViewModel.userImage{
                 setUser(image: image, user: postViewModel.user)
             } else{
                 setAnonymousUser()
@@ -30,7 +30,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
                 setDefaultPostImage()
             }
     
-            if postViewModel.isLiked {
+            if postViewModel.isLiked(){
                 isLiked = true
             }else{
                 isLiked = false

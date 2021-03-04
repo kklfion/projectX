@@ -222,13 +222,8 @@ extension FeedCollectionViewController {
                                                                    postImage: fetchedPostImages[$0],
                                                                    user: fetchedPostAuthors[$0]!,
                                                                    userImage: fetchedAuthorsImages[fetchedPostAuthors[$0]!],
-                                                                   like: fetchedLikes[$0] != nil)})
+                                                                   like: fetchedLikes[$0])})
             self.postViewModel.append(contentsOf: viewModel)
-            //self.posts.append(contentsOf: fetchedPosts)
-            //self.postImages.merge(fetchedPostImages) { (_, new) -> UIImage in new }
-            //self.likesDictionary.merge(fetchedLikes) { (_, new) -> Like in new }
-            //self.postAuthors.merge(fetchedPostAuthors) { (_, new) -> User in new }
-            //self.authorsImages.merge(fetchedAuthorsImages) { (_, new) -> UIImage in new }
             self.applyFetchedDataOnCollectionView(data: viewModel)
             self.semaphore.signal()
         }
@@ -425,13 +420,13 @@ extension FeedCollectionViewController{
         }
     }
     private func presentPostFor(indexPath: IndexPath,_ like: Like?){
-//        let postvc = PostViewController(post: posts[indexPath.row], like: like, indexPath: indexPath)
+//        let postvc = PostViewController(post: postViewModel[indexPath.row].post, like: like, indexPath: indexPath)
 //        postvc.hidesBottomBarWhenPushed = true
 //        postvc.updatePostDelegate = self
 //        self.navigationController?.pushViewController(postvc, animated: true)
     }
     private func presentStationFor(indexPath: IndexPath){
-        NetworkManager.shared.getDocumentForID(collection: .stations, uid: postViewModel[indexPath.row].stationID) { (document: Station?, error) in
+        NetworkManager.shared.getDocumentForID(collection: .stations, uid: postViewModel[indexPath.row].post.stationID) { (document: Station?, error) in
             if error != nil {
                 print("error receiving station")
             }else if let doc = document {
@@ -458,7 +453,7 @@ extension FeedCollectionViewController{
 extension FeedCollectionViewController {
     private func writeLikeToTheFirestore(with indexPath: IndexPath) {
         guard  let userID = userID else {return}
-        guard let postID = posts[indexPath.item].id else {return}
+        guard let postID = postViewModel[indexPath.item].post.id else {return}
         var document = Like(userID: userID, postID: postID)
         NetworkManager.shared.writeDocumentReturnReference(collectionType: .likedPosts, document: document  ) { (ref, error) in
             if let err = error{
@@ -469,15 +464,15 @@ extension FeedCollectionViewController {
                                                              value: Double(1),
                                                              field: .likes)
                 document.id = ref
-                self.likesDictionary[self.posts[indexPath.item]] = document
+                self.postViewModel[indexPath.item].like = document
             }
         }
     }
     private func deleteLikeFromFirestore(with indexPath: IndexPath){
-        guard let likedPost = likesDictionary[posts[indexPath.item]] else {return}
+        guard let likedPost = postViewModel[indexPath.item].like else {return}
         guard let docID = likedPost.id else {return}
-        guard let postID = posts[indexPath.item].id else {return}
-        likesDictionary.removeValue(forKey: self.posts[indexPath.item])
+        guard let postID = postViewModel[indexPath.item].post.id else {return}
+        postViewModel[indexPath.item].like = nil
         NetworkManager.shared.deleteDocumentsWith(collectionType: .likedPosts,
                                                   documentID: docID) { (error) in
             if error != nil{
@@ -498,8 +493,7 @@ extension FeedCollectionViewController: DidUpdatePostAfterDissmissingDelegate {
         guard let selectedPost = dataSource.itemIdentifier(for: indexPath) else {return}
         guard  let cell = collectionView.cellForItem(at: indexPath) as? PostCollectionViewCell else {return}
         //2.updateData (likes & post & database)
-        //FIXME: post
-        //posts[indexPath.item].commentCount = post.commentCount
+        postViewModel[indexPath.item].post.commentCount = post.commentCount
         if status == .add || status == .delete{
             didTapLikeButton(indexPath, cell)
         }
