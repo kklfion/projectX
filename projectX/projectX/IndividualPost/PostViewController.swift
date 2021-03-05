@@ -28,8 +28,6 @@ class PostViewController: UIViewController {
     
     private var userSubscription: AnyCancellable!
     
-    private var user: User?
-    
     private var likeStatus: LikeStatus = .unchanged
     
     ///used to update data in the feed when view is dissmissed
@@ -101,14 +99,14 @@ class PostViewController: UIViewController {
         DispatchQueue.global(qos: .userInitiated).async {
             self.loadAdditionalPostData()
         }
-        switch UserManager.shared().state {
-        case .signedIn(let user):
-            self.user = user
-        default:
-            userSubscription = UserManager.shared().userPublisher.sink { (user) in
-                self.user = user
-            }
-        }
+//        switch UserManager.shared().state {
+//        case .signedIn(let user):
+//            self.user = user
+//        default:
+//            userSubscription = UserManager.shared().userPublisher.sink { (user) in
+//                self.user = user
+//            }
+//        }
     }
     override func viewWillAppear(_ animated: Bool) {
     }
@@ -201,7 +199,6 @@ class PostViewController: UIViewController {
             postHeaderView?.setAnonymousUser()
         }
 
-        
         if let image = postViewModel.postImage {
             postHeaderView?.postImageView.image = image
         } else{
@@ -537,7 +534,7 @@ extension PostViewController: PostViewButtonsDelegate{
         presentAuthorFor(user: postViewModel.user)
     }
     private func presentAuthorFor(user: User){
-        let vc = OtherProfileViewController(user: user)
+        let vc = OtherProfileViewController(user: postViewModel.user, userImage: postViewModel.userImage)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

@@ -35,7 +35,7 @@ enum FirestoreFields: String {
     case parentStationID
     case userID
     case userInfo
-    case userInfoUserID = "userInfo.userID"
+    case authorID
     case followers
     case likes
     case commentCount

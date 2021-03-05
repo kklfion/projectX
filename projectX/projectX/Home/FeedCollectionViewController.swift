@@ -463,8 +463,8 @@ extension FeedCollectionViewController{
         }
     }
     private func presentAuthorFor(indexPath: IndexPath){
-//        let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
-//        self.navigationController?.pushViewController(vc, animated: true)
+        let vc = OtherProfileViewController(user: postViewModel[indexPath.row].user, userImage: postViewModel[indexPath.row].userImage)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }
 //MARK: - DidUpdatePostAfterDissmissingDelegate (individual post -> feed data)
