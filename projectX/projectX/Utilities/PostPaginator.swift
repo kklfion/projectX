@@ -77,7 +77,7 @@ class PostPaginator {
     }
     ///user profile history
     init(userID id: String){
-        self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.userInfoUserID.rawValue, isEqualTo: id).order(by: "date", descending: true)
+        self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.authorID.rawValue, isEqualTo: id).order(by: "date", descending: true)
     }
     ///forces paginator to use default query
     func resetPaginator(){

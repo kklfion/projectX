@@ -29,6 +29,8 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     ///user displayed by the controller
     var user: User?
     
+    var userImage: UIImage?
+    
     ///one of two types of the profile
     var profileType: ProfileType
     
@@ -65,8 +67,9 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         super.init(nibName: nil, bundle: nil)
     }
     ///initialize profileviewcontroller with user data (to display other user profile)
-    init(user: User){
+    init(user: User, userImage: UIImage?){
         self.user = user
+        self.userImage = userImage
         self.profileType = .otherProfile
         super.init(nibName: nil, bundle: nil)
     }
@@ -285,19 +288,6 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         self.profileView.profileImageViewContainer.layer.rasterizationScale = UIScreen.main.scale
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 // MARK: - might not use this code at all!
 //private func fetchUserPosts(){
 //    guard let user = user else{return}
