@@ -92,7 +92,7 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
             case .signedOut:
                 print("display nothing")//display default data
                 self.feedCollectionViewController.setupFeed(feedType: .lounge(nil))
-                self.newFeedController.setupFeed(feedType: .busStop(nil), userID: user?.id ?? nil)
+                //self.newFeedController.setupFeed(feedType: .busStop(nil), userID: user?.id ?? nil)
             }
 
         }

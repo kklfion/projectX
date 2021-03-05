@@ -34,18 +34,6 @@ class FeedCollectionViewController: UICollectionViewController{
     
     ///to keep reference to the footerView to start/stop animation
     var loadingFooterView: LoadingFooterView?
-    
-    ///posts displayed in the feed
-    //private var posts = [Post]()
-    
-    ///likes for the posts in the feed
-    //private var likesDictionary = [Post: Like]()
-    
-    //private var postImages = [Post: UIImage]()
-    
-    //private var postAuthors = [Post: User]()
-    
-    //private var authorsImages = [User: UIImage]()
 
     ///FINAL data model for the post
     private var postViewModel = [PostViewModel]()
@@ -53,6 +41,7 @@ class FeedCollectionViewController: UICollectionViewController{
     ///provided by
     private var userID: String?
     
+    ///to lock post fetching, 1 thread per fetch
     let semaphore = DispatchSemaphore(value: 1)//temp
     
     init(){
@@ -62,7 +51,7 @@ class FeedCollectionViewController: UICollectionViewController{
         fatalError("init(coder:) has not been implemented")
     }
 }
-//MARK: - FeedController Setup functions
+//MARK: - FeedController Setup
 extension FeedCollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -106,6 +95,19 @@ extension FeedCollectionViewController {
         self.dataSource.apply(initialSnapshot, animatingDifferences: false)
         //reset pagination
         postPaginator?.resetPaginator()
+    }
+    func setupRefreshControl () {
+        // Add the refresh control to your UIScrollView object.
+        collectionView.refreshControl = UIRefreshControl()
+        collectionView.refreshControl?.addTarget(self, action:
+                                          #selector(handleRefreshControl),
+                                          for: .valueChanged)
+    }
+    @objc func handleRefreshControl() {
+        resetCollectionViewIfNeeded()
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.fetchDataWithPagination()
+        }
     }
 }
 //MARK: - CollectionView setup
@@ -164,13 +166,13 @@ extension FeedCollectionViewController{
         return layout
     }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //presentPostFor(indexPath: indexPath, likesDictionary[posts[indexPath.row]])
+        presentPostFor(indexPath: indexPath, postViewModel[indexPath.row])
     }
 }
-//MARK: - fetchDataWithPagination
+//MARK: - Post Fetching & Applying
 extension FeedCollectionViewController {
     private func fetchDataWithPagination(){
-        semaphore.wait()
+        //semaphore.wait()
         var fetchedPosts = [Post]()
         var fetchedLikes = [Post: Like]()
         var fetchedPostImages = [Post: UIImage]()
@@ -185,8 +187,6 @@ extension FeedCollectionViewController {
                     fetchedPosts =  data
                 case .failure(let error):
                     print("FeedVC Failed loading posts ", error)
-                    group.leave()
-                    return
             }
             group.leave()
         }
@@ -225,11 +225,19 @@ extension FeedCollectionViewController {
                                                                    like: fetchedLikes[$0])})
             self.postViewModel.append(contentsOf: viewModel)
             self.applyFetchedDataOnCollectionView(data: viewModel)
-            self.semaphore.signal()
+            //self.semaphore.signal()
         }
     }
+    private func applyFetchedDataOnCollectionView(data: [PostViewModel]){
+        self.loadingFooterView?.stopAnimating()
+        self.collectionView.refreshControl?.endRefreshing()
+        var snapshot = NSDiffableDataSourceSnapshot<FeedSection, PostViewModel>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(self.postViewModel, toSection: .main)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
 }
-//MARK: -- Networking
+//MARK: - Networking
     extension FeedCollectionViewController{
     ///afterter new posts were fetched, this function fetches likes for the posts and updates local posts, likes models and reloads collectionView
     private func fetchUsers(data: [Post], completion: @escaping ([Post: User]) -> Void){
@@ -329,128 +337,6 @@ extension FeedCollectionViewController {
             completion(imagesDict)
         }
     }
-        
-}
-//MARK:
-extension FeedCollectionViewController {
-    ///when users scrolls to the bottom of the loaded data, more data is fetched
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if(scrollView.isTracking || scrollView.isDragging || scrollView.isDecelerating) {
-            didScrollFeedDelegate?.didScrollFeed(scrollView)
-            //FIXME: - figureout when its okay to call fetching ><
-            let position = scrollView.contentOffset.y
-            if position < 0 {
-                return
-            }
-            if position > (collectionView.contentSize.height-100-scrollView.frame.size.height) && collectionView.contentSize.height > 0{
-                guard let paginator = postPaginator else {return}
-                if (paginator.isFetching) {return}//we fetching data, no need to fetch more
-                self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
-                DispatchQueue.global(qos: .userInitiated).async {
-                    self.fetchDataWithPagination()
-                }
-            }
-        }
-    }
-    private func applyFetchedDataOnCollectionView(data: [PostViewModel]){
-        self.loadingFooterView?.stopAnimating()
-        self.collectionView.refreshControl?.endRefreshing()
-        var snapshot = NSDiffableDataSourceSnapshot<FeedSection, PostViewModel>()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(self.postViewModel, toSection: .main)
-        dataSource.apply(snapshot, animatingDifferences: true)
-    }
-    func setupRefreshControl () {
-        // Add the refresh control to your UIScrollView object.
-        collectionView.refreshControl = UIRefreshControl()
-        collectionView.refreshControl?.addTarget(self, action:
-                                          #selector(handleRefreshControl),
-                                          for: .valueChanged)
-    }
-    @objc func handleRefreshControl() {
-        resetCollectionViewIfNeeded()
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.fetchDataWithPagination()
-        }
-    }
-}
-//MARK: - PostCollectionViewCellDidTapDelegate
-extension FeedCollectionViewController: PostCollectionViewCellDidTapDelegate{
-    
-    func didTapAuthorLabel(_ indexPath: IndexPath) {
-        presentAuthorFor(indexPath: indexPath)
-    }
-
-    func didTapStationButton(_ indexPath: IndexPath) {
-        presentStationFor(indexPath: indexPath)
-    }
-    func didTapLikeButton(_ indexPath: IndexPath, _ cell: PostCollectionViewCell) {
-        cell.isLiked.toggle()
-        if cell.isLiked{
-            //1. change UI
-            cell.changeCellToLiked()
-            //2. change locally
-            //posts[indexPath.item].likes += 1
-            //postViewModel[indexPath.item].likes += 1
-            //3. change in the DB
-            writeLikeToTheFirestore(with: indexPath)
-        } else{
-            //1. change UI
-            cell.changeCellToDisliked()
-            //2. change locally
-            //posts[indexPath.item].likes -= 1
-            //postViewModel[indexPath.item].likes -= 1
-            //3. change in the DB
-            deleteLikeFromFirestore(with: indexPath)
-        }
-    }
-    func didTapCommentsButton(_ indexPath: IndexPath) {
-        //presentPostFor(indexPath: indexPath, likesDictionary[posts[indexPath.row]])
-    }
-}
-//MARK: - Navigation
-extension FeedCollectionViewController{
-    ///when app is loaded and user isnt signed in, login screen is presented
-    private func presentLoginIfNeeded(){
-        if Auth.auth().currentUser == nil {
-            let vc = LoginViewController()
-            let navvc = UINavigationController(rootViewController: vc)
-            navvc.modalPresentationStyle = .fullScreen
-            self.tabBarController?.present(navvc, animated: true)
-        }
-    }
-    private func presentPostFor(indexPath: IndexPath,_ like: Like?){
-//        let postvc = PostViewController(post: postViewModel[indexPath.row].post, like: like, indexPath: indexPath)
-//        postvc.hidesBottomBarWhenPushed = true
-//        postvc.updatePostDelegate = self
-//        self.navigationController?.pushViewController(postvc, animated: true)
-    }
-    private func presentStationFor(indexPath: IndexPath){
-        NetworkManager.shared.getDocumentForID(collection: .stations, uid: postViewModel[indexPath.row].post.stationID) { (document: Station?, error) in
-            if error != nil {
-                print("error receiving station")
-            }else if let doc = document {
-                var vc: BaseStationViewController
-                switch doc.stationType {
-                case .parentStation:
-                    vc = ParentStationViewController(station: doc)
-                case .subStation:
-                    vc = SubstationViewController(station: doc)
-                case .station:
-                    vc = RegularStationViewController(station: doc)
-                }
-                vc.modalPresentationStyle = .fullScreen
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-        }
-    }
-    private func presentAuthorFor(indexPath: IndexPath){
-//        let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
-//        self.navigationController?.pushViewController(vc, animated: true)
-    }
-}
-//MARK: - Networking calls like/dislike
-extension FeedCollectionViewController {
     private func writeLikeToTheFirestore(with indexPath: IndexPath) {
         guard  let userID = userID else {return}
         guard let postID = postViewModel[indexPath.item].post.id else {return}
@@ -486,6 +372,102 @@ extension FeedCollectionViewController {
         }
     }
 }
+//MARK: - scrollViewDidScroll
+extension FeedCollectionViewController {
+    ///when users scrolls to the bottom of the loaded data, more data is fetched
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if(scrollView.isTracking || scrollView.isDragging || scrollView.isDecelerating) {
+            didScrollFeedDelegate?.didScrollFeed(scrollView)
+            //FIXME: - figureout when its okay to call fetching ><
+            let position = scrollView.contentOffset.y
+            if position < 0 {
+                return
+            }
+            if position > (collectionView.contentSize.height-100-scrollView.frame.size.height) && collectionView.contentSize.height > 0{
+                guard let paginator = postPaginator else {return}
+                if (paginator.isFetching) {return}//we fetching data, no need to fetch more
+                self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.fetchDataWithPagination()
+                }
+            }
+        }
+    }
+}
+//MARK: - PostCollectionViewCellDidTapDelegate
+extension FeedCollectionViewController: PostCollectionViewCellDidTapDelegate{
+    
+    func didTapAuthorLabel(_ indexPath: IndexPath) {
+        presentAuthorFor(indexPath: indexPath)
+    }
+
+    func didTapStationButton(_ indexPath: IndexPath) {
+        presentStationFor(indexPath: indexPath)
+    }
+    func didTapLikeButton(_ indexPath: IndexPath, _ cell: PostCollectionViewCell) {
+        cell.isLiked.toggle()
+        if cell.isLiked{
+            //1. change UI
+            cell.changeCellToLiked()
+            //2. change locally
+            postViewModel[indexPath.item].post.likes += 1
+            //3. change in the DB
+            writeLikeToTheFirestore(with: indexPath)
+        } else{
+            //1. change UI
+            cell.changeCellToDisliked()
+            //2. change locally
+            postViewModel[indexPath.item].post.likes -= 1
+            //3. change in the DB
+            deleteLikeFromFirestore(with: indexPath)
+        }
+    }
+    func didTapCommentsButton(_ indexPath: IndexPath) {
+        //presentPostFor(indexPath: indexPath, likesDictionary[posts[indexPath.row]])
+    }
+}
+//MARK: - Navigation
+extension FeedCollectionViewController{
+    ///when app is loaded and user isnt signed in, login screen is presented
+    private func presentLoginIfNeeded(){
+        if Auth.auth().currentUser == nil {
+            let vc = LoginViewController()
+            let navvc = UINavigationController(rootViewController: vc)
+            navvc.modalPresentationStyle = .fullScreen
+            self.tabBarController?.present(navvc, animated: true)
+        }
+    }
+    private func presentPostFor(indexPath: IndexPath,_ postViewModel: PostViewModel){
+        let postvc = PostViewController(postViewModel: postViewModel, indexPath: indexPath)
+        postvc.hidesBottomBarWhenPushed = true
+        postvc.updatePostDelegate = self
+        self.navigationController?.pushViewController(postvc, animated: true)
+    }
+    private func presentStationFor(indexPath: IndexPath){
+        NetworkManager.shared.getDocumentForID(collection: .stations, uid: postViewModel[indexPath.row].post.stationID) { (document: Station?, error) in
+            if error != nil {
+                print("error receiving station")
+            }else if let doc = document {
+                var vc: BaseStationViewController
+                switch doc.stationType {
+                case .parentStation:
+                    vc = ParentStationViewController(station: doc)
+                case .subStation:
+                    vc = SubstationViewController(station: doc)
+                case .station:
+                    vc = RegularStationViewController(station: doc)
+                }
+                vc.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
+    }
+    private func presentAuthorFor(indexPath: IndexPath){
+//        let vc = OtherProfileViewController(user: posts[indexPath.row].userInfo)
+//        self.navigationController?.pushViewController(vc, animated: true)
+    }
+}
+//MARK: - DidUpdatePostAfterDissmissingDelegate (individual post -> feed data)
 extension FeedCollectionViewController: DidUpdatePostAfterDissmissingDelegate {
     //reload cell and reload data for that cell
     func updatePostModelInTheFeed(_ indexPath: IndexPath, post: Post, like: Like?, status: LikeStatus) {
