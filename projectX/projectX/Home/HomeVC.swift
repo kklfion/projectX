@@ -110,10 +110,23 @@ extension HomeTableVC{
         super.viewWillAppear(animated)
     }
     private func setupNavigationBar(){
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.titleView = UISearchBar()
+        //navigationController?.navigationBar.prefersLargeTitles = false
+        //navigationItem.titleView = UISearchBar()
         //Disable search bar interaction
-        navigationItem.titleView?.isUserInteractionEnabled = false
+        //navigationItem.titleView?.isUserInteractionEnabled = false
+        let searchButton = UIButton(type: .system)
+        searchButton.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+        let notificationsButton = UIButton(type: .system)
+        notificationsButton.setImage(UIImage(systemName: "bell"), for: .normal)
+        let item1 = UIBarButtonItem(customView: searchButton)
+        let item2 = UIBarButtonItem(customView: notificationsButton)
+        navigationItem.setRightBarButtonItems([item2, item1], animated: false)
+        let nectoLabel = UILabel()
+        nectoLabel.text = "Necto"
+        nectoLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        nectoLabel.textColor = UIColor.systemYellow
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: nectoLabel)
+        
     }
 }
 //MARK: - SideBarStationSelectionDelegate
