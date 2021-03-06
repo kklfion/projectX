@@ -44,6 +44,26 @@
          </AdditionalOption>
       </AdditionalOptions>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "806261BB25F30DE50047793E"
+               BuildableName = "projectXTests.xctest"
+               BlueprintName = "projectXTests"
+               ReferencedContainer = "container:projectX.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "806261CB25F30DF80047793E"
+               BuildableName = "projectXUITests.xctest"
+               BlueprintName = "projectXUITests"
+               ReferencedContainer = "container:projectX.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

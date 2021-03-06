@@ -90,7 +90,11 @@ class PostPaginator {
             query = defaultQuery.limit(to: documentsPerQuery)
             isInitialFetching = false
         }else {
-            guard let  lastDocumentSnapshot = lastDocumentSnapshot else { return }
+            guard let  lastDocumentSnapshot = lastDocumentSnapshot else {
+                completion(.failure(UserError.errorLoadingUser))
+                self.isFetching = false
+                return
+            }
             query = query?.start(afterDocument: lastDocumentSnapshot).limit(to: documentsPerQuery)
         }
         //FIXME: delay added to show spinner
@@ -111,8 +115,10 @@ class PostPaginator {
                     } else{
                         completion(.success(genericDocs))
                     }
+                    if let lastDocument = snapshot!.documents.last {
+                        self.lastDocumentSnapshot = lastDocument
+                    }
                     
-                    self.lastDocumentSnapshot = snapshot!.documents.last
                 }
                 self.isFetching = false
             }

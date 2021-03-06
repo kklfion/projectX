@@ -90,8 +90,6 @@ extension FeedCollectionViewController {
         var initialSnapshot = dataSource.snapshot()
         initialSnapshot.deleteAllItems()
         postViewModel.removeAll()
-        //likes.removeAll()
-        //likesDictionary.removeAll()
         self.dataSource.apply(initialSnapshot, animatingDifferences: false)
         //reset pagination
         postPaginator?.resetPaginator()
@@ -172,7 +170,7 @@ extension FeedCollectionViewController{
 //MARK: - Post Fetching & Applying
 extension FeedCollectionViewController {
     private func fetchDataWithPagination(){
-        //semaphore.wait()
+        semaphore.wait()
         var fetchedPosts = [Post]()
         var fetchedLikes = [Post: Like]()
         var fetchedPostImages = [Post: UIImage]()
@@ -190,7 +188,14 @@ extension FeedCollectionViewController {
             }
             group.leave()
         }
-        group.wait()
+        let waitResult = group.wait(timeout: .now() + 5)
+        if waitResult == .timedOut {
+            DispatchQueue.main.async {
+                self.loadingFooterView?.stopAnimating()
+            }
+            self.semaphore.signal()
+            return
+        }
         group.enter()
         //1.a fetch postImages
         fetchImagesPosts(data: fetchedPosts) { (result) in
@@ -225,8 +230,10 @@ extension FeedCollectionViewController {
                                                                    like: fetchedLikes[$0])})
             self.postViewModel.append(contentsOf: viewModel)
             self.applyFetchedDataOnCollectionView(data: viewModel)
-            //self.semaphore.signal()
+            self.semaphore.signal()
         }
+
+
     }
     private func applyFetchedDataOnCollectionView(data: [PostViewModel]){
         self.loadingFooterView?.stopAnimating()
@@ -384,8 +391,8 @@ extension FeedCollectionViewController {
                 return
             }
             if position > (collectionView.contentSize.height-100-scrollView.frame.size.height) && collectionView.contentSize.height > 0{
-                guard let paginator = postPaginator else {return}
-                if (paginator.isFetching) {return}//we fetching data, no need to fetch more
+                if (postPaginator.isFetching) {return}//we fetching data, no need to fetch more
+                postPaginator.isFetching = true
                 self.loadingFooterView?.startAnimating() //animation stops when data is done fetching
                 DispatchQueue.global(qos: .userInitiated).async {
                     self.fetchDataWithPagination()
