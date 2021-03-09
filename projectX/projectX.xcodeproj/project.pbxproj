@@ -301,6 +301,7 @@
 		803D75B0250ADB73003F569D /* Station */ = {
 			isa = PBXGroup;
 			children = (
+				803D759D250AD3A5003F569D /* IndividualPost */,
 				80BB37AF24D7ACCB00B12253 /* StationView.swift */,
 				80BB37B124D8C50700B12253 /* BaseStationViewController.swift */,
 				80A19E9725D465BE00E06F13 /* RegularStationViewController.swift */,
@@ -355,7 +356,6 @@
 				803D75A8250AD700003F569D /* Models */,
 				8071D792254DF99F00547CC1 /* MainTabBar */,
 				803D75B0250ADB73003F569D /* Station */,
-				803D759D250AD3A5003F569D /* IndividualPost */,
 				804E61AB24980E8400825150 /* Profile */,
 				8081185224C2624A0032D46D /* Login */,
 				804E61A824980E6A00825150 /* Sidebar */,

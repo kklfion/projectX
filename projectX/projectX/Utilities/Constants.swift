@@ -11,9 +11,15 @@ struct Constants{
 
     static let standardPadding: CGFloat = 10
 
-    static let headlineTextFont = UIFont.preferredFont(forTextStyle: .headline)
+    static let headlineTextFont = getHeadlineFont()
     static let bodyTextFont = UIFont.preferredFont(forTextStyle: .subheadline)
     static let smallerTextFont = UIFont.preferredFont(forTextStyle: .footnote)
+    
+    static func getHeadlineFont() -> UIFont {
+        let font = UIFont.boldSystemFont(ofSize: 16)
+        let fontMetrics = UIFontMetrics(forTextStyle: .title3)
+          return fontMetrics.scaledFont(for: font)
+    }
 
     struct defaultKeys{
         static let isExistingUserDefaultsKey = "isExistingUser"
@@ -33,8 +39,8 @@ struct Constants{
         static let darkBrown = UIColor(named: "darkBrown") ?? UIColor(rgb: 0x434239)
         static let subText = UIColor(named: "subText") ?? UIColor(rgb: 0x817e6e)
         
-        static let profileBlue = UIColor.systemBlue//UIColor(named: "profileBlue") ?? UIColor(rgb: 0xdff9ff)
-        static let profileYellow = UIColor.systemYellow//UIColor(named: "profileYellow") ?? UIColor(rgb: 0xfef8d3)
+        static let profileBlue = UIColor.systemYellow//UIColor(named: "profileBlue") ?? UIColor(rgb: 0xdff9ff)
+        static let profileYellow = UIColor.systemOrange//UIColor(named: "profileYellow") ?? UIColor(rgb: 0xfef8d3)
         
         static let buttonsRed = UIColor(named: "buttonsRed") ?? UIColor(rgb: 0xf2aba7)
         static let shadow = UIColor(named: "shadow") ?? UIColor.lightGray

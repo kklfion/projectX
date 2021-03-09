@@ -13,6 +13,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     var postViewModel: PostViewModel! {
         didSet{
             titleLabel.text =  postViewModel.post.title
+            messageLabel.text = postViewModel.post.text
             authorLabel.text =  postViewModel.user.name
             likesLabel.text =  postViewModel.getLikesCountString()
             commentsLabel.text = postViewModel.getCommentsCountString()
@@ -102,8 +103,8 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     }()
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = Constants.bodyTextFont
-        label.numberOfLines = 4
+        label.font = Constants.headlineTextFont
+        label.numberOfLines = 1
         label.adjustsFontSizeToFitWidth = false
         label.lineBreakMode = .byTruncatingTail
         label.textColor = Constants.Colors.mainText
@@ -112,7 +113,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     let messageLabel: UILabel = {
         let label = UILabel()
         label.font = Constants.bodyTextFont
-        label.numberOfLines = 4
+        label.numberOfLines = 1
         label.adjustsFontSizeToFitWidth = false
         label.lineBreakMode = .byTruncatingTail
         label.textColor = Constants.Colors.mainText
@@ -205,36 +206,32 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         
         let authorStack = UIStackView(arrangedSubviews: [authorImageView, authorLabel])
         authorStack.axis = .horizontal
-        authorStack.spacing = 5
+        //authorStack.spacing = 5
         
         let likesCommentsStack = UIStackView(arrangedSubviews: [likeButton, likesLabel, commentsButton, commentsLabel])
         likesCommentsStack.axis = .horizontal
-        likesCommentsStack.spacing = 5
+        //likesCommentsStack.spacing = 5
         likesCommentsStack.distribution = .fillEqually
         
         let bottomStack = UIStackView(arrangedSubviews: [authorStack, likesCommentsStack])
         bottomStack.axis = .horizontal
         bottomStack.distribution = .fillEqually
-        bottomStack.spacing = 10
+        //bottomStack.spacing = 10
         
-        let leftVerticalStack = UIStackView(arrangedSubviews: [titleLabel, bottomStack])
-        leftVerticalStack.spacing = 10
+        let leftVerticalStack = UIStackView(arrangedSubviews: [stationDateStack, titleLabel, messageLabel, bottomStack])
+        leftVerticalStack.spacing = 5
         leftVerticalStack.axis = .vertical
         
-        postImageView.widthAnchor.constraint(equalToConstant: 75).isActive = true
-        postImageView.heightAnchor.constraint(equalToConstant: 75).isActive = true
-        
-        let leftVerticalAndImageStack = UIStackView(arrangedSubviews: [leftVerticalStack, postImageView])
-        leftVerticalAndImageStack.axis = .horizontal
-        leftVerticalAndImageStack.alignment = .center
-        leftVerticalAndImageStack.spacing = 10
+        postImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        postImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
         //MAIN stack, all stacks come in this stack
-        let stack = UIStackView(arrangedSubviews: [stationDateStack ,leftVerticalAndImageStack])
+        let stack = UIStackView(arrangedSubviews: [leftVerticalStack , postImageView])
         //stack.spacing = 10
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        stack.axis = .vertical
+        stack.layoutMargins = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        stack.alignment = .center
+        stack.axis = .horizontal
         
         containerView.addSubview(stack)
         stack.addAnchors(top: containerView.topAnchor,
