@@ -28,12 +28,6 @@ class SideBarView: UIView {
         tv.separatorStyle = .none
         return tv
     }()
-    let spacingView: UIView  = {
-        let view = UIView()
-        view.backgroundColor = .systemGray
-        view.alpha = 0.5
-        return view
-    }()
     let menuTableView: UITableView = {
         let tv = UITableView()
         tv.backgroundColor = Constants.Colors.secondaryBackground
@@ -51,7 +45,6 @@ class SideBarView: UIView {
         self.backgroundColor = Constants.Colors.secondaryBackground
         self.addSubview(cancelButton)
         self.addSubview(stationsTableView)
-        self.addSubview(spacingView)
         self.addSubview(menuTableView)
 
         cancelButton.addAnchors(top: self.safeAreaLayoutGuide.topAnchor,
@@ -64,13 +57,7 @@ class SideBarView: UIView {
                                     bottom: nil,
                                     trailing: self.trailingAnchor,
                                     padding: .init(top: 0, left: 10, bottom: 0, right: 10),size: .init(width: 0, height: self.frame.height * 0.6))
-        spacingView.addAnchors(top: stationsTableView.bottomAnchor,
-                                leading: self.leadingAnchor,
-                                bottom: nil,
-                                trailing: self.trailingAnchor,
-                                padding: .init(top: 5, left: 10, bottom: 0, right: 10),
-                                size: .init(width: 0, height: 1))
-        menuTableView.addAnchors(top: spacingView.bottomAnchor,
+        menuTableView.addAnchors(top: stationsTableView.bottomAnchor,
                                     leading: self.leadingAnchor,
                                     bottom: self.bottomAnchor,
                                     trailing: self.trailingAnchor,

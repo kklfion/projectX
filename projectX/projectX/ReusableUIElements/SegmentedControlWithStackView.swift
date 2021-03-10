@@ -15,6 +15,7 @@ class SegmentedControlWithStackView: UIView{
         self.itemNames = itemNames
         super.init(frame: frame)
         setupViews()
+        setupGestures()
     }
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -114,19 +115,22 @@ class SegmentedControlWithStackView: UIView{
                                             trailing: nil, padding: .init(top: 0, left: 0, bottom: 0, right: 10),
                                             size: .init(width: (self.frame.width * 2), height: 0))
     }
-    /// Animation for switching between two tableViewControllers
-//    private var toggle: Bool = true
-//    @objc func performAnimation(){
-//        let slideRight = {
-//            self.stackView.transform = CGAffineTransform(translationX: -self.frame.width, y: 0)
-//        }
-//        let reset = {
-//            self.stackView.transform = .identity
-//        }
-//        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseOut,
-//            animations:{
-//                self.toggle ? slideRight() : reset()
-//            }, completion: nil)
-//        toggle = !toggle
-//    }
+    func setupGestures(){
+        let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
+        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
+        
+        leftSwipe.direction = .left
+        rightSwipe.direction = .right
+
+        self.addGestureRecognizer(leftSwipe)
+        self.addGestureRecognizer(rightSwipe)
+    }
+    @objc func handleSwipes(_ sender: UISwipeGestureRecognizer) {
+        switch sender.direction {
+        case .left:
+            didTapRightButton()
+        default:
+            didTapLeftButton()
+        }
+    }
 }

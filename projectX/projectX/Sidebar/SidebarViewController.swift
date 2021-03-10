@@ -120,14 +120,6 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
         }
         
     }
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        if tableView == sideBarView?.stationsTableView{
-//            return "Stations:"
-//        } else {
-//            return nil
-//        }
-//    }
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SideBarView.menuCellID, for: indexPath)
         if tableView == sideBarView?.menuTableView{
