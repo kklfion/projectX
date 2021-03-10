@@ -9,7 +9,6 @@
 import UIKit
 
 class NewCommentView: UIView {
-    //var commentTextViewHeightConstraint: NSLayoutConstraint? // used to make textview's height adjustable accoring to how much text there is
     private let symbolsConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .light, scale: .default)
     
     override init(frame: CGRect) {
@@ -20,14 +19,14 @@ class NewCommentView: UIView {
         super.init(coder: coder)
     }
     //shadow is added to the container
-    let shadowLayerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .clear
-        view.layer.cornerRadius = 15
-        view.layer.shadowColor = Constants.Colors.shadow.cgColor
-        view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
-        view.layer.shadowRadius = 5
-        view.layer.shadowOpacity = 0.4
+    let shadowLayerView: ShadowUIView = {
+        let view = ShadowUIView()
+//        view.backgroundColor = .clear
+//        view.layer.cornerRadius = 15
+//        view.layer.shadowColor = Constants.Colors.shadow.cgColor
+//        view.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
+//        view.layer.shadowRadius = 5
+//        view.layer.shadowOpacity = 0.4
         return view
     }()
     //container contains all the stacks

@@ -37,8 +37,8 @@ class ShadowUICollectionViewCell: UICollectionViewCell{
         
         // Apply a shadow
         layer.shadowRadius = 8.0
-        layer.shadowOpacity = 0.10
-        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 1
+        layer.shadowColor = Constants.Colors.shadow.cgColor
         layer.shadowOffset = CGSize(width: 0, height: 5)
     }
 }
@@ -63,5 +63,39 @@ class ShadowRoundUIButton: UIButton {
         layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
         layer.shadowOpacity = 0.5
         layer.shadowRadius = 4.0
+    }
+}
+class ShadowUIView: UIView{
+    let cornerRadius: CGFloat = 10
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupShadow()
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // Improve scrolling performance with an explicit shadowPath
+        layer.shadowPath = UIBezierPath(
+            roundedRect: bounds,
+            cornerRadius: cornerRadius
+        ).cgPath
+    }
+    private func setupShadow(){
+        // Apply rounded corners to contentView
+        self.layer.cornerRadius = cornerRadius
+        self.layer.masksToBounds = true
+        
+        // Set masks to bounds to false to avoid the shadow
+        // from being clipped to the corner radius
+        layer.cornerRadius = cornerRadius
+        layer.masksToBounds = false
+        
+        // Apply a shadow
+        layer.shadowRadius = 8.0
+        layer.shadowOpacity = 1
+        layer.shadowColor = Constants.Colors.shadow.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 5)
     }
 }

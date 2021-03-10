@@ -86,11 +86,8 @@ class PostViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.backgroundColor = Constants.Colors.mainBackground
-        //self.navigationItem.title = post.stationName
         navigationItem.largeTitleDisplayMode = .never
-
         //only this order works, some bug that makes newcommentview invisible if this is changed
         setupTableViewAndHeader()
         populatePostViewWithPost()
@@ -115,22 +112,22 @@ class PostViewController: UIViewController {
         updateFeed()
     }
     private func updateFeed(){
-//        post.commentCount = comments.count
-//        if let like = like {
-//            switch likeStatus {
-//            case .delete: //if we have like and status is to delete - need to delete it
-//                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .delete)
-//            default: //do nothing
-//                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .unchanged)
-//            }
-//        } else { //if there is no like and status is to add it need to add a new like
-//            switch likeStatus {
-//            case .add: //if there was no like give from feed and we need to add a like
-//                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .add)
-//            default:
-//                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .unchanged)
-//            }
-//        }
+        postViewModel.post.commentCount = comments.count
+        if let like = postViewModel.like {
+            switch likeStatus {
+            case .delete: //if we have like and status is to delete - need to delete it
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: postViewModel.post, like: like, status: .delete)
+            default: //do nothing
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: postViewModel.post, like: like, status: .unchanged)
+            }
+        } else { //if there is no like and status is to add it need to add a new like
+            switch likeStatus {
+            case .add: //if there was no like give from feed and we need to add a like
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: postViewModel.post, like: postViewModel.like, status: .add)
+            default:
+                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: postViewModel.post, like: postViewModel.like, status: .unchanged)
+            }
+        }
     }
     private func setupTableViewAndHeader(){
         commentsTableView.delegate = self
@@ -490,7 +487,7 @@ extension PostViewController: UITextViewDelegate{
     }
     private func slideOutNewCommentView(_ textView: UITextView){
         if textView.textColor == Constants.Colors.subText {
-            textView.text = nil
+            textView.text = ""
             textView.textColor = Constants.Colors.mainText
             textView.textAlignment = .left
         }
@@ -499,14 +496,13 @@ extension PostViewController: UITextViewDelegate{
         newCommentView.topStack.isHidden = false
     }
     private func foldInNewCommentView(_ textView: UITextView){
-        if textView.text.isEmpty {
+        if textView.text.isEmpty || textView.text == newCommentView.commentPlaceholderMessage{
             textView.text = newCommentView.commentPlaceholderMessage
             textView.textColor = UIColor.lightGray
             textView.textAlignment = .center
         }
         newCommentView.bottomStack.isHidden = true
         newCommentView.topStack.isHidden = true
-        
         newCommentView.commentTextView.endEditing(true)
     }
 }
