@@ -226,7 +226,13 @@ extension UINavigationController{
         self.navigationBar.setBackgroundImage(nil, for: .default)
         self.navigationBar.barTintColor = color
         self.navigationBar.shadowImage = UIImage()
-        self.navigationBar.isTranslucent = false
+    }
+    func setNavigationTo(colorStringHex: String){
+        let color = UIColor().hexStringToUIColor(hex: colorStringHex)
+        // Restore the navigation bar to default
+        self.navigationBar.setBackgroundImage(nil, for: .default)
+        self.navigationBar.barTintColor = color
+        self.navigationBar.shadowImage = UIImage()
     }
 }
 extension UIColor {

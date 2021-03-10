@@ -16,7 +16,7 @@ protocol SlidableTopViewProtocol: class{
     var headerTopConstraint: NSLayoutConstraint! { get set }
     
     ///adjusts header position and hides/unhides navigationbar
-    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?, navigationItem: UINavigationItem?)
+    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?, navigationItem: UINavigationItem?, _ title: String?, _ color: String?)
     
     ///to setup headerHeight provide its height and additional padding if header wasnt pinned to the safearea
     func setupHeaderHeight(header height: CGFloat, safeArea padding: CGFloat)
@@ -32,7 +32,7 @@ extension SlidableTopViewProtocol{
     func headerHeightWasSet() -> Bool{
         return headerHeight != nil
     }
-    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?, navigationItem: UINavigationItem?){
+    func adjustHeaderPosition(_ scrollView: UIScrollView,_ controller: UINavigationController?, navigationItem: UINavigationItem?, _ title: String? = nil, _ color: String? = nil){
         guard let headerHeight = headerHeight else {return}
         let y_offset: CGFloat = scrollView.contentOffset.y
         let headerOffset = headerTopConstraint.constant - y_offset
@@ -43,7 +43,12 @@ extension SlidableTopViewProtocol{
             controller?.setNavigationToTransparent()
             navigationItem?.title = ""
         }else{//inbetween we want to adjust the position of the header
-            controller?.setNavigationToViewColor()
+            navigationItem?.title = title
+            if let color = color {
+                controller?.setNavigationTo(colorStringHex: color)
+            } else {
+                controller?.setNavigationToViewColor()
+            }
             headerTopConstraint.constant = headerOffset
             scrollView.contentOffset.y = 0 //to smooth out scrolling
         }

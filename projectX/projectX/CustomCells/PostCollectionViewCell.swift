@@ -201,8 +201,9 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         
         let stationDateStack = UIStackView(arrangedSubviews: [dateLabel, stationButton])
         stationDateStack.spacing = 5
-        stationDateStack.distribution = .fillEqually
+        //stationDateStack.distribution = .fillEqually
         stationDateStack.axis = .horizontal
+        //stationDateStack.alignment = .trailing
         
         let authorStack = UIStackView(arrangedSubviews: [authorImageView, authorLabel])
         authorStack.axis = .horizontal
@@ -210,26 +211,27 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         
         let likesCommentsStack = UIStackView(arrangedSubviews: [likeButton, likesLabel, commentsButton, commentsLabel])
         likesCommentsStack.axis = .horizontal
-        //likesCommentsStack.spacing = 5
-        likesCommentsStack.distribution = .fillEqually
+        likesCommentsStack.spacing = 10
+        //likesCommentsStack.distribution = .fillEqually
         
         let bottomStack = UIStackView(arrangedSubviews: [authorStack, likesCommentsStack])
         bottomStack.axis = .horizontal
-        bottomStack.distribution = .fillEqually
-        //bottomStack.spacing = 10
+        //bottomStack.distribution = .fillEqually
+        bottomStack.spacing = 10
         
         let leftVerticalStack = UIStackView(arrangedSubviews: [stationDateStack, titleLabel, messageLabel, bottomStack])
         leftVerticalStack.spacing = 5
         leftVerticalStack.axis = .vertical
+        leftVerticalStack.distribution = .equalCentering
         
         postImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        postImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        postImageView.heightAnchor.constraint(equalToConstant: 90).isActive = true
         
         //MAIN stack, all stacks come in this stack
         let stack = UIStackView(arrangedSubviews: [leftVerticalStack , postImageView])
-        //stack.spacing = 10
+        stack.spacing = 10
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.layoutMargins = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        stack.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         stack.alignment = .center
         stack.axis = .horizontal
         

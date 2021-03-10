@@ -32,6 +32,6 @@ class RegularStationViewController: BaseStationViewController {
         feedSegmentedControl.stackView.addArrangedSubview(newFeedController.view)
     }
     override func setFeedNames(){
-        feedSegmentedControl.itemNames = ["Lounge", "New"]
+        feedSegmentedControl.itemNames = ["Lounge", "Bus Stop"]
     }
 }

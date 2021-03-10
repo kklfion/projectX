@@ -67,7 +67,6 @@ class BaseStationViewController: UIViewController, SlidableTopViewProtocol {
 extension BaseStationViewController{
     override func viewDidLoad() {
         view.backgroundColor = Constants.Colors.mainBackground
-        navigationItem.largeTitleDisplayMode = .never
         setupView()
         setupSegmentedStackWithFeeds()
         setUserAndSubscribeToUpdates()
@@ -135,8 +134,6 @@ extension BaseStationViewController{
         stationView.setupGradient(mainColorHex: station.mainColorHex, secondaryColorHex: station.secondaryColorHex)
         stationView.stationInfoLabel.text = station.info
         stationView.stationNameLabel.text = station.stationName
-        self.navigationItem.title = station.stationName
-
     }
     private func setupView(){
         view.addSubview(stationView)
@@ -210,7 +207,7 @@ extension BaseStationViewController{
 }
 extension BaseStationViewController: DidScrollFeedDelegate{
     func didScrollFeed(_ scrollView: UIScrollView) {
-        adjustHeaderPosition(scrollView, navigationController, navigationItem: navigationItem)
+        adjustHeaderPosition(scrollView, navigationController, navigationItem: navigationItem ,station.stationName, station.mainColorHex)
     }
 }
 

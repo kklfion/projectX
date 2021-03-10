@@ -24,7 +24,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     var headerTopConstraint: NSLayoutConstraint!
     
     func didScrollFeed(_ scrollView: UIScrollView) {
-        adjustHeaderPosition(scrollView, navigationController, navigationItem: navigationItem)
+        adjustHeaderPosition(scrollView, navigationController, navigationItem: navigationItem, user?.name, "#FFCC00" )
     }
     ///user displayed by the controller
     var user: User?
@@ -81,7 +81,6 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.setNavigationToTransparent()
-        self.navigationItem.title = "Profile"
         extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = Constants.Colors.mainBackground
         navigationItem.largeTitleDisplayMode = .never
@@ -103,7 +102,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if !headerHeightWasSet() && feedSegmentedControl.leftButton.frame.height != 0 && profileView.frame.height != 0 {
-            let headerHeight = feedSegmentedControl.leftButton.frame.height + profileView.frame.height
+            let headerHeight = profileView.frame.height
             let statusBarHeight = view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0
             let navBarHeight = self.navigationController?.navigationBar.frame.height ?? 0.0
             let safeAreaInset = statusBarHeight + navBarHeight
