@@ -26,8 +26,6 @@ class PostView: UIView, LikeableCellProtocol {
     }
     ///to add actions to postView buttons
     weak var delegate: PostViewButtonsDelegate?
-    
-    
     var imageHeightConstaint: NSLayoutConstraint! //if image is nil we want imageview to have height of zero
  
     override init(frame: CGRect) {
@@ -91,6 +89,21 @@ class PostView: UIView, LikeableCellProtocol {
        label.textColor = Constants.Colors.mainText
        label.translatesAutoresizingMaskIntoConstraints = false
        return label
+    }()
+    let imageScrollView: UIScrollView = {
+        let scroll = UIScrollView()
+        scroll.isPagingEnabled = true
+        scroll.showsVerticalScrollIndicator = false
+        scroll.showsHorizontalScrollIndicator = false
+        scroll.backgroundColor = Constants.Colors.tertiaryBackground
+        return scroll
+    }()
+    let imagePageControl: UIPageControl = {
+        let pageControl = UIPageControl()
+        pageControl.tintColor = Constants.Colors.mainText
+        pageControl.pageIndicatorTintColor = UIColor.lightGray//Constants.Colors.tertiaryBackground
+        pageControl.currentPageIndicatorTintColor = Constants.Colors.mainText
+        return pageControl
     }()
      let postImageView: UIImageView = {
         let iv = UIImageView()
@@ -189,7 +202,7 @@ class PostView: UIView, LikeableCellProtocol {
         bottomStack.distribution = .fillEqually
         bottomStack.spacing = 10
         
-        [authorUILabel, dateUILabel, titleUILabel, postImageView, bodyUILabel, bottomStack].forEach {containerView.addSubview($0)}
+        [authorUILabel, dateUILabel, titleUILabel, imageScrollView, imagePageControl, bodyUILabel, bottomStack].forEach {containerView.addSubview($0)}
         
 
         authorUILabel.addAnchors(top: containerView.topAnchor,
@@ -213,21 +226,24 @@ class PostView: UIView, LikeableCellProtocol {
                                 trailing: containerView.trailingAnchor,
                                 padding: .init(top: 0, left: Constants.standardPadding, bottom: 0, right: Constants.standardPadding ))
         
-        postImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
-        postImageView.addAnchors(top: titleUILabel.bottomAnchor,
+        imageScrollView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
+        imageScrollView.addAnchors(top: titleUILabel.bottomAnchor,
                                 leading: nil,
                                 bottom: nil,
                                 trailing: nil,
                                 padding: .init(top: Constants.standardPadding, left: 0, bottom: 0, right: 0),
                                 size: .init(width: size.width, height: 0))
-        imageHeightConstaint = postImageView.heightAnchor.constraint(equalToConstant: size.width * 0.7)
+        imagePageControl.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
+        imagePageControl.addAnchors(top: imageScrollView.bottomAnchor, leading: nil, bottom: nil, trailing: nil, padding: .init(top: 0, left: 0, bottom: 0, right: 0))
+        
+        imageHeightConstaint = imageScrollView.heightAnchor.constraint(equalToConstant: size.width * 0.7)
         imageHeightConstaint.isActive = true
         
-        bodyUILabel.addAnchors(top: postImageView.bottomAnchor,
+        bodyUILabel.addAnchors(top: imageScrollView.bottomAnchor,
                                leading: containerView.leadingAnchor,
                                bottom: nil,
                                trailing: containerView.trailingAnchor,
-                               padding: .init(top: Constants.standardPadding, left: Constants.standardPadding, bottom: 0, right: Constants.standardPadding))
+                               padding: .init(top: 30, left: Constants.standardPadding, bottom: 0, right: Constants.standardPadding))
         bottomStack.addAnchors(top: bodyUILabel.bottomAnchor,
                                   leading: containerView.leadingAnchor,
                                   bottom: containerView.bottomAnchor,

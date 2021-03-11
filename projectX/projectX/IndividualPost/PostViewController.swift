@@ -139,6 +139,33 @@ class PostViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         updateFeed()
     }
+    func setupImages(_ images: [UIImage]){
+
+        guard postHeaderView != nil else {
+            return
+        }
+        postHeaderView!.imageScrollView.delegate = self
+        for i in 0..<images.count {
+
+            let imageView = UIImageView()
+            imageView.image = images[i]
+            let xPosition = UIScreen.main.bounds.width * CGFloat(i)
+            imageView.frame = CGRect(x: xPosition, y: 0, width: postHeaderView!.imageScrollView.frame.width, height: postHeaderView!.imageScrollView.frame.height)
+            imageView.backgroundColor = .clear
+            imageView.contentMode = .scaleAspectFit
+            
+            postHeaderView!.imageScrollView.contentSize.width = postHeaderView!.imageScrollView.frame.width * CGFloat(i + 1)
+            postHeaderView!.imageScrollView.addSubview(imageView)
+        }
+    }
+    func configurePageControl() {
+        guard postHeaderView != nil else {
+            return
+        }
+        postHeaderView!.imagePageControl.isHidden = false
+        postHeaderView!.imagePageControl.numberOfPages = 2//colors.count
+        postHeaderView!.imagePageControl.currentPage = 0
+    }
     private func updateFeed(){
         post.commentCount = comments.count
         if let like = like {
@@ -238,9 +265,12 @@ class PostViewController: UIViewController {
             let data = try? Data(contentsOf: post.imageURL!)
             if let imageData = data {
                 postHeaderView?.postImageView.image = UIImage(data: imageData)
+                setupImages([UIImage(data: imageData)!,UIImage(data: imageData)!])
+                configurePageControl()
             }
         } else{
             postHeaderView?.imageHeightConstaint.constant = 0
+            postHeaderView?.imagePageControl.isHidden = true
         }
         postHeaderView?.bodyUILabel.text = post.text
         postHeaderView?.likesLabel.text = "\(post.likes)"
@@ -397,7 +427,7 @@ extension PostViewController{
                 self.comments = comments!
                 self.commentsTableView.reloadData()
             }else{
-                print(error ?? "error locading comments")
+                print(error ?? "error locating comments")
             }
             completion()
         }
@@ -551,6 +581,17 @@ extension PostViewController: UITextViewDelegate{
         newCommentView.topStack.isHidden = true
         
         newCommentView.commentTextView.endEditing(true)
+    }
+}
+extension PostViewController: UIScrollViewDelegate {
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+
+        guard postHeaderView != nil else {
+            return
+        }
+        let pageNumber = round(scrollView.contentOffset.x / scrollView.frame.size.width)
+        postHeaderView!.imagePageControl.currentPage = Int(pageNumber)
     }
 }
 extension PostViewController: PostViewButtonsDelegate{

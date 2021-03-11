@@ -167,8 +167,9 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     }
     let defaultImageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .ultraLight)
     func setDefaultPostImage(){
-        postImageView.image = UIImage(named: "noImagePostImage")?.withRenderingMode(.alwaysTemplate)
-        postImageView.tintColor = Constants.Colors.mainText
+        postImageView.image = UIImage(named: "noImagePostImage")
+        //postImageView.image = UIImage(named: "noImagePostImage")?.withRenderingMode(.alwaysTemplate)
+        //postImageView.tintColor = Constants.Colors.mainText
     }
     func setPostImage(image: UIImage?){
         postImageView.image = image
