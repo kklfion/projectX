@@ -83,8 +83,8 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     let dateLabel: UILabel = {
         let label = UILabel()
         label.text = "1h"
-        label.font = Constants.smallerTextFont
-        label.textAlignment = .right
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textAlignment = .left
         label.textColor = Constants.Colors.subText
         return label
     }()
@@ -92,7 +92,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         let button = UIButton(type: .custom)
         button.setTitle("Station", for: .normal)
         button.setTitleColor(Constants.Colors.subText, for: .normal)
-        button.titleLabel?.font = Constants.smallerTextFont
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         button.contentHorizontalAlignment = .left
         return button
     }()
@@ -138,8 +138,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
     }()
     let authorLabel: UILabel = {
         let label = UILabel()
-        label.text = "u/Sammy"
-        label.font = Constants.smallerTextFont
+        label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = Constants.Colors.subText
         label.numberOfLines = 1
         return label
@@ -199,39 +198,43 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         
         contentView.backgroundColor = .none
         
+        dateLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        stationButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
         let stationDateStack = UIStackView(arrangedSubviews: [dateLabel, stationButton])
         stationDateStack.spacing = 5
-        //stationDateStack.distribution = .fillEqually
         stationDateStack.axis = .horizontal
-        //stationDateStack.alignment = .trailing
         
-        let authorStack = UIStackView(arrangedSubviews: [authorImageView, authorLabel])
+        let authorDateStack = UIStackView(arrangedSubviews: [authorLabel, stationDateStack])
+        authorDateStack.axis = .vertical
+        stationDateStack.spacing = 5
+        
+        let authorStack = UIStackView(arrangedSubviews: [authorImageView, authorDateStack])
         authorStack.axis = .horizontal
-        //authorStack.spacing = 5
+        authorStack.spacing = 5
         
         let likesCommentsStack = UIStackView(arrangedSubviews: [likeButton, likesLabel, commentsButton, commentsLabel])
         likesCommentsStack.axis = .horizontal
-        likesCommentsStack.spacing = 10
-        //likesCommentsStack.distribution = .fillEqually
+        likesCommentsStack.spacing = 5
         
         let bottomStack = UIStackView(arrangedSubviews: [authorStack, likesCommentsStack])
         bottomStack.axis = .horizontal
-        //bottomStack.distribution = .fillEqually
-        bottomStack.spacing = 10
+        bottomStack.spacing = 5
         
-        let leftVerticalStack = UIStackView(arrangedSubviews: [stationDateStack, titleLabel, messageLabel, bottomStack])
+        titleLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        messageLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        let leftVerticalStack = UIStackView(arrangedSubviews: [ titleLabel, messageLabel, bottomStack])
         leftVerticalStack.spacing = 5
         leftVerticalStack.axis = .vertical
-        leftVerticalStack.distribution = .equalCentering
+        //leftVerticalStack.distribution = .equalCentering
         
         postImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
         postImageView.heightAnchor.constraint(equalToConstant: 90).isActive = true
         
         //MAIN stack, all stacks come in this stack
-        let stack = UIStackView(arrangedSubviews: [leftVerticalStack , postImageView])
-        stack.spacing = 10
+        let stack = UIStackView(arrangedSubviews: [postImageView, leftVerticalStack])
+        stack.spacing = 5
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        stack.layoutMargins = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         stack.alignment = .center
         stack.axis = .horizontal
         
