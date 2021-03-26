@@ -206,26 +206,36 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         
         let authorDateStack = UIStackView(arrangedSubviews: [authorLabel, stationDateStack])
         authorDateStack.axis = .vertical
-        stationDateStack.spacing = 5
+        //authorDateStack.alignment = .center
+        //authorDateStack.backgroundColor = .red
         
-        let authorStack = UIStackView(arrangedSubviews: [authorImageView, authorDateStack])
+        let imageStack = UIStackView(arrangedSubviews: [authorImageView])
+        //imageStack.backgroundColor = .blue
+        imageStack.axis = .vertical
+        imageStack.alignment = .center
+        
+        let authorStack = UIStackView(arrangedSubviews: [imageStack, authorDateStack])
         authorStack.axis = .horizontal
+        authorStack.alignment = .center
         authorStack.spacing = 5
         
         let likesCommentsStack = UIStackView(arrangedSubviews: [likeButton, likesLabel, commentsButton, commentsLabel])
         likesCommentsStack.axis = .horizontal
-        likesCommentsStack.spacing = 5
-        
-        let bottomStack = UIStackView(arrangedSubviews: [authorStack, likesCommentsStack])
+        likesCommentsStack.spacing = 10
+        likesCommentsStack.isLayoutMarginsRelativeArrangement = true
+        likesCommentsStack.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 5)
+
+        let view = UIView()
+        let bottomStack = UIStackView(arrangedSubviews: [authorStack, view, likesCommentsStack])
         bottomStack.axis = .horizontal
         bottomStack.spacing = 5
         
         titleLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
         messageLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        bottomStack.setContentHuggingPriority(.defaultLow, for: .vertical)
         let leftVerticalStack = UIStackView(arrangedSubviews: [ titleLabel, messageLabel, bottomStack])
         leftVerticalStack.spacing = 5
         leftVerticalStack.axis = .vertical
-        //leftVerticalStack.distribution = .equalCentering
         
         postImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
         postImageView.heightAnchor.constraint(equalToConstant: 90).isActive = true
