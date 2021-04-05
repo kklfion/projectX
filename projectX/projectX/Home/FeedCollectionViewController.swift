@@ -177,8 +177,8 @@ extension FeedCollectionViewController{
         } else{
             cell.setAnonymousUser()
         }
-        if post.imageURL != nil {
-            NetworkManager.shared.getAsynchImage(withURL: post.imageURL) { (image, error) in
+        if let imageURLArray = post.imageURLArray {
+            NetworkManager.shared.getAsynchImage(withURL: imageURLArray.first) { (image, error) in
                 DispatchQueue.main.async {
                     cell.setPostImage(image: image)
                 }
