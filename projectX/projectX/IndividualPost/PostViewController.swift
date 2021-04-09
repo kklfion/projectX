@@ -199,8 +199,25 @@ class PostViewController: UIViewController {
             postHeaderView?.setAnonymousUser()
         }
 
-        if let image = postViewModel.postImage {
-            postHeaderView?.postImageView.image = image
+        if let imageURLArray = postViewModel.post.imageURLArray {
+            var imageDataArray = [Data]()
+            
+            
+            for url in imageURLArray
+            {
+                print("here 2")
+                let data = try? Data(contentsOf: url)
+                if let imageData = data {
+                    imageDataArray.append(imageData)
+                    print(imageDataArray.count)
+                }
+            }
+            
+            print("here 1")
+            setupImages(imageDataArray)
+            configurePageControl(imageDataArray)
+            
+
         } else{
             postHeaderView?.imageHeightConstaint.constant = 0
         }
@@ -272,7 +289,9 @@ extension PostViewController{
         if newCommentView.anonimousSwitch.isOn {
             newCommentView.setAnonimousImage()
         } else {
+
             newCommentView.authorView.image = postViewModel.userImage
+
         }
     }
 }
@@ -309,6 +328,7 @@ extension PostViewController{
 
                 self.postViewModel.post.commentCount += 1
                 self.postHeaderView?.commentsLabel.text = self.postViewModel.getCommentsCountString()
+
                 self.comments.insert(comment, at: 0)
                 DispatchQueue.global(qos: .userInitiated).async {
                     self.loadUsers(for: [comment]) {

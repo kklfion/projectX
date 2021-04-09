@@ -194,6 +194,7 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         authorImageView.addGestureRecognizer(imageTap)
     }
     let defaultImageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .ultraLight)
+
     private func setupContentView(){
         
         contentView.backgroundColor = .none
