@@ -245,7 +245,7 @@ class PostViewController: UIViewController {
             postHeaderView?.setAnonymousUser()
         }
 
-        if let imageURLArray = post.imageURLArray {
+        if let imageURLArray = postViewModel.post.imageURLArray {
             var imageDataArray = [Data]()
             
             

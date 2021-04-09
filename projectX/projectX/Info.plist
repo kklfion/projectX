@@ -24,11 +24,11 @@
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>We need to access to post images</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need to access to post images</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We need to access to post images</string>
 	<key>NSMicrophoneUsageDescription</key>
+	<string>We need to access to post images</string>
+	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need to access to post images</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

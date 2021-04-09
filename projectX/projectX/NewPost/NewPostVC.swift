@@ -446,8 +446,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         }
         else
         {
-
-            let data = Post(stationID: ID, stationName: stationName, likes: 0, commentCount: 0, authorID: userInfo.userID, title: title, text: bodyText, date: Date(),imageURL: imageURL, isAnonymous: !anonymousSwitch.isOn)
+            let data = Post(stationID: ID, stationName: stationName, likes: 0, commentCount: 0, authorID: userInfo.userID, title: title, text: bodyText, date: Date(),imageURLArray: imageURLArray, isAnonymous: !anonymousSwitch.isOn)
 
             do{
                 try db.collection(self.destinationCollection).document().setData(from: data)

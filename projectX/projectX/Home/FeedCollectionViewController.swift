@@ -295,7 +295,8 @@ extension FeedCollectionViewController {
         let group = DispatchGroup()
         var imagesDict = [Post: UIImage]()
         for post in data{
-            guard let url = post.imageURL else {continue}
+            guard let url = post.imageURLArray?.first
+            else {continue}
             group.enter()
             URLSession.shared.dataTask(with: url) { (data, _, error) in
                 if let error = error {
