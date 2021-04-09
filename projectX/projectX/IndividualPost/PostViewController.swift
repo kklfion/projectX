@@ -24,33 +24,9 @@ enum LikeStatus{
 
 class PostViewController: UIViewController {
     
-    ///post is initialized by presenting controller
-    private var post: Post
-    
-    private var user: User? {
-        didSet{
-            if user != nil {
-                NetworkManager.shared.getAsynchImage(withURL: user?.photoURL, completion: { (image, error) in
-                    if let image = image{
-                        DispatchQueue.main.async {
-                            self.userImage = image
-                        }
-                    }
-                })
-            }
-        }
-    }
-    
-    private var userImage: UIImage? {
-        didSet {
-            newCommentView.authorView.image = userImage
-        }
-    }
+    var postViewModel: PostViewModel
     
     private var userSubscription: AnyCancellable!
-    
-    ///is post liked by the user
-    private var like: Like?
     
     private var likeStatus: LikeStatus = .unchanged
     
@@ -98,9 +74,8 @@ class PostViewController: UIViewController {
     }()
     
     ///to create postViewController post MUST be initialized
-    init(post: Post, like: Like?, indexPath: IndexPath){
-        self.post = post
-        self.like = like
+    init(postViewModel: PostViewModel ,indexPath: IndexPath){
+        self.postViewModel = postViewModel
         self.indexPath = indexPath
         super.init(nibName: nil, bundle: nil)
     }
@@ -113,7 +88,7 @@ class PostViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = Constants.Colors.mainBackground
-        self.navigationItem.title = post.stationName
+        //self.navigationItem.title = post.stationName
         navigationItem.largeTitleDisplayMode = .never
         
         //only this order works, some bug that makes newcommentview invisible if this is changed
@@ -124,14 +99,14 @@ class PostViewController: UIViewController {
         DispatchQueue.global(qos: .userInitiated).async {
             self.loadAdditionalPostData()
         }
-        switch UserManager.shared().state {
-        case .signedIn(let user):
-            self.user = user
-        default:
-            userSubscription = UserManager.shared().userPublisher.sink { (user) in
-                self.user = user
-            }
-        }
+//        switch UserManager.shared().state {
+//        case .signedIn(let user):
+//            self.user = user
+//        default:
+//            userSubscription = UserManager.shared().userPublisher.sink { (user) in
+//                self.user = user
+//            }
+//        }
     }
     override func viewWillAppear(_ animated: Bool) {
     }
@@ -186,22 +161,22 @@ class PostViewController: UIViewController {
         postHeaderView!.imagePageControl.currentPage = 0
     }
     private func updateFeed(){
-        post.commentCount = comments.count
-        if let like = like {
-            switch likeStatus {
-            case .delete: //if we have like and status is to delete - need to delete it
-                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .delete)
-            default: //do nothing
-                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .unchanged)
-            }
-        } else { //if there is no like and status is to add it need to add a new like
-            switch likeStatus {
-            case .add: //if there was no like give from feed and we need to add a like
-                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .add)
-            default:
-                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .unchanged)
-            }
-        }
+//        post.commentCount = comments.count
+//        if let like = like {
+//            switch likeStatus {
+//            case .delete: //if we have like and status is to delete - need to delete it
+//                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .delete)
+//            default: //do nothing
+//                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .unchanged)
+//            }
+//        } else { //if there is no like and status is to add it need to add a new like
+//            switch likeStatus {
+//            case .add: //if there was no like give from feed and we need to add a like
+//                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .add)
+//            default:
+//                updatePostDelegate?.updatePostModelInTheFeed(indexPath, post: post, like: like, status: .unchanged)
+//            }
+//        }
     }
     private func setupTableViewAndHeader(){
         commentsTableView.delegate = self
@@ -220,7 +195,7 @@ class PostViewController: UIViewController {
         postHeaderView = PostView(frame: view.frame)
         postHeaderView?.translatesAutoresizingMaskIntoConstraints = false
         postHeaderView?.delegate = self
-        postHeaderView?.isLiked = like != nil ? true : false
+        postHeaderView?.isLiked = postViewModel.isLiked()
         commentsTableView.tableHeaderView = postHeaderView
         commentsTableView.tableHeaderView?.layoutIfNeeded() //Without this autolayout doesnt update the custom view layout
     }
@@ -255,31 +230,21 @@ class PostViewController: UIViewController {
                                                object: nil)
     }
     private func populatePostViewWithPost(){
-        //postHeaderView?.authorUILabel.text = post.userInfo.name
-        let date = post.date
+        let date = postViewModel.post.date
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         postHeaderView?.dateUILabel.text = "\(formatter.string(from: date))"
-        postHeaderView?.titleUILabel.text = post.title
-        if !post.isAnonymous{
-            postHeaderView?.authorUILabel.text = post.userInfo.name
-            postHeaderView?.authorLabel.text = post.userInfo.name
-            NetworkManager.shared.getAsynchImage(withURL: post.userInfo.photoURL) { (image, error) in
-                DispatchQueue.main.async {
-                    self.postHeaderView?.authorImageView.image = image
-                }
-            }
+        postHeaderView?.titleUILabel.text = postViewModel.post.title
+        if !postViewModel.isAnonymous(){
+            postHeaderView?.authorUILabel.text = postViewModel.user.name
+            postHeaderView?.authorLabel.text = postViewModel.user.name
+            postHeaderView?.authorImageView.image = postViewModel.userImage
             postHeaderView?.authorLabel.isUserInteractionEnabled = true
             postHeaderView?.authorImageView.isUserInteractionEnabled = true
         } else {
-            postHeaderView?.authorUILabel.text = "Definitely not Jordon"
-            postHeaderView?.authorLabel.text = "Anonymous"
-            self.postHeaderView?.authorImageView.image = (UIImage(systemName: "person.fill.questionmark")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
-            postHeaderView?.authorLabel.isUserInteractionEnabled = false
-            postHeaderView?.authorImageView.isUserInteractionEnabled = false
+            postHeaderView?.setAnonymousUser()
         }
-        
-        
+
         if let imageURLArray = post.imageURLArray {
             var imageDataArray = [Data]()
             
@@ -301,9 +266,9 @@ class PostViewController: UIViewController {
         } else{
             noImageView()
         }
-        postHeaderView?.bodyUILabel.text = post.text
-        postHeaderView?.likesLabel.text = "\(post.likes)"
-        postHeaderView?.commentsLabel.text = "\(post.commentCount)"
+        postHeaderView?.bodyUILabel.text = postViewModel.post.text
+        postHeaderView?.likesLabel.text =  postViewModel.getLikesCountString()
+        postHeaderView?.commentsLabel.text = postViewModel.getCommentsCountString()
         postHeaderView?.layoutIfNeeded()
         
     }
@@ -374,14 +339,9 @@ extension PostViewController{
         if newCommentView.anonimousSwitch.isOn {
             newCommentView.setAnonimousImage()
         } else {
-            NetworkManager.shared.getAsynchImage(withURL: user?.photoURL, completion: { (image, error) in
-                if let image = image{
-                    DispatchQueue.main.async {
-                        self.newCommentView.authorView.image = image
-                    }
-                }
-            })
-            
+
+            newCommentView.authorView.image = postViewModel.userImage
+
         }
     }
 }
@@ -397,7 +357,8 @@ extension PostViewController{
             presenter.present(in: self)
             return
         }
-        var comment = Comment(postID: self.post.id ?? "", userID: userID, text: text, likes: 0, date: Date(), isAnonymous: isAnonimous)
+        guard  let postID = self.postViewModel.post.id else {return}
+        var comment = Comment(postID: postID, userID: userID, text: text, likes: 0, date: Date(), isAnonymous: isAnonimous)
         NetworkManager.shared.writeDocumentReturnReference(collectionType: .comments, document: comment) { (ref, error) in
             if error != nil {
                 print(error ?? "error sending comment")
@@ -410,13 +371,15 @@ extension PostViewController{
             }else if let ref = ref{
                 //increment the number of comments
                 NetworkManager.shared.incrementDocumentValue(collectionType: .posts,
-                                                             documentID: self.post.id ?? "",
+                                                             documentID: postID,
                                                              value: Double(1),
                                                              field: .commentCount)
                 comment.id = ref
-                
-                self.post.commentCount += 1
-                self.postHeaderView?.commentsLabel.text = "\(self.post.commentCount)"
+
+
+                self.postViewModel.post.commentCount += 1
+                self.postHeaderView?.commentsLabel.text = self.postViewModel.getCommentsCountString()
+
                 self.comments.insert(comment, at: 0)
                 DispatchQueue.global(qos: .userInitiated).async {
                     self.loadUsers(for: [comment]) {
@@ -455,7 +418,8 @@ extension PostViewController{
         }
     }
     private func loadComments(completion: @escaping () -> Void){
-        let basicQuery = NetworkManager.shared.db.comments.whereField(FirestoreFields.postID.rawValue, isEqualTo: post.id ?? "").order(by: "likes", descending: true)
+        guard  let postID = self.postViewModel.post.id else {return}
+        let basicQuery = NetworkManager.shared.db.comments.whereField(FirestoreFields.postID.rawValue, isEqualTo: postID).order(by: "likes", descending: true)
         NetworkManager.shared.getDocumentsForQuery(query: basicQuery) { (comments: [Comment]?, error) in
             if comments != nil {
                 self.comments = comments!
@@ -567,7 +531,7 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
             cell.authorImageView.isUserInteractionEnabled = true
         } else {
             cell.authorLabel.text = "Anonymous"
-            cell.authorImageView.image = (UIImage(systemName: "person.fill.questionmark")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+            cell.authorImageView.image = (UIImage(systemName: "person.crop.circle.fill")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
             cell.authorLabel.isUserInteractionEnabled = false
             cell.authorImageView.isUserInteractionEnabled = false
         }
@@ -636,23 +600,23 @@ extension PostViewController: PostViewButtonsDelegate{
             //1. change UI
             postHeaderView?.changeCellToLiked()
             //2. change locally
-            post.likes += 1
+            postViewModel.post.likes += 1
             //3. set like status
             likeStatus = .add
         } else{
             //1. change UI
             header.changeCellToDisliked()
             //2. change locally
-            post.likes -= 1
+            postViewModel.post.likes -= 1
             //3. set like status
             likeStatus = .delete
         }
     }
     func didTapAuthorLabel() {
-        presentAuthorFor(user: post.userInfo)
+        presentAuthorFor(user: postViewModel.user)
     }
     private func presentAuthorFor(user: User){
-        let vc = OtherProfileViewController(user: user)
+        let vc = OtherProfileViewController(user: postViewModel.user, userImage: postViewModel.userImage)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

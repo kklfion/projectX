@@ -9,7 +9,7 @@
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Like: Identifiable, Codable{
+struct Like: Identifiable, Codable, Hashable{
     
     @DocumentID var id: String?
     

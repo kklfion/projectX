@@ -10,13 +10,22 @@ import UIKit
 
 class CollegesListController: UICollectionViewController{
     
+    enum Section: CaseIterable {
+        case school
+    }
+    
     private let collegeCellReuseIdentifier = "cellReuseIdentifier"
     
     private var parentStation: Station
     
     private var colleges = [Station]()
     
+    private var imagesForColleges = [Station: UIImage]()
+    
     private lazy var dataSource = makeDataSource()
+    
+    ///delegated used to send scrolling data to the parent view (station)
+    var didScrollFeedDelegate: DidScrollFeedDelegate?
     
     init(parentStation: Station){
         self.parentStation = parentStation
@@ -25,11 +34,12 @@ class CollegesListController: UICollectionViewController{
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     override func viewDidLoad() {
         collectionView.backgroundColor = Constants.Colors.mainBackground
         setupCollection()
-        loadData()
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.loadData()
+        }
     }
     private func setupCollection(){
         collectionView.register(CollegeCell.self, forCellWithReuseIdentifier: collegeCellReuseIdentifier)
@@ -37,24 +47,47 @@ class CollegesListController: UICollectionViewController{
         collectionView.dataSource = makeDataSource()
     }
     private func loadData(){
+        let group = DispatchGroup()
         //1. get stations
+        group.enter()
         loadSubstations{ result in
             switch result{
             case .success(let colleges):
                 self.colleges = colleges
-                self.update(with: colleges)
+                //self.update(with: colleges)
             case .failure(let err):
                 print(err)
             }
+            group.leave()
         }
+        //2. get images
+        group.wait()
+        group.enter()
+        loadImagesForstations { (result) in
+            switch result{
+            case .failure(let error):
+                print(error)
+            case .success(let imagesDict):
+                self.imagesForColleges = imagesDict
+            }
+            group.leave()
+        }
+        group.wait()
+        //3. update 
+        DispatchQueue.main.async {
+            self.update(with: self.colleges)
+        }
+        
+    }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let collegeVC = SubstationViewController(station: colleges[indexPath.item])
+        self.navigationController?.pushViewController(collegeVC, animated: true)
     }
 
-    
-    
 }
-extension CollegesListController {
-    enum Section: CaseIterable {
-        case school
+extension CollegesListController{
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        didScrollFeedDelegate?.didScrollFeed(scrollView)
     }
 }
 extension CollegesListController {
@@ -67,6 +100,24 @@ extension CollegesListController {
             }else if let err = error{
                 completion(.failure(err))
             }
+        }
+    }
+    func loadImagesForstations(completion: @escaping (Result<[Station: UIImage], Error>) -> Void) {
+        let group = DispatchGroup()
+        var imagesDict = [Station: UIImage]()
+        for college in colleges{
+            group.enter()
+            NetworkManager.shared.getAsynchImage(withURL: college.frontImageURL) { (image, err) in
+                if let image = image {
+                    imagesDict[college]=image
+                } else {
+                    imagesDict[college]=UIImage(named: "sslug")
+                }
+                group.leave()
+            }
+        }
+        group.notify(queue: DispatchQueue.global()){
+            completion(.success(imagesDict))
         }
     }
 }
@@ -91,6 +142,7 @@ private extension CollegesListController {
 
                 cell.schoolNameLabel.text = station.stationName
                 cell.schoolFollowersLabel.text = "\(station.followers) followers"
+                cell.schoolImageView.image = self.imagesForColleges[station]
                 return cell
             }
         )

@@ -16,7 +16,6 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
     
     var headerTopConstraint: NSLayoutConstraint!
     
-    
     ///collectionViewController responsible for the feed.
     private var feedCollectionViewController: FeedCollectionViewController!
     private var newFeedController: FeedCollectionViewController!
@@ -56,7 +55,6 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if (feedSegmentedControl.leftButton.frame.height != 0 && headerHeight == nil){
-            
             headerHeight = feedSegmentedControl.leftButton.frame.height
         }
     }
@@ -83,22 +81,20 @@ class HomeTableVC: UIViewController, SlidableTopViewProtocol{
         
     }
     private func setUserAndSubscribeToUpdates(){
-        switch UserManager.shared().state {
-        case .loading:
-            print("user is loading ")//wait for update
-        case .signedIn(let user):
-            self.user = user
-            feedCollectionViewController.setupFeed(feedType: .lounge(nil), userID: user.id ?? nil)
-            newFeedController.setupFeed(feedType: .busStop(nil), userID: user.id ?? nil)
-        case .signedOut:
-            print("display nothing")//display default data
-            feedCollectionViewController.setupFeed(feedType: .lounge(nil))
-            newFeedController.setupFeed(feedType: .busStop(nil), userID: user?.id ?? nil)
-        }
         userSubscription = UserManager.shared().userPublisher.sink { (user) in
-            self.user = user
-            self.feedCollectionViewController.setupFeed(feedType: .lounge(nil), userID: user?.id)
-            self.newFeedController.setupFeed(feedType: .busStop(nil), userID: user?.id ?? nil)
+            switch UserManager.shared().state {
+            case .loading:
+                print("user is loading ")//wait for update
+            case .signedIn(let user):
+                self.user = user
+                self.feedCollectionViewController.setupFeed(feedType: .lounge(nil), userID: user.id ?? nil)
+                self.newFeedController.setupFeed(feedType: .busStop(nil), userID: user.id ?? nil)
+            case .signedOut:
+                print("display nothing")//display default data
+                self.feedCollectionViewController.setupFeed(feedType: .lounge(nil))
+                self.newFeedController.setupFeed(feedType: .busStop(nil), userID: user?.id ?? nil)
+            }
+
         }
     }
 }
@@ -114,10 +110,23 @@ extension HomeTableVC{
         super.viewWillAppear(animated)
     }
     private func setupNavigationBar(){
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.titleView = UISearchBar()
+        //navigationController?.navigationBar.prefersLargeTitles = false
+        //navigationItem.titleView = UISearchBar()
         //Disable search bar interaction
-        navigationItem.titleView?.isUserInteractionEnabled = false
+        //navigationItem.titleView?.isUserInteractionEnabled = false
+        let searchButton = UIButton(type: .system)
+        searchButton.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+        let notificationsButton = UIButton(type: .system)
+        notificationsButton.setImage(UIImage(systemName: "bell"), for: .normal)
+        let item1 = UIBarButtonItem(customView: searchButton)
+        let item2 = UIBarButtonItem(customView: notificationsButton)
+        navigationItem.setRightBarButtonItems([item2, item1], animated: false)
+        let nectoLabel = UILabel()
+        nectoLabel.text = "Necto"
+        nectoLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        nectoLabel.textColor = UIColor.systemYellow
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: nectoLabel)
+        
     }
 }
 //MARK: - SideBarStationSelectionDelegate

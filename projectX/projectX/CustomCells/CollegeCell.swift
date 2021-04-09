@@ -7,10 +7,13 @@
 //
 
 import UIKit
-class CollegeCell: UICollectionViewCell {
+
+class CollegeCell: ShadowUICollectionViewCell {
+    
+    //let cornerRadius: CGFloat = 10
+    
     let schoolImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "sslug")
         view.contentMode = .scaleAspectFit
         return view
     }()
@@ -24,10 +27,11 @@ class CollegeCell: UICollectionViewCell {
         label.font = Constants.bodyTextFont
         return label
     }()
-    let followButton: UIButton = {
-        let button = UIButton()
+    let followButton: ShadowRoundUIButton = {
+        let button = ShadowRoundUIButton()
         return button
     }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupContentView()
@@ -35,31 +39,52 @@ class CollegeCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // school image
+        let imageHeight = self.frame.height * 0.6
+        schoolImageView.translatesAutoresizingMaskIntoConstraints = false
+        schoolImageView.heightAnchor.constraint(equalToConstant: imageHeight).isActive = true
+        schoolImageView.widthAnchor.constraint(equalToConstant: imageHeight).isActive = true
+        schoolImageView.layer.cornerRadius = imageHeight/2
+        schoolImageView.clipsToBounds = true
+    }
+    
+    func setCollegeBackgroundColor(colorHex: String){
+        schoolImageView.backgroundColor = UIColor.blue
+    }
+    
     private func setupContentView(){
-        
         contentView.backgroundColor = .white
         
         let infoStack = UIStackView(arrangedSubviews: [schoolNameLabel, schoolFollowersLabel])
         infoStack.axis = .vertical
+        infoStack.alignment = .leading
         
-        let imageSize: CGFloat = 60
-        schoolImageView.heightAnchor.constraint(equalToConstant: imageSize).isActive = true
-        schoolImageView.widthAnchor.constraint(equalToConstant: imageSize).isActive = true
-        schoolImageView.layer.cornerRadius = imageSize/2
-        schoolImageView.clipsToBounds = true
+        let stack = UIStackView(arrangedSubviews: [schoolImageView, infoStack])
+        stack.axis = .horizontal
+        stack.spacing = 30
+        stack.alignment = .center
         
-        contentView.addSubview(schoolImageView)
-        schoolImageView.addAnchors(top: nil,
-                                   leading: contentView.leadingAnchor,
-                                   bottom: nil,
-                                   trailing: nil,
-                                   padding: .init(top: 0, left: 20, bottom: 0, right: 0))
-        schoolImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -20).isActive = true
-        contentView.addSubview(infoStack)
-        infoStack.addAnchors(top: contentView.topAnchor,
-                             leading: schoolImageView.trailingAnchor,
+//        contentView.addSubview(followButton)
+//        followButton.addAnchors(top: contentView.topAnchor,
+//                                leading: nil,
+//                                bottom: nil,
+//                                trailing: contentView.trailingAnchor,
+//                                padding: .init(top: 10, left: 0, bottom: 0, right: 10),
+//                                size: .init(width: 40, height: 40))
+
+        contentView.addSubview(stack)
+        stack.addAnchors(top: contentView.topAnchor,
+                             leading: contentView.leadingAnchor,
                              bottom: contentView.bottomAnchor,
                              trailing: contentView.trailingAnchor,
                              padding: .init(top: 10, left: 10, bottom: 10, right: 10))
     }
+//    func setFollowButtonToFollowed(){
+//        followButton.setImage(followButton.followedImage, for: .normal)
+//    }
+//    func setFollowButtonToNotFollowed(){
+//        followButton.setImage(followButton.notFollowedImage, for: .normal)
+//    }
 }
