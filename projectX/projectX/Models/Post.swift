@@ -39,7 +39,7 @@ struct Post:Identifiable, Codable, Hashable{
     var date: Date
     
     /// Post photo url stored in the Firestore
-    var imageURLArray: [URL]?
+    var imageURL: URL?
     
     /// If user wants his name to be anoynmous
     var isAnonymous: Bool
@@ -62,7 +62,7 @@ extension Post{
                 title: String,
                 text: String?,
                 date: Date,
-                imageURLArray: [URL]?,
+                imageURL: URL?,
                 commentCount: Int,
                 isAnonymous: Bool = false) {
         if text != nil && text != Constants.NewPost.placeholderBodyText
@@ -75,7 +75,7 @@ extension Post{
         self.authorID = authorID
         self.title = title
         self.date = date
-        self.imageURLArray = imageURLArray
+        self.imageURL = imageURL
         self.commentCount = commentCount
         self.isAnonymous = isAnonymous
     }
