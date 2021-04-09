@@ -46,6 +46,7 @@ struct Constants{
         //
         static let mainBackground = UIColor(named: "mainBackground") ?? UIColor.white
         static let secondaryBackground = UIColor(named: "secondaryBackground") ?? UIColor.white//UIColor(rgb: 0xf6e58f)
+        static let tertiaryBackground = UIColor(named: "tertiaryBackground") ?? UIColor.white
     }
 
     struct Screen {

@@ -47,7 +47,7 @@ class PostViewController: UIViewController {
     
     ///header view for the post table view will be initialized with frame
     private var postHeaderView: PostView?
-
+    
     ///view for adding a new comment, is hidden by default and is shown when keyboard appears
     private var newCommentView: NewCommentView = {
         let view = NewCommentView()
@@ -90,7 +90,7 @@ class PostViewController: UIViewController {
         view.backgroundColor = Constants.Colors.mainBackground
         //self.navigationItem.title = post.stationName
         navigationItem.largeTitleDisplayMode = .never
-
+        
         //only this order works, some bug that makes newcommentview invisible if this is changed
         setupTableViewAndHeader()
         populatePostViewWithPost()
@@ -113,6 +113,52 @@ class PostViewController: UIViewController {
     ///when dismissing the view, need to update data in the Feed
     override func viewWillDisappear(_ animated: Bool) {
         updateFeed()
+    }
+    /*func setupImages(_ images: [UIImage]){
+     
+     guard postHeaderView != nil else {
+     return
+     }
+     postHeaderView!.imageScrollView.delegate = self
+     for i in 0..<images.count {
+     
+     let imageView = UIImageView()
+     imageView.image = images[i]
+     let xPosition = UIScreen.main.bounds.width * CGFloat(i)
+     imageView.frame = CGRect(x: xPosition, y: 0, width: postHeaderView!.imageScrollView.frame.width, height: postHeaderView!.imageScrollView.frame.height)
+     imageView.backgroundColor = .clear
+     imageView.contentMode = .scaleAspectFit
+     
+     postHeaderView!.imageScrollView.contentSize.width = postHeaderView!.imageScrollView.frame.width * CGFloat(i + 1)
+     postHeaderView!.imageScrollView.addSubview(imageView)
+     }
+     }*/
+    func setupImages(_ images: [Data]){
+        
+        guard postHeaderView != nil else {
+            return
+        }
+        postHeaderView!.imageScrollView.delegate = self
+        for i in 0..<images.count {
+            
+            let imageView = UIImageView()
+            imageView.image = UIImage(data: images[i])
+            let xPosition = UIScreen.main.bounds.width * CGFloat(i)
+            imageView.frame = CGRect(x: xPosition, y: 0, width: postHeaderView!.imageScrollView.frame.width, height: postHeaderView!.imageScrollView.frame.height)
+            imageView.backgroundColor = .clear
+            imageView.contentMode = .scaleAspectFit
+            
+            postHeaderView!.imageScrollView.contentSize.width = postHeaderView!.imageScrollView.frame.width * CGFloat(i + 1)
+            postHeaderView!.imageScrollView.addSubview(imageView)
+        }
+    }
+    func configurePageControl(_ images: [Data]) {
+        guard postHeaderView != nil else {
+            return
+        }
+        postHeaderView!.imagePageControl.isHidden = false
+        postHeaderView!.imagePageControl.numberOfPages = images.count//colors.count
+        postHeaderView!.imagePageControl.currentPage = 0
     }
     private func updateFeed(){
 //        post.commentCount = comments.count
@@ -139,7 +185,7 @@ class PostViewController: UIViewController {
         commentsTableView.rowHeight = UITableView.automaticDimension
         commentsTableView.estimatedRowHeight = 150
         view.addSubview(commentsTableView)
-
+        
         commentsTableView.addAnchors(top: view.safeAreaLayoutGuide.topAnchor,
                                      leading: view.leadingAnchor,
                                      bottom: view.bottomAnchor,
@@ -157,10 +203,10 @@ class PostViewController: UIViewController {
         newCommentView.commentTextView.delegate = self
         view.addSubview(newCommentView)
         newCommentView.addAnchors( top: nil,
-                                leading: view.leadingAnchor,
-                                bottom: nil,
-                                trailing: view.trailingAnchor,
-                                size: .init(width: 0, height: 0))
+                                   leading: view.leadingAnchor,
+                                   bottom: nil,
+                                   trailing: view.trailingAnchor,
+                                   size: .init(width: 0, height: 0))
         
         newCommentViewHeightConstraint = newCommentView.heightAnchor.constraint(equalToConstant: defaultCommentViewHeight)
         newCommentViewHeightConstraint?.isActive = true
@@ -173,7 +219,7 @@ class PostViewController: UIViewController {
     }
     ///enables notifications when keyboards shows up/ hides
     private func setupKeyboardnotifications(){
-
+        
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillShow),
                                                name: UIResponder.keyboardWillShowNotification,
@@ -199,16 +245,37 @@ class PostViewController: UIViewController {
             postHeaderView?.setAnonymousUser()
         }
 
-        if let image = postViewModel.postImage {
-            postHeaderView?.postImageView.image = image
+        if let imageURLArray = post.imageURLArray {
+            var imageDataArray = [Data]()
+            
+            
+            for url in imageURLArray
+            {
+                print("here 2")
+                let data = try? Data(contentsOf: url)
+                if let imageData = data {
+                    imageDataArray.append(imageData)
+                    print(imageDataArray.count)
+                }
+            }
+            
+            print("here 1")
+            setupImages(imageDataArray)
+            configurePageControl(imageDataArray)
+            
         } else{
-            postHeaderView?.imageHeightConstaint.constant = 0
+            noImageView()
         }
         postHeaderView?.bodyUILabel.text = postViewModel.post.text
         postHeaderView?.likesLabel.text =  postViewModel.getLikesCountString()
         postHeaderView?.commentsLabel.text = postViewModel.getCommentsCountString()
         postHeaderView?.layoutIfNeeded()
         
+    }
+    func noImageView()
+    {
+        postHeaderView?.imageHeightConstaint.constant = 0
+        postHeaderView?.imagePageControl.isHidden = true
     }
 }
 //MARK: Handlers
@@ -230,7 +297,7 @@ extension PostViewController{
         UIView.animate(withDuration: 0, delay: 0, options: .curveEaseInOut, animations: {
             self.view.layoutIfNeeded()
         }, completion: nil)
-
+        
     }
     @objc func didTapDissmissNewComment(){
         guard let text = newCommentView.commentTextView.text else {
@@ -258,8 +325,8 @@ extension PostViewController{
         case .signedIn(let user):
             guard let userID = user.id else {return}
             writeCommentToDB(userID: userID,
-                            text: newCommentView.commentTextView.text ?? "",
-                            isAnonimous: newCommentView.anonimousSwitch.isOn)
+                             text: newCommentView.commentTextView.text ?? "",
+                             isAnonimous: newCommentView.anonimousSwitch.isOn)
             newCommentView.setCommentViewDefaltMessage()
         default :
             let presenter = AlertPresenter(message: "You need to sign in") {
@@ -272,7 +339,9 @@ extension PostViewController{
         if newCommentView.anonimousSwitch.isOn {
             newCommentView.setAnonimousImage()
         } else {
+
             newCommentView.authorView.image = postViewModel.userImage
+
         }
     }
 }
@@ -307,8 +376,10 @@ extension PostViewController{
                                                              field: .commentCount)
                 comment.id = ref
 
+
                 self.postViewModel.post.commentCount += 1
                 self.postHeaderView?.commentsLabel.text = self.postViewModel.getCommentsCountString()
+
                 self.comments.insert(comment, at: 0)
                 DispatchQueue.global(qos: .userInitiated).async {
                     self.loadUsers(for: [comment]) {
@@ -317,7 +388,7 @@ extension PostViewController{
                         }
                     }
                 }
-
+                
             }
             DispatchQueue.main.async {
                 self.newCommentView.commentTextView.endEditing(true)
@@ -354,7 +425,7 @@ extension PostViewController{
                 self.comments = comments!
                 self.commentsTableView.reloadData()
             }else{
-                print(error ?? "error locading comments")
+                print(error ?? "error locating comments")
             }
             completion()
         }
@@ -438,11 +509,11 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         newCommentView.commentTextView.endEditing(true)
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         comments.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.cellID, for: indexPath) as! CommentCell
         cell.delegate = self
@@ -464,7 +535,7 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource{
             cell.authorLabel.isUserInteractionEnabled = false
             cell.authorImageView.isUserInteractionEnabled = false
         }
-
+        
         cell.commentLabel.text = comment.text
         cell.dateTimeLabel.text = comment.date.diff()
         let likes = comment.likes
@@ -508,6 +579,17 @@ extension PostViewController: UITextViewDelegate{
         newCommentView.topStack.isHidden = true
         
         newCommentView.commentTextView.endEditing(true)
+    }
+}
+extension PostViewController: UIScrollViewDelegate {
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        
+        guard postHeaderView != nil else {
+            return
+        }
+        let pageNumber = round(scrollView.contentOffset.x / scrollView.frame.size.width)
+        postHeaderView!.imagePageControl.currentPage = Int(pageNumber)
     }
 }
 extension PostViewController: PostViewButtonsDelegate{
