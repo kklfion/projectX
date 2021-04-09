@@ -132,6 +132,6 @@ class NewCommentView: UIView {
         commentTextView.textColor = Constants.Colors.subText
     }
     func setAnonimousImage(){
-        authorView.image = (UIImage(systemName: "person.fill.questionmark")?.withConfiguration(symbolsConfig).withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+        authorView.image = (UIImage(systemName: "person.crop.circle.fill")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
     }
 }

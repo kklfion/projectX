@@ -29,9 +29,10 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     ///user displayed by the controller
     var user: User?
     
-    var profileType: ProfileType
+    var userImage: UIImage?
     
-    private var follower: Follower?
+    ///one of two types of the profile
+    var profileType: ProfileType
     
     private var userSubscription: AnyCancellable!
     
@@ -66,8 +67,9 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         super.init(nibName: nil, bundle: nil)
     }
     ///initialize profileviewcontroller with user data (to display other user profile)
-    init(user: User){
+    init(user: User, userImage: UIImage?){
         self.user = user
+        self.userImage = userImage
         self.profileType = .otherProfile
         super.init(nibName: nil, bundle: nil)
     }
@@ -91,6 +93,7 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
             guard let userid = user?.userID else {return}
             feedCollectionViewController.setupFeed(feedType: .userHistoryFeed(userid),
                                                    userID: user?.userID)
+            
             checkIfUserIsFollowed()
         case .personalProfile:
             setUserAndSubscribeToUpdates()
@@ -108,22 +111,12 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         }
     }
     private func checkIfUserIsFollowed(){
-        //load follow if exist
-        guard let personalID = UserManager.shared().user?.userID else {return}
         guard let userToFollowID = user?.userID else {return}
-        let query = NetworkManager.shared.db.followers
-            .whereField(FirestoreFields.followingUserWithID.rawValue, isEqualTo: userToFollowID)
-            .whereField(FirestoreFields.userID.rawValue, isEqualTo: personalID)
-            NetworkManager.shared.getDocumentsForQuery(query: query) { (follower: [Follower]?, error) in
-                if error != nil{
-                    print("Error loading follower for user \(String(describing: error?.localizedDescription))")
-                }else if follower != nil{
-                    self.follower = follower?[0]
-                    self.profileView.setFollowButtonToFollowed()
-                }else{
-                    self.profileView.setFollowButtonToNotFollowed()
-                }
-            }
+        if UserManager.shared().isUserFollowed(userID: userToFollowID) != nil {
+            self.profileView.setFollowButtonToFollowed()
+        } else {
+            self.profileView.setFollowButtonToNotFollowed()
+        }
     }
     private func setUserAndSubscribeToUpdates(){
         switch UserManager.shared().state {
@@ -195,15 +188,17 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         feedSegmentedControl.stackView.addArrangedSubview(vc.view)
     }
     @objc func didTapFollowButton(){
+        guard let otherUserID = user?.userID else {return}
         //need to fetch whether user was is followed
         //if followed and tapped - unfollow
-        if follower != nil { //already followed / able to fetch the follow
+        if UserManager.shared().isUserFollowed(userID: otherUserID) != nil { //already followed / able to fetch the follow
             deleteFollowAndDecrementCounter()
         } else { //not followed or unable to fetch follow
             writeFollowAndIncrementCounter()
 
         }
     }
+  
     private func  deleteFollowAndDecrementCounter(){
         guard let personalID = UserManager.shared().user?.userID else {return}
         guard let userToFollowID = user?.userID else {return}
@@ -220,7 +215,8 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
                         print(error)
                     } else {
                         self.profileView.setFollowButtonToNotFollowed()
-                        self.follower = nil
+                        self.profileView.changeFollowerCount(by: (self.user?.followersCount ?? 1) - 1 )
+                        UserManager.shared().removeFollowedUser(userID: userToFollowID)
                         //increment followers count
                         NetworkManager.shared.incrementDocumentValue(collectionType: .users,
                                                                      documentID: userToFollowID, value: -1,
@@ -234,17 +230,18 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     private func  writeFollowAndIncrementCounter(){
         guard let personalID = UserManager.shared().user?.userID else {return}
         guard let userToFollowID = user?.userID else {return}
-        let doc = Follower(userID: personalID, followingUserWithID: userToFollowID)
-        NetworkManager.shared.writeDocumentsWith(collectionType: .followers,
-                                                 documents: [doc]) { (err) in
-            if let error = err {
-                print(error)
-            } else {
-                //increment followers count
+        var doc = Follower(userID: personalID, followingUserWithID: userToFollowID)
+        NetworkManager.shared.writeDocumentReturnReference(collectionType: .followers, document: doc) { (referenceID, error) in
+            if error != nil {
+                print(error?.localizedDescription ?? "error creating follower")
+            }else if (referenceID != nil){
+                doc.id = referenceID
                 self.profileView.setFollowButtonToFollowed()
-                self.follower = doc
+                self.profileView.changeFollowerCount(by: (self.user?.followersCount ?? 1) + 1 )
+                UserManager.shared().addFollowedUser(followedUser: doc)
                 NetworkManager.shared.incrementDocumentValue(collectionType: .users,
-                                                             documentID: userToFollowID, value: 1,
+                                                             documentID: userToFollowID,
+                                                             value: Double(1),
                                                              field: .followersCount)
             }
         }
@@ -252,10 +249,10 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
     private func updateProfileInformation(){
         guard let user = user else{return}
         profileView.usernameLabel.text = user.name
+        profileView.changeFollowerCount(by: user.followersCount)
         if let school = getSchoolFrom(email: user.email){
             profileView.schoolLabel.text = school
         }
-        profileView.useridLabel.text = "\(user.followersCount ?? 0) followers"
         NetworkManager.shared.getAsynchImage(withURL: user.photoURL) { (image, error) in
             if image != nil {
                 DispatchQueue.main.async {
@@ -291,19 +288,6 @@ class OtherProfileViewController: UIViewController, DidScrollFeedDelegate, Slida
         self.profileView.profileImageViewContainer.layer.rasterizationScale = UIScreen.main.scale
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 // MARK: - might not use this code at all!
 //private func fetchUserPosts(){
 //    guard let user = user else{return}

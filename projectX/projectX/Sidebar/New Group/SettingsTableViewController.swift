@@ -82,6 +82,7 @@ class SettingsTableViewController: UITableViewController {
     }
     private func addData(_ cell: UITableViewCell,_ indexPath: IndexPath){
         //add text
+        cell.textLabel?.font = Constants.bodyTextFont
         cell.textLabel?.text = rows[indexPath.section][indexPath.row]
         if (cell.textLabel?.text == "Delete Account" ){
             cell.textLabel?.textColor = .red
@@ -91,8 +92,7 @@ class SettingsTableViewController: UITableViewController {
             cell.accessoryType = .disclosureIndicator
         }
         //add details
-        
-        
+        cell.detailTextLabel?.font = Constants.bodyTextFont
         switch rows[indexPath.section][indexPath.row] {
             case "User ID":
                 cell.detailTextLabel?.text = user?.name

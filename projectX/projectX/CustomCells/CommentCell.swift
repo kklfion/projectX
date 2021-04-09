@@ -23,9 +23,9 @@ class CommentCell: UITableViewCell, LikeableCellProtocol {
     var isLiked = false {
         didSet{
             if isLiked{
-                likeButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
+                likeButton.setImage(UIImage(systemName: "heart.fill", withConfiguration: Constants.sfSymbolsSetup.likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
             }else{
-                likeButton.setImage(UIImage(systemName: "heart")?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
+                likeButton.setImage(UIImage(systemName: "heart", withConfiguration: Constants.sfSymbolsSetup.likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
             }
         }
     }
@@ -66,17 +66,15 @@ class CommentCell: UITableViewCell, LikeableCellProtocol {
     let authorImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        //imageView.image = UIImage(named: "sslug")
         imageView.clipsToBounds = true
-        imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        imageView.layer.cornerRadius = 15
+        imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.layer.cornerRadius = 25/2
         
         return imageView
     }()
     let authorLabel: UILabel = {
         let label = UILabel()
-        label.text = "u/Sammy"
         label.font = Constants.smallerTextFont
         label.textColor = Constants.Colors.subText
         label.numberOfLines = 1
@@ -96,13 +94,12 @@ class CommentCell: UITableViewCell, LikeableCellProtocol {
         text.numberOfLines = 0
         text.adjustsFontSizeToFitWidth = false
         text.lineBreakMode = .byTruncatingTail
-        text.text = "i am autoresizing text cell i am autoresizing text cell i am autoresizing text cell i am autoresizing text cell i am autoresizing text cell i am autoresizing text cell  "
         text.textColor = Constants.Colors.mainText
         return text
     }()
     let likeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "heart")?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage(systemName: "heart", withConfiguration: Constants.sfSymbolsSetup.likeCommentsConfig)?.withTintColor(Constants.Colors.buttonsRed, renderingMode: .alwaysOriginal), for: .normal)
         return button
     }()
     let likesLabel: UILabel = {
@@ -131,13 +128,6 @@ class CommentCell: UITableViewCell, LikeableCellProtocol {
         authorStack.axis = .horizontal
         authorStack.spacing = 10
         authorStack.alignment = .center
-        
-//        let likesCommentsStack = UIStackView(arrangedSubviews: [likeButton, likesLabel])
-//        likesCommentsStack.axis = .horizontal
-//        likesCommentsStack.backgroundColor = .blue
-//        likesCommentsStack.spacing = 10
-//        //likesCommentsStack.distribution = .fillEqually
-//        likeButton.
         
         let bottomStack = UIStackView(arrangedSubviews: [authorStack, likeButton, likesLabel]) //likesCommentsStack
         bottomStack.axis = .horizontal

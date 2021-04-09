@@ -17,6 +17,9 @@ class ProfileView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+    let followedImage = UIImage(systemName: "checkmark", withConfiguration: Constants.sfSymbolsSetup.followButtonConfig)?.withTintColor(Constants.sfSymbolsSetup.followButtonColor, renderingMode: .alwaysOriginal)
+    let notFollowedImage = UIImage(systemName: "plus", withConfiguration: Constants.sfSymbolsSetup.followButtonConfig)?.withTintColor(Constants.sfSymbolsSetup.followButtonColor, renderingMode: .alwaysOriginal)
+    
     let headerGradient: CAGradientLayer = {
         let gradient = CAGradientLayer() 
         gradient.colors = [Constants.Colors.profileBlue.cgColor, Constants.Colors.profileYellow.cgColor]
@@ -49,8 +52,8 @@ class ProfileView: UIView {
         
         return imageview
     }()
-    let followButton: UIButton = {
-        let button = UIButton()
+    let followButton: ShadowRoundUIButton = {
+        let button = ShadowRoundUIButton()
         button.backgroundColor = UIColor(rgb: 0xf6e58f)
         button.layer.cornerRadius = 30; // this value vary as per your desire
         button.clipsToBounds = true;
@@ -71,7 +74,7 @@ class ProfileView: UIView {
         label.textColor = Constants.Colors.mainText
         return label
     }()
-    let useridLabel: UILabel = {
+    let followersLabel: UILabel = {
         let label = UILabel()
         label.font = Constants.bodyTextFont
         label.textColor = Constants.Colors.subText
@@ -104,7 +107,7 @@ class ProfileView: UIView {
         self.addSubview(bioStackView)
 
         bioStackView.addArrangedSubview(usernameLabel)
-        bioStackView.addArrangedSubview(useridLabel)
+        bioStackView.addArrangedSubview(followersLabel)
         bioStackView.addArrangedSubview(schoolLabel)
 
         profileImageViewContainer.addAnchors(top: nil,
@@ -125,10 +128,18 @@ class ProfileView: UIView {
                                             padding: .init(top: 10, left: 0, bottom: 0, right: 0))
     }
     func setFollowButtonToFollowed(){
-        followButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+        followButton.setImage(followedImage, for: .normal)
     }
     func setFollowButtonToNotFollowed(){
-        followButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        followButton.setImage(notFollowedImage, for: .normal)
+    }
+    func changeFollowerCount(by number: Int){
+        if number >= 1000{
+            followersLabel.text = "\(number/1000)k Followers"
+        }else{
+            followersLabel.text = "\(number) Followers"
+        }
+
     }
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)

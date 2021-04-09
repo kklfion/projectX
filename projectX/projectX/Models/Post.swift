@@ -25,7 +25,9 @@ struct Post:Identifiable, Codable, Hashable{
     var commentCount: Int
 
     /// User information duplicated in the post object.
-    var userInfo: User
+    //var userInfo: User?
+    
+    var authorID: String
 
     /// The title of the post.
     var title: String
@@ -56,7 +58,7 @@ extension Post{
     public init(stationID: String,
                 stationName: String,
                 likes: Int,
-                userInfo: User,
+                authorID: String,
                 title: String,
                 text: String?,
                 date: Date,
@@ -70,7 +72,7 @@ extension Post{
         self.stationID = stationID
         self.stationName = stationName
         self.likes = likes
-        self.userInfo = userInfo
+        self.authorID = authorID
         self.title = title
         self.date = date
         self.imageURLArray = imageURLArray
