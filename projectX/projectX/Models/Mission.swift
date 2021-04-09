@@ -37,7 +37,7 @@ struct Mission:Identifiable, Codable{
     var date: Date
     
     /// Post photo url stored in the Firestore
-    var imageURLArray: [URL]?
+    var imageURL: URL?
 }
 extension Mission{
     /// returns a new post object
@@ -48,7 +48,7 @@ extension Mission{
                 title: String,
                 text: String,
                 date: Date,
-                imageURLArray: [URL]?) {
+                imageURL: URL?) {
         self.stationID = stationID
         self.stationName = stationName
         self.likes = likes
@@ -56,6 +56,6 @@ extension Mission{
         self.title = title
         self.text = text
         self.date = date
-        self.imageURLArray = imageURLArray
+        self.imageURL = imageURL
     }
 }

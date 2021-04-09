@@ -262,7 +262,6 @@ extension FeedCollectionViewController {
                 group.leave()
             }
         }
-
         group.notify(queue: DispatchQueue.global()){
             completion(users)
         }
@@ -282,7 +281,6 @@ extension FeedCollectionViewController {
                     print("error loading liked post", error!)
                 }else if let like = likedPosts?[0]{
                     likes[post] = like
-
                 }
                 group.leave()
             }
