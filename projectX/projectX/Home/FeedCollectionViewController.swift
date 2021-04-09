@@ -234,6 +234,7 @@ extension FeedCollectionViewController {
         }
 
 
+
     }
     private func applyFetchedDataOnCollectionView(data: [PostViewModel]){
         self.loadingFooterView?.stopAnimating()
@@ -262,7 +263,6 @@ extension FeedCollectionViewController {
                 group.leave()
             }
         }
-
         group.notify(queue: DispatchQueue.global()){
             completion(users)
         }
@@ -295,8 +295,10 @@ extension FeedCollectionViewController {
         let group = DispatchGroup()
         var imagesDict = [Post: UIImage]()
         for post in data{
+
             guard let url = post.imageURLArray?.first
             else {continue}
+
             group.enter()
             URLSession.shared.dataTask(with: url) { (data, _, error) in
                 if let error = error {
@@ -361,6 +363,7 @@ extension FeedCollectionViewController {
                                                              field: .likes)
                 document.id = ref
                 self.postViewModel[indexPath.item].like = document
+
             }
         }
     }
@@ -381,6 +384,7 @@ extension FeedCollectionViewController {
             }
         }
     }
+
 }
 //MARK: - scrollViewDidScroll
 extension FeedCollectionViewController {
