@@ -17,6 +17,7 @@ enum FeedType: Equatable {
     /// you can provide an optional id, home doesnt need it but busstop for station needs a station id
     case busStop(String?)
     //case university //most recent posts from all the subcolleges
+    case collegeFeed
 }
 class PostPaginator {
     
@@ -48,9 +49,13 @@ class PostPaginator {
         case .busStop:
             self.defaultQuery = NetworkManager.shared.db.posts.order(by: "date", descending: true)
         case .lounge:
-            self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.date.rawValue, isGreaterThan: loungeDate)
+            self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.date.rawValue, isGreaterThan: loungeDate ?? Date())
             documentsPerQuery = 100
             self.feedType = feedType
+        case .collegeFeed:
+            self.defaultQuery = NetworkManager.shared.db.posts
+                .order(by: "date", descending: true)
+                .whereField(FirestoreFields.stationID.rawValue, in: ["3AxUgKncylshyShO6qBu", "GNXfvWZMqseEjpAegnWN"])
         default:
             fatalError()
         }
@@ -63,7 +68,7 @@ class PostPaginator {
             self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.stationID.rawValue, isEqualTo: stationid).order(by: "date", descending: true)
         case .lounge(let stationid):
             guard  let stationid = stationid else {fatalError()}
-            self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.stationID.rawValue, isEqualTo: stationid).whereField(FirestoreFields.date.rawValue, isGreaterThan: loungeDate)
+            self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.stationID.rawValue, isEqualTo: stationid).whereField(FirestoreFields.date.rawValue, isGreaterThan: loungeDate ?? Date())
             documentsPerQuery = 100
             self.feedType = feedType
         default:
@@ -72,7 +77,7 @@ class PostPaginator {
     }
     ///user profile history
     init(userID id: String){
-        self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.userInfoUserID.rawValue, isEqualTo: id).order(by: "date", descending: true)
+        self.defaultQuery = NetworkManager.shared.db.posts.whereField(FirestoreFields.authorID.rawValue, isEqualTo: id).order(by: "date", descending: true)
     }
     ///forces paginator to use default query
     func resetPaginator(){
@@ -85,7 +90,11 @@ class PostPaginator {
             query = defaultQuery.limit(to: documentsPerQuery)
             isInitialFetching = false
         }else {
-            guard let  lastDocumentSnapshot = lastDocumentSnapshot else { return }
+            guard let  lastDocumentSnapshot = lastDocumentSnapshot else {
+                completion(.failure(UserError.errorLoadingUser))
+                self.isFetching = false
+                return
+            }
             query = query?.start(afterDocument: lastDocumentSnapshot).limit(to: documentsPerQuery)
         }
         //FIXME: delay added to show spinner
@@ -106,8 +115,10 @@ class PostPaginator {
                     } else{
                         completion(.success(genericDocs))
                     }
+                    if let lastDocument = snapshot!.documents.last {
+                        self.lastDocumentSnapshot = lastDocument
+                    }
                     
-                    self.lastDocumentSnapshot = snapshot!.documents.last
                 }
                 self.isFetching = false
             }

@@ -13,7 +13,7 @@ import Combine
 /// Users state in the app
 enum UserState {
     
-    ///when user was signedin, returns current user data
+    ///when user was signedin, returns current user data 
     case signedIn(user: User)
     
     ///deafault state
@@ -68,6 +68,8 @@ class UserManager {
     
     ///stations that user follows
     private var followedStations = [FollowedStation]()
+    
+    private var followedUsers = [Follower]()
 
 }
 //MARK: helper functions
@@ -86,6 +88,22 @@ extension UserManager{
     func setUserToNil(){
         userImage = nil
         user = nil
+    }
+    func isUserFollowed(userID: String) -> Follower? {
+        for followedUser in followedUsers{
+            if userID == followedUser.followingUserWithID{
+                return followedUser
+            }
+        }
+        return nil
+    }
+    ///when new followed user is added (button tapped) followedusers must be updated to the array, and it is separately added to the db
+    func addFollowedUser(followedUser: Follower){
+        followedUsers.append(followedUser)
+    }
+    ///removes user that is unfollowed from current followedusers, it is separately removed from the db
+    func removeFollowedUser(userID: String){
+        followedUsers = followedUsers.filter { $0.followingUserWithID != userID }
     }
     
     ///returns optinal followedStation if stationID is in the followedStations
@@ -133,6 +151,8 @@ extension UserManager{
             self?.loadUserImage()
             //3 fetch followed stations
             self?.fetchFollowedStations()
+            //4. fetch followed users
+            self?.fetchFollowedUsers()
         }
         
     }
@@ -180,10 +200,18 @@ extension UserManager{
                 print("No followed stations to load")
             }
         }
-        
     }
-    private func fetchUserFollowers(){
-        
+    private func fetchFollowedUsers(){
+        guard let userID = user?.userID else { print(UserError.userIsNil.localizedDescription);return}
+        let query = NetworkManager.shared.db.followers.whereField(FirestoreFields.userID.rawValue, isEqualTo: userID)
+        NetworkManager.shared.getDocumentsForQuery(query: query) { (followedUsers: [Follower]?, error) in
+            if error != nil {
+            }else if followedUsers != nil {
+                self.followedUsers = followedUsers!
+            }else{
+                print("No followed users to load")
+            }
+        }
     }
     ///signs out current user and empties the user data
     func signOut(){

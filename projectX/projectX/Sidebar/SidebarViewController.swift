@@ -135,6 +135,7 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
             let text = sideBarView?.menuItems[indexPath.row]
             let image = UIImage(systemName: imageName)?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal)
             cell.textLabel?.text = text
+            cell.textLabel?.font = Constants.bodyTextFont
             cell.imageView?.image = image
             cell.selectionStyle = .none
             cell.contentView.backgroundColor = Constants.Colors.secondaryBackground
@@ -142,6 +143,7 @@ extension SidebarViewController: UITableViewDelegate, UITableViewDataSource{
         else{ //stations
             let text = dbstations?[indexPath.row].stationName
             cell.textLabel?.text = text
+            cell.textLabel?.font = Constants.bodyTextFont
             cell.textLabel?.textAlignment = .left
             cell.imageView?.image = nil
             cell.selectionStyle = .none
