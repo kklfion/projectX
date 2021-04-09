@@ -194,6 +194,22 @@ class PostCollectionViewCell: UICollectionViewCell, LikeableCellProtocol {
         authorImageView.addGestureRecognizer(imageTap)
     }
     let defaultImageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .ultraLight)
+
+    func setDefaultPostImage(){
+        postImageView.image = UIImage(named: "noImagePostImage")
+        //postImageView.image = UIImage(named: "noImagePostImage")?.withRenderingMode(.alwaysTemplate)
+        //postImageView.tintColor = Constants.Colors.mainText
+    }
+    func setPostImage(image: UIImage?){
+        postImageView.image = image
+    }
+    func setAnonymousUser(){
+        authorLabel.text =  "Anonymous"
+        authorImageView.image = (UIImage(systemName: "person.crop.circle.fill")?.withTintColor(Constants.Colors.darkBrown, renderingMode: .alwaysOriginal))
+        authorLabel.isUserInteractionEnabled = false
+        authorImageView.isUserInteractionEnabled = false
+    }
+
     private func setupContentView(){
         
         contentView.backgroundColor = .none

@@ -10,6 +10,8 @@ import UIKit
 import Firebase
 import FirebaseFirestore
 import ProgressHUD
+import YPImagePicker
+
 
 class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextViewDelegate,
                  UIImagePickerControllerDelegate, UINavigationControllerDelegate, UNUserNotificationCenterDelegate
@@ -19,9 +21,7 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     // UI Element Declarations
     let userIconButton = UIButton()
     var postBodyText = UITextView()
-    var postImageView = UIImageView()
-    let postImageXButton = UIButton()
-    var postImageData: UIImage?
+    var postImageData = [UIImage]()
     var postTitle = UITextField()
     var anonymousSwitch = UISwitch()
     var pickerview = UIPickerView()
@@ -32,10 +32,11 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     var stationToolBar = UIToolbar()
     var picker  = UIPickerView()
     var counter = 1
-
+    
     // Data
     var queryStations = QueryData()
     var stations = [Station]()
+    var downloadURLs = [URL]()
     var selectedStationIndex: Int?
     let postsCollection = "posts"
     let missionsCollection = "missions"
@@ -44,6 +45,23 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     // Other
     let sfConfiguration = UIImage.SymbolConfiguration(pointSize: 25)
     var textHeightConstraint: NSLayoutConstraint!
+    
+    let cellId = "cellId"
+    //var imagePreviewCollection: UICollectionView?
+    let imagePreviewCollection: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 100, height: 100)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 10)
+        
+        let collection = UICollectionView(frame: CGRect(x: 0, y: 0, width: 0, height: 0), collectionViewLayout: layout)
+        collection.showsHorizontalScrollIndicator = false
+        collection.showsVerticalScrollIndicator = false
+        collection.translatesAutoresizingMaskIntoConstraints = false
+        collection.backgroundColor = .clear
+        collection.isScrollEnabled = true
+        return collection
+    }()
     
     
     override func viewDidLayoutSubviews() {
@@ -64,6 +82,11 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         super.viewDidLoad()
         isModalInPresentation = true
         view.backgroundColor = Constants.Colors.mainBackground
+        
+        self.view.addSubview(imagePreviewCollection)
+        imagePreviewCollection.delegate = self
+        imagePreviewCollection.dataSource = self
+        imagePreviewCollection.register(CustomCell.self, forCellWithReuseIdentifier: cellId)
         
         if isMission
         {
@@ -112,17 +135,6 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         
         // MARK: - TextField & TextView
         
-        // MARK: Post Image
-        postImageView.layer.cornerRadius = 8.0
-        postImageView.clipsToBounds = true
-        self.view.addSubview(postImageView)
-        
-        // MARK: post image X button
-        postImageXButton.setImage( UIImage(systemName: "xmark.circle.fill"), for: .normal)
-        postImageXButton.tintColor = Constants.Colors.mainText //.lightGray
-        postImageXButton.addTarget(self, action: #selector(postImageXPressed), for: .touchUpInside)
-        self.view.addSubview(postImageXButton)
-        
         
         // MARK: Post Title
         postTitle.attributedPlaceholder = NSAttributedString(string: Constants.NewPost.placeholderTitleText, attributes: [NSAttributedString.Key.foregroundColor: Constants.Colors.mainText])
@@ -144,10 +156,12 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         self.view.addSubview(postBodyText)
         
         // MARK: - ADD Constraints
-        postImageView.addAnchors(top: chooseStation.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 15, left: 15, bottom: 0, right: 10))
-        postTitle.addAnchors(top: postImageView.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: chooseStation.trailingAnchor, padding: .init(top: 5, left: 15, bottom: 0, right: 10))
+        imagePreviewCollection.addAnchors(top: chooseStation.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: chooseStation.trailingAnchor,padding: .init(top: 10, left: 0, bottom: 0, right: 0))
+        imagePreviewCollection.heightAnchor.constraint(equalToConstant: 0).isActive = true
         
-        postBodyText.addAnchors(top: postTitle.bottomAnchor, leading: postTitle.leadingAnchor, bottom: nil, trailing: postTitle.trailingAnchor, padding: .init(top: 5, left: -4, bottom: 0, right: 0))
+        postTitle.addAnchors(top: imagePreviewCollection.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: chooseStation.trailingAnchor, padding: .init(top: 0, left: 15, bottom: 0, right: 10))
+        
+        postBodyText.addAnchors(top: postTitle.bottomAnchor, leading: postTitle.leadingAnchor, bottom: nil, trailing: postTitle.trailingAnchor, padding: .init(top: 0, left: -4, bottom: 0, right: 0))
         self.textHeightConstraint = postBodyText.heightAnchor.constraint(equalToConstant: 40)
         self.textHeightConstraint.isActive = true
         self.adjustTextViewHeight(postBodyText)
@@ -258,15 +272,12 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return stations[row].stationName
-        //return stationNames[row]
     }
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return stations.count
-        //return stationNames.count
     }
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         selectedStationIndex = row
-        //selectedchannel = stationNames[row]
         doneButton()
     }
     
@@ -285,23 +296,9 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         stationToolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 35))
         stationToolBar.items = [UIBarButtonItem.init(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil),UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(doneButton))]
         stationToolBar.tintColor = Constants.Colors.secondaryBackground
-        //selectedStationLabel.inputAccessoryView = stationToolBar
-        //picker.addSubview(stationToolBar)
+
     }
-    @objc func postImageXPressed()
-    {
-        postImageView.image = nil
-        postImageData = nil
-        for const in postImageView.constraints
-        {
-            postImageView.removeConstraint(const)
-        }
-        for const in postImageXButton.constraints
-        {
-            postImageXButton.removeConstraint(const)
-        }
-        
-    }
+    
     @objc func doneButton() {
         toolBar.removeFromSuperview()
         picker.removeFromSuperview()
@@ -319,7 +316,6 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
                 selectedStationLabel.text = stations[stationIndex].stationName
             }
         }
-        
     }
     
     func adjustTextViewHeight(_ textView: UITextView) {
@@ -417,25 +413,26 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         }
         
         // upload image if there is
-        if postImageData != nil
+        if postImageData.count > 0
         {
-            uploadImage(imageData: postImageData) { (downloadURL) in
+            uploadImages(imageDataArray: postImageData) { (downloadURLs) in
                 let stationID = self.stations[selectedStationIndex].id!
-                self.uploadData(ID: stationID, stationName: self.stations[selectedStationIndex].stationName, userInfo: user, title: title, bodyText: bodyText, imageURL: downloadURL)
+                self.uploadData(ID: stationID, stationName: self.stations[selectedStationIndex].stationName, userInfo: user, title: title, bodyText: bodyText, imageURLArray: downloadURLs)
             }
         }
         else
         {
             let stationID = stations[selectedStationIndex].id!
-            uploadData(ID: stationID, stationName: stations[selectedStationIndex].stationName, userInfo: user, title: title, bodyText: bodyText, imageURL: nil)
+            uploadData(ID: stationID, stationName: stations[selectedStationIndex].stationName, userInfo: user, title: title, bodyText: bodyText, imageURLArray: nil)
         }
     }
-    func uploadData(ID: String, stationName: String, userInfo: User, title: String, bodyText: String, imageURL: URL?)
+    func uploadData(ID: String, stationName: String, userInfo: User, title: String, bodyText: String, imageURLArray: [URL]?)
     {
+        print("Uploading post")
         let db = Firestore.firestore()
         if isMission
         {
-            let data = Mission(stationID: ID, stationName: stationName, likes: 0, userInfo: userInfo, title: title, text: bodyText, date: Date(), imageURL: imageURL)
+            let data = Mission(stationID: ID, stationName: stationName, likes: 0, userInfo: userInfo, title: title, text: bodyText, date: Date(), imageURLArray: imageURLArray)
             do{
                 try db.collection(self.destinationCollection).document().setData(from: data)
             }
@@ -449,7 +446,8 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         }
         else
         {
-            let data = Post(stationID: ID, stationName: stationName, likes: 0, commentCount: 0, authorID: userInfo.userID, title: title, text: bodyText, date: Date(),imageURL: imageURL, isAnonymous: !anonymousSwitch.isOn)
+            let data = Post(stationID: ID, stationName: stationName, likes: 0, commentCount: 0, userInfo: userInfo, title: title, text: bodyText, date: Date(),imageURLArray: imageURLArray, isAnonymous: !anonymousSwitch.isOn)
+
             do{
                 try db.collection(self.destinationCollection).document().setData(from: data)
             }
@@ -473,7 +471,8 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
     func displayUploadImageDialog(btnSelected: UIButton) {
         let picker = UIImagePickerController()
         picker.delegate = self
-        picker.allowsEditing = true
+        picker.allowsEditing = false
+        
         if UIScreen.main.traitCollection.userInterfaceIdiom == .pad {
             OperationQueue.main.addOperation({() -> Void in
                 picker.sourceType = .photoLibrary
@@ -485,62 +484,73 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
             self.present(picker, animated: true) {() -> Void in }
         }
     }
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        postImageData = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
-        postImageView.addAnchors(top: chooseStation.bottomAnchor, leading: chooseStation.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 15, left: 15, bottom: 0, right: 10), size: .init(width: 100, height: 100))
-        postImageXButton.addAnchors(top: postImageView.topAnchor, leading: postImageView.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: -15, left: -15, bottom: 0, right: 0), size: .init(width: 30, height: 30))
-        postImageView.image = postImageData
-        
-        self.dismiss(animated: true, completion: nil)
-    }
-    func uploadImage(imageData: UIImage?, completionHandler: @escaping (_ downloadURL:URL) -> Void)
+    func uploadImages(imageDataArray: [UIImage]?, completionHandler: @escaping (_ downloadURLs:[URL]) -> Void)
     {
-        guard let postImageCompressed = imageData?.jpegData(compressionQuality: 0.05)
+        
+        guard let ImageArray = imageDataArray
         else
         {
             return
         }
-        
-        let storage = Storage.storage()
-        let storageRef = storage.reference()
-        
-        let imageRef = storageRef.child("postImages/\(UUID()).jpg")
-        let uploadTask = imageRef.putData(postImageCompressed, metadata: nil) { (metadata, error) in
-            if error != nil
-            {
-                ProgressHUD.showFailed()
-            }
-            else
-            {
-                ProgressHUD.showSuccess()
-            }
-            
-            imageRef.downloadURL { (url, error) in
-                guard let downloadURL = url else {
-                    self.showUploadError()
-                    return
-                }
-                print(downloadURL)
-                completionHandler(downloadURL)
-            }
-        }
-        
-        let _ = uploadTask.observe(.progress) { snapshot in
-            guard let progress = snapshot.progress
-            else {return}
-            ProgressHUD.animationType = .horizontalCirclesPulse
-            ProgressHUD.colorHUD = .systemGray
-            ProgressHUD.colorBackground = .clear
-            ProgressHUD.colorProgress = Constants.Colors.darkBrown
-            ProgressHUD.showProgress(CGFloat(progress.fractionCompleted))
+        upload(index: 0, imageArray: ImageArray) {
+            let URLs = self.downloadURLs
+            completionHandler(URLs)
         }
     }
-    
+    func upload(index: Int, imageArray: [UIImage], completionHandler: (() -> Void)?)
+    {
+        if index < imageArray.count
+        {
+            let imageData = imageArray[index]
+            guard let postImageCompressed = imageData.jpegData(compressionQuality: 0.05)
+            else
+            {
+                return
+            }
+            
+            let storage = Storage.storage()
+            let storageRef = storage.reference()
+            
+            let imageRef = storageRef.child("postImages/\(UUID()).jpg")
+            let uploadTask = imageRef.putData(postImageCompressed, metadata: nil) { (metadata, error) in
+                if error != nil
+                {
+                    ProgressHUD.showFailed()
+                }
+                else
+                {
+                    ProgressHUD.showSuccess()
+                }
+                
+                imageRef.downloadURL { (url, error) in
+                    guard let downloadURL = url else {
+                        self.showUploadError()
+                        return
+                    }
+                    self.downloadURLs.append(downloadURL)
+                    self.upload(index: index + 1, imageArray: imageArray, completionHandler: completionHandler)
+                }
+            }
+            
+            let _ = uploadTask.observe(.progress) { snapshot in
+                guard let progress = snapshot.progress
+                else {return}
+                ProgressHUD.animationType = .horizontalCirclesPulse
+                ProgressHUD.colorHUD = .systemGray
+                ProgressHUD.colorBackground = .clear
+                ProgressHUD.colorProgress = Constants.Colors.darkBrown
+                ProgressHUD.showProgress(CGFloat(progress.fractionCompleted))
+            }
+        }
+        else
+        {
+            completionHandler?()
+        }
+    }
     func checkPermission() {
         let authStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
         switch authStatus {
         case .authorized:
-            print("ok man")
             self.displayUploadImageDialog(btnSelected: self.loadPhoto)
         case .denied:
             print("Error")
@@ -558,7 +568,6 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
         if photos == .authorized {
             switch photos {
             case .authorized:
-                print("ok")
                 self.displayUploadImageDialog(btnSelected: self.loadPhoto)
             case .denied:
                 print("Error")
@@ -567,20 +576,58 @@ class NewPostVC: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, 
             }
         }
     }
+    func attachLimitReached()
+    {
+        let ac = UIAlertController(title: "Sorry, the maximum number of images is 5", message: nil, preferredStyle: .actionSheet)
+        ac.addAction(UIAlertAction(title: "OK", style: .cancel))
+        ac.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
+        present(ac, animated: true)
+    }
     
     @objc func loadPhotoTapped(_ sender: UIButton) {
-        self.displayUploadImageDialog(btnSelected: self.loadPhoto)
-        
-        let photos = PHPhotoLibrary.authorizationStatus()
-        if photos == .notDetermined {
-            PHPhotoLibrary.requestAuthorization({status in
-                if status == .authorized{
-                    //print("ok")
-                } else {
-                    // print("no")
-                }
-            })
+        if postImageData.count < 5 {}
+        else
+        {
+            attachLimitReached()
+            return
         }
+        
+        var config = YPImagePickerConfiguration()
+        
+        config.screens = [.library, .photo]
+        config.library.maxNumberOfItems = 5 - postImageData.count
+        config.isScrollToChangeModesEnabled = true
+        config.showsPhotoFilters = true
+        config.onlySquareImagesFromCamera = false
+        config.library.isSquareByDefault = false
+        config.showsVideoTrimmer = true
+        config.shouldSaveNewPicturesToAlbum = true
+        config.albumName = "Necto"
+        config.startOnScreen = YPPickerScreen.library
+        config.showsCrop = .none
+        config.bottomMenuItemSelectedTextColour = Constants.Colors.darkBrown
+        config.colors.tintColor = Constants.Colors.darkBrown
+        
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor : Constants.Colors.darkBrown]
+        UINavigationBar.appearance().tintColor = Constants.Colors.darkBrown
+        
+        let picker = YPImagePicker(configuration: config)
+        
+        picker.didFinishPicking { [unowned picker] items, _ in
+            for item in items {
+                switch item {
+                case .photo(let photo):
+                    self.postImageData.append(photo.image)
+                    self.imagePreviewCollection.heightConstraint?.constant = 120
+                    self.imagePreviewCollection.reloadData()
+                
+                case .video(let video):
+                    print()
+                }
+            }
+            picker.dismiss(animated: true, completion: nil)
+        }
+        present(picker, animated: true, completion: nil)
         checkLibrary()
         checkPermission()
     }
@@ -591,5 +638,63 @@ extension NewPostVC: UIAdaptivePresentationControllerDelegate
 {
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         dismissAlert()
+    }
+}
+extension NewPostVC: UICollectionViewDelegate, UICollectionViewDataSource
+{
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return postImageData.count
+    }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = imagePreviewCollection.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! CustomCell
+        cell.backgroundColor = .clear
+        cell.imageView.image = self.postImageData[indexPath.row]
+        cell.postImageXButton.tag = indexPath.row
+        cell.postImageXButton.addTarget(self, action: #selector(removeImageAction(sender: )), for: .touchUpInside)
+        
+        return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        return CGSize(width: 150, height: 250)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
+    }
+    @objc func removeImageAction(sender: UIButton) {
+        self.postImageData.remove(at: sender.tag)
+        imagePreviewCollection.reloadData()
+        if postImageData.count <= 0
+        {
+            self.imagePreviewCollection.heightConstraint?.constant = 0
+        }
+    }
+}
+class CustomCell: UICollectionViewCell {
+    
+    let imageView = UIImageView()
+    let postImageXButton = UIButton()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        imageView.layer.cornerRadius = 8
+        imageView.layer.masksToBounds = true
+        imageView.clipsToBounds = true
+        self.addSubview(imageView)
+        
+        postImageXButton.setImage( UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        postImageXButton.tintColor = Constants.Colors.mainText //.lightGray
+        self.addSubview(postImageXButton)
+        
+        imageView.addAnchors(top: self.topAnchor, leading: self.leadingAnchor, bottom: self.bottomAnchor, trailing: self.trailingAnchor)
+        imageView.backgroundColor = .yellow
+        
+        self.postImageXButton.addAnchors(top: self.imageView.topAnchor, leading: self.imageView.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: -25, left: -25, bottom: 0, right: 0), size: .init(width: 50, height: 50))
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
